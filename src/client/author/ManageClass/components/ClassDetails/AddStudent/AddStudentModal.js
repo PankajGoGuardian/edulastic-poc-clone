@@ -8,7 +8,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { themeColor } from '@edulastic/colors'
 import { roleuser } from '@edulastic/constants'
-import { getUserOrgData, getUserRole, isPremiumUserSelector } from '../../../../src/selectors/user'
+import {
+  getUserOrgData,
+  getUserRole,
+  isPremiumUserSelector,
+} from '../../../../src/selectors/user'
 import { getValidatedClassDetails } from '../../../../Student/ducks'
 import { fetchStudentsByIdAction } from '../../../ducks'
 import AdditionalFields from './AdditionalFields'
@@ -246,8 +250,7 @@ class AddStudentModal extends React.Component {
                   />
                 </Panel>
               </StyledCollapse>
-            )
-          }
+            )}
           </AddForm>
         </Spin>
       </CustomModalStyled>

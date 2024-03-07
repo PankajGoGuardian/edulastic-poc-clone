@@ -940,6 +940,10 @@ class App extends Component {
                     render={() => <AssessmentPlayer defaultAP />}
                   />
                   <Route
+                    path="/student/survey/:id/class/:groupId/uta/:utaId"
+                    render={() => <AssessmentPlayer defaultAP />}
+                  />
+                  <Route
                     path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
                     render={() => <AssessmentPlayer defaultAP />}
                   />

@@ -65,7 +65,10 @@ import { toggleCreateItemModalAction } from '../../../src/actions/testItem'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 
 import { SMALL_DESKTOP_WIDTH } from '../../../src/constants/others'
-import { getIsAudioResponseQuestionEnabled } from '../../../TestPage/ducks'
+import {
+  getIsAudioResponseQuestionEnabled,
+  isSurveyTestSelector,
+} from '../../../TestPage/ducks'
 
 class Container extends Component {
   state = {
@@ -287,6 +290,7 @@ class Container extends Component {
       testId,
       match: { params },
       enableAudioResponseQuestion,
+      isSurveyTest,
     } = this.props
     const { mobileViewShow, isShowCategories } = this.state
     const { multipartItem } = itemDetails
@@ -379,62 +383,72 @@ class Container extends Component {
                   selectedKeys={[selectedCategory]}
                   onClick={this.handleCategory}
                 >
-                  <Menu.Item key="multiple-choice">
-                    <IconNewList />
-                    Multiple Choice
-                  </Menu.Item>
-                  <Menu.Item key="fill-blanks">
-                    <IconSelection />
-                    Fill in the Blanks
-                  </Menu.Item>
-                  <Menu.Item key="classify">
-                    <IconLayout />
-                    Classify, Match & Order
-                  </Menu.Item>
-                  <Menu.Item key="edit">
-                    <IconWrite />
-                    {audioResponseQuestionTypeText}
-                  </Menu.Item>
-                  {!multipartItem && (
+                  {!isSurveyTest && (
+                    <>
+                      <Menu.Item key="multiple-choice">
+                        <IconNewList />
+                        Multiple Choice
+                      </Menu.Item>
+                      <Menu.Item key="fill-blanks">
+                        <IconSelection />
+                        Fill in the Blanks
+                      </Menu.Item>
+                      <Menu.Item key="classify">
+                        <IconLayout />
+                        Classify, Match & Order
+                      </Menu.Item>
+                      <Menu.Item key="edit">
+                        <IconWrite />
+                        {audioResponseQuestionTypeText}
+                      </Menu.Item>
+                    </>
+                  )}
+                  {!multipartItem && !isSurveyTest && (
                     <Menu.Item key="read">
                       <IconRead />
                       PASSAGE
                     </Menu.Item>
                   )}
-                  <Menu.Item key="highlight">
-                    <IconTarget />
-                    Highlight
-                  </Menu.Item>
-                  <Menu.Item key="math">
-                    <IconMath />
-                    Math
-                  </Menu.Item>
-                  <Menu.Item key="graphing">
-                    <IconLineChart />
-                    Graphing
-                  </Menu.Item>
-                  <Menu.Item key="charts">
-                    <IconBarChart />
-                    Charts
-                  </Menu.Item>
-                  <Menu.Item key="multipart">
-                    <IconMultipart />
-                    Multipart
-                  </Menu.Item>
+                  {!isSurveyTest && (
+                    <>
+                      <Menu.Item key="highlight">
+                        <IconTarget />
+                        Highlight
+                      </Menu.Item>
+                      <Menu.Item key="math">
+                        <IconMath />
+                        Math
+                      </Menu.Item>
+                      <Menu.Item key="graphing">
+                        <IconLineChart />
+                        Graphing
+                      </Menu.Item>
+                      <Menu.Item key="charts">
+                        <IconBarChart />
+                        Charts
+                      </Menu.Item>
+                      <Menu.Item key="multipart">
+                        <IconMultipart />
+                        Multipart
+                      </Menu.Item>
+                    </>
+                  )}
                   <Menu.Item key="instruction">
                     <IconPlay />
                     Instructions
                   </Menu.Item>
-                  {multipartItem && (
+                  {!isSurveyTest && multipartItem && (
                     <Menu.Item key="rulers-calculators">
                       <IconRulerPencil />
                       Tools
                     </Menu.Item>
                   )}
-                  <Menu.Item key="likert-scale">
-                    <IconPlay />
-                    Likert Scale
-                  </Menu.Item>
+                  {isSurveyTest && (
+                    <Menu.Item key="likert-scale">
+                      <IconPlay />
+                      Likert Scale
+                    </Menu.Item>
+                  )}
                   {/* implementation is in progress */}
                   {/* <Menu.Item key="other">
                     <IconMore />
@@ -591,6 +605,7 @@ const enhance = compose(
       testId: state.tests.entity._id,
       itemDetails: getItemDetailSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
+      isSurveyTest: isSurveyTestSelector(state),
     }),
     {
       setQuestion: setQuestionAction,

@@ -29,7 +29,7 @@ const OptionScratch = ({ history, clearTestData, clearCreatedItems }) => {
       <IconWrapper marginBottom="0px" height="39px" width="39px">
         <IconNewFile height="22" width="18" />
       </IconWrapper>
-      <TitleWrapper>Create from Scratch</TitleWrapper>
+      <TitleWrapper>Create Survey Test</TitleWrapper>
       <TextWrapper style={{ padding: '0 40px' }}>
         {descriptionBottom}
       </TextWrapper>

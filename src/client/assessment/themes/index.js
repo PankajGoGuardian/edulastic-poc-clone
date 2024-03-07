@@ -1177,7 +1177,7 @@ const AssessmentContainer = ({
         await saveUserAnswer(currentItem, timeSpent, false, groupId, {
           urlToGo,
           locState: { ...history?.location?.state, fromSummary: true },
-          testType: 'survey', // TODO: this needs to be changed
+          testType,
         })
       } else {
         if (!enableSkipAlert) {

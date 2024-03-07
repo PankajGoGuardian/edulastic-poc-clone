@@ -121,8 +121,6 @@ const AssignmentCard = memo(
       hasSections,
     } = data
 
-    // const testType = 'survey'
-
     const serverTimeStamp = getServerTs(data)
 
     let {

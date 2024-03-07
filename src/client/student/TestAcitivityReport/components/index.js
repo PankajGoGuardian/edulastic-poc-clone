@@ -75,8 +75,6 @@ const ReportListContainer = ({
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null)
   const [showGraph, setShowGraph] = useState(true)
   const { isDocBased, testType } = test
-  // const { isDocBased } = test
-  // const testType = 'survey'
 
   const { releaseScore, userWork, _id: testActivityId } = testActivity
   const [showAttachmentsModal, taggleAttachmentModal] = useState(false)

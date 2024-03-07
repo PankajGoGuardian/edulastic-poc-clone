@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { vqUsageProgressColor, white } from '@edulastic/colors'
+import { black, vqUsageProgressColor, white } from '@edulastic/colors'
 import { IconInfoCircle, IconVQTextCheck, IconStar } from '@edulastic/icons'
 import { withRouter } from 'react-router-dom'
 import { Progress } from 'antd'
@@ -55,7 +55,7 @@ const VideoQuizUsage = ({
 
   return (
     <>
-      <FlexContainer justifyContent="center" alignItems="center">
+      <FlexContainer justifyContent="center" alignItems="center" height="100%">
         <VQUsageProgress
           type="circle"
           strokeColor={getVQTagBgColorForQuota(remainingPercentage)}
@@ -63,16 +63,16 @@ const VideoQuizUsage = ({
           strokeWidth={18}
           strokeLinecap="square"
           percent={100 - parseInt(remainingPercentage, 10)}
-          width={16}
+          width={18}
           trailColor={trailColor}
         />
         <VideoQuizUsageText>{`${vqUsageCount}/${Math.max(
           vqUsageCount,
           vqQuotaForDistrict
         )} Free Quizzes Used`}</VideoQuizUsageText>
-        <span onClick={() => setIsModalOpen(true)}>
-          <IconInfoCircle margin="6px 0 0 0" />
-        </span>
+        <InfoIconWrapper onClick={() => setIsModalOpen(true)}>
+          <IconInfoCircle />
+        </InfoIconWrapper>
         <CustomModalStyled
           visible={isVisible}
           onCancel={() => setIsModalOpen(false)}
@@ -134,8 +134,12 @@ const enhance = compose(
 )
 export default enhance(VideoQuizUsage)
 
+const InfoIconWrapper = styled.span`
+  cursor: pointer;
+  line-height: 8px;
+`
 const VideoQuizUsageText = styled.span`
-  color: #3d3d3d;
+  color: ${black};
   text-align: center;
   font-family: 'Open Sans';
   font-size: 11px;

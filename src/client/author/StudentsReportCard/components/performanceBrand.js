@@ -12,15 +12,15 @@ import {
   LogoContainer,
 } from './styles'
 
-const PerformanceBrand = (props) => {
-  const {
-    testData = {},
-    data = {},
-    className,
-    showPerformanceBand,
-    performanceBandsData,
-    author_classboard_testActivity = {},
-  } = props
+const PerformanceBrand = ({
+  performanceRef,
+  testData = {},
+  data = {},
+  className,
+  showPerformanceBand,
+  performanceBandsData,
+  author_classboard_testActivity = {},
+}) => {
   const {
     chartData,
     classResponse = {},
@@ -44,9 +44,12 @@ const PerformanceBrand = (props) => {
     (o) => o._id === performanceBand?._id
   ) ||
     performanceBandsData[0] || { performanceBand: [] }
-  const selectedPerformanceBand =
+
+  const roundedStudentPercentage = Math.round(perfomancePercentage)
+  const { name: bandName = '', color: bandColor = 'black' } =
     selectedBandsData.performanceBand.find(
-      (pb) => perfomancePercentage >= pb.to && pb.from >= perfomancePercentage
+      (pb) =>
+        roundedStudentPercentage >= pb.to && pb.from >= roundedStudentPercentage
     ) || {}
 
   // finding the mestry
@@ -64,7 +67,7 @@ const PerformanceBrand = (props) => {
   }
 
   return (
-    <div ref={props.performanceRef} className={className}>
+    <div ref={performanceRef} className={className}>
       <PerformanceBrandWrapper bordered={false}>
         <Row className="top-container" type="flex" justify="space-between">
           <LogoContainer>
@@ -180,7 +183,7 @@ const PerformanceBrand = (props) => {
                   color={mastery?.color}
                 >
                   <div className="student-report-card-chart-area-score">
-                    {Math.round(perfomancePercentage)}%
+                    {roundedStudentPercentage}%
                   </div>
                 </StyledPerformancePercent>
               </div>
@@ -189,9 +192,9 @@ const PerformanceBrand = (props) => {
                   PERFORMANCE:{' '}
                   <span
                     data-cy="report-performance-band"
-                    style={{ color: selectedPerformanceBand?.color || 'black' }}
+                    style={{ color: bandColor }}
                   >
-                    {totalScore > 0 ? selectedPerformanceBand?.name || '' : ''}
+                    {totalScore > 0 ? bandName : ''}
                   </span>
                 </PerformanceTitle>
               )}

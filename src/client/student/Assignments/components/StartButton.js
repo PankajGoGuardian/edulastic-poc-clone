@@ -20,12 +20,17 @@ const AssignmentButton = ({
   isTimeWindowRestricted = false,
   restrictedButtonText,
   restrictedButtonTooltip,
+  testType,
 }) => {
+  const startAssignmentText =
+    testType === 'survey'
+      ? t('common.startSurvey')
+      : t('common.startAssignment')
   const startButtonText = resume
     ? t('common.resume')
     : attempted
     ? t('common.retake')
-    : t('common.startAssignment')
+    : startAssignmentText
   const isTimeExpired = new Date(startDate) > new Date(serverTimeStamp)
   const isNotStarted = !startDate
   let lockButtonText = ''

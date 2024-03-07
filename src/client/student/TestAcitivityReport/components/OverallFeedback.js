@@ -9,7 +9,7 @@ import { white, textBlackColor } from '@edulastic/colors'
 import { releaseGradeLabels } from '@edulastic/constants/const/test'
 import { getClasses } from '../../Login/ducks'
 
-const OverallFeedback = ({ testActivity, classList = [] }) => {
+const OverallFeedback = ({ testActivity, classList = [], testType }) => {
   const { feedback, groupId, score, maxScore } = testActivity
   const overallFeedbackText = get(feedback, 'text', 'No feedback provided')
   const classOwner = classList.find(({ _id }) => _id === groupId)?.owners?.[0]
@@ -60,10 +60,12 @@ const OverallFeedback = ({ testActivity, classList = [] }) => {
           <IconCheckWrapper>
             <IconCheck />
           </IconCheckWrapper>
-          <ScoreWrapper>
-            <Score data-cy="score">{round(score, 2)}</Score>
-            <Total data-cy="maxscore">{round(maxScore, 2)}</Total>
-          </ScoreWrapper>
+          {testType !== 'survey' && (
+            <ScoreWrapper>
+              <Score data-cy="score">{round(score, 2)}</Score>
+              <Total data-cy="maxscore">{round(maxScore, 2)}</Total>
+            </ScoreWrapper>
+          )}
 
           <Feedback>
             <FeedbackGiven data-cy="feedback">

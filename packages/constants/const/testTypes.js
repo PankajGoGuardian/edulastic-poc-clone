@@ -80,6 +80,7 @@ const TEST_TYPE_LABELS = {
   practice: 'Practice Assessment',
   homework: 'Homework',
   quiz: 'Quiz',
+  survey: 'Survey',
 }
 
 const DEFAULT_ADMIN_TEST_TYPE_MAP = {

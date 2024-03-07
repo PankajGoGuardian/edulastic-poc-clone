@@ -47,6 +47,7 @@ import { Fscreen, getItemIdQuestionIdKey } from '../utils/helpers'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
 import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
 import { getTestItemQuestions } from '../../student/sharedDucks/TestItem'
+import { finishTestAcitivityAction } from '../actions/test'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -496,7 +497,11 @@ export function* saveUserResponse({ payload }) {
       type: CLEAR_HINT_USAGE,
     })
     if (payload?.urlToGo) {
-      yield put(push({ pathname: payload.urlToGo, state: payload?.locState }))
+      if (payload.testType === 'survey') {
+        yield put(finishTestAcitivityAction(groupId))
+      } else {
+        yield put(push({ pathname: payload.urlToGo, state: payload?.locState }))
+      }
     }
     if (shouldClearUserWork) {
       /**

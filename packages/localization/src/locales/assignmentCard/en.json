@@ -14,13 +14,15 @@
       "school common assessment": "School Common",
       "testlet": "testlet",
       "homework": "Homework",
-      "quiz": "Quiz"
+      "quiz": "Quiz",
+      "survey": "Survey"
     },
     "opensIn": "Opens in",
     "submittedTag": "SUBMITTED",
     "notStartedTag": "NOT STARTED",
     "inProgress": "IN PROGRESS",
     "startAssignment": "START ASSIGNMENT",
+    "startSurvey": "START SURVEY",
     "retake": "RETAKE",
     "resume": "RESUME",
     "lockAssignment": "NOT AVAILABLE",

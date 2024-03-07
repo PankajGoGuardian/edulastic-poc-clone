@@ -41,12 +41,16 @@ import { isRestrictedTimeWindowForAssignment } from '../../author/Assignments/ut
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
 
-const SafeBrowserButton = ({ t, attempted, resume, startTest }) => {
+const SafeBrowserButton = ({ t, attempted, resume, startTest, testType }) => {
+  const startAssignmentText =
+    testType === 'survey'
+      ? t('common.startSurvey')
+      : t('common.startAssignment')
   const startButtonText = resume
     ? t('common.resume')
     : attempted
     ? t('common.retake')
-    : t('common.startAssignment')
+    : startAssignmentText
 
   return (
     <SafeStartAssignButton onClick={startTest} assessment>
@@ -116,6 +120,8 @@ const AssignmentCard = memo(
       studentResources = [],
       hasSections,
     } = data
+
+    // const testType = 'survey'
 
     const serverTimeStamp = getServerTs(data)
 
@@ -324,6 +330,11 @@ const AssignmentCard = memo(
       restrictedButtonTooltip = `It can be attempted between ${startTime} to ${endTime} on ${attemptWindowDay} only.`
       restrictedButtonText = ` (UNTIL ${startTime})`
     }
+    const showScoreDetails = [
+      type !== 'assignment',
+      releaseScore !== releaseGradeLabels.DONT_RELEASE,
+      testType !== 'survey',
+    ].every((o) => !!o)
 
     const StartButtonContainer =
       type === 'assignment' ? (
@@ -339,6 +350,7 @@ const AssignmentCard = memo(
             startTest={startSEBTest}
             attempted={attempted}
             resume={resume}
+            testType={testType}
           />
         ) : (
           <StartButton
@@ -356,6 +368,7 @@ const AssignmentCard = memo(
             isTimeWindowRestricted={isRestrictedTimeWindow}
             restrictedButtonText={restrictedButtonText}
             restrictedButtonTooltip={restrictedButtonTooltip}
+            testType={testType}
           />
         ))
       ) : !absent ? (
@@ -488,9 +501,7 @@ const AssignmentCard = memo(
                         </>
                       )}
                     </Attempts>
-                    {type !== 'assignment' &&
-                      releaseScore !== releaseGradeLabels.DONT_RELEASE &&
-                      ScoreDetail}
+                    {showScoreDetails && ScoreDetail}
                   </>
                 )}
                 {StartButtonContainer && (

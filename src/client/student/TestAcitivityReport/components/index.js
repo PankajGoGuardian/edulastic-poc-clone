@@ -74,7 +74,10 @@ const ReportListContainer = ({
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null)
   const [showGraph, setShowGraph] = useState(true)
-  const { isDocBased } = test
+  const { isDocBased, testType } = test
+  // const { isDocBased } = test
+  // const testType = 'survey'
+
   const { releaseScore, userWork, _id: testActivityId } = testActivity
   const [showAttachmentsModal, taggleAttachmentModal] = useState(false)
   const [attachmentIndexForPreview, setAttachmentIndex] = useState(null)
@@ -180,16 +183,18 @@ const ReportListContainer = ({
         />
         {showGraph && (
           <>
-            <ProgressGraph
-              onClickBar={setCurrentItemFromGraph}
-              testActivity={testActivity}
-              questionActivities={questionActivities}
-              testItems={testItems}
-              isGreyBar={greyBars.includes(releaseScore)}
-              dontRelease={dontRelease}
-              isCliUser={isCliUser}
-            />
-            {!isCliUser && <OverallFeedback />}
+            {testType !== 'survey' && (
+              <ProgressGraph
+                onClickBar={setCurrentItemFromGraph}
+                testActivity={testActivity}
+                questionActivities={questionActivities}
+                testItems={testItems}
+                isGreyBar={greyBars.includes(releaseScore)}
+                dontRelease={dontRelease}
+                isCliUser={isCliUser}
+              />
+            )}
+            {!isCliUser && <OverallFeedback testType={testType} />}
           </>
         )}
         {attachments && (

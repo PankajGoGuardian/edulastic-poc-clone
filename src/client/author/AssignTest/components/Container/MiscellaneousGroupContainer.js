@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Col, Radio } from 'antd'
-import { test } from '@edulastic/constants'
+import { roleuser, test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
 import { EduButton, EduIf, EduThen } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
@@ -116,8 +116,11 @@ const MiscellaneousGroupContainer = ({
   ]
 
   const isAccommodationEditAllowed = useMemo(() => {
-    return isEditAllowed({ testSettings: districtTestSettings })
-  }, [districtTestSettings])
+    return (
+      isEditAllowed({ testSettings: districtTestSettings }) ||
+      userRole !== roleuser.TEACHER
+    )
+  }, [districtTestSettings, userRole])
 
   // Accommodations settings will be visible only for premium & enterprise users
   const accommodationsData = [

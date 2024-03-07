@@ -261,6 +261,7 @@ class AddNewUserForm extends React.Component {
       addNewUser,
       resetClassDetails,
       location: { pathname },
+      isPremium,
     } = this.props
 
     const { isUserExists, userInfo, userExistsInClass } = this.state
@@ -668,12 +669,14 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
             </Panel>
-            <Panel header={AccommodationsHeader} key="accommodations">
-              <AdditionalFields
-                type="accommodations"
-                getFieldDecorator={getFieldDecorator}
-              />
-            </Panel>
+            {isPremium && (
+              <Panel header={AccommodationsHeader} key="accommodations">
+                <AdditionalFields
+                  type="accommodations"
+                  getFieldDecorator={getFieldDecorator}
+                />
+              </Panel>
+            )}
           </Collapse>
         </Form>
       </CustomModalStyled>

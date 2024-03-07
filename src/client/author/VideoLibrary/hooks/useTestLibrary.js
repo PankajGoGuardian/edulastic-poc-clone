@@ -27,7 +27,10 @@ const useTestListFilter = ({
     useEmptySearchString = false,
   }) => {
     const collections =
-      isVideoQuizAndAIEnabled && collectionId ? [collectionId] : ['PUBLIC']
+      isVideoQuizAndAIEnabled && collectionId
+        ? [collectionId, 'PUBLIC']
+        : ['PUBLIC']
+
     const newSearch = produce(vqFilters, (draft) => {
       draft.subject = subject
       draft.grades = grades

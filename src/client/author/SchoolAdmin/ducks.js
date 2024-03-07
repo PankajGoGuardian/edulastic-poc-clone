@@ -4,6 +4,7 @@ import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { enrollmentApi, userApi } from '@edulastic/api'
 import { keyBy, get, omit } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
+import { userPermissions } from '@edulastic/constants'
 import { receiveClassEnrollmentListAction } from '../ClassEnrollment/ducks'
 import { UPDATE_POWER_TEACHER_TOOLS_SUCCESS } from '../../student/Login/ducks'
 
@@ -41,6 +42,13 @@ const SET_TEACHERDETAIL_MODAL_VISIBLE =
 const REMOVE_USERS_ENROLLMENTS_REQUEST = '[Admin] remove enrollment request'
 const REMOVE_USERS_ENROLLMENTS_SUCCESS = '[Admin] remove enrollment success'
 const REMOVE_USERS_ENROLLMENTS_ERROR = '[Admin] remove enrollment error'
+
+const UPDATE_INSIGHTS_ONLY_PERMISSION_SUCCESS =
+  '[schooladmin] update user permission success'
+const UPDATE_INSIGHTS_ONLY_PERMISSION_FAILED =
+  '[schooladmin] update user permission failed'
+const UPDATE_INSIGHTS_ONLY_PERMISSION_REQUEST =
+  '[schooladmin] update user permission request'
 
 export const receiveAdminDataAction = createAction(RECEIVE_SCHOOLADMIN_REQUEST)
 export const receiveSchoolAdminSuccessAction = createAction(
@@ -104,6 +112,10 @@ export const removeUserEnrollmentsErrorAction = createAction(
   REMOVE_USERS_ENROLLMENTS_ERROR
 )
 
+export const updateInsightsOnlyPermissionAction = createAction(
+  UPDATE_INSIGHTS_ONLY_PERMISSION_REQUEST
+)
+
 // selectors
 const stateSchoolAdminSelector = (state) => state.schoolAdminReducer
 const filterSelector = (state) => state.schoolAdminReducer.filters
@@ -164,6 +176,7 @@ const initialState = {
   //   }
   // },
   // role: ""
+  updatingInsightsOnlyPermision: false,
 }
 
 export const reducer = createReducer(initialState, {
@@ -320,6 +333,25 @@ export const reducer = createReducer(initialState, {
     state.deleting = false
     state.deleteError = payload.error
   },
+  [UPDATE_INSIGHTS_ONLY_PERMISSION_SUCCESS]: (state, { payload }) => {
+    if (state.data.result) {
+      Object.keys(state.data.result).forEach((id) => {
+        if (payload && payload.includes(id)) {
+          state.data.result[id]._source.permissions = [
+            ...state.data.result[id]._source.permissions,
+            userPermissions.INSIGHTS_ONLY,
+          ]
+        }
+      })
+    }
+    state.updatingUserPermisions = false
+  },
+  [UPDATE_INSIGHTS_ONLY_PERMISSION_REQUEST]: (state) => {
+    state.updatingUserPermisions = true
+  },
+  [UPDATE_INSIGHTS_ONLY_PERMISSION_FAILED]: (state) => {
+    state.updatingUserPermisions = false
+  },
 })
 
 // sagas
@@ -473,6 +505,28 @@ function* removeUserEnrollmentsSaga({ payload }) {
   }
 }
 
+function* updateInsightsOnlyPermissionSaga({ payload }) {
+  try {
+    const response = yield call(userApi.updateInsightsOnlyPermission, payload)
+    yield put({
+      type: UPDATE_INSIGHTS_ONLY_PERMISSION_SUCCESS,
+      payload: response?.data?.result?.updatedUserIds || [],
+    })
+    notification({
+      type: 'success',
+      msg:
+        response?.data?.result?.message ||
+        'Eligible users are updated successfully.',
+    })
+  } catch (e) {
+    yield put({ type: UPDATE_INSIGHTS_ONLY_PERMISSION_FAILED })
+    notification({
+      type: 'error',
+      msg: 'User permission update failed',
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_SCHOOLADMIN_REQUEST, receiveSchoolAdminSaga),
@@ -493,6 +547,12 @@ export function* watcherSaga() {
     yield takeEvery(
       REMOVE_USERS_ENROLLMENTS_REQUEST,
       removeUserEnrollmentsSaga
+    ),
+  ])
+  yield all([
+    yield takeLatest(
+      UPDATE_INSIGHTS_ONLY_PERMISSION_REQUEST,
+      updateInsightsOnlyPermissionSaga
     ),
   ])
 }

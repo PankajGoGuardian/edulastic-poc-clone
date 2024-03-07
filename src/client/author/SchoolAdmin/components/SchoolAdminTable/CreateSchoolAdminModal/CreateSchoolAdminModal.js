@@ -6,7 +6,9 @@ import {
   SelectInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Form, Row, Select, Spin } from 'antd'
+import { userPermissions, roleuser } from '@edulastic/constants'
+import { IconInfo } from '@edulastic/icons'
+import { Col, Form, Row, Select, Spin, Tooltip } from 'antd'
 import React from 'react'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
 import {
@@ -27,6 +29,7 @@ class CreateSchoolAdminModal extends React.Component {
       fetching: false,
       isPowerTeacher: false,
       isSuperAdmin: false,
+      isInsightsOnly: false,
     }
   }
 
@@ -83,7 +86,12 @@ class CreateSchoolAdminModal extends React.Component {
           institutionIds.push(row.institutionIds[i].key)
         }
 
-        const { email: _email, isPowerTeacher, isSuperAdmin } = this.state
+        const {
+          email: _email,
+          isPowerTeacher,
+          isSuperAdmin,
+          isInsightsOnly,
+        } = this.state
         const newUser = {
           firstName: firstName[0],
           lastName,
@@ -91,7 +99,10 @@ class CreateSchoolAdminModal extends React.Component {
           email: _email,
           institutionIds,
           isPowerTeacher,
-          permissions: isSuperAdmin ? ['super_admin'] : [],
+          permissions: isSuperAdmin ? [userPermissions.SUPER_ADMIN] : [],
+        }
+        if (!isSuperAdmin && isInsightsOnly) {
+          newUser.permissions.push(userPermissions.INSIGHTS_ONLY)
         }
         createSchoolAdmin(newUser)
       }
@@ -152,7 +163,14 @@ class CreateSchoolAdminModal extends React.Component {
 
   changePowerTool = (e) => this.setState({ isPowerTeacher: e.target.checked })
 
-  changeSuperAdmin = (e) => this.setState({ isSuperAdmin: e.target.checked })
+  changeSuperAdmin = (e) => {
+    if (e.target.checked) {
+      this.setState({ isInsightsOnly: false })
+    }
+    this.setState({ isSuperAdmin: e.target.checked })
+  }
+  changeInsightsOnly = (e) =>
+    this.setState({ isInsightsOnly: e.target.checked })
 
   validateName = (rule, value, callback) => {
     const { t } = this.props
@@ -165,7 +183,7 @@ class CreateSchoolAdminModal extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props?.form
-    const { modalVisible, t } = this.props
+    const { modalVisible, t, role } = this.props
     const {
       emailValidateStatus,
       emailValidateMsg,
@@ -173,6 +191,7 @@ class CreateSchoolAdminModal extends React.Component {
       schoolList,
       isPowerTeacher,
       isSuperAdmin,
+      isInsightsOnly,
     } = this.state
 
     return (
@@ -293,7 +312,7 @@ class CreateSchoolAdminModal extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col span={6}>
+          <Col span={7}>
             <CheckboxLabel
               checked={isSuperAdmin}
               onChange={this.changeSuperAdmin}
@@ -303,7 +322,7 @@ class CreateSchoolAdminModal extends React.Component {
               {t('users.schooladmin.superAdmin')}
             </CheckboxLabel>
           </Col>
-          <Col span={12}>
+          <Col span={9}>
             <CheckboxLabel
               checked={isPowerTeacher}
               onChange={this.changePowerTool}
@@ -313,6 +332,22 @@ class CreateSchoolAdminModal extends React.Component {
               {t('users.schooladmin.powertools')}
             </CheckboxLabel>
           </Col>
+          {role === roleuser.DISTRICT_ADMIN && (
+            <Col span={7}>
+              <CheckboxLabel
+                checked={isInsightsOnly}
+                onChange={this.changeInsightsOnly}
+                data-cy="insightsOnlyCheckbox"
+                data-testid="insightsOnlyCheckbox"
+                disabled={isSuperAdmin}
+              >
+                {t('users.schooladmin.insightsOnly.title')}
+              </CheckboxLabel>
+              <Tooltip title={t('users.schooladmin.insightsOnly.text')}>
+                <IconInfo height={10} />
+              </Tooltip>
+            </Col>
+          )}
         </Row>
       </CustomModalStyled>
     )

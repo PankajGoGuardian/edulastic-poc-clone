@@ -15,6 +15,7 @@ import { themeColor } from '@edulastic/colors'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import {
+  StyledActionDropDown,
   StyledClassName,
   StyledFilterDiv,
   TableFilters,
@@ -48,6 +49,7 @@ import {
   setSearchNameAction,
   setShowActiveUsersAction,
   updateAdminUserAction,
+  updateInsightsOnlyPermissionAction,
 } from '../../../SchoolAdmin/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import AdminSubHeader from '../../../src/components/common/AdminSubHeader/UserSubHeader'
@@ -62,8 +64,10 @@ import {
 import CreateDistrictAdminModal from './CreateDistrictAdminModal/CreateDistrictAdminModal'
 import EditDistrictAdminModal from './EditDistrictAdminModal/EditDistrictAdminModal'
 import { StyledDistrictAdminTable } from './styled'
-import { daPermissionsMap, daRoleList } from './helpers'
+import { canEnableInsightOnly, daPermissionsMap, daRoleList } from './helpers'
 import Tags from '../../../src/components/common/Tags'
+import { Menu, Icon } from 'antd'
+import { userPermissions } from '@edulastic/constants'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'District Admin' }
 
@@ -562,6 +566,43 @@ class DistrictAdminTable extends Component {
     loadAdminData(this.getSearchQuery())
   }
 
+  changeActionMode = (e) => {
+    const { selectedRowKeys } = this.state
+    if (e.key === 'updateInsightsOnly') {
+      if (selectedRowKeys.length > 0) {
+        const {
+          updateInsightsOnlyPermission,
+          adminUsersData,
+          userId: curretUserId,
+        } = this.props
+        const userIdsToUpdate = []
+        selectedRowKeys
+          .filter((id) => id !== curretUserId)
+          .forEach((userId) => {
+            const permissions =
+              adminUsersData[userId]?._source?.permissions || []
+            const enableInsightOnly = canEnableInsightOnly(permissions)
+            if (enableInsightOnly && !permissions.includes(userPermissions.INSIGHTS_ONLY)) {
+              userIdsToUpdate.push(userId)
+            }
+          })
+        if (userIdsToUpdate.length) {
+          updateInsightsOnlyPermission({
+            userIds: userIdsToUpdate,
+            addPermission: true,
+            totalUserCount:selectedRowKeys.length
+          })
+        } else {
+          notification({
+            type: 'info',
+            msg: `Selected users are not eligible to be updated.`,          })
+        }
+      } else {
+        notification({ messageKey: 'pleaseSelectUser' })
+      }
+    }
+  }
+
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
@@ -614,6 +655,13 @@ class DistrictAdminTable extends Component {
       ...(showPermissionColumn ? [t('users.districtadmin.permission')] : []),
     ]
 
+    const actionMenu = (
+      <Menu onClick={this.changeActionMode}>
+        <Menu.Item key="updateInsightsOnly">
+          {t('users.schooladmin.insightsOnly.actionTitle')}
+        </Menu.Item>
+      </Menu>
+    )
     return (
       <MainContainer>
         <SubHeaderWrapper>
@@ -659,6 +707,14 @@ class DistrictAdminTable extends Component {
               >
                 {t('common.showcurrent')}
               </CheckboxLabel>
+              <StyledActionDropDown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={actionMenu}
+              >
+                <EduButton height="34px" isGhost>
+                  {t('common.actions')} <Icon type="down" />
+                </EduButton>
+              </StyledActionDropDown>
             </RightFilterDiv>
           </TableFilters>
         </StyledFilterDiv>
@@ -778,6 +834,7 @@ const enhance = compose(
       addFilter: addFilterAction,
       removeFilter: removeFilterAction,
       setRole: setRoleAction,
+      updateInsightsOnlyPermission: updateInsightsOnlyPermissionAction,
     }
   )
 )

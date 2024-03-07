@@ -123,6 +123,7 @@ class UserForm extends React.Component {
       modalData: { _source } = {},
       buttonText,
       isStudentEdit,
+      isPremium,
     } = this.props
     const dobValue = get(_source, 'dob')
     const contactEmails = get(_source, 'contactEmails')
@@ -509,14 +510,16 @@ class UserForm extends React.Component {
                 </Field>
               </Panel>
             )}
-            <Panel header={AccommodationsHeader} key="accommodations">
-              <AdditionalFields
-                type="accommodations"
-                getFieldDecorator={getFieldDecorator}
-                std={_source}
-                foundUserContactEmails={contactEmails}
-              />
-            </Panel>
+            {isPremium && (
+              <Panel header={AccommodationsHeader} key="accommodations">
+                <AdditionalFields
+                  type="accommodations"
+                  getFieldDecorator={getFieldDecorator}
+                  std={_source}
+                  foundUserContactEmails={contactEmails}
+                />
+              </Panel>
+            )}
           </Collapse>
         </Form>
       </CustomModalStyled>

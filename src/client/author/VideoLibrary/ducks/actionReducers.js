@@ -73,15 +73,18 @@ const slice = createSlice({
       state.isLoading = false
     },
     resetVQState: (state) => {
+      state.searchString = ''
       state.testList = []
       state.videoList = []
       state.ytNextPageToken = ''
       state.isLoading = false
       state.currentTab = defaultTab
+      state.ytTotalResult = 1
       state.vqFilters = initialFilterValues
-      state.vqSort = initialFilterValues
+      state.vqSort = initialSortValues
       state.vqCount = 0
       state.vqPage = 1
+      state.limit = vqConst.resultLimit
     },
     updateCurrentTab: (state, { payload = defaultTab }) => {
       state.currentTab = payload

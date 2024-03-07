@@ -77,7 +77,11 @@ import { receiveSchoolsAction } from '../../../Schools/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import AdminSubHeader from '../../../src/components/common/AdminSubHeader/UserSubHeader'
 import TableFiltersView from '../../../src/components/common/TableFilters'
-import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
+import {
+  getUserOrgId,
+  getUserRole,
+  isPremiumUserSelector,
+} from '../../../src/selectors/user'
 import {
   addMultiStudentsRequestAction,
   addStudentsToOtherClassAction,
@@ -786,6 +790,7 @@ class StudentTable extends Component {
       policy,
       totalUsers,
       pageNo,
+      isPremium,
       t,
     } = this.props
 
@@ -941,6 +946,7 @@ class StudentTable extends Component {
             closeModal={this.closeEditStudentModal}
             buttonText="Yes, Update"
             isStudentEdit
+            isPremium={isPremium}
           />
         )}
         {addStudentModalVisible && (
@@ -1019,6 +1025,7 @@ const enhance = compose(
   connect(
     (state) => ({
       userOrgId: getUserOrgId(state),
+      isPremium: isPremiumUserSelector(state),
       // schoolsData: getSchoolsSelector(state),
       // classList: get(state, ["classesReducer", "data"], []),
       studentDetailsModalVisible: get(

@@ -868,7 +868,6 @@ class AssignTest extends React.Component {
     const isBuyAISuiteAlertModalVisible =
       !isPlaylist &&
       getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToVQAddOn)
-    console.log('in assignment page -->')
     return (
       <div>
         <EduIf condition={isAdvancedSearchLoading}>

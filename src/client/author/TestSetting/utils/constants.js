@@ -24,16 +24,11 @@ export const editTeachersAccommodationOptions = [
   },
 ]
 
-export const isEditAllowed = ({ testSettings, type = 'setting', isOwner }) => {
+export const isEditAllowed = ({ testSettings, type = 'setting' }) => {
   if (type === 'manageClass') {
     return (
       ACCOMMODATION_CONFIG.ALLOW_ALL === testSettings.editTeacherAccommodation
     )
-  }
-  if (
-    testSettings.editTeacherAccommodation === ACCOMMODATION_CONFIG.ONLY_FOR_TEST
-  ) {
-    return isOwner
   }
 
   return (

@@ -832,7 +832,6 @@ class Setting extends Component {
       hasSections,
       canSchoolAdminUseDistrictCommon,
       districtTestSettings,
-      userId,
     } = this.props
     const {
       isDocBased,
@@ -1008,10 +1007,8 @@ class Setting extends Component {
       },
     ]
 
-    const isOwner = entity.createdBy._id === userId
     const isAccommodationEditAllowed = isEditAllowed({
       testSettings: districtTestSettings,
-      isOwner,
     })
     // Accommodations settings will be visible only for premium & enterprise users
     const accommodationsData = [
@@ -1119,6 +1116,19 @@ class Setting extends Component {
       ),
       ['_id', 'name']
     )
+    const getFilteredCategories = () => {
+      const hasAccommodationsData = accommodationsData.filter(
+        (a) => a.isEnabled
+      ).length
+      if (!hasAccommodationsData) {
+        return settingCategories.filter(
+          (settingCategory) => settingCategory.id !== 'accommodations'
+        )
+      }
+      return settingCategories
+    }
+
+    const filteredCategories = getFilteredCategories()
 
     const applyEBSRComponent = () => {
       return (
@@ -1253,7 +1263,7 @@ class Setting extends Component {
                   offsetTop={125}
                   getContainer={() => this.containerRef.current || window}
                 >
-                  {settingCategories.map((category) => {
+                  {filteredCategories.map((category) => {
                     return (
                       <Anchor.Link
                         key={category.id}

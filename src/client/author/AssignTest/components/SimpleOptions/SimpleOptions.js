@@ -348,7 +348,15 @@ class SimpleOptions extends React.Component {
       ) {
         state.penaltyOnUsingHints = 0
       }
-      if (typeof value === 'undefined') {
+
+      if (
+        typeof value === 'undefined' &&
+        ![
+          'showSpeechToText',
+          'showTextToSpeech',
+          'showImmersiveReader',
+        ].includes(field)
+      ) {
         state[field] = null
       } else {
         state[field] = value
@@ -532,7 +540,6 @@ class SimpleOptions extends React.Component {
       setShowAdvanceSearchModal,
       isAiEvaulationDistrict,
       districtTestSettings,
-      userId,
     } = this.props
 
     const { collections } = testSettings
@@ -778,7 +785,6 @@ class SimpleOptions extends React.Component {
                 tootltipWidth={tootltipWidth}
                 canUseImmersiveReader={canUseImmersiveReader}
                 districtTestSettings={districtTestSettings}
-                userId={userId}
               />
             </TabContentContainer>
           </TabPane>
@@ -815,7 +821,6 @@ const enhance = compose(
   connect(
     (state) => ({
       userRole: getUserRole(state),
-      userId: getUserId(state),
       features: getUserFeatures(state),
       isReleaseScorePremium: getReleaseScorePremiumSelector(state),
       freezeSettings: getIsOverrideFreezeSelector(state),

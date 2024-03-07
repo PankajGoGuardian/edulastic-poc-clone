@@ -53,7 +53,6 @@ const MiscellaneousGroupContainer = ({
   premium,
   canUseImmersiveReader,
   districtTestSettings,
-  userId,
   t: translate,
 }) => {
   const {
@@ -117,8 +116,7 @@ const MiscellaneousGroupContainer = ({
   ]
 
   const isAccommodationEditAllowed = useMemo(() => {
-    const isOwner = testSettings.createdBy._id === userId
-    return isEditAllowed({ testSettings: districtTestSettings, isOwner })
+    return isEditAllowed({ testSettings: districtTestSettings })
   }, [districtTestSettings])
 
   // Accommodations settings will be visible only for premium & enterprise users

@@ -32,7 +32,6 @@ const AdditionalFields = ({
   if (type === 'accommodations') {
     data = data?.accommodations || {}
   }
-  console.log({ inFileds: districtTestSettings })
   const checkHideCondition = (item) => {
     switch (item.fieldName) {
       case 'stt':

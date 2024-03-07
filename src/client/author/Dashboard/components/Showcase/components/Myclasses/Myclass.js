@@ -758,13 +758,6 @@ const MyClasses = ({
           </EduIf>
         </EduElse>
       </EduIf>
-      <EduIf condition={!isPremiumUser}>
-        <AIFeaturedTiles
-          onVideoQuizClick={onVideoQuizClick}
-          videoQuizPath={videoQuizPath}
-          isVideoQuizAndAIEnabled={userFeatures?.isVideoQuizAndAIEnabled}
-        />
-      </EduIf>
       {showBannerSlide && (
         <BannerSlider
           bannerSlides={bannerSlides}
@@ -778,6 +771,13 @@ const MyClasses = ({
           history={history}
         />
       )}
+      <EduIf condition={!isPremiumUser}>
+        <AIFeaturedTiles
+          onVideoQuizClick={onVideoQuizClick}
+          videoQuizPath={videoQuizPath}
+          isVideoQuizAndAIEnabled={userFeatures?.isVideoQuizAndAIEnabled}
+        />
+      </EduIf>
       {showRecommendedTests && (
         <TestRecommendations
           recommendations={recommendedTests}

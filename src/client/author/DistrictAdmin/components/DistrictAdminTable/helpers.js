@@ -35,3 +35,10 @@ export const daPermissionsMap = {
   [DATA_WAREHOUSE_REPORTS]: 'Data Studio Reports',
   [INSIGHTS_ONLY]: 'Insights Only',
 }
+
+export const canEnableInsightOnly = (existingPermissions) => {
+  return ![
+    userPermissions.SUPER_ADMIN,
+    userPermissions.DATA_OPS,
+  ].some((permission) => existingPermissions.includes(permission))
+}

@@ -6,7 +6,7 @@ import {
   TypeToConfirmModal,
 } from '@edulastic/common'
 import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
-import { roleuser } from '@edulastic/constants'
+import { roleuser, userPermissions } from '@edulastic/constants'
 import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Icon, Menu } from 'antd'
@@ -73,6 +73,7 @@ import {
   setSearchNameAction,
   setShowActiveUsersAction,
   updateAdminUserAction,
+  updateInsightsOnlyPermissionAction,
 } from '../../ducks'
 import CreateSchoolAdminModal from './CreateSchoolAdminModal/CreateSchoolAdminModal'
 import EditSchoolAdminModal from './EditSchoolAdminModal/EditSchoolAdminModal'
@@ -83,7 +84,10 @@ import {
   searchSchoolByDistrictRequestAction,
   getSchoolsSelector as getSchoolsSelectorFromSignup,
 } from '../../../../student/Signup/duck'
-import { daPermissionsMap } from '../../../DistrictAdmin/components/DistrictAdminTable/helpers'
+import {
+  canEnableInsightOnly,
+  daPermissionsMap,
+} from '../../../DistrictAdmin/components/DistrictAdminTable/helpers'
 import Tags from '../../../src/components/common/Tags'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'School Admin' }
@@ -242,6 +246,35 @@ class SchoolAdminTable extends Component {
             enableMode ? 'Enable' : 'Disable'
           }PowerTools`,
         })
+      }
+    } else if (e.key === 'updateInsightsOnly') {
+      if (selectedRowKeys.length > 0) {
+        const { updateInsightsOnlyPermission, adminUsersData } = this.props
+        const userIdsToUpdate = []
+        selectedRowKeys.forEach((userId) => {
+          const permissions = adminUsersData[userId]?._source?.permissions || []
+          const enableInsightOnly = canEnableInsightOnly(permissions)
+          if (
+            enableInsightOnly &&
+            !permissions.includes(userPermissions.INSIGHTS_ONLY)
+          ) {
+            userIdsToUpdate.push(userId)
+          }
+        })
+        if (userIdsToUpdate.length) {
+          updateInsightsOnlyPermission({
+            userIds: userIdsToUpdate,
+            addPermission: true,
+            totalUserCount: selectedRowKeys.length,
+          })
+        } else {
+          notification({
+            type: 'info',
+            msg: `Selected users are not eligible to be updated.`,
+          })
+        }
+      } else {
+        notification({ messageKey: 'pleaseSelectUser' })
       }
     }
   }
@@ -693,6 +726,9 @@ class SchoolAdminTable extends Component {
         <Menu.Item key="disable power tools">
           {t('users.schooladmin.disablePowerTools')}
         </Menu.Item>
+        <Menu.Item key="updateInsightsOnly">
+          {t('users.schooladmin.insightsOnly.actionTitle')}
+        </Menu.Item>
       </Menu>
     )
     const breadcrumbData = [
@@ -813,6 +849,7 @@ class SchoolAdminTable extends Component {
             closeModal={this.closeCreateUserModal}
             userOrgId={userOrgId}
             t={t}
+            role={role}
           />
         )}
         {editSchoolAdminModaVisible && (
@@ -824,6 +861,7 @@ class SchoolAdminTable extends Component {
             userOrgId={userOrgId}
             schoolsList={schoolsData}
             t={t}
+            role={role}
           />
         )}
         {deactivateAdminModalVisible && (
@@ -899,6 +937,7 @@ const enhance = compose(
       setRole: setRoleAction,
       updatePowerTeacher: updatePowerTeacherAction,
       getSchoolsWithinDistrict: searchSchoolByDistrictRequestAction,
+      updateInsightsOnlyPermission: updateInsightsOnlyPermissionAction,
     }
   )
 )

@@ -370,6 +370,13 @@ const getUserLocation = () =>
     })
     .then((result) => result.data)
 
+const updateInsightsOnlyPermission = (payload) =>
+  api.callApi({
+    url: `${prefix}/insights-only`,
+    method: 'post',
+    data: payload,
+  })
+
 export default {
   getUser,
   fetchUsers,
@@ -411,4 +418,5 @@ export default {
   updateCollectionVisited,
   eulaPolicyStatusUpdate,
   getUserLocation,
+  updateInsightsOnlyPermission,
 }

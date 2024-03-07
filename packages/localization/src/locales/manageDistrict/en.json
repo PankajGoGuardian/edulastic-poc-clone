@@ -76,6 +76,11 @@
       "sso": "Sso",
       "password": "Password",
       "superAdmin": "Super Admin",
+      "insightsOnly": {
+        "title": "Insights Only",
+        "text": "This user can only access reports / Insights features.",
+        "actionTitle": "Update Role to Insights Only"
+      },
       "role": "Role",
       "permission": "Permission",
       "permissions": "Permissions",
@@ -137,6 +142,11 @@
       "disablePowerTools": "Disable Power Tools",
       "powertools": "Enable Power Tools",
       "superAdmin": "Super Admin",
+      "insightsOnly": {
+        "title": "Insights Only",
+        "text": "This user can only access reports / Insights features.",
+        "actionTitle": "Update Role to Insights Only"
+      },
       "permission": "Permission",
       "permissions": "Permissions",
       "createsa": {

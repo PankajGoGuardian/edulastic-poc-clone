@@ -91,6 +91,7 @@ const GroupItems = ({
   const [fetchingItems, setFetchingItems] = useState(false)
   const [deleteGroupIndex, setDeleteGroupIndex] = useState(null)
   const [activePanels, setActivePanels] = useState([])
+  const [addNewSectionVisible, setAddNewSectionVisible] = useState(true)
 
   const breadcrumbData = [
     {
@@ -536,9 +537,12 @@ const GroupItems = ({
     }
     updateGroupData({ updatedGroupData, groupIndex: currentGroupIndex })
     setCurrentGroupIndex(null)
+    setAddNewSectionVisible(false)
     setCurrentGroupDetails({}, () => {
       // do after state has been updated.
-      handleSaveTest()
+      handleSaveTest(undefined, undefined, () => {
+        setAddNewSectionVisible(true)
+      })
     })
   }
 
@@ -1101,7 +1105,7 @@ const GroupItems = ({
           })}
         </Collapse>
         <GroupField style={{ marginTop: '15px', marginLeft: '45%' }}>
-          {currentGroupIndex === null && (
+          {currentGroupIndex === null && addNewSectionVisible && (
             <button
               type="button"
               data-cy="add-section"

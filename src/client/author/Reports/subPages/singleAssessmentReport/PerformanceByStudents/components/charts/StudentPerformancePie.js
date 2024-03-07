@@ -15,10 +15,15 @@ const renderCustomizedLabel = ({
   outerRadius,
   innerRadius,
   percent,
+  value,
 }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5
   const x = cx + radius * Math.cos(-midAngle * RADIAN)
   const y = cy + radius * Math.sin(-midAngle * RADIAN)
+  const roundedStudentPercent = Math.round(percent * 100)
+  const labelText = roundedStudentPercent
+    ? `${roundedStudentPercent}% (${value})`
+    : ''
 
   return (
     <text
@@ -28,7 +33,7 @@ const renderCustomizedLabel = ({
       textAnchor={x > cx ? 'start' : 'end'}
       dominantBaseline="central"
     >
-      {Math.round(percent * 100) ? `${Math.round(percent * 100)}%` : ''}
+      {labelText}
     </text>
   )
 }
@@ -36,13 +41,13 @@ const renderCustomizedLabel = ({
 const getTooltipJSX = (payload) => {
   if (payload && payload.length) {
     const { name, value, payload: item } = payload[0]
+    const studentPercentage = ((value / item.sum) * 100).toFixed(0)
+    const tooltipValue = `${studentPercentage}% (${value})`
     return (
       <div>
         <Row type="flex" justify="start">
           <Col className="tooltip-key">{name} : </Col>
-          <Col className="tooltip-value">
-            {`${((value / item.sum) * 100).toFixed(0)}%`}
-          </Col>
+          <Col className="tooltip-value">{tooltipValue}</Col>
         </Row>
       </div>
     )

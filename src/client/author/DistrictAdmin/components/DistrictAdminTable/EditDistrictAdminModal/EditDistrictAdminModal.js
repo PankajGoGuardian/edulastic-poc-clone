@@ -13,18 +13,35 @@ import { IconInfo } from '@edulastic/icons'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 
-import { daRoleList } from '../helpers'
+import { canEnableInsightOnly, daRoleList } from '../helpers'
 
 class EditDistrictAdminModal extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      insightNotSupRoleChecked: props?.districtAdminData?._source?.permissions.some(
+        (permission) =>
+          [userPermissions.SUPER_ADMIN, userPermissions.DATA_OPS].includes(
+            permission
+          )
+      ),
+    }
+  }
+
   onSaveDistrictAdmin = () => {
     this.props?.form.validateFields((err, row) => {
       if (!err) {
         const { districtAdminData, updateDistrictAdmin, userOrgId } = this.props
-        const { isSuperAdmin, daRole } = row
+        const { isSuperAdmin, daRole, isInsightsOnly } = row
         const { permissions: currPermissions = [] } = districtAdminData?._source
 
         if (!row.password) row = omit(row, ['password'])
-        row = omit(row, ['confirmPassword', 'isSuperAdmin', 'daRole'])
+        row = omit(row, [
+          'confirmPassword',
+          'isSuperAdmin',
+          'daRole',
+          'isInsightsOnly',
+        ])
 
         const permissions = currPermissions.filter(
           (p) =>
@@ -32,6 +49,7 @@ class EditDistrictAdminModal extends Component {
               userPermissions.SUPER_ADMIN,
               userPermissions.DATA_OPS,
               userPermissions.DATA_OPS_ONLY,
+              userPermissions.INSIGHTS_ONLY,
             ].includes(p)
         )
         if (isSuperAdmin) {
@@ -41,11 +59,16 @@ class EditDistrictAdminModal extends Component {
           permissions.push(daRole)
         }
 
+        const enableInsightOnly = canEnableInsightOnly(permissions)
+
+        if (enableInsightOnly && isInsightsOnly) {
+          permissions.push(userPermissions.INSIGHTS_ONLY)
+        }
         updateDistrictAdmin({
           userId: districtAdminData._id,
           data: Object.assign(row, {
             districtId: userOrgId,
-            permissions,
+            permissions: [...new Set(permissions)],
           }),
         })
         this.onCloseModal()
@@ -69,6 +92,30 @@ class EditDistrictAdminModal extends Component {
     closeModal()
   }
 
+  handelSuperAdminChange = (e) => {
+    const { form } = this.props
+    if (e.target.checked) {
+      form.setFieldsValue({ isInsightsOnly: !e.target.checked })
+    }
+    const role = form.getFieldValue('daRole')
+    this.setState({
+      insightNotSupRoleChecked:
+        role === userPermissions.DATA_OPS || e.target.checked,
+    })
+  }
+
+  handleRoleChange = (role) => {
+    const { form } = this.props
+    if (role === userPermissions.DATA_OPS) {
+      form.setFieldsValue({ isInsightsOnly: false })
+    }
+    const isSuperAdminChecked = form.getFieldValue('isSuperAdmin')
+    this.setState({
+      insightNotSupRoleChecked:
+        isSuperAdminChecked || role === userPermissions.DATA_OPS,
+    })
+  }
+
   render() {
     const { getFieldDecorator } = this.props?.form
     const {
@@ -78,6 +125,9 @@ class EditDistrictAdminModal extends Component {
     } = this.props
     const isSuperAdmin = _source?.permissions.includes(
       userPermissions.SUPER_ADMIN
+    )
+    const isInsightsOnly = _source?.permissions.includes(
+      userPermissions.INSIGHTS_ONLY
     )
 
     let daRole = daRoleList[0].value
@@ -90,7 +140,7 @@ class EditDistrictAdminModal extends Component {
         daRoleList[0]
       ).value
     }
-
+    const { insightNotSupRoleChecked } = this.state
     return (
       <CustomModalStyled
         visible={modalVisible}
@@ -235,6 +285,7 @@ class EditDistrictAdminModal extends Component {
                   <SelectInputStyled
                     data-cy="selectRole"
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    onChange={this.handleRoleChange}
                   >
                     {daRoleList.map((item) => (
                       <Select.Option key={item.value} value={item.value}>
@@ -251,7 +302,7 @@ class EditDistrictAdminModal extends Component {
           </Row>
         </FeaturesSwitch>
         <Row>
-          <Col span={24}>
+          <Col span={16}>
             <ModalFormItem style={{ margin: '0px' }}>
               {getFieldDecorator('isSuperAdmin', {
                 initialValue: isSuperAdmin,
@@ -260,8 +311,28 @@ class EditDistrictAdminModal extends Component {
                 <CheckboxLabel
                   data-cy="superAdminCheckbox"
                   data-testid="superAdminCheckbox"
+                  onChange={this.handelSuperAdminChange}
                 >
                   {t('users.districtadmin.superAdmin')}
+                </CheckboxLabel>
+              )}
+            </ModalFormItem>
+          </Col>
+          <Col span={7}>
+            <ModalFormItem style={{ margin: '0px' }}>
+              {getFieldDecorator('isInsightsOnly', {
+                initialValue: isInsightsOnly,
+                valuePropName: 'checked',
+              })(
+                <CheckboxLabel
+                  data-cy="insightsOnlyCheckbox"
+                  data-testid="insightsOnlyCheckbox"
+                  disabled={insightNotSupRoleChecked}
+                >
+                  {t('users.districtadmin.insightsOnly.title')}
+                  <Tooltip title={t('users.districtadmin.insightsOnly.text')}>
+                    <IconInfo height={10} />
+                  </Tooltip>
                 </CheckboxLabel>
               )}
             </ModalFormItem>

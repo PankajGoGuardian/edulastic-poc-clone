@@ -8,7 +8,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { themeColor } from '@edulastic/colors'
 import { roleuser } from '@edulastic/constants'
-import { getUserOrgData, getUserRole } from '../../../../src/selectors/user'
+import { getUserOrgData, getUserRole, isPremiumUserSelector } from '../../../../src/selectors/user'
 import { getValidatedClassDetails } from '../../../../Student/ducks'
 import { fetchStudentsByIdAction } from '../../../ducks'
 import AdditionalFields from './AdditionalFields'
@@ -96,6 +96,7 @@ class AddStudentModal extends React.Component {
       resetClassDetails,
       districtTestSettings,
       userRole,
+      isPremium,
     } = this.props
 
     const { keys, isUpdate } = this.state
@@ -221,29 +222,32 @@ class AddStudentModal extends React.Component {
               </Panel>
             </Collapse>
             <br />
-            <StyledCollapse
-              accordion
-              defaultActiveKey={keys}
-              expandIcon={expandIcon}
-              expandIconPosition="right"
-            >
-              <Panel
-                disabled={isAccommodationDisable}
-                header={AccommodationsHeader}
-                key="accommodations"
+            {isPremium && (
+              <StyledCollapse
+                accordion
+                defaultActiveKey={keys}
+                expandIcon={expandIcon}
+                expandIconPosition="right"
               >
-                <AdditionalFields
-                  type="accommodations"
-                  getFieldDecorator={getFieldDecorator}
-                  getFieldValue={getFieldValue}
-                  std={std}
-                  isEdit={isEdit}
-                  stds={stds}
-                  districtTestSettings={districtTestSettings}
-                  foundUserContactEmails={this.state.foundUserContactEmails}
-                />
-              </Panel>
-            </StyledCollapse>
+                <Panel
+                  disabled={isAccommodationDisable}
+                  header={AccommodationsHeader}
+                  key="accommodations"
+                >
+                  <AdditionalFields
+                    type="accommodations"
+                    getFieldDecorator={getFieldDecorator}
+                    getFieldValue={getFieldValue}
+                    std={std}
+                    isEdit={isEdit}
+                    stds={stds}
+                    districtTestSettings={districtTestSettings}
+                    foundUserContactEmails={this.state.foundUserContactEmails}
+                  />
+                </Panel>
+              </StyledCollapse>
+            )
+          }
           </AddForm>
         </Spin>
       </CustomModalStyled>
@@ -259,6 +263,7 @@ AddStudentModal.propTypes = {
   isOpen: PropTypes.bool,
   stds: PropTypes.array,
   isEdit: PropTypes.bool,
+  isPremium: PropTypes.bool,
 }
 
 AddStudentModal.defaultProps = {
@@ -266,6 +271,7 @@ AddStudentModal.defaultProps = {
   stds: [],
   isEdit: false,
   submitted: false,
+  isPremium: false,
 }
 
 const AddStudentForm = Form.create({ name: 'add_student_form' })(
@@ -275,6 +281,7 @@ const AddStudentForm = Form.create({ name: 'add_student_form' })(
 export default connect(
   (state) => ({
     orgData: getUserOrgData(state),
+    isPremium: isPremiumUserSelector(state),
     selectedClass: getValidatedClassDetails(state) || {},
     classDetails: get(state, 'manageClass.entity'),
     userRole: getUserRole(state),

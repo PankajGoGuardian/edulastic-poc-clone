@@ -69,6 +69,7 @@ const getSummaryMetricInfoWithSkillInfo = (summaryMetricInfo, skillInfo) => {
 
 const getChartBarData = ({ item, scaleInfo, masteryLabelInfo }) => {
   const masteryScorePercentages = {}
+  const studentCountsMap = {}
   const masteryScoreMap = keyBy(item.mastery, 'score')
   scaleInfo.forEach((masteryScaleItem) => {
     const label = masteryScaleItem.masteryLabel
@@ -81,8 +82,10 @@ const getChartBarData = ({ item, scaleInfo, masteryLabelInfo }) => {
       masteryScorePercentages[label] =
         multiplicand *
         percentage(masteryScoreItem.stuCount, item.totalStudents, true)
+      studentCountsMap[label] = masteryScoreItem.stuCount
     } else {
       masteryScorePercentages[label] = 0
+      studentCountsMap[label] = 0
     }
   })
   return {
@@ -90,6 +93,7 @@ const getChartBarData = ({ item, scaleInfo, masteryLabelInfo }) => {
     [CHART_X_AXIS_DATA_KEY]: item._id,
     ...masteryScorePercentages,
     masteryLabelInfo,
+    studentCountsMap,
   }
 }
 

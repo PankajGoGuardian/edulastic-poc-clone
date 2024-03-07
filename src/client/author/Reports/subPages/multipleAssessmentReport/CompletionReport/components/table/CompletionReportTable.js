@@ -286,9 +286,13 @@ const CompletionReportTable = ({
       key: 'performance',
       align: 'center',
       render: (text, record) => {
+        const reportPath =
+          record.testName === 'Overall'
+            ? 'performance-over-time'
+            : 'peer-performance/test/'
         return (
           <Link
-            to={`/author/reports/peer-performance/test/${getCompletionReportPathForAssignment(
+            to={`/author/reports/${reportPath}${getCompletionReportPathForAssignment(
               record.testId,
               {},
               [record],

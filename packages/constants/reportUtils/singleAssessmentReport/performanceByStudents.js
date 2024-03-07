@@ -64,6 +64,12 @@ const tableColumns = [
     visibleOn: ['csv'],
   },
   {
+    title: 'STATE ID',
+    dataIndex: 'stateId',
+    key: 'stateId',
+    visibleOn: ['csv'],
+  },
+  {
     title: 'Class Grade',
     dataIndex: 'grades',
     key: 'grades',
@@ -273,6 +279,7 @@ const getTableData = ({ bandInfo = [], studentMetricInfo }) => {
       maxScore,
       studentNumber,
       sisId,
+      stateId,
       hispanicEthnicity,
     } = studentMetric
     const studentScore = round(((totalScore || 0) / (maxScore || 1)) * 100)
@@ -306,6 +313,7 @@ const getTableData = ({ bandInfo = [], studentMetricInfo }) => {
       totalScore,
       studentNumber,
       sisId,
+      stateId,
       hispanicEthnicity,
     }
   })

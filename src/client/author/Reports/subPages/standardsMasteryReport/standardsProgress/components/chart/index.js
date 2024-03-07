@@ -6,6 +6,73 @@ import { SignedStackedBarChart } from '../../../../../common/components/charts/s
 
 const { getChartData } = reportUtils.standardsProgress
 
+const getTooltipJSX = (payload, barIndex) => {
+  if (payload && payload.length && barIndex !== null) {
+    const { dataKey: masteryLabel, value: studentPercent } = payload[barIndex]
+    const {
+      testName,
+      masteryLabelInfo,
+      totalStudents,
+      studentCountsMap,
+    } = payload[barIndex].payload
+    const masteryName = masteryLabelInfo[masteryLabel]
+    const currentStudentCount = studentCountsMap[masteryLabel]
+    const studentCountText = `${currentStudentCount} out of ${totalStudents}`
+
+    return (
+      <div>
+        <Row type="flex" justify="start">
+          <Col className="tooltip-key">Test: </Col>
+          <Col className="tooltip-value">{testName}</Col>
+        </Row>
+        <Row type="flex" justify="start">
+          <Col className="tooltip-key">Mastery Level: </Col>
+          <Col className="tooltip-value">{masteryName}</Col>
+        </Row>
+        <Row type="flex" justify="start">
+          <Col className="tooltip-key">Student %: </Col>
+          <Col className="tooltip-value">{Math.abs(studentPercent)}%</Col>
+        </Row>
+        <Row type="flex" justify="start">
+          <Col className="tooltip-key">Student #: </Col>
+          <Col className="tooltip-value">{studentCountText}</Col>
+        </Row>
+      </div>
+    )
+  }
+  return false
+}
+
+const getChartSpecefics = (masteryScale) => {
+  const barsData = []
+  if (masteryScale.length) {
+    const tempArr = masteryScale.sort((a, b) => a.score - b.score)
+    for (let i = 0; i < tempArr.length; i++) {
+      barsData.push({
+        key: tempArr[i].masteryLabel,
+        stackId: 'a',
+        fill: tempArr[i].color,
+        unit: '%',
+        name: tempArr[i].masteryName,
+      })
+    }
+  }
+  return {
+    barsData,
+    yAxisLabel: 'Student %',
+    xAxisDataKey: 'testName',
+  }
+}
+
+const yTickFormatter = () => ''
+
+const barsLabelFormatter = (val) => {
+  if (val !== 0) {
+    return `${Math.abs(val)}%`
+  }
+  return ''
+}
+
 const SignedStackedBarChartContainer = ({
   data: rawChartData = [],
   masteryScale = [],
@@ -17,69 +84,9 @@ const SignedStackedBarChartContainer = ({
     masteryScale,
   ])
 
-  const getChartSpecefics = () => {
-    const barsData = []
-    if (masteryScale.length) {
-      const tempArr = masteryScale.sort((a, b) => a.score - b.score)
-      for (let i = 0; i < tempArr.length; i++) {
-        barsData.push({
-          key: tempArr[i].masteryLabel,
-          stackId: 'a',
-          fill: tempArr[i].color,
-          unit: '%',
-          name: tempArr[i].masteryName,
-        })
-      }
-    }
-    return {
-      barsData,
-      yAxisLabel: 'Student %',
-      xAxisDataKey: 'testName',
-    }
-  }
-
-  const chartSpecifics = useMemo(() => getChartSpecefics(), [masteryScale])
-
-  const getTooltipJSX = (payload, barIndex) => {
-    if (payload && payload.length && barIndex !== null) {
-      const { dataKey: masteryLabel, value: studentPercent } = payload[barIndex]
-      const { testName, masteryLabelInfo, totalStudents } = payload[
-        barIndex
-      ].payload
-      const masteryName = masteryLabelInfo[masteryLabel]
-
-      return (
-        <div>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">Test: </Col>
-            <Col className="tooltip-value">{testName}</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">Mastery Level: </Col>
-            <Col className="tooltip-value">{masteryName}</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">Student %: </Col>
-            <Col className="tooltip-value">{Math.abs(studentPercent)}%</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">Student #: </Col>
-            <Col className="tooltip-value">{totalStudents}</Col>
-          </Row>
-        </div>
-      )
-    }
-    return false
-  }
-
-  const yTickFormatter = () => ''
-
-  const barsLabelFormatter = (val) => {
-    if (val !== 0) {
-      return `${Math.abs(val)}%`
-    }
-    return ''
-  }
+  const chartSpecifics = useMemo(() => getChartSpecefics(masteryScale), [
+    masteryScale,
+  ])
 
   const _onBarClickCB = () => {}
   const _onBarResetClickCB = () => {}

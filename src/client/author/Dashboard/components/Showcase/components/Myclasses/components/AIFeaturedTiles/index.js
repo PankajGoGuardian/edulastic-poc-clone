@@ -80,7 +80,7 @@ const AIFeaturedTiles = ({
             <Link to="/author/tests/select?open=aiquiz">
               <Image
                 alt="aiquiz"
-                src="https://cdn.edulastic.com/webresources/dashboard/ai_quiz.svg"
+                src="https://cdn.edulastic.com/webresources/dashboard/ai_quiz_tile.svg"
                 width="240px"
               />
             </Link>
@@ -88,7 +88,7 @@ const AIFeaturedTiles = ({
             <Image
               alt="aiquiz"
               data-cy="aiTile"
-              src="https://cdn.edulastic.com/webresources/dashboard/ai_quiz.svg"
+              src="https://cdn.edulastic.com/webresources/dashboard/ai_quiz_tile.svg"
               width="240px"
               onClick={handelClick}
               style={{ cursor: 'pointer' }}

@@ -24,11 +24,19 @@ class CreateDistrictAdminModal extends React.Component {
       email: '',
       isSuperAdmin: false,
       daRole: daRoleList[0].value,
+      isInsightsOnly: false,
+      insightNotSupRoleChecked: false,
     }
   }
 
   onCreateDistrictAdmin = async () => {
-    const { email, emailValidateStatus, isSuperAdmin, daRole } = this.state
+    const {
+      email,
+      emailValidateStatus,
+      isSuperAdmin,
+      daRole,
+      isInsightsOnly,
+    } = this.state
     const { form, createDistrictAdmin } = this.props
     let checkUserResponse = { userExists: true }
 
@@ -80,6 +88,8 @@ class CreateDistrictAdminModal extends React.Component {
         }
         if (isSuperAdmin) {
           permissions.push(userPermissions.SUPER_ADMIN)
+        } else if (isInsightsOnly) {
+          permissions.push(userPermissions.INSIGHTS_ONLY)
         }
         const newUser = {
           firstName: firstName[0],
@@ -120,14 +130,43 @@ class CreateDistrictAdminModal extends React.Component {
     }
   }
 
-  changeSuperAdmin = (e) => this.setState({ isSuperAdmin: e.target.checked })
+  changeSuperAdmin = (e) => {
+    if (e.target.checked) {
+      this.setState({ isInsightsOnly: false })
+    }
+    const { daRole } = this.state
+    this.setState({
+      isSuperAdmin: e.target.checked,
+      insightNotSupRoleChecked:
+        daRole === userPermissions.DATA_OPS || e.target.checked,
+    })
+  }
 
-  changeDARole = (value) => this.setState({ daRole: value })
+  changeInsightsOnly = (e) =>
+    this.setState({ isInsightsOnly: e.target.checked })
+
+  changeDARole = (value) => {
+    const { isSuperAdmin } = this.state
+    this.setState({
+      daRole: value,
+      insightNotSupRoleChecked:
+        isSuperAdmin || value === userPermissions.DATA_OPS,
+    })
+    if (value === userPermissions.DATA_OPS) {
+      this.setState({ isInsightsOnly: false })
+    }
+  }
 
   render() {
     const { modalVisible, t, form } = this.props
     const { getFieldDecorator } = form
-    const { emailValidateStatus, emailValidateMsg, isSuperAdmin } = this.state
+    const {
+      emailValidateStatus,
+      emailValidateMsg,
+      isSuperAdmin,
+      isInsightsOnly,
+      insightNotSupRoleChecked,
+    } = this.state
 
     return (
       <CustomModalStyled
@@ -241,7 +280,7 @@ class CreateDistrictAdminModal extends React.Component {
           </Row>
         </FeaturesSwitch>
         <Row>
-          <Col span={6}>
+          <Col span={16}>
             <CheckboxLabel
               checked={isSuperAdmin}
               onChange={this.changeSuperAdmin}
@@ -250,6 +289,20 @@ class CreateDistrictAdminModal extends React.Component {
             >
               {t('users.districtadmin.superAdmin')}
             </CheckboxLabel>
+          </Col>
+          <Col span={7}>
+            <CheckboxLabel
+              checked={isInsightsOnly}
+              onChange={this.changeInsightsOnly}
+              data-cy="insightsOnlyCheckbox"
+              data-testid="insightsOnlyCheckbox"
+              disabled={insightNotSupRoleChecked}
+            >
+              {t('users.districtadmin.insightsOnly.title')}
+            </CheckboxLabel>
+            <Tooltip title={t('users.districtadmin.insightsOnly.text')}>
+              <IconInfo height={10} />
+            </Tooltip>
           </Col>
         </Row>
       </CustomModalStyled>

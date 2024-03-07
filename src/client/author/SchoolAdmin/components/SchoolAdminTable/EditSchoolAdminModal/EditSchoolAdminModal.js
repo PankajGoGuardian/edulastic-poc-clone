@@ -5,33 +5,64 @@ import {
   SelectInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Form, Row, Select } from 'antd'
+import { Col, Form, Row, Select, Tooltip } from 'antd'
 import { omit, uniqBy } from 'lodash'
 import React, { Component } from 'react'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
+import { userPermissions, roleuser } from '@edulastic/constants'
+import { IconInfo } from '@edulastic/icons'
+import { canEnableInsightOnly } from '../../../../DistrictAdmin/components/DistrictAdminTable/helpers'
 
 const Option = Select.Option
 
 class EditSchoolAdminModal extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      insightNotSupRoleChecked: props?.schoolAdminData?._source?.permissions.some(
+        (permission) =>
+          [userPermissions.SUPER_ADMIN, userPermissions.DATA_OPS].includes(
+            permission
+          )
+      ),
+    }
+  }
   onSaveSchoolAdmin = () => {
     this.props?.form.validateFields((err, row = {}) => {
       if (!err) {
         const { schoolAdminData, updateSchoolAdmin, userOrgId } = this.props
-        const { isSuperAdmin } = row
+        const { isSuperAdmin, isInsightsOnly } = row
         const { permissions: currPermissions = [] } = schoolAdminData?._source
 
         if (!row.password) row = omit(row, ['password'])
-        row = omit(row, ['confirmPassword', 'isSuperAdmin'])
+        row = omit(row, ['confirmPassword', 'isSuperAdmin', 'isInsightsOnly'])
 
-        const permissions = isSuperAdmin
-          ? [...new Set([...currPermissions, 'super_admin'])]
+        let permissions = isSuperAdmin
+          ? [
+              ...currPermissions.filter(
+                (permission) => permission !== userPermissions.INSIGHTS_ONLY
+              ),
+              'super_admin',
+            ]
           : currPermissions.filter((permission) => permission !== 'super_admin')
 
+        const enableInsightOnly = canEnableInsightOnly(permissions)
+
+        if (enableInsightOnly && isInsightsOnly) {
+          permissions.push(userPermissions.INSIGHTS_ONLY)
+        } else if (
+          !isInsightsOnly &&
+          permissions.includes(userPermissions.INSIGHTS_ONLY)
+        ) {
+          permissions = permissions.filter(
+            (permission) => permission !== userPermissions.INSIGHTS_ONLY
+          )
+        }
         updateSchoolAdmin({
           userId: schoolAdminData._id,
           data: Object.assign(row, {
             districtId: userOrgId,
-            permissions,
+            permissions: [...new Set(permissions)],
           }),
         })
         this.onCloseModal()
@@ -54,6 +85,15 @@ class EditSchoolAdminModal extends Component {
     const { closeModal } = this.props
     closeModal()
   }
+  handelSuperAdminChange = (e) => {
+    const { form } = this.props
+    if (e.target.checked) {
+      form.setFieldsValue({ isInsightsOnly: !e.target.checked })
+    }
+    this.setState({
+      insightNotSupRoleChecked: e.target.checked,
+    })
+  }
 
   render() {
     const {
@@ -61,8 +101,13 @@ class EditSchoolAdminModal extends Component {
       schoolAdminData: { _source },
       schoolsList = [],
       t,
+      role,
     } = this.props
+    const { insightNotSupRoleChecked } = this.state
     const isSuperAdmin = _source?.permissions.includes('super_admin')
+    const isInsightsOnly = _source?.permissions.includes(
+      userPermissions.INSIGHTS_ONLY
+    )
 
     let { institutionDetails = [] } = _source
     let schooleFinalList = [...schoolsList]
@@ -240,7 +285,7 @@ class EditSchoolAdminModal extends Component {
           </Col>
         </Row>
         <Row>
-          <Col span={9}>
+          <Col span={7}>
             <ModalFormItem style={{ margin: '0px' }}>
               {getFieldDecorator('isSuperAdmin', {
                 initialValue: isSuperAdmin,
@@ -249,13 +294,14 @@ class EditSchoolAdminModal extends Component {
                 <CheckboxLabel
                   data-cy="superAdminCheckbox"
                   data-testid="superAdminCheckbox"
+                  onChange={this.handelSuperAdminChange}
                 >
                   {t('users.schooladmin.superAdmin')}
                 </CheckboxLabel>
               )}
             </ModalFormItem>
           </Col>
-          <Col span={12}>
+          <Col span={9}>
             <ModalFormItem style={{ margin: '0px' }}>
               {getFieldDecorator('isPowerTeacher', {
                 initialValue: _source?.isPowerTeacher,
@@ -270,6 +316,27 @@ class EditSchoolAdminModal extends Component {
               )}
             </ModalFormItem>
           </Col>
+          {role === roleuser.DISTRICT_ADMIN && (
+            <Col span={7}>
+              <ModalFormItem style={{ margin: '0px' }}>
+                {getFieldDecorator('isInsightsOnly', {
+                  initialValue: isInsightsOnly,
+                  valuePropName: 'checked',
+                })(
+                  <CheckboxLabel
+                    data-cy="insightsOnlyCheckbox"
+                    data-testid="insightsOnlyCheckbox"
+                    disabled={insightNotSupRoleChecked}
+                  >
+                    {t('users.schooladmin.insightsOnly.title')}
+                    <Tooltip title={t('users.schooladmin.insightsOnly.text')}>
+                      <IconInfo height={10} />
+                    </Tooltip>
+                  </CheckboxLabel>
+                )}
+              </ModalFormItem>
+            </Col>
+          )}
         </Row>
       </CustomModalStyled>
     )

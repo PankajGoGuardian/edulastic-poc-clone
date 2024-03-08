@@ -475,7 +475,7 @@ const Search = ({
                         .indexOf(input.toLowerCase()) >= 0
                     }
                     onSelect={onSearchFieldChange('questionType')}
-                    value={isSurveyTest ? 'likertScale' : questionType}
+                    value={questionType}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                     disabled={isSurveyTest}
                   >

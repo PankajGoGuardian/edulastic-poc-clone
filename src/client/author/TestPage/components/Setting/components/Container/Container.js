@@ -234,7 +234,9 @@ class Setting extends Component {
 
   componentDidMount = () => {
     const { entity, resetUpdatedState } = this.props
-    if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
+    if (entity.testType === 'survey') {
+      this.updateTestData('scoringType')(ITEM_LEVEL_EVALUATION)
+    } else if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData('scoringType')(PARTIAL_CREDIT_IGNORE_INCORRECT)
     }
     if (entity?.safeBrowser) {
@@ -912,8 +914,10 @@ class Setting extends Component {
       isSettingPresent = true
     }
     const scoringType =
-      entity.scoringType === evalTypeLabels.PARTIAL_CREDIT &&
-      entity.penalty === false
+      testType === 'survey'
+        ? ITEM_LEVEL_EVALUATION
+        : entity.scoringType === evalTypeLabels.PARTIAL_CREDIT &&
+          entity.penalty === false
         ? evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
         : entity.scoringType
     const multipartItems = itemGroups
@@ -1478,7 +1482,7 @@ class Setting extends Component {
                         <Row>
                           <Col span={8}>
                             <StyledRadioGroup
-                              disabled={disabled}
+                              disabled={disabled || testType === 'survey'}
                               onChange={(e) =>
                                 this.updateTestData('scoringType')(
                                   e.target.value

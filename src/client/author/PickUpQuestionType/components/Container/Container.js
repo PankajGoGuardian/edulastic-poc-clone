@@ -75,6 +75,13 @@ class Container extends Component {
     isShowCategories: false,
   }
 
+  componentDidMount() {
+    const { isSurveyTest, setCategory } = this.props
+    if (isSurveyTest) {
+      setCategory('likert-scale')
+    }
+  }
+
   // when a particular question type is picked, populate the "authorQuestions" collection
   selectQuestionType = (data) => {
     const {
@@ -445,7 +452,7 @@ class Container extends Component {
                   )}
                   {isSurveyTest && (
                     <Menu.Item key="likert-scale">
-                      <IconPlay />
+                      <IconMultipart />
                       Likert Scale
                     </Menu.Item>
                   )}
@@ -569,7 +576,7 @@ class Container extends Component {
                 Instructions
               </Menu.Item>
               <Menu.Item key="likert-scale">
-                <IconPlay />
+                <IconMultipart />
                 Likert Scale
               </Menu.Item>
               <Menu.Item

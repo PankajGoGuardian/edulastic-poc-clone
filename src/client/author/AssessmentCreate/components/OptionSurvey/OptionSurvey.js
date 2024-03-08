@@ -14,7 +14,7 @@ import {
 
 const descriptionBottom = <>Survey Test using Likert questions.</>
 
-const OptionScratch = ({ history, clearTestData, clearCreatedItems }) => {
+const OptionSurvey = ({ history, clearTestData, clearCreatedItems }) => {
   const handleCreate = () => {
     clearTestData()
     clearCreatedItems()
@@ -44,5 +44,5 @@ export default withRouter(
   connect(null, {
     clearTestData: clearTestDataAction,
     clearCreatedItems: clearCreatedItemsAction,
-  })(OptionScratch)
+  })(OptionSurvey)
 )

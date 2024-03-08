@@ -98,6 +98,9 @@ import TextResource from '../../../src/assets/video-and-passages/text-blue.svg'
 // Rulers & Calculators
 import Protractor from '../../../src/assets/rulers-calculators/protractor-blue.svg'
 
+// Likert Scale
+import LikertScale from '../../../src/assets/likert-scale/likert-scale.svg'
+
 // Others
 import CodingImage from '../../../src/assets/others/coding.svg'
 
@@ -1007,7 +1010,7 @@ export const getCards = (
     },
     {
       type: 'likert-scale',
-      // cardImage:,
+      cardImage: LikertScale,
       data: {
         title: questionTitle.LIKERT_SCALE,
         type: questionType.LIKERT_SCALE,

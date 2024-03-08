@@ -294,7 +294,7 @@ const TestBehaviorGroupContainer = ({
           <Col span={14}>
             <SelectInputStyled
               data-cy="eval-methods"
-              disabled={freezeSettings}
+              disabled={freezeSettings || testType === 'survey'}
               onChange={(value) => {
                 if (!freezeSettings) {
                   overRideSettings('scoringType', value)

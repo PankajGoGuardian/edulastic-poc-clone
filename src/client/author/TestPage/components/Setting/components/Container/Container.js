@@ -374,6 +374,11 @@ class Setting extends Component {
         } else {
           value = evalTypeLabels.PARTIAL_CREDIT
         }
+        if (testType === 'survey') {
+          Object.assign(dataToSet, {
+            scoringType: evalTypeLabels.ITEM_LEVEL_EVALUATION,
+          })
+        }
         setTestData(dataToSet)
         break
       }
@@ -914,10 +919,8 @@ class Setting extends Component {
       isSettingPresent = true
     }
     const scoringType =
-      testType === 'survey'
-        ? ITEM_LEVEL_EVALUATION
-        : entity.scoringType === evalTypeLabels.PARTIAL_CREDIT &&
-          entity.penalty === false
+      entity.scoringType === evalTypeLabels.PARTIAL_CREDIT &&
+      entity.penalty === false
         ? evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
         : entity.scoringType
     const multipartItems = itemGroups

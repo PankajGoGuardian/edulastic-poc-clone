@@ -27,6 +27,7 @@ import {
 } from '../src/selectors/user'
 import { fillAutoselectGoupsWithDummyItems } from '../TestPage/ducks'
 import { changeDataToPreferredLanguage } from '../../assessment/utils/question'
+import IconPearAssessmentLogo from '@edulastic/icons/src/IconPearAssessmentLogo'
 
 const { testContentVisibility: testContentVisibilityOptions } = testConstants
 
@@ -144,12 +145,7 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
                 <div style={questionHeight}>
                   <EduIf condition={index === 0}>
                     <StyledHeader>
-                      <StyledTitle>
-                        <b>
-                          <Color>Edu</Color>
-                        </b>
-                        lastic
-                      </StyledTitle>
+                      <IconPearAssessmentLogo height="80" width="225" />
                       <Row
                         type="flex"
                         className="print-assessment-title-container"

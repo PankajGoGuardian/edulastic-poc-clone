@@ -71,6 +71,7 @@ import {
   isEtsDistrictSelector,
   allowReferenceMaterialSelector,
   getIsAiEvaulationDistrictSelector,
+  getUserOrgId,
 } from '../../../../../src/selectors/user'
 import {
   Block,
@@ -134,6 +135,10 @@ import {
 } from '../../../../../../common/utils/helpers'
 
 import { isEditAllowed } from '../../../../../TestSetting/utils/constants'
+import {
+  getTestSettings,
+  receiveTestSettingAction,
+} from '../../../../../TestSetting/ducks'
 
 const {
   settingCategories: defaultSettingCategories,
@@ -225,7 +230,14 @@ class Setting extends Component {
   }
 
   componentDidMount = () => {
-    const { entity, resetUpdatedState } = this.props
+    const {
+      entity,
+      resetUpdatedState,
+      loadDistrictTestSetting,
+      districtId,
+    } = this.props
+    // Load district settings
+    loadDistrictTestSetting({ type: 'district', orgId: districtId })
     if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData('scoringType')(PARTIAL_CREDIT_IGNORE_INCORRECT)
     }
@@ -2115,7 +2127,7 @@ class Setting extends Component {
                       {accommodationsData
                         .filter((accommodation) =>
                           accommodation.key === speechToText.key
-                            ? districtTestSettings.enableSpeechToText
+                            ? districtTestSettings?.enableSpeechToText
                             : true
                         )
                         .map((o) => (
@@ -2910,6 +2922,8 @@ const enhance = compose(
         state
       ),
       hasSections: hasSectionsSelector(state),
+      districtId: getUserOrgId(state),
+      districtTestSettings: getTestSettings(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,
@@ -2920,6 +2934,7 @@ const enhance = compose(
       deleteTestSettingRequest: deleteTestSettingRequestAction,
       updateTestSettingRequest: updateTestSettingRequestAction,
       togglePenaltyOnUsingHints: togglePenaltyOnUsingHintsAction,
+      loadDistrictTestSetting: receiveTestSettingAction,
     }
   )
 )

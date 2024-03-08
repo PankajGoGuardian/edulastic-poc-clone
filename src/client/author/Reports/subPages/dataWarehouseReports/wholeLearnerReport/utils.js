@@ -610,8 +610,8 @@ export const getAssessmentChartData = (
       }
       return {
         ...d,
-        [barsDataForInternal[0].key]: d.averageScore,
-        [barsDataForInternal[0].topLabelKey]: `${round(d.averageScore, 2)}%`,
+        [barsDataForInternal[0]?.key]: d.averageScore,
+        [barsDataForInternal[0]?.topLabelKey]: `${round(d.averageScore, 2)}%`,
         fill: d.band.color,
         fillOpacity: 1,
       }

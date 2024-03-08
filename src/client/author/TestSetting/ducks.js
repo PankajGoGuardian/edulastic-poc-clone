@@ -1,7 +1,14 @@
-import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
+import {
+  takeEvery,
+  takeLatest,
+  call,
+  put,
+  all,
+  select,
+} from 'redux-saga/effects'
 import { settingsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import { set } from 'lodash'
+import { isEmpty, set } from 'lodash'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { setUserAccessPublicContent } from '../../student/Login/ducks'
@@ -107,8 +114,11 @@ export const reducer = createReducer(initialState, {
 // sagas
 function* receiveTestSettingeSaga({ payload }) {
   try {
-    const testSetting = yield call(settingsApi.getTestSetting, payload)
-    yield put(receiveTestSettingSuccessAction(testSetting))
+    const { data } = yield select((state) => state.testSettingReducer)
+    if (isEmpty(data)) {
+      const testSetting = yield call(settingsApi.getTestSetting, payload)
+      yield put(receiveTestSettingSuccessAction(testSetting))
+    }
   } catch (err) {
     const errorMessage = 'Unable to retrieve test settings.'
     notification({ type: 'error', msg: errorMessage })

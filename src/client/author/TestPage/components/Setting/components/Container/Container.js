@@ -1019,9 +1019,10 @@ class Setting extends Component {
       },
     ]
 
-    const isAccommodationEditAllowed = isEditAllowed({
-      testSettings: districtTestSettings,
-    })
+    const isAccommodationEditAllowed =
+      isEditAllowed({
+        testSettings: districtTestSettings,
+      }) || userRole !== roleuser.TEACHER
     // Accommodations settings will be visible only for premium & enterprise users
     const accommodationsData = [
       {

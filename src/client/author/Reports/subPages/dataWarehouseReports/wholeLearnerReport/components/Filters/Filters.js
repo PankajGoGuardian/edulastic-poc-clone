@@ -5,7 +5,7 @@ import { Row, Col, Tabs, Tooltip } from 'antd'
 
 import { IconFilter } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
-import { FieldLabel } from '@edulastic/common'
+import { FieldLabel, notification } from '@edulastic/common'
 import { withNamespaces } from 'react-i18next'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -52,6 +52,7 @@ import {
   convertItemToArray,
   getDefaultTestTypesForUser,
   getIsMultiSchoolYearDataPresent,
+  getUrlTestTermIds,
 } from '../../../common/utils'
 import SelectAssessmentsForMultiSchoolYear from '../../../common/components/SelectAssessmentsForMultiSchoolYear'
 import TagFilter from '../../../../../../src/components/common/TagFilter'
@@ -134,7 +135,6 @@ const WholeLearnerReportFilters = ({
   const urlStudentId = splittedPath[splittedPath.length - 1]
   const { terms = [], districtGroup } = orgData
   const termOptions = useMemo(() => getTermOptions(terms), [terms])
-  const { termId } = filters
 
   const {
     studentClassData = [],
@@ -167,7 +167,7 @@ const WholeLearnerReportFilters = ({
 
   const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
   const testTermIds = convertItemToArray(filters.testTermIds)
-  const isFieldRequired = isMultiSchoolYear || filters.termId !== testTermIds[0]
+  const isFieldRequired = isMultiSchoolYear
   const isApplyDisabledForSelectedTests = isFieldRequired && !testUniqIds.length
 
   useEffect(() => {
@@ -367,6 +367,11 @@ const WholeLearnerReportFilters = ({
     isPageLevelFilter = false
   ) => {
     if (!selected.length && keyName === 'testTermIds') {
+      notification({
+        type: 'warn',
+        msg:
+          'At least one school year is mandatory. Please select another school year to remove the current one.',
+      })
       return
     }
     const _selected = multiple
@@ -377,6 +382,11 @@ const WholeLearnerReportFilters = ({
       delete _filterTagsData[keyName]
     }
     const _filters = { ...filters }
+    // When student termId is changed, add same termId for testTermIds
+    if (keyName === 'termId') {
+      _filters.testTermIds = _selected
+      _filterTagsData.testTermIds = getUrlTestTermIds(termOptions, _selected)
+    }
     // reset filters and update tags data
     resetReportFilters(_filterTagsData, _filters, keyName, _selected)
     setFilterTagsData(_filterTagsData)
@@ -438,11 +448,8 @@ const WholeLearnerReportFilters = ({
     }
     return <ApplyButton />
   }
-  const testsNotSelectedForMultiTestTermsOrDifferentTermIds =
-    (testTermIds.length > 1 && !testUniqIds.length) ||
-    (testTermIds.length === 1 &&
-      testTermIds[0] !== termId &&
-      !testUniqIds.length)
+  const testsNotSelectedForMultiTestTerms =
+    testTermIds.length > 1 && !testUniqIds.length
 
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
@@ -787,7 +794,7 @@ const WholeLearnerReportFilters = ({
             <Tooltip
               placement="bottomRight"
               title={
-                testsNotSelectedForMultiTestTermsOrDifferentTermIds
+                testsNotSelectedForMultiTestTerms
                   ? `Please select a test to activate 'Apply' filter.`
                   : ''
               }
@@ -797,8 +804,7 @@ const WholeLearnerReportFilters = ({
                 data-testid="applyRowFilter"
                 data-cy="applyRowFilter"
                 disabled={
-                  loadingFiltersData ||
-                  testsNotSelectedForMultiTestTermsOrDifferentTermIds
+                  loadingFiltersData || testsNotSelectedForMultiTestTerms
                 }
                 onClick={() => onGoClick()}
               >

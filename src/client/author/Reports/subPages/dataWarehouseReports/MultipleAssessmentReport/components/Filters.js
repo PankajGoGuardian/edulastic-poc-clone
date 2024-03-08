@@ -3,7 +3,7 @@ import qs from 'qs'
 import { get, pickBy, isEmpty, reject } from 'lodash'
 import { Row, Col, Tabs, Tooltip } from 'antd'
 
-import { EduIf, FieldLabel } from '@edulastic/common'
+import { EduIf, FieldLabel, notification } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
 import {
@@ -376,6 +376,11 @@ const MultipleAssessmentReportFilters = ({
     isPageLevelFilter = false
   ) => {
     if (!selected.length && keyName === 'testTermIds') {
+      notification({
+        type: 'warn',
+        msg:
+          'At least one school year is mandatory. Please select another school year to remove the current one.',
+      })
       return
     }
     const _selected = multiple
@@ -389,6 +394,12 @@ const MultipleAssessmentReportFilters = ({
       delete _filterTagsData[keyName]
     }
     const _filters = { ...filters }
+    // When student termId is changed, add same termId for testTermIds
+    if (keyName === 'termId') {
+      _filters.testTermIds = _selected
+      _filterTagsData.testTermIds = getUrlTestTermIds(schoolYears, _selected)
+    }
+
     // reset filters and update tags data
     resetFilters(_filterTagsData, _filters, keyName, _selected)
     setFilterTagsData(_filterTagsData)
@@ -447,8 +458,7 @@ const MultipleAssessmentReportFilters = ({
     return [termId, districtId, filtersDisabled, filtersDisabledMessage]
   }, [filters.termId, filters.districtIds, isDistrictGroupAdmin])
 
-  const isFieldRequired =
-    isMultiSchoolYear || filters.testTermIds !== filters.termId
+  const isFieldRequired = isMultiSchoolYear
   const isApplyDisabledForSelectedTests = isFieldRequired && !testUniqIds.length
 
   const applyButton = () => {

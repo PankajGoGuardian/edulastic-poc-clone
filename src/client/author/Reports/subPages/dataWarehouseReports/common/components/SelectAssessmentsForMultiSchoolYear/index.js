@@ -78,7 +78,7 @@ const SelectAssessmentsForMultiSchoolYear = ({
     (testTermIdsArr.length > 1 && subjectArr.length && gradesArr.length)
 
   const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(testTermIds)
-  const isFieldRequired = isMultiSchoolYear || testTermIds !== termId
+  const isFieldRequired = isMultiSchoolYear
   const isLoading = isLongitudinalReport ? multiSchoolYearLoading : loading
   const isApplyDisabledForSelectedTests =
     isFieldRequired && (!subjectArr.length || !gradesArr.length)

@@ -28,6 +28,11 @@ export default class FormChoice extends React.Component {
     } = this.props
 
     if (!multipleResponses) {
+      // previous answer has the selected option do an early return so that api wont be called
+      // answer: [ uuid() ], nextValue: uuid()
+      if (answer.includes(nextValue)) {
+        return
+      }
       this.saveValue([nextValue])
       saveQuestionResponse()
       return

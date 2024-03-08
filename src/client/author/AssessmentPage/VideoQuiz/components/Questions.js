@@ -14,6 +14,7 @@ import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { STUDENT } from '@edulastic/constants/const/roleType'
 import { createQuestion, validationCreators } from '../utils/questionsHelpers'
 
 import { getPreviewSelector } from '../../../src/selectors/view'
@@ -42,7 +43,10 @@ import {
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 import { extractVideoId, getCurrentTime } from '../utils/videoPreviewHelpers'
-import { isVideoQuizAndAIEnabledSelector } from '../../../src/selectors/user'
+import {
+  getUserRole,
+  isVideoQuizAndAIEnabledSelector,
+} from '../../../src/selectors/user'
 
 const SortableQuestionItem = SortableElement(
   ({
@@ -527,6 +531,7 @@ class Questions extends React.Component {
       videoRef,
       questionsContainerRef,
       isVideoQuizAndAIEnabled,
+      userRole,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -547,6 +552,9 @@ class Questions extends React.Component {
     )
 
     const isValidYouTubeVideo = extractVideoId(videoUrl)
+
+    const isTeacherReview =
+      userRole !== STUDENT && !testMode && viewMode === 'review'
 
     return (
       <>
@@ -575,14 +583,22 @@ class Questions extends React.Component {
                 </StyledEmptyQuestionContainer>
               </EduThen>
               <EduElse>
-                <EduIf condition={isVisibleQuestion || haveSection}>
+                <EduIf
+                  condition={
+                    isVisibleQuestion || haveSection || isTeacherReview
+                  }
+                >
                   <EduThen>
                     {this.questionList.map((question, i) => {
                       if (question.type === 'sectionLabel') {
                         return null
                       }
+
+                      const showQuestion =
+                        this.isQuestionVisible(question.id) || isTeacherReview
+
                       return (
-                        <EduIf condition={this.isQuestionVisible(question.id)}>
+                        <EduIf condition={showQuestion}>
                           <SortableQuestionItem
                             videoRef={videoRef}
                             onPlay={onPlay}
@@ -721,6 +737,7 @@ const enhance = compose(
       previewMode: getPreviewSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
       isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
+      userRole: getUserRole(state),
     }),
     {
       addQuestion: addQuestionAction,

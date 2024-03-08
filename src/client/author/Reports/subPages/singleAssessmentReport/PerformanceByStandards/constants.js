@@ -34,8 +34,3 @@ export const pickDataForDetails = [
   'sorkKey',
   'sortOrder',
 ]
-
-export const sortOrderMap = {
-  ascend: 'asc',
-  descend: 'desc',
-}

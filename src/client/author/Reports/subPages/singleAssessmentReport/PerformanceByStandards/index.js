@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 
 import { report as reportTypes, reportUtils } from '@edulastic/constants'
 
+import { tableToDBSortOrderMap } from '@edulastic/constants/reportUtils/common'
 import { getUserRole } from '../../../../src/selectors/user'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import {
@@ -240,7 +241,7 @@ const PerformanceByStandards = ({
           compareBy,
           analyzeBy,
           sortKey,
-          sortOrder,
+          sortOrder: tableToDBSortOrderMap[sortOrder],
           ...demographicFilters,
           testId: selectedTest.key,
           viewBy,

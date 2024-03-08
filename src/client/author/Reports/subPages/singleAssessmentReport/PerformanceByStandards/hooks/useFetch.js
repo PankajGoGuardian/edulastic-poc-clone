@@ -5,11 +5,8 @@ import {
 } from '@edulastic/constants/reportUtils/singleAssessmentReport/performanceByStandards'
 import { isEmpty, pick } from 'lodash'
 import { useEffect, useState } from 'react'
-import {
-  pickDataForDetails,
-  pickDataForSummary,
-  sortOrderMap,
-} from '../constants'
+import { tableToDBSortOrderMap } from '@edulastic/constants/reportUtils/common'
+import { pickDataForDetails, pickDataForSummary } from '../constants'
 
 const {
   fetchPerformanceByStandardDetails,
@@ -96,7 +93,7 @@ export const usePerformanceByStandardDetailsFetch = ({
               ...demographicFilters,
               compareBy,
               sortKey: sortKeyValue,
-              sortOrder: sortOrderMap[sortOrder],
+              sortOrder: tableToDBSortOrderMap[sortOrder],
               page,
               pageSize,
               recompute,

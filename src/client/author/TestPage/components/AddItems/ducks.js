@@ -359,7 +359,14 @@ function* receiveTestItemsSaga({
     const currentLocation = yield select(
       (state) => state.router.location.pathname
     )
-    yield put(push(`${currentLocation}?page=${page}`))
+    const existingSearchParams = new URLSearchParams(window.location.search)
+    let newSearchParams = `?page=${page}`
+    if (existingSearchParams.has('testType')) {
+      newSearchParams = `${newSearchParams}&testType=${existingSearchParams.get(
+        'testType'
+      )}`
+    }
+    yield put(push(`${currentLocation}${newSearchParams}`))
 
     const { tags = [] } = search
     let searchTags = []

@@ -3,6 +3,7 @@ import { IconNewFile } from '@edulastic/icons'
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import CardComponent from '../../../AssignmentCreate/common/CardComponent'
 import IconWrapper from '../../../AssignmentCreate/common/IconWrapper'
 import TextWrapper from '../../../AssignmentCreate/common/TextWrapper'
@@ -20,7 +21,7 @@ const OptionSurvey = ({ history, clearTestData, clearCreatedItems }) => {
     clearCreatedItems()
     history.push({
       pathname: '/author/tests/create',
-      state: { isSurveyTest: true },
+      search: new URLSearchParams({ testType: TEST_TYPE_SURVEY }).toString(),
     })
   }
 

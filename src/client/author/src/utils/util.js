@@ -59,3 +59,15 @@ export function getFGColor(bgColorStr) {
   bgColorStr = bgColorStr || white
   return pickFGColor([black, white], bgColorStr)
 }
+
+export const getSearchParams = (searchParamToPick = 'all') => {
+  const searchParams = new URLSearchParams(window.location.search)
+  if (searchParamToPick === 'all') {
+    return searchParams.size > 0 ? { search: searchParams.toString() } : {}
+  }
+  return searchParams.has(searchParamToPick)
+    ? {
+        search: `${searchParamToPick}=${searchParams.get(searchParamToPick)}`,
+      }
+    : {}
+}

@@ -149,7 +149,10 @@ import {
 } from '../../../../student/Assignments/ducks'
 import { setSelectedLanguageAction } from '../../../../student/sharedDucks/AssignmentModule/ducks'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
-import { convertCollectionOptionsToArray } from '../../../src/utils/util'
+import {
+  convertCollectionOptionsToArray,
+  getSearchParams,
+} from '../../../src/utils/util'
 import TeacherSignup from '../../../../student/Signup/components/TeacherContainer/Container'
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import ConfirmTabChange from './ConfirmTabChange'
@@ -238,6 +241,7 @@ class Container extends PureComponent {
     history.push({
       pathname: url,
       state: { ...history.location.state, showCancelButton },
+      ...getSearchParams(),
     })
   }
 
@@ -324,7 +328,8 @@ class Container extends PureComponent {
           : this.gotoTab('addItems')
         clearTestAssignments([])
         setDefaultData()
-        if (_location?.state?.isSurveyTest) {
+
+        if (_location.search.includes(`testType=${TEST_TYPE_SURVEY}`)) {
           setData({
             testType: TEST_TYPE_SURVEY,
             updated: false,

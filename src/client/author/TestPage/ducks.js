@@ -123,6 +123,7 @@ import { getProfileKey } from '../../common/utils/testTypeUtils'
 import selectsData from './components/common/selectsData'
 import { itemFields } from '../AssessmentCreate/components/CreateAITest/ducks/constants'
 import { setUserFeaturesAction } from '../../student/Login/ducks'
+import { getSearchParams } from '../src/utils/util'
 
 const {
   ITEM_GROUP_TYPES,
@@ -3459,6 +3460,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
               isAuthoredNow: true,
               scrollToBottom: true,
             },
+            ...getSearchParams(),
           })
         )
       }
@@ -4058,11 +4060,15 @@ function* updateTestAndNavigate({ payload }) {
     }
     yield put(setScrollToBottomAction(scrollToBottom))
     yield put(
-      push(pathname, {
-        isTestFlow: true,
-        fadeSidebar,
-        regradeFlow,
-        previousTestId,
+      push({
+        pathname,
+        state: {
+          isTestFlow: true,
+          fadeSidebar,
+          regradeFlow,
+          previousTestId,
+        },
+        ...getSearchParams('testType'),
       })
     )
   } catch (e) {

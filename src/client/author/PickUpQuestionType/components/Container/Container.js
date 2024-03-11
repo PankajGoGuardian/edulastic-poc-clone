@@ -33,6 +33,7 @@ import {
   IconCollapse,
 } from '@edulastic/icons'
 import CustomPrompt from '@edulastic/common/src/components/CustomPrompt'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import QuestionTypes from '../QuestionType/QuestionTypes'
 import { getItemSelector } from '../../../src/selectors/items'
 import Header from '../Header/Header'
@@ -68,7 +69,9 @@ import { SMALL_DESKTOP_WIDTH } from '../../../src/constants/others'
 import {
   getIsAudioResponseQuestionEnabled,
   isSurveyTestSelector,
+  setTestDataAction,
 } from '../../../TestPage/ducks'
+import { getSearchParams } from '../../../src/utils/util'
 
 class Container extends Component {
   state = {
@@ -76,8 +79,15 @@ class Container extends Component {
   }
 
   componentDidMount() {
-    const { isSurveyTest, setCategory } = this.props
-    if (isSurveyTest) {
+    const { isSurveyTest, setCategory, setData } = this.props
+    if (
+      window.location.search.includes(`testType=${TEST_TYPE_SURVEY}`) ||
+      isSurveyTest
+    ) {
+      setData({
+        testType: TEST_TYPE_SURVEY,
+        updated: false,
+      })
       setCategory('likert-scale')
     }
   }
@@ -170,6 +180,7 @@ class Container extends Component {
           backText: t('component.pickupcomponent.headertitle'),
           fadeSidebar: true,
         },
+        ...getSearchParams('testType'),
       })
       return
     }
@@ -623,6 +634,7 @@ const enhance = compose(
       toggleModalAction: toggleCreateItemModalAction,
       convertToMultipart: convertItemToMultipartAction,
       convertToPassageWithQuestions: convertItemToPassageWithQuestionsAction,
+      setData: setTestDataAction,
     }
   )
 )

@@ -8,7 +8,7 @@ import { withRouter } from 'react-router'
 import { withWindowSizes, helpers, toggleChatDisplay } from '@edulastic/common'
 
 import { test as testConstants } from '@edulastic/constants'
-import { setTestDataAction } from '../../TestPage/ducks'
+import { getTestSelector, setTestDataAction } from '../../TestPage/ducks'
 
 import Questions from './components/Questions'
 import {
@@ -26,6 +26,9 @@ import { getTestEntitySelector } from '../../AssignTest/duck'
 import { createAssessmentRequestAction } from '../../AssessmentCreate/ducks'
 import VideoPreview from './components/VideoPreview/VideoPreview'
 import { getVideoDuration } from './utils/videoPreviewHelpers'
+import { setIsTestPreviewVisibleAction } from '../../../assessment/actions/test'
+import { getIsPreviewModalVisibleSelector } from '../../../assessment/selectors/test'
+import TestPreviewModal from '../../Assignments/components/Container/TestPreviewModal'
 
 const { statusConstants } = testConstants
 
@@ -36,7 +39,7 @@ const VideoQuizWorksheetComponent = ({
   noCheck,
   questions,
   questionsById,
-  test: { isDocBased, videoUrl: entityLink, videoDuration, status },
+  test,
   testMode = false,
   studentWorkAnswersById,
   studentWork = false,
@@ -54,7 +57,11 @@ const VideoQuizWorksheetComponent = ({
   updateQuestion,
   setQuestionsById,
   history,
+  isPreviewModalVisible,
+  setIsTestPreviewVisible,
+  testAuthor,
 }) => {
+  const { isDocBased, videoUrl: entityLink, videoDuration, status } = test
   const annotationsRef = useRef()
   const questionsContainerRef = useRef(null)
 
@@ -80,7 +87,7 @@ const VideoQuizWorksheetComponent = ({
   const [questionClickSeekTime, setQuestionClickSeekTime] = useState(null)
 
   const onPlay = () => {
-    videoRef?.current.playVideo?.()
+    videoRef?.current?.playVideo?.()
     const duration = getVideoDuration(videoRef)
     if (duration > 0 && status === statusConstants.DRAFT && !videoDuration) {
       setTestData({
@@ -276,6 +283,9 @@ const VideoQuizWorksheetComponent = ({
   const editMode = viewMode === 'edit'
   const showAnnotationTools = editMode || testMode
 
+  const toggleTestPreviewModal = () => {
+    setIsTestPreviewVisible(!isPreviewModalVisible)
+  }
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <WorksheetWrapper
@@ -284,6 +294,14 @@ const VideoQuizWorksheetComponent = ({
         testMode={testMode}
         extraPaddingTop={extraPaddingTop}
       >
+        {testAuthor && (
+          <TestPreviewModal
+            isModalVisible={isPreviewModalVisible}
+            testId={testAuthor?._id}
+            showStudentPerformance
+            closeTestPreviewModal={toggleTestPreviewModal}
+          />
+        )}
         <VideoViewerContainer data-cy="VideoPreview">
           <VideoPreview
             startAt={questionTime}
@@ -318,6 +336,7 @@ const VideoQuizWorksheetComponent = ({
           />
         </VideoViewerContainer>
         <Questions
+          toggleTestPreviewModal={toggleTestPreviewModal}
           getContainer={() =>
             ReactDOM.findDOMNode(questionsContainerRef.current)
           }
@@ -412,6 +431,7 @@ const enhance = compose(
   withRouter,
   connect(
     (state, ownProps) => ({
+      testAuthor: getTestSelector(state),
       test: getTestEntitySelector(state),
       itemDetail: ownProps.isAssessmentPlayer
         ? ownProps.item
@@ -419,12 +439,14 @@ const enhance = compose(
       answersById: state.answers,
       currentAnnotationTool: state.tests.currentAnnotationTool,
       annotationsStack: annotationsStackSelector(state, ownProps),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       createAssessment: createAssessmentRequestAction,
       setTestData: setTestDataAction,
       setQuestionsById: loadQuestionsAction,
       updateQuestion: updateQuestionAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

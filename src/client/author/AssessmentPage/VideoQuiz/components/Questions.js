@@ -8,13 +8,14 @@ import { sortBy, maxBy, uniqBy, isEmpty, keyBy } from 'lodash'
 import produce from 'immer'
 import { SortableElement, SortableContainer } from 'react-sortable-hoc'
 
-import { EduElse, EduIf, EduThen, helpers } from '@edulastic/common'
+import { EduButton, EduElse, EduIf, EduThen, helpers } from '@edulastic/common'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { STUDENT } from '@edulastic/constants/const/roleType'
+import { IconEye } from '@edulastic/icons'
 import { createQuestion, validationCreators } from '../utils/questionsHelpers'
 
 import { getPreviewSelector } from '../../../src/selectors/view'
@@ -532,6 +533,7 @@ class Questions extends React.Component {
       questionsContainerRef,
       isVideoQuizAndAIEnabled,
       userRole,
+      toggleTestPreviewModal,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -571,6 +573,19 @@ class Questions extends React.Component {
             review={review}
             ref={questionsContainerRef}
           >
+            <EduIf condition={isTeacherReview}>
+              <EduButton
+                height="20px"
+                data-cy="viewAsStudent"
+                fontSize="9px"
+                isBlue
+                onClick={toggleTestPreviewModal}
+                color="primary"
+              >
+                <IconEye width={12} height={12} />
+                <span>View as Student</span>
+              </EduButton>
+            </EduIf>
             <EduIf
               condition={!this.questionList?.length && viewMode === 'edit'}
             >

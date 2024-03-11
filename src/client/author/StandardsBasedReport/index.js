@@ -103,7 +103,6 @@ class StandardsBasedReport extends Component {
       },
       labels,
       testQIds,
-      testStandardsLength,
       t,
     } = this.props
     const testActivityId = this.getTestActivity(testActivity)
@@ -154,7 +153,6 @@ class StandardsBasedReport extends Component {
               additionalData={additionalData}
               reportStandards={reportStandards}
               qids={testQIds}
-              testStandardsEmpty={testStandardsLength === 0}
             />
           </DivWrapper>
         </MainContentWrapper>
@@ -171,8 +169,6 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state),
       testQIds: getQIdsSelector(state),
       labels: getQLabelsSelector(state),
-      testStandardsLength:
-        state.classResponse?.data?.reportStandards?.length || 0,
       reportStandards: state.classResponse?.data?.reportStandards || [],
       isFreeAdmin: isFreeAdminSelector(state),
       emailVerified: getEmailVerified(state),

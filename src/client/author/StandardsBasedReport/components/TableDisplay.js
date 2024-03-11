@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 import { getHasRandomQuestionselector } from '../../ClassBoard/ducks'
 import ArrowLeftIcon from '../Assets/left-arrow.svg'
 import ArrowRightIcon from '../Assets/right-arrow.svg'
@@ -153,7 +152,6 @@ class TableDisplay extends Component {
       testActivities,
       qids,
       labels,
-      testStandardsEmpty,
     } = this.props
     const questionsColumn = hasRandomQuestions
       ? []
@@ -248,19 +246,9 @@ class TableDisplay extends Component {
     if (isEmpty(standards)) {
       return (
         <NoDataNotification
-          heading="Standard based report not available"
-          description={
-            testStandardsEmpty ? (
-              `Standard Based Report cannot be generated as there are no standards associated with the items in the test.`
-            ) : (
-              <>
-                Standard Based Report can be generated based on the Interested
-                Standards. To setup please go to{' '}
-                <Link to="/author/profile">My Profile</Link> and select your
-                Interested Standards.
-              </>
-            )
-          }
+          heading="Report requires test items to be tagged to standards."
+          description="Please add standards to the test items and regrade the test to view
+          standard-wise performance."
         />
       )
     }

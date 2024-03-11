@@ -64,6 +64,7 @@ import aiGenerateQuestionSaga from './aiGenerateQuestion'
 import { tutorMeSaga } from '../../TutorMe'
 import ttsTextSaga from './ttsText'
 import { videoQuizSaga } from '../../VideoLibrary/ducks'
+import { interventionsPageSaga } from '../../AssignInterventions'
 
 const authorSagas = [
   itemsSaga(),
@@ -132,6 +133,7 @@ const authorSagas = [
   tutorMeSaga(),
   ttsTextSaga(),
   videoQuizSaga(),
+  interventionsPageSaga(),
 ]
 
 export default authorSagas

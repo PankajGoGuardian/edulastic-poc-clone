@@ -72,6 +72,7 @@ import { reducer as tutorMeReducer } from '../../TutorMe'
 import aiGenerateQuestionState from './aiGenerateQuestion'
 import ttsTextReducer from './ttsText'
 import { videoQuizReducer } from '../../VideoLibrary/ducks'
+import { assignInterventions } from '../../AssignInterventions'
 
 const authorReducers = {
   authorUi,
@@ -148,6 +149,7 @@ const authorReducers = {
   tutorMeReducer,
   ttsTextReducer,
   videoQuizReducer,
+  assignInterventions,
 }
 
 export default authorReducers

@@ -28,6 +28,7 @@ import ImportTest from '../ImportTest'
 import NotFound from '../../NotFound'
 import { updateRecentCollectionsAction } from './actions/dictionaries'
 import VideoLibrary from '../VideoLibrary'
+import AssignInterventions from '../AssignInterventions'
 
 /* lazy load routes */
 const Dashboard = loadable(() => import('../Dashboard'), {
@@ -352,6 +353,12 @@ const Author = ({
                 />
 
                 <Route exact path="/author/dashboard" component={Dashboard} />
+
+                <Route
+                  exact
+                  path="/author/classboard/interventions/:assignmentId/:classId"
+                  component={(props) => <AssignInterventions {...props} />}
+                />
 
                 <Route
                   exact

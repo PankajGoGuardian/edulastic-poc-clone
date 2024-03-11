@@ -1356,6 +1356,7 @@ class ClassBoard extends Component {
       isTutorMeEnabled,
       isTutorMeVisibleToDistrict,
       isTutorMeSessionRequestActive,
+      reportStandards,
       isTutorMeModalLoading,
     } = this.props
     const {
@@ -1490,6 +1491,15 @@ class ClassBoard extends Component {
         return false
       })
       .map((x) => x.studentId)
+
+    const standardTaggingIsPresent = !!reportStandards.length
+    const testSubmittedByAtleastOneStudent = testActivity.some(
+      (student) => student.status === 'submitted'
+    )
+
+    const enableAssignInterventionsRedirect =
+      testSubmittedByAtleastOneStudent && standardTaggingIsPresent
+
     const enableDownload =
       testActivity.some((item) => item.status === 'submitted') && isItemsVisible
 
@@ -1522,6 +1532,18 @@ class ClassBoard extends Component {
     const isAssignTutoringActive =
       !isTutorMeEnabled ||
       (selectedStudentsKeys.length === 1 && !isTutorMeSessionRequestActive)
+
+    const handleAssignInterventionsClick = () => {
+      if (!reportStandards.length) {
+        return notification({
+          messageKey: 'addStandardsWarning',
+        })
+      }
+
+      history.push(
+        `/author/classboard/interventions/${assignmentId}/${classId}`
+      )
+    }
 
     return (
       <div>
@@ -1884,6 +1906,26 @@ class ClassBoard extends Component {
                         </div>
                       </Tooltip>
                     </EduIf>
+                    <Tooltip
+                      placement="top"
+                      title={
+                        standardTaggingIsPresent
+                          ? testSubmittedByAtleastOneStudent
+                            ? undefined
+                            : 'No student has submitted the test yet. Test score is necessary to assign interventions.'
+                          : 'The test does not have any item tagged to standard. Standard tagging is necessary to assign interventions.'
+                      }
+                    >
+                      <div>
+                        <AssignTutoring
+                          active={enableAssignInterventionsRedirect}
+                          data-cy="assignTutoring"
+                          onClick={handleAssignInterventionsClick}
+                        >
+                          Assign Interventions
+                        </AssignTutoring>
+                      </div>
+                    </Tooltip>
 
                     <ClassBoardFeats>
                       <RedirectButton

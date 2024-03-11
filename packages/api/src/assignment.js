@@ -243,6 +243,13 @@ const getDifferentiationStudentList = ({ assignmentId, groupId }) =>
     })
     .then((result) => result.data.result)
 
+const getMasteryStudentList = ({ assignmentId, groupId }) =>
+  api
+    .callApi({
+      url: `${prefix}/${assignmentId}/${groupId}/standards-mastery`,
+    })
+    .then((result) => result.data.result)
+
 const syncWithGoogleClassroom = (data) =>
   api
     .callApi({
@@ -345,4 +352,5 @@ export default {
   bulkAssign,
   createAssignmentV2,
   bulkEditSettings,
+  getMasteryStudentList,
 }

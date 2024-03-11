@@ -4,21 +4,37 @@ import { EduIf, MainHeader } from '@edulastic/common'
 import { IconVideoLibrary } from '@edulastic/icons'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import styled from 'styled-components'
 import VideoQuizUsage from '../../../AssessmentCreate/components/OptionVideo/VideoQuizUsage'
 import { showVQCountSelector } from '../../../src/selectors/user'
 
 const VideoLibraryHeader = ({ showVqCount }) => {
   return (
-    <MainHeader
-      Icon={IconVideoLibrary}
+    <StyledMainHeader
+      Icon={() => <IconVideoLibrary height={22} width={30} />}
       headingText={i18.t('header:common.vqLibrary')}
     >
       <EduIf condition={showVqCount}>
-        <VideoQuizUsage videoQuizLibrary />
+        <StyledUsageCountWrapper>
+          <VideoQuizUsage videoQuizLibrary />
+        </StyledUsageCountWrapper>
       </EduIf>
-    </MainHeader>
+    </StyledMainHeader>
   )
 }
+
+const StyledMainHeader = styled(MainHeader)`
+  h1 {
+    min-width: 0px;
+  }
+`
+const StyledUsageCountWrapper = styled.div`
+  padding-left: 32px;
+  div {
+    justify-content: left;
+  }
+  width: 100%;
+`
 const enhance = compose(
   connect((state) => ({
     showVqCount: showVQCountSelector(state),

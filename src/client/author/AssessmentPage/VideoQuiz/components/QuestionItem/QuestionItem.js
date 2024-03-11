@@ -527,6 +527,7 @@ class QuestionItem extends React.Component {
       isSnapQuizVideoPlayer = false,
       onPlay,
       questionIndex,
+      highlighted,
     } = this.props
 
     const { dragging } = this.state
@@ -598,7 +599,7 @@ class QuestionItem extends React.Component {
           {canShowAnswer() && !annotations && this.renderCorrectAnswer()}
           {!pdfPreview &&
             (check ? this.renderScore(id) : this.renderComments(id))}
-          <EduIf condition={!editMode}>
+          <EduIf condition={!editMode && highlighted}>
             <Row type="flex" justify="end">
               <Col>
                 <NextButton

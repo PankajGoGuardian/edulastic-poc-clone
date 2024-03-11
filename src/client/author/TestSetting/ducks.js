@@ -114,10 +114,13 @@ export const reducer = createReducer(initialState, {
 // sagas
 function* receiveTestSettingeSaga({ payload }) {
   try {
+    const { orgType = 'district', orgId } = payload
     const { data } = yield select((state) => state.testSettingReducer)
-    if (isEmpty(data)) {
+    if (isEmpty(data) || orgType !== data.orgType || orgId !== data.orgId) {
       const testSetting = yield call(settingsApi.getTestSetting, payload)
       yield put(receiveTestSettingSuccessAction(testSetting))
+    } else {
+      yield put(receiveTestSettingSuccessAction(data))
     }
   } catch (err) {
     const errorMessage = 'Unable to retrieve test settings.'

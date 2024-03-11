@@ -198,7 +198,7 @@ class AssignTest extends React.Component {
 
     const { testId } = match.params
     setAssignments([])
-    loadTestSetting({ type: 'district', orgId: userOrgId })
+    loadTestSetting({ orgType: 'district', orgId: userOrgId })
     loadClassList({
       districtId: userOrgId,
       search: {

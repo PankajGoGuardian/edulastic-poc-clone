@@ -168,7 +168,7 @@ const ClassDetails = ({
   }, [classId])
 
   useEffect(() => {
-    loadDistrictTestSettings({ type: 'district', orgId: userDistrictId })
+    loadDistrictTestSettings({ orgType: 'district', orgId: userDistrictId })
     return () => {
       // componentWillUnmount here:
       studentsLoadingStatus(true)

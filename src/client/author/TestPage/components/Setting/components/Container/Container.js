@@ -237,7 +237,7 @@ class Setting extends Component {
       districtId,
     } = this.props
     // Load district settings
-    loadDistrictTestSetting({ type: 'district', orgId: districtId })
+    loadDistrictTestSetting({ orgType: 'district', orgId: districtId })
     if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData('scoringType')(PARTIAL_CREDIT_IGNORE_INCORRECT)
     }

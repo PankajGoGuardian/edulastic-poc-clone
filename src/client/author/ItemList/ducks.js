@@ -22,6 +22,8 @@ import {
   hasSectionsSelector,
   getCurrentGroupIndexSelector,
   isDynamicTestSelector,
+  setDefaultTestDataAction,
+  clearCreatedItemsAction,
 } from '../TestPage/ducks'
 import {
   getUserRole,
@@ -305,6 +307,8 @@ export function* createTestFromCart({ payload: { testName } }) {
     grades: uniq([...grades, ...questionGrades]),
     subjects: uniq([...subjects, ...questionSubjects]),
   }
+  yield put(setDefaultTestDataAction())
+  yield put(clearCreatedItemsAction())
   notification({ type: 'info', messageKey: 'Creatingatestwithselecteditems' })
   yield put(createTestAction(updatedTest, false, true))
 }

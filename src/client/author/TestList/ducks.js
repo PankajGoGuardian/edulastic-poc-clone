@@ -10,7 +10,7 @@ import {
 } from 'redux-saga/effects'
 import qs from 'qs'
 import { cloneDeep, keyBy, identity, pickBy } from 'lodash'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { libraryFilters, test as testConstants } from '@edulastic/constants'
 import produce from 'immer'
 import { testsApi, analyticsApi } from '@edulastic/api'
@@ -38,6 +38,7 @@ import {
   setEditEnableAction,
   setCurrentTestSettingsIdAction,
 } from '../TestPage/ducks'
+import { addItemToCartSaga } from '../ItemList/ducks'
 
 const { SMART_FILTERS } = libraryFilters
 export const filterMenuItems = [
@@ -105,6 +106,10 @@ export const TOGGLE_TEST_LIKE = '[tests list] toggle test like'
 export const UPDATE_LIKE_COUNT = '[tests list] update like count'
 export const RESET_TEST_FILTERS = '[tests library] reset test library filters'
 export const SET_DELETE_TEST_STATE = '[test] set delete test state'
+export const SET_ADD_TEST_TO_CART_PROGRESS =
+  '[tests library] adding test to cart progress state'
+export const ADD_ITEMS_TO_CART_FROM_TEST =
+  '[tests library] adding all items from test to cart'
 
 // actions
 export const receiveTestsAction = createAction(RECEIVE_TESTS_REQUEST)
@@ -137,6 +142,12 @@ export const toggleTestLikeAction = createAction(TOGGLE_TEST_LIKE)
 export const updateLikeCountAction = createAction(UPDATE_LIKE_COUNT)
 export const resetTestFiltersAction = createAction(RESET_TEST_FILTERS)
 export const setDeleteTestStateAction = createAction(SET_DELETE_TEST_STATE)
+export const setAddTestToCartProgressAction = createAction(
+  SET_ADD_TEST_TO_CART_PROGRESS
+)
+export const addItemsToCartFromTestAction = createAction(
+  ADD_ITEMS_TO_CART_FROM_TEST
+)
 
 // selectors
 export const stateSelector = (state) => state.testList
@@ -180,6 +191,11 @@ export const getSortFilterStateSelector = createSelector(
 export const getDeleteTestStateSelector = createSelector(
   stateSelector,
   (state) => state.deletingTest
+)
+
+export const getIsAddingTestToCartStateSelector = createSelector(
+  stateSelector,
+  (state) => state.isAddingTestToCart
 )
 
 export const getEquivalentStandards = ({ tests, testList }) =>
@@ -367,6 +383,40 @@ function* toggleTestLikeSaga({ payload }) {
     yield put(updateLikeCountAction(payload))
   }
 }
+/* 
+ get the items from provided testId and call the existing method 
+ for adding items from the received test data
+*/
+function* addItemsToCartFromTestSaga({ payload }) {
+  try {
+    const { testId, itemsFromTestWithoutCartItemIds } = payload
+    yield put(setAddTestToCartProgressAction(true))
+    const { itemGroups } = yield call(testsApi.getById, testId, {
+      requestLatest: true,
+    })
+    const testItems = itemGroups.flatMap((itemGroup) => itemGroup.items)
+    const testItemsToAdd = testItems.filter((item) =>
+      itemsFromTestWithoutCartItemIds.includes(item._id)
+    )
+    for (const testItem of testItemsToAdd) {
+      yield call(addItemToCartSaga, {
+        payload: { showNotification: false, item: testItem },
+      })
+    }
+    notification({
+      type: 'success',
+      messageKey: 'itemsFromTestIsAdded',
+    })
+  } catch (e) {
+    notification({
+      type: 'error',
+      msg: e?.data?.message || 'Adding test to cart failed',
+    })
+    captureSentryException(e)
+  } finally {
+    yield put(setAddTestToCartProgressAction(false))
+  }
+}
 
 export function* watcherSaga() {
   yield all([
@@ -382,6 +432,7 @@ export function* watcherSaga() {
       approveOrRejectMultipleTestsSaga
     ),
     takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga),
+    takeEvery(ADD_ITEMS_TO_CART_FROM_TEST, addItemsToCartFromTestSaga),
   ])
 }
 
@@ -420,6 +471,7 @@ const initialState = {
   selectedTests: [],
   sort: { ...initialSortState },
   deletingTest: false,
+  isAddingTestToCart: false,
 }
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -552,6 +604,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         deletingTest: payload,
+      }
+    case SET_ADD_TEST_TO_CART_PROGRESS:
+      return {
+        ...state,
+        isAddingTestToCart: payload,
       }
     default:
       return state

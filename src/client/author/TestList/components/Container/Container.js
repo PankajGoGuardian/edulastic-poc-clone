@@ -31,7 +31,7 @@ import {
   storeInLocalStorage,
   getFromSessionStorage,
 } from '@edulastic/api/src/utils/Storage'
-import { libraryFilters, sortOptions } from '@edulastic/constants'
+import { libraryFilters, roleuser, sortOptions } from '@edulastic/constants'
 import { withNamespaces } from 'react-i18next'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 
@@ -53,6 +53,7 @@ import {
   StyledCountText,
   ItemsMenu,
   MobileFilterModal,
+  LoaderOverlay,
 } from './styled'
 
 import CardWrapper from '../CardWrapper/CardWrapper'
@@ -75,17 +76,13 @@ import {
   getSortFilterStateSelector,
   initialSortState,
   getSelectedTestsSelector,
+  getIsAddingTestToCartStateSelector,
 } from '../../ducks'
 import {
   getTestsCreatingSelector,
-  clearTestDataAction,
-  clearCreatedItemsAction,
   getAllTagsAction,
 } from '../../../TestPage/ducks'
-import {
-  clearSelectedItemsAction,
-  setApproveConfirmationOpenAction,
-} from '../../../TestPage/components/AddItems/ducks'
+import { setApproveConfirmationOpenAction } from '../../../TestPage/components/AddItems/ducks'
 import { getCurriculumsListSelector } from '../../../src/selectors/dictionaries'
 import {
   clearDictStandardsAction,
@@ -123,6 +120,7 @@ import {
   getUserFeatures,
   getUserOrgId,
   getCollectionsSelector,
+  getUserRole,
 } from '../../../src/selectors/user'
 import {
   getInterestedStandards,
@@ -160,6 +158,8 @@ import {
 } from '../../../Reports/common/styled'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
+import ItemCartButton from '../../../ItemList/components/CartButton/CartButton'
+import { createTestFromCartAction } from '../../../ItemList/ducks'
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -194,16 +194,10 @@ class TestList extends Component {
     getCurriculumStandards: PropTypes.func.isRequired,
     clearDictStandards: PropTypes.func.isRequired,
     userId: PropTypes.string.isRequired,
-    clearTestData: PropTypes.func,
-    clearCreatedItems: PropTypes.func.isRequired,
     playlist: PropTypes.object.isRequired,
     mode: PropTypes.string.isRequired,
     getAllTags: PropTypes.func.isRequired,
     testFilters: PropTypes.object.isRequired,
-  }
-
-  static defaultProps = {
-    clearTestData: () => null,
   }
 
   state = {
@@ -268,11 +262,7 @@ class TestList extends Component {
       districtId,
       userId,
       collections,
-      clearSelectedItems,
-      clearCreatedItems,
-      clearTestData,
     } = this.props
-    clearSelectedItems()
     const isSingaporeMathCollectionActive = tests.filter(
       (test) =>
         (test.description?.toLowerCase()?.includes('singaporemath') ||
@@ -413,8 +403,6 @@ class TestList extends Component {
      * In terms of other pages, we are clearing them in the locationChangedSaga.
      * @see src/client/author/TestPage/components/AddItems/ducks.js
      */
-    clearTestData()
-    clearCreatedItems()
   }
 
   updateFilterState = (searchState, sortState, all) => {
@@ -1216,6 +1204,11 @@ class TestList extends Component {
     })
   }
 
+  handleCreateTest = () => {
+    const { createTestFromCart } = this.props
+    createTestFromCart()
+  }
+
   render() {
     const {
       page,
@@ -1233,6 +1226,8 @@ class TestList extends Component {
       t,
       sort = {},
       history,
+      userRole,
+      addTestToCartInProgress,
     } = this.props
 
     const {
@@ -1322,6 +1317,11 @@ class TestList extends Component {
 
     return (
       <>
+        <EduIf condition={addTestToCartInProgress}>
+          <LoaderOverlay>
+            <Spin />
+          </LoaderOverlay>
+        </EduIf>
         <RemoveTestModal
           isVisible={showConfirmRemoveModal}
           onClose={this.onCloseConfirmRemoveModal}
@@ -1337,6 +1337,15 @@ class TestList extends Component {
               btnTitle="New Test"
               renderFilter={() => (
                 <>
+                  {userRole !== roleuser.EDULASTIC_CURATOR && (
+                    <div style={{ marginRight: '5px' }}>
+                      <ItemCartButton
+                        onClick={this.handleCreateTest}
+                        buttonText="Create test with"
+                        displayDeselect
+                      />
+                    </div>
+                  )}
                   <StyleChangeWrapper>
                     <IconTile
                       data-cy="tileView"
@@ -1613,6 +1622,8 @@ const enhance = compose(
       selectedTests: getSelectedTestsSelector(state),
       isDemoAccount: isDemoPlaygroundUser(state),
       collections: getCollectionsSelector(state),
+      userRole: getUserRole(state),
+      addTestToCartInProgress: getIsAddingTestToCartStateSelector(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -1632,12 +1643,10 @@ const enhance = compose(
       addTestToModuleInBulk: addTestToModuleInBulkAction,
       deleteTestFromModuleInBulk: deleteTestFromModuleInBulkAction,
       clearDictStandards: clearDictStandardsAction,
-      clearCreatedItems: clearCreatedItemsAction,
       updateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,
       deleteTestFromPlaylist: removeTestFromPlaylistAction,
       getAllTags: getAllTagsAction,
-      clearTestData: clearTestDataAction,
       updateTestFilters: updateTestSearchFilterAction,
       updateAllTestFilters: updateAllTestSearchFilterAction,
       clearAllFilters: clearTestFiltersAction,
@@ -1645,7 +1654,7 @@ const enhance = compose(
       removeTestFromCart: removeTestFromCartAction,
       approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction,
       setApproveConfirmationOpen: setApproveConfirmationOpenAction,
-      clearSelectedItems: clearSelectedItemsAction,
+      createTestFromCart: createTestFromCartAction,
     }
   )
 )

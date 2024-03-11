@@ -59,7 +59,7 @@ const ItemListContainer = ({
             style={{ width: 'auto', height: 'auto' }}
             heading={getNoDataTextForFilter(search, 'item')}
           />
-          <EduAIQuiz retainItems displayScreen={SEARCH_NO_DATA_SCREEN} />
+          <EduAIQuiz displayScreen={SEARCH_NO_DATA_SCREEN} />
         </FlexContainer>
       </NoDataContainer>
     )

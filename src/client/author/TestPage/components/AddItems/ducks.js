@@ -12,7 +12,7 @@ import {
   take,
   race,
 } from 'redux-saga/effects'
-import { push, LOCATION_CHANGE } from 'connected-react-router'
+import { push } from 'connected-react-router'
 import { testItemsApi, contentErrorApi } from '@edulastic/api'
 import { keyBy } from 'lodash'
 import produce from 'immer'
@@ -456,25 +456,12 @@ function* removeItemFromTest({ payload }) {
   )
 }
 
-function* locationChangedSaga({ payload }) {
-  if (
-    !(
-      payload?.location?.pathname?.includes('/author/items') ||
-      payload?.location?.pathname?.includes('/author/questions') ||
-      payload?.location?.pathname?.includes('/author/tests')
-    )
-  ) {
-    yield put(clearSelectedItemsAction())
-  }
-}
-
 export function* watcherSaga() {
   yield all([
     takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
     takeEvery(CLEAR_SELECTED_ITEMS, clearSelectedItemsSaga),
     takeEvery(DELETE_ITEM_SUCCESS, removeItemFromTest),
     takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),
-    takeLatest(LOCATION_CHANGE, locationChangedSaga),
   ])
 }
 

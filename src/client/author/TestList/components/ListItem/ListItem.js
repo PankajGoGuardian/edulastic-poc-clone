@@ -98,6 +98,7 @@ import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/te
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { DeleteItemModal } from '../DeleteItemModal/deleteItemModal'
 import { duplicateTestRequestAction } from '../../../TestPage/ducks'
+import CombineTestButton from '../Item/CombineTestButton'
 
 class ListItem extends Component {
   static propTypes = {
@@ -562,6 +563,14 @@ class ListItem extends Component {
 
                 {!isPlaylist && mode !== 'embedded' && isCoTeacher && (
                   <ViewButtonContainer>
+                    <CombineTestButton
+                      testId={item._id}
+                      test={{
+                        itemGroups: item.itemGroups,
+                        testCategory: item.testCategory,
+                      }}
+                      listView
+                    />
                     <ViewButtonStyled
                       data-cy="view"
                       onClick={() => this.showPreviewModal(item._id)}

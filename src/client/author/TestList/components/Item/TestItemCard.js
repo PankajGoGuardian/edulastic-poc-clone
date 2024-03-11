@@ -9,7 +9,6 @@ import {
   EduThen,
   EduElse,
 } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
 import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
 import {
   Container,
@@ -39,7 +38,7 @@ import Tags from '../../../src/components/common/Tags'
 import { TestStatus } from '../ListItem/styled'
 import { getAuthorCollectionMap } from '../../../dataUtils'
 import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
-import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import CombineTestButton from './CombineTestButton'
 
 const TestItemCard = ({
   thumbnail,
@@ -48,9 +47,6 @@ const TestItemCard = ({
   status,
   btnStyle,
   moveToItem,
-  assignTest,
-  userRole,
-  showPreviewModal,
   testId,
   collections,
   // showPremiumTag,
@@ -68,6 +64,8 @@ const TestItemCard = ({
   likes,
   isTestRecommendation,
   videoUrl,
+  itemGroups,
+  testCategory,
 }) => {
   const [height, setHeight] = useState(0)
   const ref = useRef(null)
@@ -94,41 +92,18 @@ const TestItemCard = ({
                 Edit
               </EduButton>
             )}
-            {status === 'published' && userRole !== roleuser.EDULASTIC_CURATOR && (
-              <AuthorCompleteSignupButton
-                renderButton={(handleClick) => (
-                  <EduButton
-                    style={btnStyle}
-                    height="32px"
-                    onClick={(e) => {
-                      e?.stopPropagation()
-                      handleClick()
-                    }}
-                  >
-                    Assign
-                  </EduButton>
-                )}
-                onClick={assignTest}
-              />
-            )}
+            <CombineTestButton
+              testId={testId}
+              test={{ itemGroups, testCategory }}
+            />
             {(status === 'published' || status === 'draft') && (
-              <>
-                <EduButton
-                  data-cy="test-preview-button"
-                  style={btnStyle}
-                  height="32px"
-                  onClick={(e) => showPreviewModal(testId, e)}
-                >
-                  Preview
-                </EduButton>
-                <EduButton
-                  style={btnStyle}
-                  height="32px"
-                  onClick={() => openModal('more')}
-                >
-                  More
-                </EduButton>
-              </>
+              <EduButton
+                style={btnStyle}
+                height="32px"
+                onClick={() => openModal('more')}
+              >
+                More
+              </EduButton>
             )}
           </ButtonWrapper>
           {collections.find((o) => o.name === PEAR_ASSESSMENT_CERTIFIED_NAME) &&

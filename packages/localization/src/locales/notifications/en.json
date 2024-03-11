@@ -2283,5 +2283,17 @@
   "preventVQForwardSeek": {
     "message": "Skipping ahead in the video is locked.",
     "description": ""
+  },
+  "combineLimitExceeded": {
+    "message": "Combining tests limit exceeded",
+    "description": ""
+  },
+  "testAlreadyAdded": {
+    "message": "Test already added",
+    "description": ""
+  },
+  "itemsFromTestIsAdded": {
+    "message": "Items from this test is added",
+    "description": ""
   }
 }

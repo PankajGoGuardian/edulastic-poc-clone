@@ -17,6 +17,7 @@ import { useSaveForm } from './hooks/useSaveForm'
 import { AiEduButton, FullHeightAiEduButton } from './styled'
 import {
   clearCreatedItemsAction,
+  getTestEntitySelector,
   setDefaultTestDataAction,
 } from '../../../TestPage/ducks'
 import {
@@ -39,7 +40,6 @@ const {
 const EduAIQuiz = ({
   test,
   addItems,
-  retainItems,
   aiTestStatus,
   getAiGeneratedTestItems,
   resetTestDetails,
@@ -67,19 +67,21 @@ const EduAIQuiz = ({
     handleSelectGroupResponse,
   } = useSaveForm({
     hasSections: test?.hasSections,
+    isAiGeneratedTest: test?.aiGenerated,
     getAiGeneratedTestItems,
     addItemsView: false,
     resetTestDetails,
     standardsList,
     addItems,
-    retainItems,
     setDefaultTest,
     clearCreatedItem,
     history,
     isVideoQuizAndAIEnabled,
     currentGroupIndexValueFromStore,
     showSelectGroupIndexModal,
-    savePreselected: displayScreen === CREATE_ITEMS_SCREEN,
+    savePreselected:
+      displayScreen === CREATE_ITEMS_SCREEN ||
+      displayScreen === CREATE_TEST_SCREEN,
   })
 
   const { open = '' } = qs.parse(window.location.search, {
@@ -213,6 +215,7 @@ const enhance = compose(
       standardsList: getStandardsListSelector(state),
       isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
       isGcpsDistrict: isGcpsDistrictSelector(state),
+      test: getTestEntitySelector(state),
     }),
     {
       getAiGeneratedTestItems: aiTestActions.getAiGeneratedTestItems,

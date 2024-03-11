@@ -1,13 +1,16 @@
 import { EduButton } from '@edulastic/common'
 import { PropTypes } from 'prop-types'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
   getSelectedItemSelector,
   clearSelectedItemsAction,
 } from '../../../TestPage/components/AddItems/ducks'
-import { getTestEntitySelector } from '../../../TestPage/ducks'
-import { Container, ItemsAmount } from './styled'
+import {
+  clearTestDataAction,
+  getTestEntitySelector,
+} from '../../../TestPage/ducks'
+import { Container, ItemsAmount, StyledBetaTag } from './styled'
 
 const CartButton = ({
   selectedItems,
@@ -17,6 +20,7 @@ const CartButton = ({
   tests,
   clearSelectedItems,
   displayDeselect = false,
+  clearTestData,
 }) => {
   let numberOfSelectedItems = selectedItems && selectedItems.length
   if (numberOfSelectedItems && numberChecker) {
@@ -24,6 +28,13 @@ const CartButton = ({
       tests.itemGroups.flatMap((itemGroup) => itemGroup.items || [])
     )
   }
+  useEffect(() => {
+    if (tests?._id) {
+      clearSelectedItems()
+      clearTestData()
+    }
+  }, [tests?._id])
+
   return (
     <Container>
       {numberOfSelectedItems > 0 && displayDeselect && (
@@ -45,8 +56,11 @@ const CartButton = ({
         disabled={!numberOfSelectedItems}
       >
         <span>{buttonText}</span>
-        <ItemsAmount>{numberOfSelectedItems}</ItemsAmount>
+        <ItemsAmount threeDigit={numberOfSelectedItems > 99}>
+          {numberOfSelectedItems}
+        </ItemsAmount>
         items
+        <StyledBetaTag alignItems="left">BETA</StyledBetaTag>
       </EduButton>
     </Container>
   )
@@ -62,5 +76,8 @@ export default connect(
     selectedItems: getSelectedItemSelector(state),
     tests: getTestEntitySelector(state),
   }),
-  { clearSelectedItems: clearSelectedItemsAction }
+  {
+    clearSelectedItems: clearSelectedItemsAction,
+    clearTestData: clearTestDataAction,
+  }
 )(CartButton)

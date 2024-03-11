@@ -7,9 +7,9 @@ import { navigationState } from '../../../../src/constants/navigation'
 
 export const useSaveForm = ({
   hasSections,
+  isAiGeneratedTest,
   getAiGeneratedTestItems,
   addItems,
-  retainItems,
   resetTestDetails,
   testTitle = '',
   setDefaultTest,
@@ -40,11 +40,11 @@ export const useSaveForm = ({
   }
 
   useEffect(() => {
-    if (!addItems && !retainItems) {
+    if (!addItems && isAiGeneratedTest) {
       setDefaultTest()
       clearCreatedItem()
     }
-  }, [addItems])
+  }, [addItems, isAiGeneratedTest])
 
   const [selectSectionVisible, setSelectSectionVisible] = useState(false)
   const [isVisible, setIsVisible] = useState(false)

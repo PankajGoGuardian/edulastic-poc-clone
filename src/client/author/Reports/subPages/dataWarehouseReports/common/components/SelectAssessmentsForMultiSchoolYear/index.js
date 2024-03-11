@@ -91,7 +91,7 @@ const SelectAssessmentsForMultiSchoolYear = ({
     return _tests.map((test) => {
       const testTermId = isMultiYearSelected ? test.termId : testTermIdsArr[0]
       const term = termsMap[testTermId]
-      const testTermName = test.termName || term.title || ''
+      const testTermName = test.termName || term?.title || ''
       return {
         key: `${!test.isExternal ? test._id : test.testName}_${testTermId}`,
         title: `${test.title}${

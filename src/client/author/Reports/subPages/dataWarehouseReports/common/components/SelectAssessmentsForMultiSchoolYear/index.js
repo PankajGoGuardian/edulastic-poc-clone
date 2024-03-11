@@ -142,6 +142,7 @@ const SelectAssessmentsForMultiSchoolYear = ({
   }, [
     searchTerms.text,
     testTermIds,
+    termId,
     grades,
     subjects,
     testTypes,

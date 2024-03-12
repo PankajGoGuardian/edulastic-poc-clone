@@ -1,4 +1,4 @@
-import { Pagination, Card, Col } from 'antd'
+import { Pagination, Card, Col, Radio } from 'antd'
 import styled from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
 import {
@@ -359,5 +359,33 @@ export const StatusRow = styled.div`
     padding: 3px 12px;
     border-radius: 5px;
     margin-top: 3px;
+  }
+`
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`
+export const StyledRadioBtn = styled(Radio)`
+  .ant-radio .ant-radio-inner {
+    border: 1.5px solid ${themeColor};
+  }
+
+  .ant-radio .ant-radio-inner::after {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .ant-radio.ant-radio-checked .ant-radio-inner {
+    border-color: ${themeColor} !important;
+  }
+
+  .ant-radio.ant-radio-checked .ant-radio-inner::after {
+    background-color: ${themeColor} !important;
+  }
+
+  .ant-radio:hover .ant-radio-inner {
+    border-color: ${themeColor} !important;
   }
 `

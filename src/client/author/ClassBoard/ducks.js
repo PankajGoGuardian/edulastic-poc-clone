@@ -102,6 +102,7 @@ import {
   TOGGLE_REGRADE_MODAL,
   RELOAD_LCB_DATA_IN_STUDENT_VIEW,
   SET_REALTIME_ATTEMPT_DATA,
+  UPDATE_SELECTED_STUDENT_ATTEMPT_REQUEST,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
@@ -996,6 +997,24 @@ function* setRealTimeAttemptDataSaga({ payload }) {
   }
 }
 
+function* updateSelectedStudentAttemptSaga({ payload }) {
+  try {
+    yield call(testActivityApi.updateSelectedStudentAttempt, payload)
+    yield call(notification, {
+      type: 'success',
+      msg: 'Attempt selected for scoring.',
+    })
+  } catch (err) {
+    captureSentryException(err)
+    const {
+      data: { message: errorMessage },
+    } = err.response
+    yield call(notification, {
+      msg: errorMessage || 'Attempt selected for scoring failed.',
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     takeLatest(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -1025,6 +1044,10 @@ export function* watcherSaga() {
     takeEvery(CORRECT_ITEM_UPDATE_REQUEST, correctItemUpdateSaga),
     takeEvery(RELOAD_LCB_DATA_IN_STUDENT_VIEW, reloadLcbDataInStudentView),
     takeEvery(SET_REALTIME_ATTEMPT_DATA, setRealTimeAttemptDataSaga),
+    takeEvery(
+      UPDATE_SELECTED_STUDENT_ATTEMPT_REQUEST,
+      updateSelectedStudentAttemptSaga
+    ),
   ])
 }
 

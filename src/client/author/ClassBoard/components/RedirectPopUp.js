@@ -83,10 +83,11 @@ const RedirectPopUp = ({
   const [loading, setLoading] = useState(false)
   const [type, setType] = useState('specificStudents')
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents)
-  const [qDeliveryState, setQDeliveryState] = useState('ALL')
+  const [qDeliveryState, setQDeliveryState] = useState('')
   const [showPrevAttempt, setshowPrevAttempt] = useState(
     'STUDENT_RESPONSE_AND_FEEDBACK'
   )
+  const [selectQDeleveryErrorMsg, setselectQDeleveryErrorMsg] = useState('')
   const [allowedTime, setAllowedTime] = useState(
     additionalData.allowedTime || 1
   )
@@ -111,6 +112,10 @@ const RedirectPopUp = ({
   }, [type, selectedStudents])
 
   const submitAction = useCallback(async () => {
+    if (!qDeliveryState) {
+      setselectQDeleveryErrorMsg('Please select questions to deliver.')
+      return
+    }
     if (endDate < moment()) {
       return notification({ messageKey: 'SelectFutureEndDate' })
     }
@@ -197,11 +202,10 @@ const RedirectPopUp = ({
     (_dueDate) => _dueDate < moment().startOf('day') || dueDate > endDate,
     [endDate]
   )
-
   return (
     <CustomModalStyled
       centered
-      title="Redirect Assignment"
+      title="Redirect / Reattempt Assignment"
       visible={open}
       onCancel={closePopup}
       footer={[
@@ -307,10 +311,16 @@ const RedirectPopUp = ({
                 <FieldLabel>Questions delivery</FieldLabel>
                 <SelectInputStyled
                   data-cy="questionDelivery"
-                  defaultValue={qDeliveryState}
                   onChange={(val) => setQDeliveryState(val)}
-                  style={{ width: '100%' }}
+                  style={{
+                    width: '100%',
+                    border:
+                      !qDeliveryState && selectQDeleveryErrorMsg
+                        ? '0.5px solid red'
+                        : '',
+                  }}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  placeholder="Select questions to deliver"
                 >
                   {Object.keys(QuestionDelivery).map((item) => (
                     <Option key="1" value={item}>
@@ -318,6 +328,9 @@ const RedirectPopUp = ({
                     </Option>
                   ))}
                 </SelectInputStyled>
+                {!qDeliveryState && selectQDeleveryErrorMsg && (
+                  <p style={{ color: 'red' }}>{selectQDeleveryErrorMsg}</p>
+                )}
               </Col>
             )
           )}

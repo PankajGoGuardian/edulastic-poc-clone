@@ -886,7 +886,7 @@ export const transformGradeBookResponse = (
           icon,
           color: fakeFirstName,
           status:
-            testActivity.redirect && !studentResponse
+            testActivity.redirect && !studentResponse && testActivity.archived
               ? 'redirected'
               : displayStatus,
           UTASTATUS: testActivity.status,

@@ -132,6 +132,14 @@ const saveUserWork = ({ testActivityId, groupId, userWork }) =>
     })
     .then((result) => result.data.result)
 
+const updateSelectedStudentAttempt = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/select-student-attempt`,
+      method: 'put',
+      data,
+    })
+    .then((result) => result.data.result)
 export default {
   create,
   submit,
@@ -147,4 +155,5 @@ export default {
   incrementTabNavigationCounter,
   switchLanguage,
   saveUserWork,
+  updateSelectedStudentAttempt,
 }

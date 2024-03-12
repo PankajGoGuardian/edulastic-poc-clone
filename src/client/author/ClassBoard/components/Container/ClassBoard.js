@@ -694,6 +694,7 @@ class ClassBoard extends Component {
       additionalData = {},
       assignmentStatus,
       removedStudents,
+      recentAttemptsGrouped,
     } = this.props
 
     if (
@@ -722,7 +723,20 @@ class ClassBoard extends Component {
           x.status === 'redirected')
     )
 
-    if (notStartedStudents.length > 0) {
+    let activeAttemptsPresent = false
+    for (const studentId of Object.keys(recentAttemptsGrouped)) {
+      if (selectedStudents[studentId]) {
+        activeAttemptsPresent = recentAttemptsGrouped[studentId]?.some((doc) =>
+          [testActivityStatus.NOT_STARTED, testActivityStatus.START].includes(
+            doc.status
+          )
+        )
+        if (activeAttemptsPresent) {
+          break
+        }
+      }
+    }
+    if (notStartedStudents.length > 0 || activeAttemptsPresent) {
       notification({ type: 'warn', messageKey: 'youCanRedirectOnly' })
       return
     }

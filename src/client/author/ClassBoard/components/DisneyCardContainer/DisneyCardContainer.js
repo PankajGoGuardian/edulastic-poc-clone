@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { round, shuffle, get } from 'lodash'
+import { round, shuffle, get, sortBy } from 'lodash'
 import { Col, Row, Spin, Icon, Tooltip } from 'antd'
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
@@ -65,10 +65,14 @@ import {
   formatStudentPastDueTag,
   maxDueDateFromClassess,
 } from '../../../../student/utils'
-import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
+import {
+  receiveTestActivitydAction,
+  updateSelectedStudentAttemptAction,
+} from '../../../src/actions/classBoard'
 import { isPearDomain } from '../../../../../utils/pear'
+import AttemptContainer from './AttemptContainer'
 
-const { ABSENT, NOT_STARTED, SUBMITTED } = testActivityStatus
+const { ABSENT, NOT_STARTED } = testActivityStatus
 
 function PauseToolTip({ outNavigationCounter, pauseReason, children }) {
   let reason = null
@@ -104,6 +108,7 @@ class DisneyCardContainer extends Component {
     super(props)
     this.state = {
       testActivity: [],
+      selectedStudentAttempts: {},
     }
   }
 
@@ -122,7 +127,7 @@ class DisneyCardContainer extends Component {
   }
 
   render() {
-    const { testActivity } = this.state
+    const { testActivity, selectedStudentAttempts } = this.state
     const {
       selectedStudents,
       studentSelect,
@@ -145,6 +150,7 @@ class DisneyCardContainer extends Component {
       loadTestActivity,
       match,
       handleOpenTutor,
+      selectStudentAttempt,
     } = this.props
     const { assignmentId, classId } = match.params
     const noDataNotification = () => (
@@ -265,6 +271,23 @@ class DisneyCardContainer extends Component {
               VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
             </PagInfo>
           )
+        const handleRadioChange = (e, selectedAttemptId) => {
+          this.setState((prevState) => ({
+            selectedStudentAttempts: {
+              ...prevState.selectedStudentAttempts,
+              [student.studentId]: selectedAttemptId,
+            },
+          }))
+          const activeAttemptQuestionIds = student.questionActivities?.map(
+            (doc) => doc.testItemId
+          )
+          selectStudentAttempt({
+            activeUtaId: selectedAttemptId,
+            archiveUtaId: student.testActivityId,
+            activeAttemptQuestionIds,
+          })
+          loadTestActivity(assignmentId, classId)
+        }
         const studentData = (
           <StyledCard
             data-cy={`student-card-${name}`}
@@ -524,118 +547,24 @@ class DisneyCardContainer extends Component {
                         <StyledParaFF>{responseLink}</StyledParaFF>
                       </StyledFlexDiv>
                       <StyledFlexDiv style={{ justifyContent: 'flex-start' }}>
-                        {student.UTASTATUS === NOT_STARTED ||
-                        student.UTASTATUS === ABSENT ? (
-                          <AttemptDiv data-cy="attempt-container">
-                            <CenteredStyledParaSS>
-                              -&nbsp;/ {round(student.maxScore, 2) || 0}
-                            </CenteredStyledParaSS>
-                            <StyledParaSS
-                              style={{
-                                fontSize: '12px',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              {student.UTASTATUS === NOT_STARTED
-                                ? `Not Started`
-                                : `Absent`}
-                            </StyledParaSS>
-                            <p style={{ fontSize: '12px' }}>
-                              Attempt{' '}
-                              {(recentAttemptsGrouped[student.studentId]?.[0]
-                                ?.number || 0) + 1}
-                            </p>
-                          </AttemptDiv>
-                        ) : (
-                          <AttemptDiv
-                            data-cy="attempt-container"
-                            className="attempt-container"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              viewResponses(
-                                e,
-                                student.studentId,
-                                student.testActivityId,
-                                (recentAttemptsGrouped[student.studentId]?.[0]
-                                  ?.number || 0) + 1
-                              )
-                            }}
-                          >
-                            <CenteredStyledParaSS>
-                              {score(student.status, student.score)}&nbsp;/{' '}
-                              {round(student.maxScore, 2) || 0}
-                            </CenteredStyledParaSS>
-                            <StyledParaSSS>
-                              {student.score > 0
-                                ? round(
-                                    (student.score / student.maxScore) * 100,
-                                    2
-                                  )
-                                : 0}
-                              %
-                            </StyledParaSSS>
-                            <p style={{ fontSize: '12px' }}>
-                              Attempt{' '}
-                              {(recentAttemptsGrouped[student.studentId]?.[0]
-                                ?.number || 0) + 1}
-                            </p>
-                          </AttemptDiv>
-                        )}
-                        {recentAttemptsGrouped?.[student.studentId].map(
-                          (attempt) => (
-                            <AttemptDiv
-                              className={
-                                attempt.status === SUBMITTED &&
-                                'attempt-container'
-                              }
-                              data-cy="attempt-container"
-                              key={attempt._id || attempt.id}
-                              onClick={(e) => {
-                                if (attempt.status === ABSENT) return
-                                e.stopPropagation()
-                                viewResponses(
-                                  e,
-                                  attempt.userId,
-                                  attempt._id,
-                                  attempt.number
-                                )
-                              }}
-                            >
-                              <CenteredStyledParaSS>
-                                {score(attempt.status, attempt.score)}&nbsp;/{' '}
-                                {round(
-                                  attempt.maxScore || student.maxScore,
-                                  2
-                                ) || 0}
-                              </CenteredStyledParaSS>
-
-                              {attempt.status === ABSENT ? (
-                                <StyledParaSS
-                                  style={{
-                                    fontSize: '12px',
-                                    justifyContent: 'center',
-                                  }}
-                                >
-                                  Absent
-                                </StyledParaSS>
-                              ) : (
-                                <StyledParaSSS>
-                                  {attempt.score > 0
-                                    ? round(
-                                        (attempt.score / attempt.maxScore) *
-                                          100,
-                                        2
-                                      )
-                                    : 0}
-                                  %
-                                </StyledParaSSS>
-                              )}
-                              <p style={{ fontSize: '12px' }}>
-                                Attempt {attempt.number}
-                              </p>
-                            </AttemptDiv>
+                        {sortBy(
+                          [
+                            student,
+                            ...recentAttemptsGrouped?.[student.studentId],
+                          ],
+                          (obj) => -obj.number
+                        ).map((attempts) => {
+                          return (
+                            <AttemptContainer
+                              testActivity={attempts}
+                              handleRadioChange={handleRadioChange}
+                              selectedStudentAttempts={selectedStudentAttempts}
+                              viewResponses={viewResponses}
+                              t={t}
+                              score={score}
+                            />
                           )
-                        )}
+                        })}
                       </StyledFlexDiv>
                     </PerfomanceSection>
                   </PaginationInfoS>
@@ -693,6 +622,7 @@ const withConnect = connect(
   }),
   {
     loadTestActivity: receiveTestActivitydAction,
+    selectStudentAttempt: updateSelectedStudentAttemptAction,
   }
 )
 
@@ -701,14 +631,6 @@ export default compose(
   withConnect,
   withRouter
 )(DisneyCardContainer)
-
-const AttemptDiv = styled.div`
-  text-align: center;
-  width: 33%;
-  ${StyledParaSSS} {
-    margin-left: 0;
-  }
-`
 
 const CenteredStyledParaSS = styled(StyledParaSS)`
   justify-content: center;

@@ -176,6 +176,10 @@ const transformTestItems = (props) => {
           if (filter === 'notGraded' && !(firstQAct.graded === false)) {
             return false
           }
+
+          if (filter === 'attempted' && firstQAct.score >= 0) {
+            return false
+          }
         }
       }
 

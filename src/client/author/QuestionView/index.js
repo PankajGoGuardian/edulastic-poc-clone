@@ -33,6 +33,7 @@ import {
   LegendContainer,
   LCBScrollContext,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
 import {
   testActivityStatus,
@@ -58,6 +59,7 @@ import {
   LCB_LIMIT_QUESTION_PER_VIEW,
   SCROLL_SHOW_LIMIT,
   getFirstQuestionEntitiesSelector,
+  isSurveyTestTypeClassBoard,
 } from '../ClassBoard/ducks'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import {
@@ -65,6 +67,7 @@ import {
   setPageNumberAction,
 } from '../src/reducers/testActivity'
 import {
+  FilterContainer,
   FilterSelect,
   FilterSpan,
 } from '../ClassBoard/components/Container/styled'
@@ -224,6 +227,7 @@ class QuestionViewContainer extends Component {
       filter,
       pageNumber,
       setPageNumber,
+      isSurveyTest,
     } = this.props
     const { loading, hideCorrectAnswer, showQuestionLoader } = this.state
     let filteredItems = testItems?.filter(
@@ -448,119 +452,123 @@ class QuestionViewContainer extends Component {
             selectedTab="questionView"
           />
         )}
+        <EduIf condition={!isSurveyTest}>
+          <StyledFlexContainer>
+            <StyledCard bordered={false}>
+              <LegendContainer>
+                <Legends />
+                {children}
+              </LegendContainer>
+              <ResponsiveContainer width="100%" height={250}>
+                <ComposedChart barGap={1} barSize={36} data={data}>
+                  <XAxis
+                    dataKey="avatarName"
+                    tickSize={0}
+                    cursor="pointer"
+                    dy={10}
+                    onClick={({ index }) => {
+                      this.onClickChart(data[index], index)
+                    }}
+                  />
 
-        <StyledFlexContainer>
-          <StyledCard bordered={false}>
-            <LegendContainer>
-              <Legends />
-              {children}
-            </LegendContainer>
-            <ResponsiveContainer width="100%" height={250}>
-              <ComposedChart barGap={1} barSize={36} data={data}>
-                <XAxis
-                  dataKey="avatarName"
-                  tickSize={0}
-                  cursor="pointer"
-                  dy={10}
-                  onClick={({ index }) => {
-                    this.onClickChart(data[index], index)
-                  }}
-                />
-
-                <YAxis
-                  dataKey="attempts"
-                  yAxisId={0}
-                  allowDecimals={false}
-                  tick={{ strokeWidth: 0, fill: greyGraphstroke }}
-                  tickSize={6}
-                  label={{
-                    value: 'Scoring points',
-                    angle: -90,
-                    fill: greyGraphstroke,
-                    dx: -10,
-                  }}
-                  stroke={greyGraphstroke}
-                />
-                <YAxis
-                  dataKey="avgTimeSpent"
-                  yAxisId={1}
-                  allowDecimals={false}
-                  tick={{ strokeWidth: 0, fill: greyGraphstroke }}
-                  tickSize={6}
-                  label={{
-                    value: 'AVG TIME (SECONDS)',
-                    angle: -90,
-                    fill: greyGraphstroke,
-                    dx: 20,
-                    fontSize: '10px',
-                  }}
-                  orientation="right"
-                  stroke={greyGraphstroke}
-                />
-                <Bar
-                  className="correct"
-                  style={{ cursor: 'pointer' }}
-                  stackId="a"
-                  dataKey="correct"
-                  fill={green}
-                  onClick={this.onClickChart}
-                />
-                <Bar
-                  className="wrong"
-                  style={{ cursor: 'pointer' }}
-                  stackId="a"
-                  dataKey="wrong"
-                  fill={incorrect}
-                  onClick={this.onClickChart}
-                />
-                <Bar
-                  className="pCorrect"
-                  style={{ cursor: 'pointer' }}
-                  stackId="a"
-                  dataKey="pCorrect"
-                  fill={yellow1}
-                  onClick={this.onClickChart}
-                />
-                <Bar
-                  className="skipped"
-                  style={{ cursor: 'pointer' }}
-                  stackId="a"
-                  dataKey="skipped"
-                  fill={skippedBarColor}
-                  onClick={this.onClickChart}
-                />
-                <Bar
-                  className="unscoredItems"
-                  style={{ cursor: 'pointer' }}
-                  stackId="a"
-                  dataKey="unscoredItems"
-                  fill={greyLight1}
-                  onClick={this.onClickChart}
-                />
-                <Bar
-                  className="manuallyGraded"
-                  style={{ cursor: 'pointer' }}
-                  stackId="a"
-                  dataKey="manuallyGraded"
-                  fill="rgb(56, 150, 190)"
-                  onClick={this.onClickChart}
-                />
-                <Line
-                  dataKey="avgTimeSpent"
-                  stroke={themeColor}
-                  strokeWidth="3"
-                  type="monotone"
-                  yAxisId={1}
-                  dot={{ stroke: themeColor, strokeWidth: 6, fill: white }}
-                />
-                <Tooltip content={<CustomTooltip />} cursor={false} />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </StyledCard>
-        </StyledFlexContainer>
+                  <YAxis
+                    dataKey="attempts"
+                    yAxisId={0}
+                    allowDecimals={false}
+                    tick={{ strokeWidth: 0, fill: greyGraphstroke }}
+                    tickSize={6}
+                    label={{
+                      value: 'Scoring points',
+                      angle: -90,
+                      fill: greyGraphstroke,
+                      dx: -10,
+                    }}
+                    stroke={greyGraphstroke}
+                  />
+                  <YAxis
+                    dataKey="avgTimeSpent"
+                    yAxisId={1}
+                    allowDecimals={false}
+                    tick={{ strokeWidth: 0, fill: greyGraphstroke }}
+                    tickSize={6}
+                    label={{
+                      value: 'AVG TIME (SECONDS)',
+                      angle: -90,
+                      fill: greyGraphstroke,
+                      dx: 20,
+                      fontSize: '10px',
+                    }}
+                    orientation="right"
+                    stroke={greyGraphstroke}
+                  />
+                  <Bar
+                    className="correct"
+                    style={{ cursor: 'pointer' }}
+                    stackId="a"
+                    dataKey="correct"
+                    fill={green}
+                    onClick={this.onClickChart}
+                  />
+                  <Bar
+                    className="wrong"
+                    style={{ cursor: 'pointer' }}
+                    stackId="a"
+                    dataKey="wrong"
+                    fill={incorrect}
+                    onClick={this.onClickChart}
+                  />
+                  <Bar
+                    className="pCorrect"
+                    style={{ cursor: 'pointer' }}
+                    stackId="a"
+                    dataKey="pCorrect"
+                    fill={yellow1}
+                    onClick={this.onClickChart}
+                  />
+                  <Bar
+                    className="skipped"
+                    style={{ cursor: 'pointer' }}
+                    stackId="a"
+                    dataKey="skipped"
+                    fill={skippedBarColor}
+                    onClick={this.onClickChart}
+                  />
+                  <Bar
+                    className="unscoredItems"
+                    style={{ cursor: 'pointer' }}
+                    stackId="a"
+                    dataKey="unscoredItems"
+                    fill={greyLight1}
+                    onClick={this.onClickChart}
+                  />
+                  <Bar
+                    className="manuallyGraded"
+                    style={{ cursor: 'pointer' }}
+                    stackId="a"
+                    dataKey="manuallyGraded"
+                    fill="rgb(56, 150, 190)"
+                    onClick={this.onClickChart}
+                  />
+                  <Line
+                    dataKey="avgTimeSpent"
+                    stroke={themeColor}
+                    strokeWidth="3"
+                    type="monotone"
+                    yAxisId={1}
+                    dot={{ stroke: themeColor, strokeWidth: 6, fill: white }}
+                  />
+                  <Tooltip content={<CustomTooltip />} cursor={false} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </StyledCard>
+          </StyledFlexContainer>
+        </EduIf>
         <StudentResponse isPresentationMode={isPresentationMode}>
           <StudentButtonWrapper>
             <StudentButtonDiv>
+              <EduIf condition={isSurveyTest}>
+                <FilterContainer>{children}</FilterContainer>
+              </EduIf>
               <FilterSpan>FILTER BY STATUS</FilterSpan>
               <FilterSelect
                 data-cy="filterByAttemptType"
@@ -661,6 +669,7 @@ const enhance = compose(
       filter: state?.author_classboard_testActivity?.studentViewFilter,
       pageNumber: getPageNumberSelector(state),
       firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
+      isSurveyTest: isSurveyTestTypeClassBoard(state),
     }),
     {
       loadClassQuestionResponses: receiveAnswersAction,

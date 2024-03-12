@@ -18,7 +18,7 @@ import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 const getReportPathForAnalyze = (
   linkPrefix,
-  { testId = '', termId, testType, classId }
+  { testId = '', termId, testType, classId, isSurveyTest }
 ) => {
   const q = {
     termId,
@@ -26,6 +26,10 @@ const getReportPathForAnalyze = (
     subject: 'All',
     grade: 'All',
     classIds: classId,
+  }
+
+  if (isSurveyTest) {
+    return `${linkPrefix}/survey`
   }
   return `${linkPrefix}${testId}?${qs.stringify(q)}`
 }
@@ -40,6 +44,7 @@ const AnalyzeLink = ({
   linkText = 'Analyze',
   linkPrefix = '',
   visible = true,
+  isSurveyTest,
 }) => {
   const [premiumPopup, setPremiumPopup] = useState(null)
 
@@ -56,6 +61,7 @@ const AnalyzeLink = ({
     termId,
     testType,
     classId,
+    isSurveyTest,
   })
 
   return (

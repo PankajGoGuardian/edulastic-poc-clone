@@ -5,6 +5,8 @@ import {
   lightGreen4,
   red,
   white,
+  brownDark,
+  lightGrey9,
 } from '@edulastic/colors'
 import {
   MainContentWrapper,
@@ -48,6 +50,12 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
 import { segmentApi } from '@edulastic/api'
+import {
+  LegendIcon,
+  LegendItem,
+  LegendItems,
+  LegendLabel,
+} from '@edulastic/common/src/components/Legends'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import QuestionContainer from '../../../QuestionView'
@@ -112,6 +120,7 @@ import {
   getIsDocBasedTestSelector,
   getAttemptWindowSelector,
   getIsItemContentHiddenSelector,
+  isSurveyTestTypeClassBoard,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -147,6 +156,8 @@ import {
   FilterSpan,
   TagWrapper,
   AssignTutoring,
+  LeftContainer,
+  LegendContainer,
 } from './styled'
 import {
   setShowAllStudentsAction,
@@ -170,6 +181,7 @@ import {
   getUserOrgId,
   getUser,
   isPremiumUserSelector,
+  getDataWarehouseReports,
 } from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
@@ -1357,6 +1369,8 @@ class ClassBoard extends Component {
       isTutorMeVisibleToDistrict,
       isTutorMeSessionRequestActive,
       isTutorMeModalLoading,
+      isSurveyTest,
+      isDataWarehouseReports,
     } = this.props
     const {
       selectedTab,
@@ -1522,6 +1536,32 @@ class ClassBoard extends Component {
     const isAssignTutoringActive =
       !isTutorMeEnabled ||
       (selectedStudentsKeys.length === 1 && !isTutorMeSessionRequestActive)
+    const LegendsWithStudentFilter = ({ showLegend = false }) => (
+      <StudentSelect
+        dataCy="dropDownSelect"
+        style={{ width: '200px' }}
+        students={testActivity}
+        selectedStudent={selectedStudentId}
+        studentResponse={qActivityByStudent}
+        showLegend={showLegend}
+        handleChange={(value, _activityId) => {
+          const _testActivityId = this.getActivityId(_activityId)
+          setCurrentTestActivityId(_testActivityId)
+          getAllTestActivitiesForStudent({
+            studentId: value,
+            assignmentId,
+            groupId: classId,
+          })
+          this.setState({ selectedStudentId: value })
+          history.push(
+            `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
+          )
+        }}
+        isPresentationMode={isPresentationMode}
+        isCliUser={isCliUser}
+        studentsPrevSubmittedUtas={studentsPrevSubmittedUtas}
+      />
+    )
 
     return (
       <div>
@@ -1667,7 +1707,8 @@ class ClassBoard extends Component {
                 <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
                   <EduIf
                     condition={
-                      selectedTab == 'Both' || selectedTab == 'Student'
+                      isDataWarehouseReports &&
+                      (selectedTab == 'Both' || selectedTab == 'Student')
                     }
                   >
                     <AnalyzeLink
@@ -1678,10 +1719,15 @@ class ClassBoard extends Component {
                       visible={!!additionalData.testId}
                       classId={classId}
                       termId={additionalData.termId}
+                      isSurveyTest={isSurveyTest}
                     />
                     <Divider type="vertical" />
                   </EduIf>
-                  <EduIf condition={selectedTab == 'questionView'}>
+                  <EduIf
+                    condition={
+                      isDataWarehouseReports && selectedTab == 'questionView'
+                    }
+                  >
                     <AnalyzeLink
                       linkText="QUESTION ANALYSIS"
                       linkPrefix="/author/reports/question-analysis/test/"
@@ -1770,25 +1816,27 @@ class ClassBoard extends Component {
 
             {selectedTab === 'Both' && (
               <>
-                <GraphContainer>
-                  <StyledCard bordered={false}>
-                    <Graph
-                      gradebook={gradebook}
-                      title={additionalData.testName}
-                      testActivity={testActivity}
-                      testQuestionActivities={testQuestionActivities}
-                      onClickHandler={this.onClickBarGraph}
-                      isLoading={isLoading}
-                      isBoth
-                    />
-                  </StyledCard>
-                </GraphContainer>
+                <EduIf condition={!isSurveyTest}>
+                  <GraphContainer>
+                    <StyledCard bordered={false}>
+                      <Graph
+                        gradebook={gradebook}
+                        title={additionalData.testName}
+                        testActivity={testActivity}
+                        testQuestionActivities={testQuestionActivities}
+                        onClickHandler={this.onClickBarGraph}
+                        isLoading={isLoading}
+                        isBoth
+                      />
+                    </StyledCard>
+                  </GraphContainer>
+                </EduIf>
                 <StickyFlex
                   justifyContent="space-between"
                   hasStickyHeader={hasStickyHeader}
                   className="lcb-student-sticky-bar"
                 >
-                  <div>
+                  <LeftContainer>
                     <CheckboxLabel
                       data-cy="selectAllCheckbox"
                       checked={unselectedStudents.length === 0}
@@ -1853,7 +1901,22 @@ class ClassBoard extends Component {
                         ))}
                       </FilterSelect>
                     </SwitchBox>
-                  </div>
+
+                    <EduIf condition={isSurveyTest}>
+                      <LegendContainer>
+                        <LegendItems>
+                          <LegendItem>
+                            <LegendIcon color={lightGrey9} />
+                            <LegendLabel>SKIPPED</LegendLabel>
+                          </LegendItem>
+                          <LegendItem>
+                            <LegendIcon color={brownDark} />
+                            <LegendLabel>ATTEMPTED</LegendLabel>
+                          </LegendItem>
+                        </LegendItems>
+                      </LegendContainer>
+                    </EduIf>
+                  </LeftContainer>
                   <EduIf condition={attemptWindow}>
                     <InfoMessage color={lightGreen4}>
                       <IconInfo fill={green} height={10} /> {attemptWindow}
@@ -2127,118 +2190,74 @@ class ClassBoard extends Component {
               !isEmpty(testActivity) &&
               !isEmpty(classResponse) && (
                 <>
-                  <StudentGrapContainer>
-                    <StyledCard bordered={false} paddingTop={15}>
-                      <StudentSelect
-                        dataCy="dropDownSelect"
-                        style={{ width: '200px' }}
-                        students={testActivity}
-                        selectedStudent={selectedStudentId}
-                        studentResponse={qActivityByStudent}
-                        handleChange={(value, _activityId) => {
-                          const _testActivityId = this.getActivityId(
-                            _activityId
-                          )
-                          setCurrentTestActivityId(_testActivityId)
-                          getAllTestActivitiesForStudent({
-                            studentId: value,
-                            assignmentId,
-                            groupId: classId,
-                          })
-                          this.setState({ selectedStudentId: value })
-                          history.push(
-                            `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
-                          )
-                        }}
-                        isPresentationMode={isPresentationMode}
-                        isCliUser={isCliUser}
-                        studentsPrevSubmittedUtas={studentsPrevSubmittedUtas}
-                      />
-                      <GraphWrapper style={{ width: '100%', display: 'flex' }}>
-                        <BarGraph
-                          gradebook={gradebook}
-                          testActivity={testActivity}
-                          studentId={selectedStudentId}
-                          studentview
-                          studentViewFilter={studentViewFilter}
-                          studentResponse={studentResponse}
-                          isLoading={isLoading}
-                        />
-                        <InfoWrapper>
-                          {allTestActivitiesForStudent.length > 1 && (
-                            <Select
-                              data-cy="attemptSelect"
-                              style={{ width: '200px' }}
-                              value={
-                                allTestActivitiesForStudent.some(
-                                  ({ _id }) =>
-                                    _id ===
-                                    (currentTestActivityId || testActivityId)
-                                )
-                                  ? currentTestActivityId || testActivityId
-                                  : ''
-                              }
-                              onChange={(_testActivityId) => {
-                                loadStudentResponses({
-                                  testActivityId: _testActivityId,
-                                  groupId: classId,
-                                  studentId: selectedStudentId,
-                                })
-                                setCurrentTestActivityId(_testActivityId)
-                                history.push(
-                                  `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
-                                )
-                              }}
-                            >
-                              {[...allTestActivitiesForStudent]
-                                .reverse()
-                                .map((_testActivity, index) => (
-                                  <Select.Option
-                                    key={index}
-                                    value={_testActivity._id}
-                                    disabled={_testActivity.status === 2}
-                                  >
-                                    {`Attempt ${
-                                      allTestActivitiesForStudent.length - index
-                                    } ${
-                                      _testActivity.status === 2
-                                        ? ' (Absent)'
-                                        : ''
-                                    }`}
-                                  </Select.Option>
-                                ))}
-                            </Select>
-                          )}
-                          <div
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                            }}
-                          >
+                  <EduIf condition={!isSurveyTest}>
+                    <StudentGrapContainer>
+                      <StyledCard bordered={false} paddingTop={15}>
+                        <LegendsWithStudentFilter showLegend />
+                        <GraphWrapper
+                          style={{ width: '100%', display: 'flex' }}
+                        >
+                          <BarGraph
+                            gradebook={gradebook}
+                            testActivity={testActivity}
+                            studentId={selectedStudentId}
+                            studentview
+                            studentViewFilter={studentViewFilter}
+                            studentResponse={studentResponse}
+                            isLoading={isLoading}
+                          />
+                          <InfoWrapper>
+                            {allTestActivitiesForStudent.length > 1 && (
+                              <Select
+                                data-cy="attemptSelect"
+                                style={{ width: '200px' }}
+                                value={
+                                  allTestActivitiesForStudent.some(
+                                    ({ _id }) =>
+                                      _id ===
+                                      (currentTestActivityId || testActivityId)
+                                  )
+                                    ? currentTestActivityId || testActivityId
+                                    : ''
+                                }
+                                onChange={(_testActivityId) => {
+                                  loadStudentResponses({
+                                    testActivityId: _testActivityId,
+                                    groupId: classId,
+                                    studentId: selectedStudentId,
+                                  })
+                                  setCurrentTestActivityId(_testActivityId)
+                                  history.push(
+                                    `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
+                                  )
+                                }}
+                              >
+                                {[...allTestActivitiesForStudent]
+                                  .reverse()
+                                  .map((_testActivity, index) => (
+                                    <Select.Option
+                                      key={index}
+                                      value={_testActivity._id}
+                                      disabled={_testActivity.status === 2}
+                                    >
+                                      {`Attempt ${
+                                        allTestActivitiesForStudent.length -
+                                        index
+                                      } ${
+                                        _testActivity.status === 2
+                                          ? ' (Absent)'
+                                          : ''
+                                      }`}
+                                    </Select.Option>
+                                  ))}
+                              </Select>
+                            )}
                             <div
                               style={{
                                 display: 'flex',
-                                flexDirection: 'column',
-                                padding: '10px',
-                                alignItems: 'center',
+                                justifyContent: 'space-between',
                               }}
                             >
-                              <ScoreHeader>TOTAL SCORE</ScoreHeader>
-                              <ScoreWrapper data-cy="totalScore">
-                                {round(score, 2) || 0}
-                              </ScoreWrapper>
-                              <div
-                                style={{
-                                  border: 'solid 1px black',
-                                  width: '50px',
-                                }}
-                              />
-                              <ScoreWrapper data-cy="totalMaxScore">
-                                {round(maxScore, 2) || 0}
-                              </ScoreWrapper>
-                            </div>
-                            {allTestActivitiesForStudent.length > 1 &&
-                            showScoreImporvement ? (
                               <div
                                 style={{
                                   display: 'flex',
@@ -2247,89 +2266,122 @@ class ClassBoard extends Component {
                                   alignItems: 'center',
                                 }}
                               >
-                                <ScoreHeader>SCORE</ScoreHeader>
-                                <ScoreChangeWrapper
-                                  data-cy="scoreChange"
-                                  scoreChange={studentTestActivity.scoreChange}
-                                >
-                                  {`${
-                                    studentTestActivity.scoreChange > 0
-                                      ? '+'
-                                      : ''
-                                  }${
-                                    round(studentTestActivity.scoreChange, 2) ||
-                                    0
-                                  }`}
-                                </ScoreChangeWrapper>
-                                <ScoreHeader
-                                  style={{ fontSize: '10px', display: 'flex' }}
-                                >
-                                  <span>Improvement </span>
-                                  <span
-                                    style={{ marginLeft: '2px' }}
-                                    title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
-                                  >
-                                    <IconInfo />
-                                  </span>
-                                </ScoreHeader>
+                                <ScoreHeader>TOTAL SCORE</ScoreHeader>
+                                <ScoreWrapper data-cy="totalScore">
+                                  {round(score, 2) || 0}
+                                </ScoreWrapper>
+                                <div
+                                  style={{
+                                    border: 'solid 1px black',
+                                    width: '50px',
+                                  }}
+                                />
+                                <ScoreWrapper data-cy="totalMaxScore">
+                                  {round(maxScore, 2) || 0}
+                                </ScoreWrapper>
                               </div>
-                            ) : null}
-                          </div>
-                          <ScoreHeader
-                            data-cy="totlatTimeSpent"
-                            style={{ fontSize: '12px' }}
-                          >
-                            {' '}
-                            {`TIME (min) : `}{' '}
-                            <span
-                              style={{
-                                color: black,
-                                textTransform: 'capitalize',
-                              }}
+                              {allTestActivitiesForStudent.length > 1 &&
+                              showScoreImporvement ? (
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    padding: '10px',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  <ScoreHeader>SCORE</ScoreHeader>
+                                  <ScoreChangeWrapper
+                                    data-cy="scoreChange"
+                                    scoreChange={
+                                      studentTestActivity.scoreChange
+                                    }
+                                  >
+                                    {`${
+                                      studentTestActivity.scoreChange > 0
+                                        ? '+'
+                                        : ''
+                                    }${
+                                      round(
+                                        studentTestActivity.scoreChange,
+                                        2
+                                      ) || 0
+                                    }`}
+                                  </ScoreChangeWrapper>
+                                  <ScoreHeader
+                                    style={{
+                                      fontSize: '10px',
+                                      display: 'flex',
+                                    }}
+                                  >
+                                    <span>Improvement </span>
+                                    <span
+                                      style={{ marginLeft: '2px' }}
+                                      title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
+                                    >
+                                      <IconInfo />
+                                    </span>
+                                  </ScoreHeader>
+                                </div>
+                              ) : null}
+                            </div>
+                            <ScoreHeader
+                              data-cy="totlatTimeSpent"
+                              style={{ fontSize: '12px' }}
                             >
-                              {`${Math.floor(timeSpent / 60)}:${
-                                timeSpent % 60
-                              }` || ''}
-                            </span>
-                          </ScoreHeader>
-                          <ScoreHeader
-                            data-cy="studentStatus"
-                            style={{ fontSize: '12px' }}
-                          >
-                            {' '}
-                            {`STATUS : `}{' '}
-                            <span
-                              style={{
-                                color: black,
-                                textTransform: 'capitalize',
-                              }}
+                              {' '}
+                              {`TIME (min) : `}{' '}
+                              <span
+                                style={{
+                                  color: black,
+                                  textTransform: 'capitalize',
+                                }}
+                              >
+                                {`${Math.floor(timeSpent / 60)}:${
+                                  timeSpent % 60
+                                }` || ''}
+                              </span>
+                            </ScoreHeader>
+                            <ScoreHeader
+                              data-cy="studentStatus"
+                              style={{ fontSize: '12px' }}
                             >
-                              {studentTestActivity.status === 2
-                                ? 'Absent'
-                                : studentTestActivity.status === 1
-                                ? studentTestActivity.graded === 'GRADED'
-                                  ? 'Graded'
-                                  : 'Submitted'
-                                : 'In Progress' || ''}
-                            </span>
-                          </ScoreHeader>
-                          <ScoreHeader
-                            data-cy="submittedDate"
-                            style={{ fontSize: '12px' }}
-                          >
-                            SUBMITTED ON :
-                            <span style={{ color: black }}>
-                              {getSubmittedDate(
-                                studentTestActivity.endDate,
-                                additionalData.endDate
-                              )}
-                            </span>
-                          </ScoreHeader>
-                        </InfoWrapper>
-                      </GraphWrapper>
-                    </StyledCard>
-                  </StudentGrapContainer>
+                              {' '}
+                              {`STATUS : `}{' '}
+                              <span
+                                style={{
+                                  color: black,
+                                  textTransform: 'capitalize',
+                                }}
+                              >
+                                {studentTestActivity.status === 2
+                                  ? 'Absent'
+                                  : studentTestActivity.status === 1
+                                  ? studentTestActivity.graded === 'GRADED'
+                                    ? 'Graded'
+                                    : 'Submitted'
+                                  : 'In Progress' || ''}
+                              </span>
+                            </ScoreHeader>
+                            <ScoreHeader
+                              data-cy="submittedDate"
+                              style={{ fontSize: '12px' }}
+                            >
+                              SUBMITTED ON :
+                              <span style={{ color: black }}>
+                                {getSubmittedDate(
+                                  studentTestActivity.endDate,
+                                  additionalData.endDate
+                                )}
+                              </span>
+                            </ScoreHeader>
+                          </InfoWrapper>
+                        </GraphWrapper>
+                      </StyledCard>
+                    </StudentGrapContainer>
+                  </EduIf>
                   <StudentContainer
+                    studentFilter={LegendsWithStudentFilter}
                     classResponse={classResponse}
                     studentItems={testActivity}
                     selectedStudent={selectedStudentId}
@@ -2483,6 +2535,8 @@ const enhance = compose(
       user: getUser(state),
       isTutorMeSessionRequestActive: isSessionRequestActiveSelector(state),
       isTutorMeModalLoading: isTutorMeModalLoadingSelector(state),
+      isSurveyTest: isSurveyTestTypeClassBoard(state),
+      isDataWarehouseReports: getDataWarehouseReports(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

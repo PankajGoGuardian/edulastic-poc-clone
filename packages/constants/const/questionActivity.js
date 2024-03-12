@@ -11,7 +11,13 @@ const questionStatusOptions = [
   { title: 'Zero Point', value: 'unscoredItems', countValue: 'unscoredItems' },
   { title: 'Not Graded', value: 'notGraded', countValue: 'notGradedNumber' },
 ]
+const surveyStatusOptions = [
+  { title: 'All', value: null, countValue: 'totalNumber' },
+  { title: 'Skipped', value: 'skipped', countValue: 'skippedNumber' },
+  { title: 'Attempted', value: 'attempted', countValue: 'attemptedNumber' },
+]
 
 module.exports = {
   questionStatusOptions,
+  surveyStatusOptions,
 }

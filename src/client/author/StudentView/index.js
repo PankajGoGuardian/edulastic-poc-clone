@@ -13,6 +13,7 @@ import {
   EduButton,
   FieldLabel,
   FlexContainer,
+  EduIf,
 } from '@edulastic/common'
 import {
   IconFeedback,
@@ -50,11 +51,13 @@ import {
   getCurrentTestActivityIdSelector,
   getAdditionalDataSelector,
   getAllStudentsList,
+  isSurveyTestTypeClassBoard,
 } from '../ClassBoard/ducks'
 
 import { getQuestionLabels } from '../ClassBoard/Transformer'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import {
+  FilterContainer,
   FilterSelect,
   FilterSpan,
 } from '../ClassBoard/components/Container/styled'
@@ -168,6 +171,8 @@ class StudentViewContainer extends Component {
       additionalData,
       studentsList,
       MainContentWrapperRef,
+      studentFilter: StudentFilter,
+      isSurveyTest,
     } = this.props
 
     const {
@@ -204,6 +209,7 @@ class StudentViewContainer extends Component {
       (acc, cur) => {
         if (!cur.isPractice && cur.score === cur.maxScore && cur.score > 0) {
           acc.correctNumber += 1
+          acc.attemptedNumber += 1
         }
         if (
           !cur.isPractice &&
@@ -213,9 +219,11 @@ class StudentViewContainer extends Component {
           !cur.skipped
         ) {
           acc.wrongNumber += 1
+          acc.attemptedNumber += 1
         }
         if (!cur.isPractice && cur.score > 0 && cur.score < cur.maxScore) {
           acc.partiallyCorrectNumber += 1
+          acc.attemptedNumber += 1
         }
         if (!cur.isPractice && cur.skipped && cur.score === 0) {
           acc.skippedNumber += 1
@@ -236,6 +244,7 @@ class StudentViewContainer extends Component {
         skippedNumber: 0,
         notGradedNumber: 0,
         unscoredItems: 0,
+        attemptedNumber: 0,
       }
     )
 
@@ -260,6 +269,10 @@ class StudentViewContainer extends Component {
     )
 
     const { attachments = [] } = studentTestActivity?.userWork || {}
+
+    const questionStatusOptions = isSurveyTest
+      ? 'surveyStatusOptions'
+      : 'questionStatusOptions'
 
     return (
       <>
@@ -317,6 +330,11 @@ class StudentViewContainer extends Component {
         <StudentResponse>
           <StudentButtonWrapper>
             <StudentButtonDiv>
+              <EduIf condition={isSurveyTest}>
+                <FilterContainer>
+                  <StudentFilter />
+                </FilterContainer>
+              </EduIf>
               <FilterSpan>FILTER BY STATUS</FilterSpan>
               <FilterSelect
                 data-cy="filterByAttemptType"
@@ -328,7 +346,7 @@ class StudentViewContainer extends Component {
                 width="170px"
                 height="24px"
               >
-                {questionActivityConst.questionStatusOptions.map(
+                {questionActivityConst[questionStatusOptions].map(
                   ({ title, value, countValue }, i) => (
                     <FilterSelect.Option
                       className="student-status-filter-item"
@@ -341,6 +359,7 @@ class StudentViewContainer extends Component {
                   )
                 )}
               </FilterSelect>
+
               {showStudentWorkButton && (
                 <StyledStudentTabButton
                   onClick={() => this.setState({ showTestletPlayer: true })}
@@ -490,6 +509,7 @@ const enhance = compose(
       filter: state?.author_classboard_testActivity?.studentViewFilter,
       additionalData: getAdditionalDataSelector(state),
       studentsList: getAllStudentsList(state),
+      isSurveyTest: isSurveyTestTypeClassBoard(state),
     }),
     {
       loadStudentResponses: receiveStudentResponseAction,

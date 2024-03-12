@@ -60,6 +60,7 @@ import {
   getShowRefreshMessage,
   getBulckAssignedCount,
   getBulkAssignedCountProcessedCount,
+  isSurveyTestTypeClassBoard,
 } from '../../ducks'
 import {
   formatStudentPastDueTag,
@@ -145,6 +146,7 @@ class DisneyCardContainer extends Component {
       loadTestActivity,
       match,
       handleOpenTutor,
+      isSurveyTest,
     } = this.props
     const { assignmentId, classId } = match.params
     const noDataNotification = () => (
@@ -191,6 +193,11 @@ class DisneyCardContainer extends Component {
           closed
         )
         const { questionActivities = [], interventions = [] } = student
+
+        // const colorsBasedOnQuestionActivities = questionActivities.filter(questionActivity=>{
+        //   if(surv)
+        // })
+
         const isAllPractice =
           questionActivities.length &&
           questionActivities.every((q) => q.isPractice)
@@ -460,7 +467,23 @@ class DisneyCardContainer extends Component {
                       .map((questionAct, questionIndex) => {
                         const weight = questionAct.weight
                         // TODO: clean up and create a new component by extracting below logic
-                        if (questionAct.isItemContentHidden) {
+
+                        if (isSurveyTest) {
+                          const isPartial =
+                            questionAct.score > 0 &&
+                            questionAct.score < questionAct.maxScore
+                          const isCorrect =
+                            questionAct.score === questionAct.maxScore &&
+                            questionAct.score > 0
+                          const isWrong =
+                            questionAct.score === 0 &&
+                            questionAct.maxScore > 0 &&
+                            questionAct.graded &&
+                            !questionAct.skipped
+                          const isAttempted = isPartial || isCorrect || isWrong
+                          if (isAttempted) {
+                            return <SquareColorDivBrown key={questionIndex} />
+                          }
                           if (questionAct.skipped) {
                             return (
                               <SquareColorDivGray
@@ -470,47 +493,60 @@ class DisneyCardContainer extends Component {
                               />
                             )
                           }
-                          return <SquareColorDivBrown key={questionIndex} />
+                        } else {
+                          if (questionAct.isItemContentHidden) {
+                            if (questionAct.skipped) {
+                              return (
+                                <SquareColorDivGray
+                                  title="skipped"
+                                  weight={weight}
+                                  key={questionIndex}
+                                />
+                              )
+                            }
+                            return <SquareColorDivBrown key={questionIndex} />
+                          }
+                          if (questionAct.isPractice) {
+                            return <SquareColorDivlGrey key={questionIndex} />
+                          }
+                          if (
+                            questionAct.notStarted ||
+                            student.status === 'redirected'
+                          ) {
+                            return <SquareColorDisabled key={questionIndex} />
+                          }
+                          if (questionAct.skipped && questionAct.score === 0) {
+                            return (
+                              <SquareColorDivGray
+                                title="skipped"
+                                weight={weight}
+                                key={questionIndex}
+                              />
+                            )
+                          }
+                          if (
+                            questionAct.graded === false ||
+                            questionAct.pendingEvaluation
+                          ) {
+                            return <SquareColorBlue key={questionIndex} />
+                          }
+                          if (
+                            questionAct.score === questionAct.maxScore &&
+                            questionAct.score > 0
+                          ) {
+                            return <SquareColorDivGreen key={questionIndex} />
+                          }
+                          if (
+                            questionAct.score > 0 &&
+                            questionAct.score < questionAct.maxScore
+                          ) {
+                            return <SquareColorDivYellow key={questionIndex} />
+                          }
+                          if (questionAct.score === 0) {
+                            return <SquareColorDivPink key={questionIndex} />
+                          }
                         }
-                        if (questionAct.isPractice) {
-                          return <SquareColorDivlGrey key={questionIndex} />
-                        }
-                        if (
-                          questionAct.notStarted ||
-                          student.status === 'redirected'
-                        ) {
-                          return <SquareColorDisabled key={questionIndex} />
-                        }
-                        if (questionAct.skipped && questionAct.score === 0) {
-                          return (
-                            <SquareColorDivGray
-                              title="skipped"
-                              weight={weight}
-                              key={questionIndex}
-                            />
-                          )
-                        }
-                        if (
-                          questionAct.graded === false ||
-                          questionAct.pendingEvaluation
-                        ) {
-                          return <SquareColorBlue key={questionIndex} />
-                        }
-                        if (
-                          questionAct.score === questionAct.maxScore &&
-                          questionAct.score > 0
-                        ) {
-                          return <SquareColorDivGreen key={questionIndex} />
-                        }
-                        if (
-                          questionAct.score > 0 &&
-                          questionAct.score < questionAct.maxScore
-                        ) {
-                          return <SquareColorDivYellow key={questionIndex} />
-                        }
-                        if (questionAct.score === 0) {
-                          return <SquareColorDivPink key={questionIndex} />
-                        }
+
                         return null
                       })}
                 </PaginationInfoT>
@@ -690,6 +726,7 @@ const withConnect = connect(
     showRefreshMessage: getShowRefreshMessage(state),
     bulkAssignedCount: getBulckAssignedCount(state),
     bulkAssignedCountProcessed: getBulkAssignedCountProcessedCount(state),
+    isSurveyTest: isSurveyTestTypeClassBoard(state),
   }),
   {
     loadTestActivity: receiveTestActivitydAction,

@@ -38,6 +38,7 @@ import {
 } from '@edulastic/constants'
 import { isNullOrUndefined } from 'util'
 import * as Sentry from '@sentry/browser'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
@@ -172,6 +173,11 @@ export const getIsItemContentHiddenSelector = createSelector(
     )
     return hiddenTestContentVisibilty && userRole === roleuser.TEACHER
   }
+)
+
+export const isSurveyTestTypeClassBoard = createSelector(
+  stateTestActivitySelector,
+  (state) => state.additionalData?.testType === TEST_TYPE_SURVEY
 )
 
 function* receiveGradeBookSaga({ payload }) {

@@ -238,6 +238,9 @@ export const getIsPearAppsDisabledSelector = createSelector(
   (features) => features?.disablePearApps || false
 )
 
+export const getDataWarehouseReports = () =>
+  createSelector(getUserFeatures, (features) => features.dataWarehouseReports)
+
 export const getUserOrgData = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData', {})
 )

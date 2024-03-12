@@ -36,7 +36,7 @@ const CartButton = ({
   }, [tests?._id])
 
   return (
-    <Container>
+    <Container rightMargin={displayDeselect}>
       {numberOfSelectedItems > 0 && displayDeselect && (
         <EduButton
           data-cy="deselectItems"
@@ -60,7 +60,9 @@ const CartButton = ({
           {numberOfSelectedItems}
         </ItemsAmount>
         items
-        <StyledBetaTag alignItems="left">BETA</StyledBetaTag>
+        {displayDeselect && (
+          <StyledBetaTag alignItems="left">BETA</StyledBetaTag>
+        )}
       </EduButton>
     </Container>
   )

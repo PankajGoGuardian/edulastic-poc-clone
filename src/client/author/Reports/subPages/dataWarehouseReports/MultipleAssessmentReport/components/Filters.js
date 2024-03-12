@@ -458,8 +458,8 @@ const MultipleAssessmentReportFilters = ({
     return [termId, districtId, filtersDisabled, filtersDisabledMessage]
   }, [filters.termId, filters.districtIds, isDistrictGroupAdmin])
 
-  const isFieldRequired = isMultiSchoolYear
-  const isApplyDisabledForSelectedTests = isFieldRequired && !testUniqIds.length
+  const isApplyDisabledForSelectedTests =
+    isMultiSchoolYear && !testUniqIds.length
 
   const applyButton = () => {
     const ApplyButton = ({ width = '25%' }) => (
@@ -746,7 +746,7 @@ const MultipleAssessmentReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="testGrade"
                           placeholder="All Test Grade"
-                          label={getLabel('Test Grade', isFieldRequired)}
+                          label={getLabel('Test Grade', isMultiSchoolYear)}
                           onChange={(e) => {
                             const selected = staticDropDownData.grades.filter(
                               (a) => e.includes(a.key)
@@ -765,7 +765,7 @@ const MultipleAssessmentReportFilters = ({
                         <MultiSelectDropdown
                           placeholder="All Test Subject"
                           dataCy="testSubject"
-                          label={getLabel('Test Subject', isFieldRequired)}
+                          label={getLabel('Test Subject', isMultiSchoolYear)}
                           onChange={(e) => {
                             const selected = staticDropDownData.subjects.filter(
                               (a) => e.includes(a.key)

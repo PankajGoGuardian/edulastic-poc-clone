@@ -120,7 +120,6 @@ export const StandardDescContainer = styled.div`
   line-height: 24px;
   width: 180px;
   text-overflow: ellipsis;
-  height: 18px;
   white-space: nowrap;
   overflow: hidden;
 `
@@ -129,7 +128,6 @@ export const StandardStudentCountContainer = styled.div`
   font-weight: 600;
   font-size: 11px;
   line-height: 24px;
-  color: #777777;
   width: 70px;
   text-overflow: ellipsis;
 `

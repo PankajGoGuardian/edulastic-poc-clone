@@ -1922,7 +1922,7 @@ class ClassBoard extends Component {
                           data-cy="assignTutoring"
                           onClick={handleAssignInterventionsClick}
                         >
-                          Assign Interventions
+                          ASSIGN INTERVENTIONS
                         </AssignTutoring>
                       </div>
                     </Tooltip>

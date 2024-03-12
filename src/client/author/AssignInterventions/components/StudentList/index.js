@@ -1,27 +1,20 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useRef, useState, useCallback, useEffect } from 'react'
 import { FixedSizeList } from 'react-window'
 import { CheckboxLabel, EduElse, EduIf, EduThen } from '@edulastic/common'
 import { IconInfoCircle } from '@edulastic/icons'
+import { grey } from '@edulastic/colors'
 import { Tooltip } from 'antd'
-import { sortBy } from 'lodash'
+import { keyBy, sortBy } from 'lodash'
 import {
-  RowContainer,
-  StandardTag,
-  StandardTotal,
-  StudentFullName,
   StudentListContainer,
   StudentListHeading,
   StudentListSubHeading,
-  StyledCircularDiv,
   StyledNoDataNotification,
   TABLE_HEADING_HEIGHT,
   TableHeaderContainer,
   TableHeaderMastery,
   TableHeaderName,
   TableHeaderStandards,
-  TableStudentMastery,
-  TableStudentName,
-  TableStudentStandards,
 } from './style'
 import { FOOTER_HEIGHT } from '../Footer/style'
 import {
@@ -29,13 +22,7 @@ import {
   RIGHT_SECTION_PADDING_TOP,
 } from '../Container/style'
 import SortingArrows from './SortingArrows'
-
-const getInitials = (firstName, lastName) => {
-  if (firstName && lastName)
-    return `${firstName[0] + lastName[0]}`.toUpperCase()
-  if (firstName) return `${firstName.substr(0, 2)}`.toUpperCase()
-  if (lastName) return `${lastName.substr(0, 2)}`.toUpperCase()
-}
+import StudentDetailRow from './StudentDetailRow'
 
 const StudentList = ({
   studentListWithStandards,
@@ -49,6 +36,21 @@ const StudentList = ({
   // -1: Descending Order
   const [masterySort, setMasterySort] = useState(0)
   const [standardSort, setStandardSort] = useState(0)
+  const [standardsColumnWidth, setStandardsColumnWidth] = useState(0)
+  const standardColumnRef = useRef(null)
+
+  // This is the container of the virtualized list.
+  // Height is a numerical input. Thus, calculate the height of
+  // the table after deducting the height of the remaining elements
+  // above and below the table.
+  const tableheight =
+    windowHeight -
+    (FOOTER_HEIGHT +
+      TABLE_HEADING_HEIGHT +
+      RIGHT_SECTION_GAP * 2 +
+      RIGHT_SECTION_PADDING_TOP)
+  // Height of each list item to be rendered.
+  const itemHeight = 60
 
   // Average Mastery = Sum of mastery in standards/Total number of standards
   const sortedStudentList = useMemo(
@@ -61,6 +63,8 @@ const StudentList = ({
         : studentListWithStandards,
     [masterySort, standardSort, studentListWithStandards]
   )
+
+  const selectedStudentsById = keyBy(selectedStudents)
 
   const handleRowCheckboxChange = (event, studentId) => {
     if (event.target.checked) {
@@ -82,42 +86,23 @@ const StudentList = ({
     }
   }
 
+  useEffect(() => {
+    if (standardColumnRef?.current?.clientWidth)
+      setStandardsColumnWidth(standardColumnRef?.current?.clientWidth)
+  }, [standardColumnRef?.current?.clientWidth])
+
   // This is the component which will be rendered for each list item in the virtual list.
-  const Row = ({ index, style }) => (
-    <RowContainer style={style} key={sortedStudentList[index]._id}>
-      <TableStudentName>
-        <CheckboxLabel
-          checked={selectedStudents.includes(sortedStudentList[index]._id)}
-          onChange={(event) => {
-            handleRowCheckboxChange(event, sortedStudentList[index]._id)
-          }}
-          style={{ marginRight: '10px' }}
-        />
-        <StyledCircularDiv>
-          {getInitials(
-            sortedStudentList[index].firstName,
-            sortedStudentList[index].lastName
-          )}
-        </StyledCircularDiv>
-        <StudentFullName>{`${sortedStudentList[index].firstName || ''} 
-            ${sortedStudentList[index].lastName || ''}`}</StudentFullName>
-      </TableStudentName>
-      <TableStudentMastery>
-        {sortedStudentList[index].avgMastery} {'%'}
-      </TableStudentMastery>
-      <TableStudentStandards>
-        <StandardTotal>
-          {sortedStudentList[index].standards.length}
-        </StandardTotal>
-        {sortedStudentList[index].standards.map((std) => (
-          <StandardTag>
-            <Tooltip
-              title={`${std.mastery}% - ${std.tloDesc}`}
-            >{` ${std.identifier} `}</Tooltip>
-          </StandardTag>
-        ))}
-      </TableStudentStandards>
-    </RowContainer>
+  const Row = useCallback(
+    ({ index, style }) => (
+      <StudentDetailRow
+        studentData={sortedStudentList[index]}
+        standardsColumnWidth={standardsColumnWidth}
+        style={style}
+        selectedStudentsById={selectedStudentsById}
+        handleRowCheckboxChange={handleRowCheckboxChange}
+      />
+    ),
+    [standardsColumnWidth, sortedStudentList, selectedStudents]
   )
 
   return (
@@ -154,7 +139,7 @@ const StudentList = ({
             changeSortDirection={setMasterySort}
           />
         </TableHeaderMastery>
-        <TableHeaderStandards>
+        <TableHeaderStandards ref={standardColumnRef}>
           STANDARDS TO BE IMPROVED
           <SortingArrows
             sortDirection={standardSort}
@@ -169,20 +154,18 @@ const StudentList = ({
         </EduThen>
         <EduElse>
           <FixedSizeList
-            // This is the container of the virtualized list.
-            // Height is a numerical input. Thus, calculate the height of
-            // the table after deducting the height of the remaining elements
-            // above and below the table.
-            height={
-              windowHeight -
-              (FOOTER_HEIGHT +
-                TABLE_HEADING_HEIGHT +
-                RIGHT_SECTION_GAP * 2 +
-                RIGHT_SECTION_PADDING_TOP)
-            }
-            // Height of each list item to be rendered.
-            itemSize={60}
+            height={tableheight}
+            itemSize={itemHeight}
             itemCount={sortedStudentList.length}
+            style={
+              sortedStudentList.length * itemHeight > tableheight
+                ? {
+                    border: `1px solid ${grey}`,
+                    borderWidth: '0 0 1px 0',
+                    borderRadius: '0 0 5px 5px',
+                  }
+                : {}
+            }
           >
             {Row}
           </FixedSizeList>

@@ -8,6 +8,9 @@ const STUDENT_LIST_HEADING_MARGIN = 8
 
 const STUDENT_LIST_SUB_HEADING_LINE_HEIGHT = 20
 
+const STANDARD_MARGIN = 3
+const STANDARD_PADDING = 5
+
 const TABLE_HEADER_HEIGHT = 60
 
 export const TABLE_HEADING_HEIGHT =
@@ -15,6 +18,12 @@ export const TABLE_HEADING_HEIGHT =
   STUDENT_LIST_SUB_HEADING_LINE_HEIGHT +
   STUDENT_LIST_HEADING_MARGIN +
   STUDENT_LIST_HEADING_LINE_HEIGHT
+
+export const STANDARD_SPACING = 2 * (STANDARD_PADDING + STANDARD_MARGIN)
+export const TOTAL_STANDARDS_MARGIN = 10
+export const TOTAL_STANDARDS_FONT_WIDTH = 13
+export const STANDARDS_FONT_WIDTH = 8
+export const STANDARDS_REMAINING_MARGIN = 3
 
 export const StudentListContainer = styled.div`
   position: relative;
@@ -131,14 +140,20 @@ export const TableHeaderStandards = styled.div`
   gap: 2px;
 `
 
+// If you change the font-size, update the STANDARDS_FONT_WIDTH value accordingly.
 export const StandardTag = styled.span`
   background-color: ${grey};
-  margin: 0px 3px;
+  margin: 0px ${STANDARD_MARGIN}px;
   border-radius: 5px;
-  padding: 5px;
+  padding: ${STANDARD_PADDING}px;
 `
 
+export const StandardRemaining = styled.span`
+  margin: 0px ${STANDARDS_REMAINING_MARGIN}px;
+`
+
+// If you change the font-size, update the TOTAL_STANDARDS_FONT_WIDTH value accordingly.
 export const StandardTotal = styled.span`
   font-size: 22px;
-  margin: 0 10px 0 0;
+  margin: 0 ${TOTAL_STANDARDS_MARGIN}px 0 0;
 `

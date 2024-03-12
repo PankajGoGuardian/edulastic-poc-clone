@@ -42,7 +42,7 @@ const AssignInterventions = ({
   windowHeight,
 }) => {
   const { assignmentId, classId } = match.params
-  const [masteryRange, setMasteryRange] = useState([0, 50])
+  const [masteryRange, setMasteryRange] = useState([0, 100])
   const [selectedStandards, setSelectedStandards] = useState([])
   const [selectedStudents, setSelectedStudents] = useState([])
 
@@ -92,7 +92,9 @@ const AssignInterventions = ({
               )
                 return false
               // Filter standards for which mastery is not in the selected range.
-              const mastery = studentStandardsData[student._id][_id]
+              const mastery = Math.round(
+                studentStandardsData[student._id][_id] || 0
+              )
               if (mastery < masteryRange[0] || mastery > masteryRange[1])
                 return false
               totalMastery += mastery
@@ -100,7 +102,9 @@ const AssignInterventions = ({
             })
             .map((standardInfo) => ({
               ...standardInfo,
-              mastery: studentStandardsData[student._id][standardInfo._id],
+              mastery: Math.round(
+                studentStandardsData[student._id][standardInfo._id] || 0
+              ),
             }))
 
           if (standards.length === 0) return
@@ -108,7 +112,7 @@ const AssignInterventions = ({
           return {
             ...student,
             standards,
-            avgMastery: totalMastery / standards.length,
+            avgMastery: Math.round(totalMastery / standards.length),
           }
         })
         .filter((studentWithStandards) => {

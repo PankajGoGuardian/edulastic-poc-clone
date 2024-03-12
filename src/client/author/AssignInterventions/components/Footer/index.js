@@ -1,5 +1,6 @@
 import React from 'react'
 import { EduButton } from '@edulastic/common'
+import { keyBy, omit } from 'lodash'
 import {
   IconAssignPearPractice,
   IconAssignPearDeckTutor,
@@ -8,9 +9,11 @@ import { ButtonContainer, FooterContainer } from './style'
 
 const Footer = ({ selectedStudents, studentListWithStandards }) => {
   const printStudentDetails = () => {
-    return selectedStudents.map((studentId) => ({
-      ...studentListWithStandards.find((student) => student._id === studentId),
-    }))
+    const studentListWithStandardsById = keyBy(studentListWithStandards, '_id')
+    return selectedStudents.map((studentId) => {
+      const studentInfo = studentListWithStandardsById[studentId]
+      return omit(studentInfo, ['fakeFirstName', 'fakeLastName', 'icon'])
+    })
   }
   return (
     <FooterContainer>

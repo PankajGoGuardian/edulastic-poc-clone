@@ -57,6 +57,7 @@ const StudentReportPage = ({
   interestedCurriculums,
   audit,
   allLoaded,
+  disablePageBreak,
 }) => {
   const performanceRef = useRef()
   const mainContainerRef = useRef()
@@ -366,7 +367,8 @@ const StudentReportPage = ({
             <div
               style={{
                 height: `${PAGE_SIZE_HEIGHT}px`,
-                pageBreakAfter: 'always',
+                pageBreakAfter:
+                  disablePageBreak && i + 1 == totalPages ? 'avoid' : 'always',
                 justifyContent: 'flex-end',
                 alignItems: 'center',
                 marginTop: `${footerMargin}px`,

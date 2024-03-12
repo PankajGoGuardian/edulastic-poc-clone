@@ -89,6 +89,9 @@ const StudentsReportCard = ({
               setLoaded={setLoadedCb}
               audit={audit}
               allLoaded={allLoaded}
+              disablePageBreak={
+                index == loadedCount || index == gradedTestActivities.length - 1
+              }
             />
           ) : null
         )}

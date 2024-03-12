@@ -23,6 +23,7 @@ class MathInput extends React.PureComponent {
     mathField: null,
     showPeriodic: false,
     mathFieldFocus: false,
+    changed: false,
   }
 
   containerRef = React.createRef()
@@ -310,11 +311,14 @@ class MathInput extends React.PureComponent {
   }
 
   handleBlur = (ev) => {
+    const { changed } = this.state
+    if (!changed) return
     this.sanitizeLatexOnBlur()
     const { onBlur } = this.props
     if (onBlur) {
       onBlur(ev)
     }
+    this.setState({ changed: false })
   }
 
   handleChangeField = () => {
@@ -323,6 +327,7 @@ class MathInput extends React.PureComponent {
 
     const text = reformatMathInputLatex(mathField.latex())
     saveAnswer(text.replace(/\\square/g, '\\square '))
+    this.setState({ changed: true })
   }
 
   onInput = (key, command = 'cmd', numToMove) => {

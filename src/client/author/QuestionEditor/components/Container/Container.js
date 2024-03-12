@@ -68,6 +68,7 @@ import { getCurrentLanguage } from '../../../../common/components/LanguageSelect
 import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
 import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 import { EDIT } from '../../../../assessment/constants/constantsForQuestions'
+import { isSurveyTestSelector } from '../../../TestPage/ducks'
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -345,7 +346,13 @@ class Container extends Component {
   }
 
   renderButtons = () => {
-    const { view, question, preview, itemFromState = {} } = this.props
+    const {
+      view,
+      question,
+      preview,
+      itemFromState = {},
+      isSurveyTest,
+    } = this.props
     const { showHints } = this.state
     const { checkAnswerButton = false, checkAttempts = 1 } =
       question.validation || {}
@@ -354,7 +361,10 @@ class Container extends Component {
     const hideScoreBlock = multipartItem && itemLevelScoring
     const isShowAnswerVisible =
       question &&
-      !constantsQuestionType.manuallyGradableQn.includes(question.type)
+      !constantsQuestionType.manuallyGradableQn.includes(question.type) &&
+      !isSurveyTest
+    const isShowCheckButton =
+      (isShowAnswerVisible || checkAnswerButton) && !isSurveyTest
 
     return (
       <ButtonAction
@@ -366,7 +376,7 @@ class Container extends Component {
         handleShowHints={this.toggleHints}
         showHints={showHints}
         view={view}
-        showCheckButton={isShowAnswerVisible || checkAnswerButton}
+        showCheckButton={isShowCheckButton}
         allowedAttempts={checkAttempts}
         previewTab={preview}
         showSettingsButton={false}
@@ -698,6 +708,7 @@ const enhance = compose(
       previewMode: getPreviewSelector(state),
       currentLanguage: getCurrentLanguage(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      isSurveyTest: isSurveyTestSelector(state),
     }),
     {
       changeView: changeViewAction,

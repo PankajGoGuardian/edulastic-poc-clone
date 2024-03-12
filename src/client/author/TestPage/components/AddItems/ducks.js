@@ -262,13 +262,21 @@ export const reducer = (state = initialState, { type, payload }) => {
         sort: { ...payload.sort },
         needToSetFilter: true,
       }
-    case CLEAR_SEARCH_FILTER_STATE:
+    case CLEAR_SEARCH_FILTER_STATE: {
+      const search = payload?.search || {}
+      if (payload?.search) {
+        delete payload.search
+      }
       return {
         ...state,
-        search: { ...initialSearchState },
+        search: {
+          ...initialSearchState,
+          ...search,
+        },
         sort: { ...initialSortState },
         ...(payload || {}),
       }
+    }
     case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
       return {
         ...state,

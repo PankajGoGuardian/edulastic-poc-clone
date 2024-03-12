@@ -268,8 +268,20 @@ class AddItems extends PureComponent {
   }
 
   handleClearSearch = () => {
-    const { clearFilterState, receiveTestItems, limit } = this.props
-    clearFilterState({ needToSetFilter: false })
+    const {
+      clearFilterState,
+      receiveTestItems,
+      limit,
+      isSurveyTest,
+    } = this.props
+    const clearFilterObj = {
+      needToSetFilter: false,
+    }
+    if (isSurveyTest) {
+      clearFilterObj.search = { questionType: 'likertScale' }
+      initialSearchState.questionType = 'likertScale'
+    }
+    clearFilterState(clearFilterObj)
     receiveTestItems(initialSearchState, initialSortState, 1, limit)
     setDefaultInterests({ subject: [], grades: [], curriculumId: '' })
   }

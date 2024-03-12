@@ -401,56 +401,52 @@ class Container extends Component {
                   selectedKeys={[selectedCategory]}
                   onClick={this.handleCategory}
                 >
-                  {!isSurveyTest && (
-                    <>
-                      <Menu.Item key="multiple-choice">
-                        <IconNewList />
-                        Multiple Choice
-                      </Menu.Item>
-                      <Menu.Item key="fill-blanks">
-                        <IconSelection />
-                        Fill in the Blanks
-                      </Menu.Item>
-                      <Menu.Item key="classify">
-                        <IconLayout />
-                        Classify, Match & Order
-                      </Menu.Item>
-                      <Menu.Item key="edit">
-                        <IconWrite />
-                        {audioResponseQuestionTypeText}
-                      </Menu.Item>
-                    </>
-                  )}
+                  {!isSurveyTest && [
+                    <Menu.Item key="multiple-choice">
+                      <IconNewList />
+                      Multiple Choice
+                    </Menu.Item>,
+                    <Menu.Item key="fill-blanks">
+                      <IconSelection />
+                      Fill in the Blanks
+                    </Menu.Item>,
+                    <Menu.Item key="classify">
+                      <IconLayout />
+                      Classify, Match & Order
+                    </Menu.Item>,
+                    <Menu.Item key="edit">
+                      <IconWrite />
+                      {audioResponseQuestionTypeText}
+                    </Menu.Item>,
+                  ]}
                   {!multipartItem && !isSurveyTest && (
                     <Menu.Item key="read">
                       <IconRead />
                       PASSAGE
                     </Menu.Item>
                   )}
-                  {!isSurveyTest && (
-                    <>
-                      <Menu.Item key="highlight">
-                        <IconTarget />
-                        Highlight
-                      </Menu.Item>
-                      <Menu.Item key="math">
-                        <IconMath />
-                        Math
-                      </Menu.Item>
-                      <Menu.Item key="graphing">
-                        <IconLineChart />
-                        Graphing
-                      </Menu.Item>
-                      <Menu.Item key="charts">
-                        <IconBarChart />
-                        Charts
-                      </Menu.Item>
-                      <Menu.Item key="multipart">
-                        <IconMultipart />
-                        Multipart
-                      </Menu.Item>
-                    </>
-                  )}
+                  {!isSurveyTest && [
+                    <Menu.Item key="highlight">
+                      <IconTarget />
+                      Highlight
+                    </Menu.Item>,
+                    <Menu.Item key="math">
+                      <IconMath />
+                      Math
+                    </Menu.Item>,
+                    <Menu.Item key="graphing">
+                      <IconLineChart />
+                      Graphing
+                    </Menu.Item>,
+                    <Menu.Item key="charts">
+                      <IconBarChart />
+                      Charts
+                    </Menu.Item>,
+                    <Menu.Item key="multipart">
+                      <IconMultipart />
+                      Multipart
+                    </Menu.Item>,
+                  ]}
                   <Menu.Item key="instruction">
                     <IconPlay />
                     Instructions
@@ -540,63 +536,74 @@ class Container extends Component {
               selectedKeys={[selectedCategory]}
               onClick={this.handleCategory}
             >
-              <Menu.Item key="multiple-choice" onClick={this.toggleCategories}>
-                <IconNewList />
-                Multiple Choice
-              </Menu.Item>
-              <Menu.Item key="fill-blanks" onClick={this.toggleCategories}>
-                <IconSelection />
-                Fill in the Blanks
-              </Menu.Item>
-              <Menu.Item key="classify" onClick={this.toggleCategories}>
-                <IconLayout />
-                Classify, Match & Order
-              </Menu.Item>
-              <Menu.Item key="edit" onClick={this.toggleCategories}>
-                <IconWrite />
-                {audioResponseQuestionTypeText}
-              </Menu.Item>
-              {!multipartItem && (
+              {!isSurveyTest && [
+                <Menu.Item
+                  key="multiple-choice"
+                  onClick={this.toggleCategories}
+                >
+                  <IconNewList />
+                  Multiple Choice
+                </Menu.Item>,
+                <Menu.Item key="fill-blanks" onClick={this.toggleCategories}>
+                  <IconSelection />
+                  Fill in the Blanks
+                </Menu.Item>,
+                <Menu.Item key="classify" onClick={this.toggleCategories}>
+                  <IconLayout />
+                  Classify, Match & Order
+                </Menu.Item>,
+                <Menu.Item key="edit" onClick={this.toggleCategories}>
+                  <IconWrite />
+                  {audioResponseQuestionTypeText}
+                </Menu.Item>,
+              ]}
+              {!multipartItem && !isSurveyTest && (
                 <Menu.Item key="read" onClick={this.toggleCategories}>
                   <IconRead />
                   Reading
                 </Menu.Item>
               )}
-              <Menu.Item key="highlight" onClick={this.toggleCategories}>
-                <IconTarget />
-                Highlight
-              </Menu.Item>
-              <Menu.Item key="math" onClick={this.toggleCategories}>
-                <IconMath />
-                Math
-              </Menu.Item>
-              <Menu.Item key="graphing" onClick={this.toggleCategories}>
-                <IconLineChart />
-                Graphing
-              </Menu.Item>
-              <Menu.Item key="charts" onClick={this.toggleCategories}>
-                <IconBarChart />
-                Charts
-              </Menu.Item>
-              <Menu.Item key="multipart">
-                <IconMultipart />
-                Multipart
-              </Menu.Item>
+              {!isSurveyTest && [
+                <Menu.Item key="highlight" onClick={this.toggleCategories}>
+                  <IconTarget />
+                  Highlight
+                </Menu.Item>,
+                <Menu.Item key="math" onClick={this.toggleCategories}>
+                  <IconMath />
+                  Math
+                </Menu.Item>,
+                <Menu.Item key="graphing" onClick={this.toggleCategories}>
+                  <IconLineChart />
+                  Graphing
+                </Menu.Item>,
+                <Menu.Item key="charts" onClick={this.toggleCategories}>
+                  <IconBarChart />
+                  Charts
+                </Menu.Item>,
+                <Menu.Item key="multipart">
+                  <IconMultipart />
+                  Multipart
+                </Menu.Item>,
+              ]}
               <Menu.Item key="instruction">
                 <IconPlay />
                 Instructions
               </Menu.Item>
-              <Menu.Item key="likert-scale">
-                <IconMultipart />
-                Likert Scale
-              </Menu.Item>
-              <Menu.Item
-                key="rulers-calculators"
-                onClick={this.toggleCategories}
-              >
-                <IconRulerPencil />
-                Tools
-              </Menu.Item>
+              {isSurveyTest && (
+                <Menu.Item key="likert-scale">
+                  <IconMultipart />
+                  Likert Scale
+                </Menu.Item>
+              )}
+              {!isSurveyTest && (
+                <Menu.Item
+                  key="rulers-calculators"
+                  onClick={this.toggleCategories}
+                >
+                  <IconRulerPencil />
+                  Tools
+                </Menu.Item>
+              )}
               {/* implementation is in progress */}
               {/* <Menu.Item key="other" onClick={this.toggleCategories}>
                 <IconMore />

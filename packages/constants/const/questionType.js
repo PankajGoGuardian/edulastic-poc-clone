@@ -141,6 +141,7 @@ const useLanguageFeatureQn = [
   ORDER_LIST,
   ESSAY_PLAIN_TEXT,
   ESSAY_RICH_TEXT,
+  PASSAGE,
 ]
 
 const disableEditResponseInEgQuestionTypes = [AUDIO_RESPONSE]

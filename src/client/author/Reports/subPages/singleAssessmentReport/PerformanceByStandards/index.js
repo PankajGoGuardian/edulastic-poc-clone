@@ -6,6 +6,7 @@ import { capitalize, find, indexOf, isEmpty, get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import { report as reportTypes, reportUtils } from '@edulastic/constants'
 
@@ -485,9 +486,15 @@ const PerformanceByStandards = ({
                 </EduThen>
                 <EduElse>
                   <NoDataNotification
-                    heading="Report requires test items to be tagged to standards."
-                    description="Please add standards to the test items and regrade the test to view
-                    standard-wise performance."
+                    heading="Test standards do not match your Standard Set. Details below.  "
+                    description={
+                      <>
+                        Please visit{' '}
+                        <Link to="/author/profile">My Profile</Link> and add the
+                        relevant standard set for this test to your Interested
+                        Standards.
+                      </>
+                    }
                     style={{
                       width: '750px',
                     }}
@@ -506,8 +513,9 @@ const PerformanceByStandards = ({
                 </EduThen>
                 <EduElse>
                   <NoDataNotification
-                    heading="Standards are not available for this test"
-                    description="Please add standards to the test and regrade to view performance by standards."
+                    heading="Report requires test items to be tagged to standards."
+                    description="Please add standards to the test items and regrade the test to view
+                    standard-wise performance."
                     style={{ width: '600px' }}
                   />
                 </EduElse>

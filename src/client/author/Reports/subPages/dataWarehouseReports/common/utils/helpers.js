@@ -6,6 +6,7 @@ import { isEmpty, round } from 'lodash'
 import { roleuser } from '@edulastic/constants'
 import {
   PERIOD_TYPES,
+  RISK_BAND,
   getDistrictGroupTestTermIds,
   getDistrictTermIdsForDistrictGroup,
 } from '@edulastic/constants/reportUtils/common'
@@ -360,3 +361,9 @@ export const enhanceQueryWithTermIds = (
   }
   return query
 }
+
+export const RISK_LEGEND_PAYLOAD = Object.keys(RISK_BAND).map((riskType) => {
+  const { min, max, color } = RISK_BAND[riskType]
+  const name = `${riskType} (${min}-${max})`.toUpperCase()
+  return { name, color }
+})

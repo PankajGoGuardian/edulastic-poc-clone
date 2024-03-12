@@ -11,6 +11,9 @@ import TestRiskScoreList from './TestRiskScoreList'
 import TestRiskListPopup from './TestRiskListPopup'
 import { getTestRiskTableData } from '../../utils'
 import { StyledEmptyContainer } from '../../../common/components/styledComponents'
+import { RISK_LABEL_SUFFIX } from '../../../common/utils'
+
+const labelText = `ACADEMIC PROFICIENCY AND RISK ${RISK_LABEL_SUFFIX.toUpperCase()}`
 
 const AcademicRisk = ({ internalAssessmentRisk, externalAssessmentRisk }) => {
   const [isTestListPopupVisible, setIsTestListPopupVisible] = useState(false)
@@ -46,8 +49,8 @@ const AcademicRisk = ({ internalAssessmentRisk, externalAssessmentRisk }) => {
         tableData={testRiskTableData}
       />
       <AcademicRiskListContainer>
-        <Label $margin="0 0 10px 0" $fontSize="16px">
-          ACADEMIC PROFICIENCY AND RISK
+        <Label $margin="0 0 10px 0" $fontSize="14px">
+          {labelText}
         </Label>
         <EduIf condition={hasContent}>
           <EduThen>

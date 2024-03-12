@@ -5,7 +5,7 @@ import { Tooltip, Typography } from 'antd'
 import React from 'react'
 import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import { DashedLine } from '../../../../../common/styled'
-import Legend from './Legend'
+import Legend from '../../../common/components/Legend'
 import IconArrow from '../../../../multipleAssessmentReport/PreVsPost/components/common/IconArrow'
 import {
   StudentWrapper,
@@ -67,8 +67,14 @@ const SummaryContainer = ({
           </Tooltip>
         </StudentWrapper>
         <div>
-          <Legend band={prePerformanceBand} testType="PRE" />
-          <Legend band={postPerformanceBand} testType="POST" />
+          <Legend
+            title={<TestTypeTag>PRE</TestTypeTag>}
+            payload={prePerformanceBand}
+          />
+          <Legend
+            title={<TestTypeTag>POST</TestTypeTag>}
+            payload={postPerformanceBand}
+          />
         </div>
       </FlexContainer>
       <SummaryWrapper>

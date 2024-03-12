@@ -1,7 +1,7 @@
 import { lightRed5, lightGreen12, lightGrey9 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import next from 'immer'
-import { sumBy, sortBy, groupBy, omit } from 'lodash'
+import { sumBy, sortBy, groupBy, omit, round } from 'lodash'
 import React from 'react'
 import moment from 'moment'
 import {
@@ -81,9 +81,9 @@ export const getTableColumns = ({
       const riskColumn = _columns.find(
         (col) => col.key === tableColumnKeys.RISK
       )
-      riskColumn.render = (value) => (
-        <CustomStyledCell color={RISK_BAND_COLOR_INFO[value]}>
-          {value}
+      riskColumn.render = (value, { riskScore }) => (
+        <CustomStyledCell width="100px" color={RISK_BAND_COLOR_INFO[value]}>
+          {value} ({round(riskScore, 1).toFixed(1)})
         </CustomStyledCell>
       )
     } else {

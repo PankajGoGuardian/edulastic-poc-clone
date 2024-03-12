@@ -659,6 +659,27 @@ const RISK_BAND_LEVELS = {
   [RISK_BAND_LABELS.LOW]: 0,
 }
 
+const RISK_BAND = {
+  [RISK_BAND_LABELS.HIGH]: {
+    level: 2,
+    min: 1,
+    max: 3.9,
+    color: lightRed7,
+  },
+  [RISK_BAND_LABELS.MEDIUM]: {
+    level: 1,
+    min: 4,
+    max: 6.9,
+    color: yellow3,
+  },
+  [RISK_BAND_LABELS.LOW]: {
+    level: 0,
+    min: 7,
+    max: 10,
+    color: lightGreen14,
+  },
+}
+
 const RISK_BAND_COLOR_INFO = {
   [RISK_BAND_LABELS.HIGH]: lightRed7,
   [RISK_BAND_LABELS.MEDIUM]: yellow3,
@@ -726,5 +747,6 @@ module.exports = {
   RISK_TYPE_OPTIONS,
   RISK_BAND_LABELS,
   RISK_BAND_LEVELS,
+  RISK_BAND,
   RISK_BAND_COLOR_INFO,
 }

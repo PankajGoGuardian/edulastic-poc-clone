@@ -2,7 +2,13 @@ import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { isEmpty, mapValues } from 'lodash'
 import { connect } from 'react-redux'
-import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import {
+  EduElse,
+  EduIf,
+  EduThen,
+  FlexContainer,
+  SpinLoader,
+} from '@edulastic/common'
 
 import { helpLinks, reportNavType } from '@edulastic/constants/const/report'
 import { SubHeader } from '../../../common/components/Header'
@@ -12,6 +18,7 @@ import ReportView from './ReportView'
 import Filters from './components/Filters'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import {
+  RISK_LEGEND_PAYLOAD,
   buildRequestFilters,
   compareByOptions as compareByOptionsRaw,
 } from '../common/utils'
@@ -23,6 +30,8 @@ import SectionLabel from '../../../common/components/SectionLabel'
 import SectionDescription from '../../../common/components/SectionDescription'
 import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import useFiltersData from '../../../common/hooks/useFiltersData'
+import Legend from '../common/components/Legend'
+import { StyledText } from '../common/components/styledComponents'
 
 const EarlyWarningReport = ({
   loc,
@@ -143,10 +152,19 @@ const EarlyWarningReport = ({
           >
             Early Warning
           </SectionLabel>
-          <SectionDescription $margin="0px 0px 30px 0px">
+          <SectionDescription $margin="0">
             View students at risk based on their academic and attendance
             performance and plan interventions.
           </SectionDescription>
+          <FlexContainer justifyContent="right" marginBottom="20px" mr="10px">
+            <Legend
+              title={
+                <StyledText fontSize="14px">PRIORITY (SCORE RANGE)</StyledText>
+              }
+              payload={RISK_LEGEND_PAYLOAD}
+              legendStyles={{ fontSize: '14px', fontWeight: 600, gap: '10px' }}
+            />
+          </FlexContainer>
           <ReportView
             loc={loc}
             location={location}

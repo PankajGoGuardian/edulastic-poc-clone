@@ -35,7 +35,7 @@ import {
 } from '../../../../../../common/components/charts/styled-components'
 import { StyledCustomChartTooltip } from '../../../../../../common/styled'
 
-const title = 'Risk Over Time'
+const title = 'Change Over Time'
 
 const TooltipRowItem = ({ label = '', value = '' }) => (
   <Row type="flex" justify="start">
@@ -82,7 +82,7 @@ const renderLegend = ({ payload }) => (
         return (
           <ChartLegendItem key={`item-${index}`}>
             <ChartLegendPill color={color} />
-            {`${value} RISK`.toUpperCase()}
+            {`${value}`.toUpperCase()}
           </ChartLegendItem>
         )
       })}
@@ -147,7 +147,7 @@ const RiskTimeline = ({
       <EduIf condition={loading}>
         <EduThen>
           <SpinLoader
-            tip="Loading Risk Timeline"
+            tip="Loading Change Timeline"
             height="80%"
             position="relative"
           />

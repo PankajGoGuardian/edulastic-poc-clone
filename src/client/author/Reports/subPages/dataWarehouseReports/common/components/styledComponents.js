@@ -265,3 +265,20 @@ export const MandatorySymbol = styled.span`
   font-weight: bold;
   margin-left: 2px;
 `
+export const LegendWrapper = styled.div`
+  display: flex;
+  gap: ${(p) => p.$gap || '20px'};
+  white-space: nowrap;
+  width: fit-content;
+`
+export const StyledLegendItem = styled.span`
+  display: flex;
+  max-width: 150px;
+  & > span {
+    font-size: ${(p) => p.$fontSize || '12px'};
+    font-weight: ${(p) => p.$fontWeight || 'bold'};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`

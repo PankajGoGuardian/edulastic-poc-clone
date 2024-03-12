@@ -4,23 +4,6 @@ import styled from 'styled-components'
 import { StyledTable } from '../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 import { getFGColor } from '../../../../../src/utils/util'
 
-export const LegendWrapper = styled.div`
-  display: flex;
-  white-space: nowrap;
-  width: fit-content;
-`
-export const StyledLegendItem = styled.span`
-  display: flex;
-  margin: 0px 20px;
-  max-width: 150px;
-  & > span {
-    font-size: 12px;
-    font-weight: bold;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-`
 export const TestTypeTag = styled.span`
   background-color: ${grey};
   color: ${getFGColor(grey)};

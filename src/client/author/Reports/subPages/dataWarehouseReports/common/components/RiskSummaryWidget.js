@@ -30,6 +30,7 @@ import WidgetCell from './WidgetCell'
 import WidgetHeader from './WidgetHeader'
 import {
   getTrendPeriodLabel,
+  RISK_LABEL_SUFFIX,
   trendPeriodDateFormat,
   trendPeriodPrefix,
 } from '../utils'
@@ -85,10 +86,12 @@ const RiskSummary = ({ settings, loc = '' }) => {
         trendPeriodDateFormat
       )
     : ''
-  const title =
+  const riskTypeTitle =
     RISK_TYPE_OPTIONS.find(
       (riskType) => riskType.key === settings.requestFilters.riskType
     )?.title || RISK_TYPE_OPTIONS[0].title
+  const widgetTitle = `${riskTypeTitle}${RISK_LABEL_SUFFIX}`
+
   const hasContent = !loading && !error && postPeriod?.distribution?.length
   const errorMsg =
     error?.response?.status === 400
@@ -105,7 +108,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
   return (
     <Widget width={widgetWidth} minWidth="665px">
       <FlexContainer justifyContent="left" alignItems="center">
-        <WidgetHeader title={title} loading={loading} url={externalUrl}>
+        <WidgetHeader title={widgetTitle} loading={loading} url={externalUrl}>
           <EduIf condition={!loading && !error}>
             <StyledText>{periodLabel}</StyledText>
           </EduIf>
@@ -115,7 +118,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
       <EduIf condition={loading}>
         <EduThen>
           <SpinLoader
-            tip="Loading Risk Summary Data"
+            tip={`Loading Risk ${RISK_LABEL_SUFFIX} Summary Data`}
             height="80%"
             position="relative"
           />
@@ -126,7 +129,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
               <ContentWrapper>
                 <div className="left-content">
                   <WidgetCell
-                    header="HIGH RISK"
+                    header="HIGH"
                     value={postPeriodhighRisk}
                     color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH]}
                     dataCy="highRiskValue"
@@ -146,7 +149,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                     dashColor={lightGrey8}
                   />
                   <WidgetCell
-                    header="MEDIUM RISK"
+                    header="MEDIUM"
                     value={postPeriodMediumRisk}
                     color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM]}
                     dataCy="mediumRiskValue"

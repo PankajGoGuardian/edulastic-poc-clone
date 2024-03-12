@@ -231,3 +231,5 @@ export const ATTENDANCE_EVENT_CATEGORY_LABELS = {
 }
 
 export const EXTERNAL_TAG_MAX_CHARS_COUNT = 10
+
+export const RISK_LABEL_SUFFIX = ' / At Promise'

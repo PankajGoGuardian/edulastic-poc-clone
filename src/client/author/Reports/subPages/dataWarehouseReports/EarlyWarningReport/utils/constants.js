@@ -1,6 +1,8 @@
 import React from 'react'
 import { reportUtils } from '@edulastic/constants'
+import { FlexContainer } from '@edulastic/common'
 import { ColoredText } from '../../common/components/styledComponents'
+import { RISK_LABEL_SUFFIX } from '../../common/utils'
 
 const {
   GRADE_OPTIONS,
@@ -58,14 +60,14 @@ export const tableColumnsData = [
   {
     key: tableColumnKeys.ACADEMIC_RISK,
     dataIndex: 'distribution',
-    title: 'ACADEMIC RISK',
+    title: `ACADEMIC RISK${RISK_LABEL_SUFFIX}`,
     align: 'left',
     className: 'risk-distribution',
   },
   {
     key: tableColumnKeys.ATTENDANCE_RISK,
     dataIndex: 'distribution',
-    title: 'ATTENDANCE RISK',
+    title: `ATTENDANCE RISK${RISK_LABEL_SUFFIX}`,
     align: 'left',
     className: 'risk-distribution',
   },
@@ -97,7 +99,12 @@ export const compareByStudentColumns = [
   },
   {
     key: tableColumnKeys.RISK,
-    title: 'RISK',
+    title: (
+      <FlexContainer flexDirection="column" style={{ gap: '10px' }}>
+        <div>RISK{RISK_LABEL_SUFFIX}</div>
+        <div>PRIORITY</div>
+      </FlexContainer>
+    ),
     dataIndex: 'risk',
     align: 'center',
     width: 200,

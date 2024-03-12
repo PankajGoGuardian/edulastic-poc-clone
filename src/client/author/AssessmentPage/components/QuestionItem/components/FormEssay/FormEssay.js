@@ -15,9 +15,17 @@ export default class FormEssay extends React.Component {
     answer: '',
   }
 
+  state = {
+    changed: false,
+  }
+
   handleChange = ({ target: { value } }) => {
     const { saveAnswer } = this.props
+    const { changed } = this.state
     saveAnswer(value)
+    if (!changed) {
+      this.setState({ changed: true })
+    }
   }
 
   renderView = () => {
@@ -32,11 +40,13 @@ export default class FormEssay extends React.Component {
   }
 
   handleBlur = (ev) => {
-    // preventing blur event when relatedTarget is submit button
-    if (!isSubmitButton(ev)) {
+    const { changed } = this.state
+    // preventing blur event when relatedTarget is submit button and there is no change in input value
+    if (!isSubmitButton(ev) && changed) {
       const { clearHighlighted, saveQuestionResponse } = this.props
       clearHighlighted()
       saveQuestionResponse()
+      this.setState({ changed: false })
     }
   }
 

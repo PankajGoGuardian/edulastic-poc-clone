@@ -20,6 +20,7 @@ export default class FormText extends React.Component {
 
   state = {
     selection: { start: 0, end: 0 },
+    changed: false,
   }
 
   setText = (text) => {
@@ -62,6 +63,7 @@ export default class FormText extends React.Component {
   handleChange = ({ target: { value } }) => {
     const { saveAnswer } = this.props
     saveAnswer(value)
+    this.setState({ changed: true })
   }
 
   renderView = () => {
@@ -81,11 +83,13 @@ export default class FormText extends React.Component {
   }
 
   handleBlur = (ev) => {
-    // preventing blur event when relatedTarget is submit button
-    if (!isSubmitButton(ev)) {
+    const { changed } = this.state
+    // preventing blur event when relatedTarget is submit button and there is no change in input value
+    if (!isSubmitButton(ev) && changed) {
       const { clearHighlighted, saveQuestionResponse } = this.props
       clearHighlighted()
       saveQuestionResponse()
+      this.setState({ changed: false })
     }
   }
 

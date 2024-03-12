@@ -44,7 +44,7 @@ export const useSaveForm = ({
       setDefaultTest()
       clearCreatedItem()
     }
-  }, [addItems, isAiGeneratedTest])
+  }, [addItems])
 
   const [selectSectionVisible, setSelectSectionVisible] = useState(false)
   const [isVisible, setIsVisible] = useState(false)

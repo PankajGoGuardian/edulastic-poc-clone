@@ -295,6 +295,7 @@ class QuestionViewContainer extends Component {
             attempts: st.questionActivities.length,
             correct: 0,
             wrong: 0,
+            attempted: 0,
             pCorrect: 0,
             skipped: 0,
             manuallyGraded: 0,
@@ -317,10 +318,13 @@ class QuestionViewContainer extends Component {
               stData.manuallyGraded += 1
             } else if (score === maxScore && score > 0) {
               stData.correct += 1
+              stData.attempted += 1
             } else if (score > 0 && score < maxScore) {
               stData.pCorrect += 1
+              stData.attempted += 1
             } else if (score === 0) {
               stData.wrong += 1
+              stData.attempted += 1
             }
             stData.score = score
 
@@ -338,6 +342,7 @@ class QuestionViewContainer extends Component {
         skippedNumber: item.skipped + acc.skippedNumber,
         notGradedNumber: item.manuallyGraded + acc.notGradedNumber,
         unscoredItems: item.unscoredItems + acc.unscoredItems,
+        attemptedNumber: item.attempted + acc.attemptedNumber,
       }),
       {
         totalNumber: 0,
@@ -347,8 +352,13 @@ class QuestionViewContainer extends Component {
         skippedNumber: 0,
         notGradedNumber: 0,
         unscoredItems: 0,
+        attemptedNumber: 0,
       }
     )
+
+    const questionStatusOptions = isSurveyTest
+      ? 'surveyStatusOptions'
+      : 'questionStatusOptions'
 
     questionStatusCounts.totalNumber = data.length
 
@@ -580,7 +590,7 @@ class QuestionViewContainer extends Component {
                 width="170px"
                 height="24px"
               >
-                {questionActivityConst.questionStatusOptions.map(
+                {questionActivityConst[questionStatusOptions].map(
                   ({ title, value, countValue }, i) => (
                     <FilterSelect.Option
                       className="student-status-filter-item"

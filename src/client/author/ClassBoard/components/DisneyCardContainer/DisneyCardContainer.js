@@ -193,11 +193,6 @@ class DisneyCardContainer extends Component {
           closed
         )
         const { questionActivities = [], interventions = [] } = student
-
-        // const colorsBasedOnQuestionActivities = questionActivities.filter(questionActivity=>{
-        //   if(surv)
-        // })
-
         const isAllPractice =
           questionActivities.length &&
           questionActivities.every((q) => q.isPractice)

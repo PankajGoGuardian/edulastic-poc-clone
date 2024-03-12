@@ -7,6 +7,7 @@ import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 
 // constants
 import { themeColor, titleColor } from '@edulastic/colors'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import GroupsFilter from './GroupsFilter'
 
 const FilterDropdown = ({
@@ -141,7 +142,9 @@ const GradebookFilters = ({
             updateFilters({ ...filters, testType: selected })
           }
           value={filters.testType}
-          options={data.testTypes}
+          options={data.testTypes.filter(
+            (type) => type.id !== TEST_TYPE_SURVEY
+          )}
           dataCy="filter-testType"
         />
         <GroupsFilter

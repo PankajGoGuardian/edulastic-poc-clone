@@ -64,6 +64,7 @@ import aiGenerateQuestionSaga from './aiGenerateQuestion'
 import { tutorMeSaga } from '../../TutorMe'
 import ttsTextSaga from './ttsText'
 import { videoQuizSaga } from '../../VideoLibrary/ducks'
+import { importGoogleFormSaga } from '../../AssessmentCreate/components/CreateGoogleFormQuiz'
 import { interventionsPageSaga } from '../../AssignInterventions'
 
 const authorSagas = [
@@ -133,6 +134,7 @@ const authorSagas = [
   tutorMeSaga(),
   ttsTextSaga(),
   videoQuizSaga(),
+  importGoogleFormSaga(),
   interventionsPageSaga(),
 ]
 

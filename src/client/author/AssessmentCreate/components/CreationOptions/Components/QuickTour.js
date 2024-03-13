@@ -1,17 +1,19 @@
 import { CustomModalStyled } from '@edulastic/common'
 import React, { useState } from 'react'
-import { Footer, FooterLink } from './styled'
 
-const QuickTour = ({ title, quickTourLink }) => {
+const QuickTour = ({ title, url, children }) => {
   const [isModelOpen, setIsModelOpen] = useState(false)
+
+  const onVisibilityToggle = () => {
+    setIsModelOpen(!isModelOpen)
+  }
+
   return (
-    <Footer>
-      <FooterLink onClick={() => setIsModelOpen(true)}>
-        WATCH QUICK TOUR
-      </FooterLink>
+    <>
+      <span onClick={onVisibilityToggle}>{children}</span>
       <CustomModalStyled
         visible={isModelOpen}
-        onCancel={() => setIsModelOpen(false)}
+        onCancel={onVisibilityToggle}
         title={title}
         footer={null}
         destroyOnClose
@@ -21,14 +23,14 @@ const QuickTour = ({ title, quickTourLink }) => {
           title={title}
           width="100%"
           height="400px"
-          src={quickTourLink}
+          src={url}
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           frameBorder="0"
           allowFullScreen
           scrolling="no"
         />
       </CustomModalStyled>
-    </Footer>
+    </>
   )
 }
 

@@ -3,6 +3,7 @@ import { Checkbox, Collapse } from 'antd'
 import { title, themeColor } from '@edulastic/colors'
 
 export const DragCrad = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   padding-left: ${({ noPadding }) => !noPadding && '30px'};

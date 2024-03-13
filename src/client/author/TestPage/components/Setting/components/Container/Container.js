@@ -126,13 +126,13 @@ import TtsForPassage from './TtsForPassage'
 import ShowSectionSettings from './SectionSettings'
 import CalculatorSettings from '../../../../../Shared/Components/CalculatorSettings'
 import { safeModeI18nTranslation } from '../../../../../authUtils'
-import { BetaTag2 } from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import ContentVisibilityOptions from '../Common/ContentVisibilityOptions'
 import { isPearDomain } from '../../../../../../../utils/pear'
 import {
   edulasticText,
   pearAssessmentText,
 } from '../../../../../../common/utils/helpers'
+import { BetaTag2 } from '../../../../../../common/components/BetaTag'
 
 import { isEditAllowed } from '../../../../../TestSetting/utils/constants'
 import {

@@ -9,6 +9,7 @@ import { formatName } from '@edulastic/constants/reportUtils/common'
 import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
 import { getDefaultInterests } from '../../dataUtils'
 import { getCurriculumsListSelector } from './dictionaries'
+import { QTI_DISTRICTS } from '../../../config'
 
 export const etsDistrict = '5e42a351a1ee9000081f7cda'
 const gcpsDistrict = '635918f1559a0f00082f0694'
@@ -566,9 +567,14 @@ export const isGcpsDistrictSelector = createSelector(
   (districtId) => districtId === gcpsDistrict
 )
 
+export const isQTIDistrictSelector = createSelector(getUser, (userData) =>
+  QTI_DISTRICTS?.some((qtiDistrict) =>
+    _get(userData, ['districtIds'], []).includes(qtiDistrict)
+  )
+)
+
 export const isVideoQuizAndAIEnabledSelector = createSelector(
   getUser,
-
   (userData) => _get(userData, ['features', 'isVideoQuizAndAIEnabled'], false)
 )
 

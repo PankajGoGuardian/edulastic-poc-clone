@@ -47,8 +47,8 @@ import SettingContainer from '../Container/SettingsContainer'
 import ShowHintsSwitch from '../../../TestPage/components/Setting/components/Container/HintsToStudents/ShowHintsSwitch'
 import RadioOptions from '../../../TestPage/components/Setting/components/Container/HintsToStudents/RadioOptions'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
-import { BetaTag2 } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import DollarPremiumSymbol from '../Container/DollarPremiumSymbol'
+import { BetaTag2 } from '../../../../common/components/BetaTag'
 
 const { COMMON } = testTypes.TEST_TYPES
 

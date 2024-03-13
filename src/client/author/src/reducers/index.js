@@ -72,6 +72,7 @@ import { reducer as tutorMeReducer } from '../../TutorMe'
 import aiGenerateQuestionState from './aiGenerateQuestion'
 import ttsTextReducer from './ttsText'
 import { videoQuizReducer } from '../../VideoLibrary/ducks'
+import { importGoogleFormReducer } from '../../AssessmentCreate/components/CreateGoogleFormQuiz'
 import { assignInterventions } from '../../AssignInterventions'
 
 const authorReducers = {
@@ -149,6 +150,7 @@ const authorReducers = {
   tutorMeReducer,
   ttsTextReducer,
   videoQuizReducer,
+  importGoogleFormReducer,
   assignInterventions,
 }
 

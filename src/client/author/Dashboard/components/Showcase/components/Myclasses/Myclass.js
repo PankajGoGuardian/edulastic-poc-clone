@@ -56,7 +56,6 @@ import {
 import TestRecommendations from './components/TestRecommendations'
 import ClassBanner from './components/ClassBanner'
 import AIFeaturedTiles from './components/AIFeaturedTiles'
-import { videoQuizPath } from '../../../../../AssessmentCreate/components/OptionVideo/OptionVideo'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
@@ -774,7 +773,7 @@ const MyClasses = ({
       <EduIf condition={!isPremiumUser}>
         <AIFeaturedTiles
           onVideoQuizClick={onVideoQuizClick}
-          videoQuizPath={videoQuizPath}
+          videoQuizPath="/author/tests/videoquiz"
           isVideoQuizAndAIEnabled={userFeatures?.isVideoQuizAndAIEnabled}
         />
       </EduIf>

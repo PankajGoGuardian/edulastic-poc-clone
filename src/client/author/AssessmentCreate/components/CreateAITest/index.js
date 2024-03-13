@@ -52,6 +52,7 @@ const EduAIQuiz = ({
   showSelectGroupIndexModal,
   isGcpsDistrict,
   displayScreen = NEW_TEST_SCREEN,
+  children,
 }) => {
   const {
     selectSectionVisible,
@@ -185,7 +186,11 @@ const EduAIQuiz = ({
 
   return (
     <EduIf condition={!isGcpsDistrict}>
-      {getComponentToDisplay(displayScreen)}
+      {children ? (
+        <span onClick={onCreateItems}>{children}</span>
+      ) : (
+        getComponentToDisplay(displayScreen)
+      )}
       <EduIf condition={addItems}>
         <SelectGroupModal
           visible={selectSectionVisible}

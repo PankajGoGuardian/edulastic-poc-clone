@@ -1,57 +1,143 @@
+import { segmentApi } from '@edulastic/api'
+import { Col } from 'antd'
 import React from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { get } from 'lodash'
-import { EduIf } from '@edulastic/common'
-import OptionPDF from '../OptionPDF/OptionPDF'
-import OptionVideo from '../OptionVideo/OptionVideo'
-import OptionScratch from '../OptionScratch/OptionScratch'
-import OptionDynamicTest from '../OptionDynamicTest/OptionDynamicTest'
-import BodyWrapper from '../../../AssignmentCreate/common/BodyWrapper'
-import FlexWrapper from '../../../AssignmentCreate/common/FlexWrapper'
-import OptionQti from '../OptionQTI/OptionQTI'
-import { QTI_DISTRICTS } from '../../../../config'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
-import EduAiQuiz from '../CreateAITest'
-import { isGcpsDistrictSelector } from '../../../src/selectors/user'
+import {
+  clearCreatedItemsAction,
+  clearTestDataAction,
+} from '../../../TestPage/ducks'
+import { navigationState } from '../../../src/constants/navigation'
+import {
+  allowedToCreateVideoQuizSelector,
+  getUserFeatures,
+  isGcpsDistrictSelector,
+  isQTIDistrictSelector,
+} from '../../../src/selectors/user'
+import EduAIQuiz from '../CreateAITest'
+import GoogleFormQuiz from '../CreateGoogleFormQuiz'
+import TestCard from './Components/TestCard'
+import { HeadingWrapper, SectionWrapper } from './Components/styled'
+import { TestKeys, TestSections } from './constants'
+import { isAccessAllowed, validateAndUpdateAccessFeatures } from './utils'
 
-const CreationOptions = ({ onUploadPDF, isShowQTI, isGcpsDistrict }) => (
-  <BodyWrapper>
-    <FlexWrapper marginBottom="0px">
-      <OptionScratch />
-      <OptionPDF onClick={onUploadPDF} />
-      <EduIf condition={!isGcpsDistrict}>
-        <OptionVideo />
-      </EduIf>
-      <FeaturesSwitch
-        inputFeatures="enableDynamicTests"
-        actionOnInaccessible="hidden"
-      >
-        <OptionDynamicTest />
-      </FeaturesSwitch>
-      <EduIf condition={isShowQTI}>
-        <OptionQti />
-      </EduIf>
-    </FlexWrapper>
-    <EduAiQuiz />
-  </BodyWrapper>
-)
+const CreationOptions = ({
+  isQTIDistrict,
+  isGcpsDistrict,
+  userFeatures,
+  history,
+  clearTestData,
+  clearCreatedItems,
+  allowedToCreateVideoQuiz,
+}) => {
+  const isTestCardVisible = ({ key }) => {
+    if (
+      (key === TestKeys.VIDEO_QUIZ_TEST && isGcpsDistrict) || // don't allow VQ for GCPS
+      (key === TestKeys.QTI_IMPORT_TEST && !isQTIDistrict) || // allow QTI import for enabled district
+      (key === TestKeys.DYNAMIC_TEST && !userFeatures?.enableDynamicTests) // allow dynamic test for enabled users only
+    ) {
+      return false
+    }
 
-CreationOptions.propTypes = {
-  onUploadPDF: PropTypes.func.isRequired,
+    return true
+  }
+
+  const onTestCardClick = ({ key, navigation, segmentEvent, access }) => {
+    if (isAccessAllowed(access, userFeatures)) {
+      if (segmentEvent) {
+        segmentApi.genericEventTrack(segmentEvent.name, {
+          ...segmentEvent.data,
+        })
+      }
+      if (navigation) {
+        if ([TestKeys.DEFAULT_TEST, TestKeys.DYNAMIC_TEST].includes(key)) {
+          clearTestData()
+          clearCreatedItems()
+        }
+        if (key === TestKeys.VIDEO_QUIZ_TEST) {
+          if (!allowedToCreateVideoQuiz) {
+            return history.push({
+              pathname: '/author/subscription',
+              state: { view: navigationState.SUBSCRIPTION.view.ADDON },
+            })
+          }
+        }
+        return history.push(navigation)
+      }
+    } else {
+      const firstFeature = access?.features?.[0]
+      if (firstFeature?.navigation) {
+        return history.push(firstFeature.navigation)
+      }
+    }
+  }
+
+  return TestSections.map(({ key, title, tests }, index) => {
+    const cardItems = tests
+      .map((test) => {
+        const cardVisible = isTestCardVisible(test)
+        if (test.access?.features) {
+          test.access.features = validateAndUpdateAccessFeatures(
+            test.access,
+            userFeatures
+          )
+        }
+
+        if (cardVisible) {
+          if (test.key === TestKeys.AI_TEST) {
+            return (
+              <EduAIQuiz>
+                <TestCard {...test} />
+              </EduAIQuiz>
+            )
+          }
+          if (test.key === TestKeys.GOOGLE_FORM_TEST) {
+            return (
+              <GoogleFormQuiz>
+                <TestCard {...test} />
+              </GoogleFormQuiz>
+            )
+          }
+          return <TestCard onClick={() => onTestCardClick(test)} {...test} />
+        }
+        return false
+      })
+      .filter((item) => !!item) // removing hidden cards
+
+    if (cardItems.length) {
+      return (
+        <div key={key || index}>
+          <HeadingWrapper strong>{title}</HeadingWrapper>
+          <SectionWrapper gutter={32}>
+            {cardItems.map((cardItem, cardItemIndex) => (
+              <Col key={cardItemIndex} xxl={6} xl={6} md={3} sm={1}>
+                {cardItem}
+              </Col>
+            ))}
+          </SectionWrapper>
+          <br />
+        </div>
+      )
+    }
+    return false
+  }).filter((item) => !!item)
 }
 
 const enhance = compose(
   withRouter,
-  connect((state) => ({
-    isShowQTI: QTI_DISTRICTS.some((qtiDistrict) =>
-      (state?.user?.user?.districtIds || []).includes(qtiDistrict)
-    ),
-    aiTestStatus: get(state, 'aiTestDetails.status'),
-    isGcpsDistrict: isGcpsDistrictSelector(state),
-  }))
+  connect(
+    (state) => ({
+      isQTIDistrict: isQTIDistrictSelector(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
+      userFeatures: getUserFeatures(state),
+      allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
+    }),
+    {
+      clearTestData: clearTestDataAction,
+      clearCreatedItems: clearCreatedItemsAction,
+    }
+  )
 )
 
 export default enhance(CreationOptions)

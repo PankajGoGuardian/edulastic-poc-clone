@@ -22,13 +22,13 @@ import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import KeypadDropdown from './KeypadDropdown'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
-import { BetaTag } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import { isPearDomain } from '../../../../../utils/pear'
 import {
   edulasticText,
   pearAssessmentText,
 } from '../../../../common/utils/helpers'
 import { isEditAllowed } from '../../../TestSetting/utils/constants'
+import { BetaTag } from '../../../../common/components/BetaTag'
 
 const {
   accessibilities,

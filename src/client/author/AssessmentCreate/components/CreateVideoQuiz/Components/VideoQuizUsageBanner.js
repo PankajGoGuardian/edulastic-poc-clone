@@ -10,7 +10,7 @@ import {
   vqQuotaForDistrictSelector,
   vqUsageCountSelector,
 } from '../../../../src/selectors/user'
-import VideoQuizUsage from '../../OptionVideo/VideoQuizUsage'
+import VideoQuizUsage from '../../../../VideoLibrary/container/components/VideoQuizUsage'
 
 const VideoQuizUsageBanner = ({ vqUsageCount, vqQuotaForDistrict }) => {
   const showUsageCount = vqUsageCount > 0

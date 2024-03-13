@@ -1,13 +1,37 @@
-import React, { useState, useEffect } from 'react'
+import { EduIf } from '@edulastic/common'
+import { IconWarnCircle } from '@edulastic/icons'
+import React, { useEffect, useState } from 'react'
 import { SortableElement } from 'react-sortable-hoc'
+import styled from 'styled-components'
+import { Popover } from 'antd'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { validateQuestionsForGoogleForm } from '../../../../../../../common/utils/helpers'
 import ReviewItem from '../../ReviewItem'
-import DragHandle from './DragHandle'
 import { DragCrad, ReviewItemWrapper } from '../styled'
+import DragHandle from './DragHandle'
+import { getTestSelector } from '../../../../../ducks'
 
 const SortableItem = SortableElement((props) => {
-  const { item, isEditable, expand, groupMinimized } = props
+  const { item, isEditable, expand, groupMinimized, test } = props
+
+  const isGoogleFormTest = test?.importData?.googleForm
+  const isValid = isGoogleFormTest
+    ? validateQuestionsForGoogleForm(item?.data?.questions || [], false)
+    : true
+
   return (
     <DragCrad data-cy="drag-card" noPadding={groupMinimized}>
+      <EduIf condition={!isValid}>
+        <StyledInfoIconWrapper>
+          <Popover
+            placement="bottomLeft"
+            content="Add Correct Answer for item."
+          >
+            <IconWarnCircle />
+          </Popover>
+        </StyledInfoIconWrapper>
+      </EduIf>
       {!expand && !groupMinimized && (
         <DragHandle isEditable={isEditable} indx={item.indx} />
       )}
@@ -18,7 +42,7 @@ const SortableItem = SortableElement((props) => {
   )
 })
 
-export default (props) => {
+const SingleItem = (props) => {
   const { item, isCollapse, removeItem, disabled, ...rest } = props
 
   const [expand, toggleExpand] = useState(false)
@@ -44,3 +68,21 @@ export default (props) => {
     />
   )
 }
+
+const enhance = compose(
+  connect(
+    (state) => ({
+      test: getTestSelector(state),
+    }),
+    {}
+  )
+)
+
+export default enhance(SingleItem)
+
+const StyledInfoIconWrapper = styled.div`
+  cursor: pointer;
+  position: absolute;
+  left: 0px;
+  top: 20px;
+`

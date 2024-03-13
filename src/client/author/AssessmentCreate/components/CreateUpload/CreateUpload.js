@@ -39,7 +39,7 @@ const CreateUpload = ({
 
   const handleAuthFailed = (data) => {
     console.error('oth failed:', data)
-    return notification({ type: 'warn', messageKey: 'autheticationFailed' })
+    return notification({ type: 'warn', messageKey: 'authenticationFailed' })
   }
 
   const handleDriveUpload = ({ action, docs, token }) => {

@@ -9,7 +9,17 @@ import { signUpState } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 import { API } from '@edulastic/api'
 import qs from 'qs'
-import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
+import {
+  AUDIO_RESPONSE,
+  MULTIPLE_CHOICE,
+  MULTIPLE_SELECTION,
+  SHORT_TEXT,
+  TRUE_OR_FALSE,
+} from '@edulastic/constants/const/questionType'
+import {
+  CHOICE_MATRIX_STANDARD,
+  CLOZE_DROP_DOWN,
+} from '@edulastic/constants/const/questionTitle'
 import { Partners } from './static/partnerData'
 import { smallestZoomLevel } from './static/zoom'
 import { breakpoints } from '../../student/zoomTheme'
@@ -252,6 +262,61 @@ export const getSignOutUrl = () =>
 export const getStartedUrl = () => '/getStarted'
 
 export const removeSignOutUrl = () => sessionStorage.removeItem('signOutUrl')
+
+export const validateQuestionsForGoogleForm = (
+  questions,
+  showNotification = true
+) => {
+  if (isEmpty(questions)) {
+    return true
+  }
+
+  if (!questions.filter((q) => q.type !== 'sectionLabel').length) {
+    if (showNotification) {
+      notification({ type: 'warn', messageKey: 'aleastOneQuestion' })
+    }
+    return false
+  }
+
+  const sectionTitle = questions
+    .filter((question) => question.type === 'sectionLabel')
+    .every((question) => !!question.title.trim())
+
+  if (!sectionTitle) {
+    if (showNotification) {
+      notification({ messageKey: 'sectionNameCanNotEmpty' })
+    }
+    return false
+  }
+
+  const correctAnswerPicked = questions
+    .filter((question) =>
+      [
+        MULTIPLE_CHOICE,
+        TRUE_OR_FALSE,
+        MULTIPLE_SELECTION,
+        CLOZE_DROP_DOWN,
+        SHORT_TEXT,
+        CHOICE_MATRIX_STANDARD,
+      ].includes(question.type)
+    )
+    .every((question) => {
+      const validationValue = get(question, 'validation.validResponse.value')
+      if (question.type === 'math') {
+        return validationValue.every((value) => !isEmpty(value.value))
+      }
+      return !isEmpty(validationValue)
+    })
+
+  if (!correctAnswerPicked) {
+    if (showNotification) {
+      notification({ type: 'warn', messageKey: 'correctAnswer' })
+    }
+    return false
+  }
+
+  return true
+}
 
 export const validateQuestionsForDocBased = (
   questions,

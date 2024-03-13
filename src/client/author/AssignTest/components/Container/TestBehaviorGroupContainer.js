@@ -42,8 +42,8 @@ import RefMaterialFile from './RefMaterialFile'
 import ShowHintsToStudents from './ShowHintsToStudents'
 import ShowTtsForPassage from './ShowTtsForPassages'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
-import { BetaTag2 } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import ContentVisibilityOptions from '../../../TestPage/components/Setting/components/Common/ContentVisibilityOptions'
+import { BetaTag2 } from '../../../../common/components/BetaTag'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 

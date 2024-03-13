@@ -672,8 +672,8 @@
     "message": "Value cannot be less than 1",
     "description": ""
   },
-  "autheticationFailed": {
-    "message": "Authetication failed",
+  "authenticationFailed": {
+    "message": "Authentication failed",
     "description": ""
   },
   "viewItemsRestriccedByAdmin": {

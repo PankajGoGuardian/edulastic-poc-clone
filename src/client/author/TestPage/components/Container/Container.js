@@ -129,7 +129,10 @@ import {
   getQuestionsSelector,
   getQuestionsArraySelector,
 } from '../../../sharedDucks/questions'
-import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
+import {
+  validateQuestionsForDocBased,
+  validateQuestionsForGoogleForm,
+} from '../../../../common/utils/helpers'
 import {
   allowDuplicateCheck,
   allowContentEditCheck,
@@ -908,6 +911,7 @@ class Container extends PureComponent {
 
   handleAssign = () => {
     const {
+      questions: assessmentQuestions,
       test,
       history,
       match,
@@ -915,6 +919,14 @@ class Container extends PureComponent {
       collections: orgCollections,
       location,
     } = this.props
+
+    if (
+      test?.importData?.googleForm &&
+      !validateQuestionsForGoogleForm(assessmentQuestions, true)
+    ) {
+      return
+    }
+
     let source = location?.state?.assessmentAssignedFrom
     let assessmentTestCategory = location?.state?.assessmentTestCategory
 
@@ -1397,6 +1409,7 @@ class Container extends PureComponent {
   handleSave = (action, nextLocation, nextAction) => {
     const {
       test = {},
+      questions: assessmentQuestions,
       updateTest,
       createTest,
       currentTab,
@@ -1411,6 +1424,13 @@ class Container extends PureComponent {
 
     if (!isTestTypeWithDefaultTestTitle && !test?.title?.trim()?.length) {
       notification({ messageKey: 'nameFieldRequired' })
+      return
+    }
+
+    if (
+      test?.importData?.googleForm &&
+      !validateQuestionsForGoogleForm(assessmentQuestions, true)
+    ) {
       return
     }
 
@@ -1691,6 +1711,14 @@ class Container extends PureComponent {
       setEditEnable,
     } = this.props
     const { _id } = test
+
+    if (
+      test?.importData?.googleForm &&
+      !validateQuestionsForGoogleForm(assessmentQuestions, true)
+    ) {
+      return
+    }
+
     if (
       test.isDocBased &&
       !validateQuestionsForDocBased(assessmentQuestions, false, !!test.videoUrl)

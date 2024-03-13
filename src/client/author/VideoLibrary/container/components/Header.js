@@ -5,8 +5,8 @@ import { IconVideoLibrary } from '@edulastic/icons'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import VideoQuizUsage from '../../../AssessmentCreate/components/OptionVideo/VideoQuizUsage'
 import { showVQCountSelector } from '../../../src/selectors/user'
+import VideoQuizUsage from './VideoQuizUsage'
 
 const VideoLibraryHeader = ({ showVqCount }) => {
   return (

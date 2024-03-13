@@ -16,6 +16,7 @@ import {
 
 import { withNamespaces } from 'react-i18next'
 import { white } from '@edulastic/colors'
+import styled from 'styled-components'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import CreationOptions from '../CreationOptions/CreationOptions'
 import DropArea from '../DropArea/DropArea'
@@ -203,7 +204,11 @@ class Container extends React.Component {
           ref={this.scrollerRef}
         >
           <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
-          {!method && <CreationOptions />}
+          {!method && (
+            <StyledCreateOptionWrapper>
+              <CreationOptions />
+            </StyledCreateOptionWrapper>
+          )}
           {method === creationMethods.PDF && (
             <DropArea
               loading={creating}
@@ -224,7 +229,9 @@ class Container extends React.Component {
     )
   }
 }
-
+const StyledCreateOptionWrapper = styled.div`
+  padding: 16px 64px 0px 0px;
+`
 const enhance = compose(
   withRouter,
   withNamespaces('header'),

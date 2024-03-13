@@ -775,6 +775,14 @@ export const isDefaultTestSelector = createSelector(
   (test) => test?.testCategory === testCategoryTypes.DEFAULT
 )
 
+export const isTestTypeWithDefaultTestTitleSelector = createSelector(
+  getTestEntitySelector,
+  (test) => {
+    const { VIDEO_BASED, DEFAULT } = testCategoryTypes
+    return [VIDEO_BASED, DEFAULT].includes(test?.testCategory)
+  }
+)
+
 export const isDynamicTestSelector = createSelector(
   getTestEntitySelector,
   (test) => test?.testCategory === testCategoryTypes.DYNAMIC_TEST

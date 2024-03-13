@@ -116,9 +116,9 @@ const VideoLibrary = ({
     }
   }
 
-  const handleCardSelect = (uniqueId) => {
+  const handleCardSelect = (uniqueId, selectedVideoTitle) => {
     const fn = {
-      [YOUTUBE]: () => handleVideoSelect(uniqueId),
+      [YOUTUBE]: () => handleVideoSelect(uniqueId, selectedVideoTitle),
       [COMMUNITY]: () => handleTestSelect(uniqueId),
       [MY_CONTENT]: () => handleTestSelect(uniqueId),
     }

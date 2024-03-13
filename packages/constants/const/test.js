@@ -520,6 +520,14 @@ module.exports = {
     VIDEO_BASED: 'video_based',
     DYNAMIC_TEST: 'dynamic_test',
   },
+  docBasedAssessment: {
+    tabs: {
+      DESCRIPTION: 'description',
+      WORKSHEET: 'edit',
+      REVIEW: 'review',
+      SETTINGS: 'settings',
+    },
+  },
   sectionTestActions: {
     ADD: 'add',
     REMOVE: 'remove',

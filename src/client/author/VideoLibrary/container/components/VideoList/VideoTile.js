@@ -48,7 +48,7 @@ const VideoTile = ({
   const handleOnClick = () => {
     if (currentTab === vqConst.vqTabs.YOUTUBE) {
       if (allowedToCreateVideoQuiz) {
-        handleCardSelect(id)
+        handleCardSelect(id, title)
       } else {
         setIsAddOnAlertVisible((prevState) => !prevState)
       }

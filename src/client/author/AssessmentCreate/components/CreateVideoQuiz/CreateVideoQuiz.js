@@ -13,7 +13,6 @@ import IconVimeo from '@edulastic/icons/src/IconVimeo'
 import IconTwitch from '@edulastic/icons/src/IconTwitch'
 
 import {
-  getYoutubeThumbnailSelector,
   getYoutubeThumbnailAction,
   setYoutubeThumbnailAction,
   isYtLoadingSelector,
@@ -58,10 +57,10 @@ import {
 } from './styledComponents/common'
 import { StyledBetaTag } from '../../../AssessmentPage/VideoQuiz/styled-components/QuestionForm'
 import VideoQuizUsageBanner from './Components/VideoQuizUsageBanner'
+import { videoQuizActions } from '../../../VideoLibrary/ducks'
 
 const CreateVideoQuiz = ({
   onValidUrl,
-  ytThumbnail,
   getYoutubeThumbnail,
   setYoutubeThumbnail,
   isVideoQuizAndAIEnabled,
@@ -72,12 +71,12 @@ const CreateVideoQuiz = ({
   creatingAssessment,
   scrollerRef,
 
+  createVQAssessment,
   showVQCount,
   allowedToCreateVideoQuiz,
 }) => {
   const {
     linkValue,
-    setLinkValue,
     textIsUrl,
     videos,
     isModerateRestriction,
@@ -88,9 +87,9 @@ const CreateVideoQuiz = ({
     handleOnChange,
     loaderRef,
     hasError,
+    handleVideoSelect,
   } = useVideoAssessmentUtils({
     setYoutubeThumbnail,
-    ytThumbnail,
     isVideoQuizAndAIEnabled,
     getYoutubeThumbnail,
     onValidUrl,
@@ -99,6 +98,7 @@ const CreateVideoQuiz = ({
     interestedSubjects,
     scrollerRef,
     allowedToCreateVideoQuiz,
+    createVQAssessment,
   })
 
   if (!allowedToCreateVideoQuiz) {
@@ -244,7 +244,10 @@ const CreateVideoQuiz = ({
             <EduIf condition={videos.length}>
               <EduThen>
                 <VideoListWrapper justifyContent="center">
-                  <VideoList videos={videos} setLinkValue={setLinkValue} />
+                  <VideoList
+                    videos={videos}
+                    handleVideoSelect={handleVideoSelect}
+                  />
                 </VideoListWrapper>
               </EduThen>
               <EduElse>
@@ -269,13 +272,11 @@ const enhance = compose(
   withRouter,
   connect(
     (state) => ({
-      ytThumbnail: getYoutubeThumbnailSelector(state),
       isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       creatingAssessment: getAssessmentCreatingSelector(state),
       isThumbnailLoading: isYtLoadingSelector(state),
-
       showVQCount: showVQCountSelector(state),
       vqQuotaForDistrict: vqQuotaForDistrictSelector(state),
       vqUsageCount: vqUsageCountSelector(state),
@@ -284,6 +285,7 @@ const enhance = compose(
     {
       getYoutubeThumbnail: getYoutubeThumbnailAction,
       setYoutubeThumbnail: setYoutubeThumbnailAction,
+      createVQAssessment: videoQuizActions.createVQAssessmentRequest,
     }
   )
 )

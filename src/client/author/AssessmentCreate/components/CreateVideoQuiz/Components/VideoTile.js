@@ -21,46 +21,47 @@ import { parseISO8601Duration } from '../utils'
  * @param {function} handleVideoClick The onClick handler for the VideoCard.
  *
  */
-const VideoTile = ({ video, handleVideoClick }) => {
+const VideoTile = ({
+  video: { videoDetails = {} } = {},
+  handleVideoSelect = () => {},
+}) => {
+  const { id, contentDetails = {}, snippet = {} } = videoDetails
+  const { title = '', thumbnails = {}, channelTitle = '' } = snippet
+  const { medium: { url = '', height = '' } = {} } = thumbnails
+  const { duration = '' } = contentDetails
+
   const handleOnClick = () => {
-    handleVideoClick(`https://www.youtube.com/watch?v=${video?.id?.videoId}`)
+    handleVideoSelect(id, title)
   }
+
   return (
     <VideoCard bordered={false} hoverable onClick={handleOnClick}>
-      <VideoThumbnail
-        imgSrc={video?.snippet?.thumbnails?.medium?.url}
-        alt={video?.snippet?.title}
-        height={`${video?.snippet?.thumbnails?.medium?.height}px`}
-      >
+      <VideoThumbnail imgSrc={url} alt={title} height={`${height}px`}>
         <FlexContainer
           width="100%"
           height="100%"
           justifyContent="flex-end"
           alignItems="flex-end"
         >
-          <VideoDuration>
-            {parseISO8601Duration(
-              video?.videoDetails?.contentDetails?.duration
-            )}
-          </VideoDuration>
+          <VideoDuration>{parseISO8601Duration(duration)}</VideoDuration>
         </FlexContainer>
       </VideoThumbnail>
       <VideoTextWrapper>
         <Tooltip
           mouseEnterDelay={1}
           mouseLeaveDelay={1}
-          title={video?.snippet?.title}
+          title={title}
           placement="bottomLeft"
         >
-          <VideoTitleText>{video?.snippet?.title}</VideoTitleText>
+          <VideoTitleText>{title}</VideoTitleText>
         </Tooltip>
         <Tooltip
           mouseEnterDelay={1}
           mouseLeaveDelay={1}
-          title={video?.snippet?.channelTitle}
+          title={channelTitle}
           placement="bottomLeft"
         >
-          <ChannelTitleText>{video?.snippet?.channelTitle}</ChannelTitleText>
+          <ChannelTitleText>{channelTitle}</ChannelTitleText>
         </Tooltip>
       </VideoTextWrapper>
     </VideoCard>

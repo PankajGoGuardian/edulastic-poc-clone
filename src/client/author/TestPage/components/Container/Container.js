@@ -85,6 +85,7 @@ import {
   createNewStaticGroup,
   isDefaultTestSelector,
   setCurrentGroupIndexAction,
+  isTestTypeWithDefaultTestTitleSelector,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -160,6 +161,7 @@ import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertM
 import TestNameChangeModal from '../TestNameChangeModal/TestNameChangeModal'
 import { getIsBuyAiSuiteAlertModalVisible } from '../../../utils/videoQuiz'
 import { getUserAccommodations } from '../../../../student/Login/ducks'
+import { checkInvalidTestTitle } from '../../../utils/tests'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -677,12 +679,12 @@ class Container extends PureComponent {
       isDynamicTest,
       hasSections,
       currentTab,
-      isDefaultTest,
+      isTestTypeWithDefaultTestTitle,
     } = this.props
     const { groupNotEdited } = this.state
     const { authors, itemGroups = [], _id } = test
 
-    if (!isDefaultTest && !test?.title?.trim()?.length) {
+    if (!isTestTypeWithDefaultTestTitle && !test?.title?.trim()?.length) {
       notification({ type: 'warn', messageKey: 'pleaseEnterName' })
       return false
     }
@@ -777,10 +779,6 @@ class Container extends PureComponent {
       }))
     }
   }
-
-  checkInvalidTestTitle = (title) =>
-    !title?.trim() ||
-    title?.trim().toLowerCase() === DEFAULT_TEST_TITLE.toLowerCase()
 
   validateGroups = (isCreateNewItem = false) => {
     const { test, isDynamicTest, hasSections } = this.props
@@ -1408,10 +1406,10 @@ class Container extends PureComponent {
       userRole,
       userFeatures,
       testSettingsList,
-      isDefaultTest,
+      isTestTypeWithDefaultTestTitle,
     } = this.props
 
-    if (!isDefaultTest && !test?.title?.trim()?.length) {
+    if (!isTestTypeWithDefaultTestTitle && !test?.title?.trim()?.length) {
       notification({ messageKey: 'nameFieldRequired' })
       return
     }
@@ -1507,16 +1505,22 @@ class Container extends PureComponent {
     const {
       userFeatures,
       isOrganizationDistrictUser,
-      isDefaultTest,
+      isTestTypeWithDefaultTestTitle,
     } = this.props
-    if (isDefaultTest && this.checkInvalidTestTitle(title)) {
+
+    if (isTestTypeWithDefaultTestTitle && checkInvalidTestTitle(title)) {
       this.setState({
         showTestNameChangeModal: true,
         toBeResumedTestAction,
       })
       return false
     }
-    if (!isDefaultTest && !title?.trim()?.length) {
+    this.setState({
+      showTestNameChangeModal: false,
+      toBeResumedTestAction: null,
+    })
+
+    if (!isTestTypeWithDefaultTestTitle && !title?.trim()?.length) {
       notification({ messageKey: 'nameShouldNotEmpty' })
       return false
     }
@@ -1638,8 +1642,9 @@ class Container extends PureComponent {
 
   onShareModalChange = (titleUpdated) => {
     const { showShareModal } = this.state
-    const { test, isDefaultTest } = this.props
-    if (isDefaultTest && this.checkInvalidTestTitle(test.title)) {
+    const { test, isTestTypeWithDefaultTestTitle } = this.props
+
+    if (isTestTypeWithDefaultTestTitle && checkInvalidTestTitle(test.title)) {
       this.setState({
         showTestNameChangeModal: true,
         toBeResumedTestAction: TEST_ACTIONS.share,
@@ -1859,7 +1864,7 @@ class Container extends PureComponent {
       t,
       history,
       isRedirectToVQAddOn,
-      isDefaultTest,
+      isTestTypeWithDefaultTestTitle,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -1946,7 +1951,9 @@ class Container extends PureComponent {
         <CustomPrompt
           when={
             !!updated ||
-            (isDefaultTest && testId && this.checkInvalidTestTitle(test.title))
+            (isTestTypeWithDefaultTestTitle &&
+              testId &&
+              checkInvalidTestTitle(test.title))
           }
           onUnload
           message={(loc = {}) => {
@@ -1962,9 +1969,9 @@ class Container extends PureComponent {
             }
 
             if (
-              isDefaultTest &&
+              isTestTypeWithDefaultTestTitle &&
               testId &&
-              this.checkInvalidTestTitle(test.title)
+              checkInvalidTestTitle(test.title)
             ) {
               this.setState({
                 showTestNameChangeModal: true,
@@ -2013,7 +2020,7 @@ class Container extends PureComponent {
                 toBeResumedTestAction: null,
               })
             }}
-            testNameSaving={testNameSaving}
+            testNameSaving={testNameSaving || creating}
             handleResponse={this.handleResumeActivity}
           />
         )}
@@ -2064,7 +2071,7 @@ class Container extends PureComponent {
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
           derivedFromPremiumBankId={derivedFromPremiumBankId}
-          isEditable={isDefaultTest && this.getIsEditable()}
+          isEditable={isTestTypeWithDefaultTestTitle && this.getIsEditable()}
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
         {creating && !(isTestLoading && !test._id) && (
@@ -2205,6 +2212,9 @@ const enhance = compose(
       isDynamicTest: isDynamicTestSelector(state),
       hasSections: hasSectionsSelector(state),
       isDefaultTest: isDefaultTestSelector(state),
+      isTestTypeWithDefaultTestTitle: isTestTypeWithDefaultTestTitleSelector(
+        state
+      ),
       subscription: getSubscriptionSelector(state),
       isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
       isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),

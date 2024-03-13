@@ -21,6 +21,7 @@ import {
 import { helpers, notification } from '@edulastic/common'
 import {
   VQ_QUOTA_EXHAUSTED,
+  docBasedAssessment,
   testCategoryTypes,
 } from '@edulastic/constants/const/test'
 import { uploadToS3 } from '../src/utils/upload'
@@ -39,6 +40,7 @@ import {
 } from '../src/selectors/user'
 import { setUserFeaturesAction } from '../../student/Login/ducks'
 import { videoQuizActions } from '../VideoLibrary/ducks'
+import changeViewAction from '../src/actions/view'
 
 const pdfjs = require('pdfjs-dist')
 
@@ -85,6 +87,7 @@ const createAssessmentRequest = (
 ) => {
   state.creating = true
   state.error = undefined
+
   if (videoUrl) {
     state.videoUrl = videoUrl
   } else {
@@ -336,6 +339,7 @@ function* createAssessmentSaga({ payload }) {
       if (payload.videoUrl) {
         newAssessment.testCategory = testCategoryTypes.VIDEO_BASED
         newAssessment.videoUrl = payload.videoUrl
+        newAssessment.title = payload.title
         newAssessment.vqPreventSkipping = true
         newAssessment.cw = true
 
@@ -380,9 +384,15 @@ function* createAssessmentSaga({ payload }) {
         })
       )
       yield put(createAssessmentSuccessAction())
+      yield put(videoQuizActions.resetIsLoading())
 
       yield put(receiveTestByIdAction(assessment._id, true, false))
       yield put(push(`/author/assessments/${assessment._id}`))
+      if (assessment?.testCategory === testCategoryTypes.VIDEO_BASED) {
+        yield put(changeViewAction(docBasedAssessment.tabs.WORKSHEET))
+      } else {
+        yield put(changeViewAction(docBasedAssessment.tabs.DESCRIPTION))
+      }
     }
   } catch (error) {
     console.log(error, 'error')

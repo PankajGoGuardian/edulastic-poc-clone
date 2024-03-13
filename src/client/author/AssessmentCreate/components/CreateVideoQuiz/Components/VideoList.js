@@ -13,14 +13,14 @@ import VideoTile from './VideoTile'
  * @param {function} setLinkValue The setLinkValue is provide to VideoTile as handleVideoClick.
  *
  */
-const VideoList = ({ videos, setLinkValue }) => {
+const VideoList = ({ videos, handleVideoSelect }) => {
   return (
     <FlexContainer width="90%" justifyContent="center" flexDirection="row">
       <Row gutter={[20, 20]}>
         {videos.map((video, index) => {
           return (
             <Col sm={12} md={8} xl={6} key={`${video?.id?.videoId}-${index}`}>
-              <VideoTile video={video} handleVideoClick={setLinkValue} />
+              <VideoTile video={video} handleVideoSelect={handleVideoSelect} />
             </Col>
           )
         })}

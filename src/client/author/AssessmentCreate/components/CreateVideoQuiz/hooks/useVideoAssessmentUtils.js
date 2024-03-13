@@ -12,13 +12,11 @@ import { navigationState } from '../../../../src/constants/navigation'
 import { isURL } from '../utils'
 
 const useVideoAssessmentUtils = ({
-  setYoutubeThumbnail,
-  ytThumbnail,
-  getYoutubeThumbnail,
-  onValidUrl,
+  createVQAssessment,
   history,
   scrollerRef,
   allowedToCreateVideoQuiz,
+  setYoutubeThumbnail,
 }) => {
   const [linkValue, setLinkValue] = useState('')
   const [isModerateRestriction, setIsModerateRestriction] = useState(false)
@@ -104,15 +102,15 @@ const useVideoAssessmentUtils = ({
 
   useEffect(() => {
     if (textIsUrl && !hasError && linkValue.length > 0) {
-      const videoId = extractVideoId(linkValue)
-      if (videoId) {
-        getYoutubeThumbnail(videoId)
+      const youtubeVideoId = extractVideoId(linkValue)
+      if (youtubeVideoId) {
+        createVQAssessment({ youtubeVideoId })
       } else {
         notification({
           type: 'info',
           messageKey: 'creatingTestForSelectedVideo',
         })
-        onValidUrl(linkValue)
+        createVQAssessment({ validVideoUrl: linkValue })
       }
     }
   }, [linkValue, hasError, textIsUrl])
@@ -126,16 +124,6 @@ const useVideoAssessmentUtils = ({
   useEffect(() => {
     handleFetchVideos(false, searchedText)
   }, [isModerateRestriction])
-
-  useEffect(() => {
-    if (linkValue.length && ytThumbnail.length) {
-      notification({
-        type: 'info',
-        messageKey: 'creatingTestForSelectedVideo',
-      })
-      onValidUrl?.(linkValue, ytThumbnail)
-    }
-  }, [ytThumbnail])
 
   // Removing default search
   // useEffect(() => {
@@ -185,9 +173,13 @@ const useVideoAssessmentUtils = ({
     isModerateRestriction,
   ])
 
+  const handleVideoSelect = (youtubeVideoId, selectedVideoTitle) => {
+    if (!youtubeVideoId) return
+    createVQAssessment({ youtubeVideoId, selectedVideoTitle })
+  }
+
   return {
     setLinkValue,
-    ytThumbnail,
     linkValue,
     hasError,
     videos,
@@ -201,6 +193,7 @@ const useVideoAssessmentUtils = ({
     handleOnSearch,
     handleOnChange,
     loaderRef,
+    handleVideoSelect,
   }
 }
 

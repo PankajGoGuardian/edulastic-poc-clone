@@ -3,16 +3,12 @@ import { formateSecondsToMMSS } from '../AssessmentPage/VideoQuiz/utils/videoPre
 import { getTestAuthorName } from '../dataUtils'
 
 export const mapListDataFromVideoList = (videoList = []) => {
-  return videoList.map((video = {}) => {
-    const { snippet = {}, videoDetails = {} } = video
-    const {
-      id,
-      contentDetails: { duration = '' },
-    } = videoDetails
+  return videoList.map(({ videoDetails = {} }) => {
+    const { id = '', contentDetails = {}, snippet = {} } = videoDetails
     const { title = '', thumbnails = {}, channelTitle = '' } = snippet
-    const {
-      medium: { url = '' },
-    } = thumbnails
+    const { medium: { url = '' } = {} } = thumbnails
+    const { duration = '' } = contentDetails
+
     return {
       id,
       duration: parseISO8601Duration(duration),

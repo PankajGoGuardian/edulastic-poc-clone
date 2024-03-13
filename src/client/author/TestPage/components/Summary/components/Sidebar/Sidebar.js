@@ -7,7 +7,7 @@ import {
   SelectInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
-import { red } from '@edulastic/colors'
+import { greyThemeDark5, red } from '@edulastic/colors'
 import { Select, Spin, Tooltip } from 'antd'
 import { TextAreaInputStyled } from '@edulastic/common/src/components/InputStyles'
 import PropTypes from 'prop-types'
@@ -87,6 +87,25 @@ const Sidebar = ({
     }
   }, [test.videoUrl])
 
+  const VideoUrlInput = ({ disabled }) => (
+    <TextInputStyled
+      showArrow
+      value={videoUrl}
+      data-cy="videoUrl"
+      onChange={(e) => {
+        if (!isVideoUrlTouched) {
+          setIsVideoUrlTouched(true)
+        }
+        onChangeField('videoUrl', e.target.value)
+      }}
+      size="large"
+      placeholder="Enter the video URL"
+      margin="0px 0px 15px"
+      disabled={disabled}
+      color={disabled && greyThemeDark5}
+    />
+  )
+
   return (
     <FlexContainer padding="30px" flexDirection="column">
       <Spin spinning={isTestLoading}>
@@ -119,20 +138,21 @@ const Sidebar = ({
           <EduIf condition={videoUrl !== undefined}>
             <>
               <FieldLabel>Video URL</FieldLabel>
-              <TextInputStyled
-                showArrow
-                value={videoUrl}
-                data-cy="videoUrl"
-                onChange={(e) => {
-                  if (!isVideoUrlTouched) {
-                    setIsVideoUrlTouched(true)
-                  }
-                  onChangeField('videoUrl', e.target.value)
-                }}
-                size="large"
-                placeholder="Enter the video URL"
-                margin="0px 0px 15px"
-              />
+              <EduIf condition={test?.isUsed}>
+                <EduThen>
+                  <Tooltip
+                    placement="rightTop"
+                    title="Video URL can’t be edited for assigned test"
+                  >
+                    <div>
+                      <VideoUrlInput disabled />
+                    </div>
+                  </Tooltip>
+                </EduThen>
+                <EduElse>
+                  <VideoUrlInput />
+                </EduElse>
+              </EduIf>
               <EduIf condition={isVideoUrlTouched}>
                 <EduIf
                   condition={videoUrl !== undefined && !videoUrl.trim().length}

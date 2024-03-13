@@ -457,6 +457,20 @@ const VideoPreview = ({
 
   const containerRect = annotationContainer?.current?.getBoundingClientRect()
 
+  const handleOnPause = () => {
+    onPause()
+  }
+
+  useEffect(() => {
+    window?.addEventListener('blur', handleOnPause)
+    window?.addEventListener('visibilitychange', handleOnPause)
+
+    return () => {
+      window?.addEventListener('blur', handleOnPause)
+      window?.removeEventListener('visibilitychange', handleOnPause)
+    }
+  }, [])
+
   return (
     <PDFPreviewWrapper
       review={review}

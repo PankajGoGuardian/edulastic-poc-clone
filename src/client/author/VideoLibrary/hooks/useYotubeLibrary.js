@@ -41,9 +41,9 @@ const useYoutubeLibrary = ({
     createVQAssessment({ validVideoUrl: _searchString })
   }, [searchString, hasError, isLoading, textIsUrl])
 
-  const handleVideoSelect = (youtubeVideoId) => {
+  const handleVideoSelect = (youtubeVideoId, selectedVideoTitle) => {
     if (!youtubeVideoId) return
-    createVQAssessment({ youtubeVideoId })
+    createVQAssessment({ youtubeVideoId, selectedVideoTitle })
   }
 
   /** Load/Append YouTube videos - result from YouTube APIs  */

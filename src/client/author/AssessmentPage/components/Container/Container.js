@@ -12,8 +12,14 @@ import {
   IconSettings,
 } from '@edulastic/icons'
 import { test as testConstants, roleuser } from '@edulastic/constants'
-import { withWindowSizes, notification, CustomPrompt } from '@edulastic/common'
+import {
+  withWindowSizes,
+  notification,
+  CustomPrompt,
+  SpinLoader,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import { docBasedAssessment } from '@edulastic/constants/const/test'
 import {
   receiveTestByIdAction,
   getTestEntitySelector,
@@ -25,6 +31,8 @@ import {
   updateDocBasedTestAction,
   fetchTestSettingsListAction,
   setCurrentTestSettingsIdAction,
+  removeTestEntityAction,
+  isTestTypeWithDefaultTestTitleSelector,
 } from '../../../TestPage/ducks'
 import {
   getQuestionsArraySelector,
@@ -53,14 +61,18 @@ import {
 } from '../../../src/selectors/user'
 import { hasUserGotAccessToPremiumItem } from '../../../dataUtils'
 import { isValidVideoUrl } from '../../VideoQuiz/utils/videoPreviewHelpers'
+import { checkInvalidTestTitle } from '../../../utils/tests'
+import TestNameChangeModal from '../../../TestPage/components/TestNameChangeModal/TestNameChangeModal'
 
 const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants
 
-const tabs = {
-  DESCRIPTION: 'description',
-  WORKSHEET: 'edit',
-  REVIEW: 'review',
-  SETTINGS: 'settings',
+const { tabs } = docBasedAssessment
+
+const TEST_ACTIONS = {
+  publish: 'PUBLISH',
+  assign: 'ASSIGN',
+  share: 'SHARE',
+  navigation: 'NAVIGATION',
 }
 
 const buttons = [
@@ -105,6 +117,10 @@ class Container extends React.Component {
   state = {
     editEnable: false,
     showShareModal: false,
+    testNameSaving: false,
+    showTestNameChangeModal: false,
+    toBeResumedTestAction: null,
+    toBeNavigatedLocation: null,
   }
 
   componentDidMount() {
@@ -112,13 +128,14 @@ class Container extends React.Component {
       match,
       receiveTestById,
       getDefaultTestSettings,
-      changeView,
+
       userRole,
       isPremiumUser,
       fetchTestSettingsList,
       setCurrentTestSettingsId,
       userId,
     } = this.props
+
     receiveTestById(match.params.assessmentId)
     if (userRole !== roleuser.STUDENT) {
       setCurrentTestSettingsId('')
@@ -131,7 +148,6 @@ class Container extends React.Component {
     }
     getDefaultTestSettings()
     window.onbeforeunload = () => this.beforeUnload()
-    changeView(tabs.DESCRIPTION)
   }
 
   get isEditableTest() {
@@ -146,6 +162,10 @@ class Container extends React.Component {
 
   componentWillUnmount() {
     window.onbeforeunload = () => {}
+    const { match, removeTestEntity } = this.props
+    if (match?.params?.assessmentId) {
+      removeTestEntity()
+    }
   }
 
   beforeUnload = () => {
@@ -214,7 +234,7 @@ class Container extends React.Component {
     }
   }
 
-  handleSave = async () => {
+  handleSave = async (nextLocation, nextAction) => {
     const {
       questions: assessmentQuestions,
       assessment,
@@ -225,10 +245,14 @@ class Container extends React.Component {
     if (!validateQuestionsForDocBased(assessmentQuestions, true, !!videoUrl)) {
       return
     }
-    updateDocBasedTest(assessment._id, assessment, true)
+    updateDocBasedTest(
+      assessment._id,
+      { ...assessment, nextLocation, nextAction },
+      true
+    )
   }
 
-  validateTest = (_test) => {
+  validateTest = (_test, toBeResumedTestAction) => {
     const {
       title,
       subjects,
@@ -238,7 +262,21 @@ class Container extends React.Component {
       safeBrowser,
       sebPassword,
     } = _test
-    if (!title) {
+
+    const { isTestTypeWithDefaultTestTitle } = this.props
+
+    if (isTestTypeWithDefaultTestTitle && checkInvalidTestTitle(title)) {
+      this.setState({
+        showTestNameChangeModal: true,
+        toBeResumedTestAction,
+      })
+      return false
+    }
+    this.setState({
+      showTestNameChangeModal: false,
+      toBeResumedTestAction: null,
+    })
+    if (!isTestTypeWithDefaultTestTitle && !title) {
       notification({ messageKey: 'nameShouldNotEmpty' })
       return false
     }
@@ -280,7 +318,7 @@ class Container extends React.Component {
     if (!validateQuestionsForDocBased(assessmentQuestions, false, !!videoUrl)) {
       return
     }
-    if (this.validateTest(assessment)) {
+    if (this.validateTest(assessment, TEST_ACTIONS.publish)) {
       publishTest({
         _id,
         oldId: match.params.oldId,
@@ -303,7 +341,7 @@ class Container extends React.Component {
     if (!validateQuestionsForDocBased(assessmentQuestions, false, !!videoUrl)) {
       return
     }
-    if (this.validateTest(assessment)) {
+    if (this.validateTest(assessment, TEST_ACTIONS.assign)) {
       if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true)
       } else {
@@ -320,11 +358,37 @@ class Container extends React.Component {
     }
   }
 
-  onShareModalChange = () => {
+  saveTestNameSuccess = () => {
     const { showShareModal } = this.state
     this.setState({
+      testNameSaving: false,
       showShareModal: !showShareModal,
+      showTestNameChangeModal: false,
+      toBeResumedTestAction: null,
     })
+  }
+
+  onShareModalChange = (titleUpdated) => {
+    const { showShareModal } = this.state
+    const { isTestTypeWithDefaultTestTitle, assessment = {} } = this.props
+    if (
+      isTestTypeWithDefaultTestTitle &&
+      checkInvalidTestTitle(assessment.title)
+    ) {
+      this.setState({
+        showTestNameChangeModal: true,
+        toBeResumedTestAction: TEST_ACTIONS.share,
+      })
+      return
+    }
+    if (titleUpdated === true) {
+      this.setState({ testNameSaving: true })
+      this.handleSave(null, this.saveTestNameSuccess)
+    } else {
+      this.setState({
+        showShareModal: !showShareModal,
+      })
+    }
   }
 
   onEnableEdit = () => {
@@ -340,6 +404,8 @@ class Container extends React.Component {
       questionsById,
       userId,
       setTestData,
+      loading,
+      creating,
     } = this.props
 
     const { params = {} } = match
@@ -371,6 +437,8 @@ class Container extends React.Component {
           />
         )
       case tabs.WORKSHEET: {
+        if ((creating || loading) && !assessment?._id)
+          return <SpinLoader position="fixed" height="100%" />
         if (isVideoQuiz) {
           return <VideoQuizWorkSheet key="worksheet" {...props} />
         }
@@ -378,6 +446,8 @@ class Container extends React.Component {
       }
 
       case tabs.REVIEW: {
+        if ((creating || loading) && !assessment?._id)
+          return <SpinLoader position="fixed" height="100%" />
         if (isVideoQuiz) {
           return <VideoQuizWorkSheet key="review" review {...props} />
         }
@@ -396,6 +466,26 @@ class Container extends React.Component {
         )
       default:
         return null
+    }
+  }
+
+  handleResumeActivity = () => {
+    const { toBeResumedTestAction, toBeNavigatedLocation } = this.state
+    switch (toBeResumedTestAction) {
+      case TEST_ACTIONS.publish:
+        this.handlePublishTest()
+        break
+      case TEST_ACTIONS.assign:
+        this.handleAssign()
+        break
+      case TEST_ACTIONS.navigation:
+        this.handleSave(toBeNavigatedLocation)
+        break
+      case TEST_ACTIONS.share:
+        this.onShareModalChange(true)
+        break
+      default:
+        break
     }
   }
 
@@ -421,9 +511,17 @@ class Container extends React.Component {
       proceedPublish,
       currentTab,
       collections,
+      isTestTypeWithDefaultTestTitle,
       t,
     } = this.props
-    const { editEnable, showShareModal } = this.state
+
+    const {
+      editEnable,
+      showShareModal,
+      testNameSaving,
+      showTestNameChangeModal,
+      toBeResumedTestAction,
+    } = this.state
     const owner = (authors && authors.some((x) => x._id === userId)) || !testId
     const showPublishButton =
       (status && status !== statusConstants.PUBLISHED && testId && owner) ||
@@ -445,7 +543,13 @@ class Container extends React.Component {
     return (
       <>
         <CustomPrompt
-          when={!!updated || !!newQuestionsAdded}
+          when={
+            !!updated ||
+            !!newQuestionsAdded ||
+            (isTestTypeWithDefaultTestTitle &&
+              testId &&
+              checkInvalidTestTitle(title))
+          }
           onUnload
           message={(loc = {}) => {
             const { pathname = '' } = loc
@@ -456,6 +560,19 @@ class Container extends React.Component {
 
             if (allow) {
               return true
+            }
+
+            if (
+              isTestTypeWithDefaultTestTitle &&
+              testId &&
+              checkInvalidTestTitle(title)
+            ) {
+              this.setState({
+                showTestNameChangeModal: true,
+                toBeResumedTestAction: TEST_ACTIONS.navigation,
+                toBeNavigatedLocation: pathname,
+              })
+              return false
             }
 
             return t('component.common.modal.exitPageWarning')
@@ -477,10 +594,25 @@ class Container extends React.Component {
           proceedPublish={proceedPublish}
         />
 
+        {showTestNameChangeModal && (
+          <TestNameChangeModal
+            visible={showTestNameChangeModal}
+            showSaveTitle={toBeResumedTestAction === TEST_ACTIONS.navigation}
+            closeModal={() => {
+              this.setState({
+                showTestNameChangeModal: false,
+                toBeResumedTestAction: null,
+              })
+            }}
+            testNameSaving={testNameSaving || creating}
+            handleResponse={this.handleResumeActivity}
+          />
+        )}
+
         <TestPageHeader
           onChangeNav={this.handleChangeCurrentTab}
           current={currentTab}
-          onSave={() => this.handleSave('draft')}
+          onSave={() => this.handleSave()}
           onShare={this.onShareModalChange}
           onPublish={this.handlePublishTest}
           title={title}
@@ -500,6 +632,7 @@ class Container extends React.Component {
           updated={updated}
           validateTest={this.validateTest}
           derivedFromPremiumBankId={derivedFromPremiumBankId}
+          isEditable={isTestTypeWithDefaultTestTitle}
         />
         {this.renderContent()}
       </>
@@ -527,6 +660,9 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       authorQuestionStatus: getAuthorQuestionStatus(state),
       isPremiumUser: isPremiumUserSelector(state),
+      isTestTypeWithDefaultTestTitle: isTestTypeWithDefaultTestTitleSelector(
+        state
+      ),
     }),
     {
       receiveTestById: receiveTestByIdAction,
@@ -540,6 +676,7 @@ const enhance = compose(
       publishTest: publishTestAction,
       fetchTestSettingsList: fetchTestSettingsListAction,
       setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
+      removeTestEntity: removeTestEntityAction,
     }
   )
 )

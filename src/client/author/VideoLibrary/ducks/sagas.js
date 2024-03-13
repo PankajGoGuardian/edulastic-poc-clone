@@ -1,7 +1,7 @@
 import { testsApi, youtubeSearchApi } from '@edulastic/api'
 import { all, call, put, select, takeLatest } from 'redux-saga/effects'
-import { notification } from '@edulastic/common'
-import { SentryError } from '@sentry/utils'
+import { captureSentryException, notification } from '@edulastic/common'
+
 import { SMART_FILTERS } from '@edulastic/constants/const/filters'
 import { videoQuizActions } from '.'
 import { createAssessmentRequestAction } from '../../AssessmentCreate/ducks'
@@ -13,6 +13,7 @@ import {
 
 import { mapListDataFromTestList, mapListDataFromVideoList } from '../utils'
 import { vqConst } from '../const'
+import { DEFAULT_TEST_TITLE } from '../../TestPage/utils'
 
 function* testSearchRequestSaga({ payload: { search, sort, append = false } }) {
   try {
@@ -102,13 +103,33 @@ function* ytSearchRequestSaga({
 }
 
 function* createVQAssessmentRequestSaga({
-  payload: { youtubeVideoId, validVideoUrl },
+  payload: { youtubeVideoId, validVideoUrl, selectedVideoTitle = '' },
 }) {
   try {
     let videoUrl = ''
     let thumbnail = ''
+    let title = ''
     if (youtubeVideoId) {
       const result = yield call(testsApi.getYoutubeThumbnail, youtubeVideoId)
+
+      if (!(selectedVideoTitle || '').trim().length) {
+        try {
+          const data = yield call(
+            youtubeSearchApi.fetchVideoDetails,
+            youtubeVideoId
+          )
+
+          const { snippet: { title: videoTitle = '' } = {} } =
+            (data?.items || []).find(({ id }) => id === youtubeVideoId) || {}
+
+          title = videoTitle
+        } catch (error) {
+          captureSentryException(error)
+        }
+      } else {
+        title = selectedVideoTitle
+      }
+
       if (!result?.cdnLocation) {
         throw new Error('Failed to get thumbnail')
       }
@@ -128,11 +149,12 @@ function* createVQAssessmentRequestSaga({
       createAssessmentRequestAction({
         videoUrl,
         ...(thumbnail && { thumbnail }),
+        title: title.trim() || DEFAULT_TEST_TITLE,
       })
     )
   } catch (err) {
     yield put(videoQuizActions.resetIsLoading())
-    SentryError.captureException(err)
+    captureSentryException(err)
     const errorMessage =
       err?.response?.data?.message || 'Failed to get thumbnail'
     notification({ type: 'error', msg: errorMessage })

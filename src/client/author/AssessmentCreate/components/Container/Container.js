@@ -129,19 +129,6 @@ class Container extends React.Component {
     })
   }, 1000)
 
-  handleNext = (videoUrl, thumbnail) => {
-    const { location, createAssessment } = this.props
-    const { assessmentId } = qs.parse(location.search, {
-      ignoreQueryPrefix: true,
-    })
-
-    createAssessment({
-      videoUrl,
-      assessmentId,
-      thumbnail,
-    })
-  }
-
   handleCreateBlankAssessment = (event) => {
     event.stopPropagation()
 
@@ -230,10 +217,7 @@ class Container extends React.Component {
             />
           )}
           <EduIf condition={method === creationMethods.VIDEO}>
-            <CreateVideoQuiz
-              onValidUrl={this.handleNext}
-              scrollerRef={this.scrollerRef}
-            />
+            <CreateVideoQuiz scrollerRef={this.scrollerRef} />
           </EduIf>
         </MainContentWrapper>
       </>

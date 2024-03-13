@@ -91,6 +91,7 @@ import {
 } from '../../../dataUtils'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import ShareModal from '../../../src/components/common/ShareModal'
+import CombineTestButton from '../Item/CombineTestButton'
 
 const CloneOptions = loadable(() => import('./CloneOptions'))
 
@@ -382,7 +383,8 @@ class ViewModal extends React.Component {
                       condition={
                         allowDuplicate &&
                         !derivedFromPremiumBankId &&
-                        !isEdulasticCurator
+                        !isEdulasticCurator &&
+                        !isCurator
                       }
                     >
                       <EduButton
@@ -426,24 +428,8 @@ class ViewModal extends React.Component {
                         </EduButton>
                       </FeaturesSwitch>
                     ) : null}
-                    {isDeleteAllowed ? (
-                      <EduButton
-                        isGhost
-                        height="40px"
-                        width="100%"
-                        style={{ justifyContent: 'center' }}
-                        data-cy="delete-button"
-                        onClick={() => onDelete()}
-                      >
-                        <IconTrashAlt />
-                        <span>DELETE</span>
-                      </EduButton>
-                    ) : null}
-                  </ButtonContainer>
-                )}
-                {!publicAccess && hasCollectionAccess && (
-                  <ButtonContainer>
-                    {status === 'inreview' || status === 'rejected' ? (
+                    {hasCollectionAccess &&
+                    (status === 'inreview' || status === 'rejected') ? (
                       <FeaturesSwitch
                         inputFeatures="isCurator"
                         actionOnInaccessible="hidden"
@@ -467,6 +453,58 @@ class ViewModal extends React.Component {
                     ) : null}
                   </ButtonContainer>
                 )}
+                <ButtonContainer>
+                  {!publicAccess ? (
+                    <EduIf
+                      condition={
+                        allowDuplicate &&
+                        !derivedFromPremiumBankId &&
+                        !isEdulasticCurator &&
+                        isCurator
+                      }
+                    >
+                      <EduButton
+                        isGhost
+                        height="40px"
+                        width="100%"
+                        style={{ justifyContent: 'center' }}
+                        data-cy="duplicate-button"
+                        disabled={isDemoPlaygroundUser}
+                        title={
+                          isDemoPlaygroundUser
+                            ? 'This feature is not available in demo account.'
+                            : ''
+                        }
+                        onClick={() => {
+                          this.setState({ showCloneOptions: true })
+                        }}
+                      >
+                        <IconCopy />
+                        <span>CLONE</span>
+                      </EduButton>
+                    </EduIf>
+                  ) : null}
+                  <CombineTestButton
+                    testId={item._id}
+                    test={{
+                      itemGroups: item.itemGroups,
+                      testCategory: item.testCategory,
+                    }}
+                  />
+                  {!publicAccess && isDeleteAllowed ? (
+                    <EduButton
+                      isGhost
+                      height="40px"
+                      width="100%"
+                      style={{ justifyContent: 'center' }}
+                      data-cy="delete-button"
+                      onClick={() => onDelete()}
+                    >
+                      <IconTrashAlt />
+                      <span>DELETE</span>
+                    </EduButton>
+                  ) : null}
+                </ButtonContainer>
                 <ButtonContainer
                   className={publicAccess ? 'public-access-btn-wrapper' : ''}
                 >

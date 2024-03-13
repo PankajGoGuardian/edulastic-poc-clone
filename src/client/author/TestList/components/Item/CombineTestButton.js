@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { EduButton, notification } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { themeColor, white } from '@edulastic/colors'
 import {
   getTestsSelector,
@@ -18,10 +18,10 @@ const MAX_COMBINED_TEST_LIMIT = 150
 const CombineTestButton = ({
   testId,
   test = {},
-  listView = false,
   selectedItems,
   addItemsToCartFromTest,
   isAddingTestToCart,
+  listView = false,
 }) => {
   const { testCategory, itemGroups } = test
   /** *****===========*******
@@ -65,7 +65,7 @@ const CombineTestButton = ({
         listView={listView}
         disabled={testCategory !== testConstants.testCategoryTypes.DEFAULT}
       >
-        Combine Test
+        Add to new test
       </StyledCombineBtn>
     </WithDisableMessage>
   )
@@ -86,17 +86,16 @@ const enhance = compose(
 
 export default enhance(CombineTestButton)
 
-const ListViewCss = css`
+const StyledCombineBtn = styled(EduButton)`
+  width: ${({ listView }) => (!listView ? '100%' : 'auto')};
+  height: ${({ listView }) => (!listView ? '100%' : 'auto')};
   &.ant-btn.ant-btn-primary,
   &.ant-btn.ant-btn-primary:hover,
   &.ant-btn.ant-btn-primary: focus {
-    margin-right: 10px;
+    ${(props) => (props.listView ? 'margin-right: 10px' : 0)};
+    ${(props) => (props.listView ? 'height: 40px' : 0)};
     background-color: ${white};
     border-color: ${themeColor};
     color: ${themeColor};
   }
-`
-
-const StyledCombineBtn = styled(EduButton)`
-  ${(props) => props.listView && ListViewCss}
 `

@@ -10,7 +10,7 @@ import {
   clearTestDataAction,
   getTestEntitySelector,
 } from '../../../TestPage/ducks'
-import { Container, ItemsAmount, StyledBetaTag } from './styled'
+import { Container, ItemsAmount } from './styled'
 
 const CartButton = ({
   selectedItems,
@@ -60,9 +60,6 @@ const CartButton = ({
           {numberOfSelectedItems}
         </ItemsAmount>
         items
-        {displayDeselect && (
-          <StyledBetaTag alignItems="left">BETA</StyledBetaTag>
-        )}
       </EduButton>
     </Container>
   )

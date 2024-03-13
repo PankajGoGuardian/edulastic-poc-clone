@@ -467,11 +467,6 @@ class Item extends Component {
       videoUrl,
     }
 
-    if (!isPlaylist) {
-      cardViewProps.itemGroups = item.itemGroups
-      cardViewProps.testCategory = item.testCategory
-    }
-
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard
 
     return (

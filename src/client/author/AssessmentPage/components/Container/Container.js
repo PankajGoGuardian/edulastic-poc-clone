@@ -552,13 +552,13 @@ class Container extends React.Component {
           }
           onUnload
           message={(loc = {}) => {
-            const { pathname = '' } = loc
+            const { pathname = '', state } = loc
             const allow =
               pathname.startsWith('/author/tests/') ||
               pathname.startsWith('/author/assignments/') ||
               pathname.startsWith('/author/assessments/')
 
-            if (allow) {
+            if (allow || !!state?.skipTestNameChangeModal) {
               return true
             }
 

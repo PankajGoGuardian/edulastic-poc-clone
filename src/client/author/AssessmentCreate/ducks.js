@@ -384,7 +384,6 @@ function* createAssessmentSaga({ payload }) {
         })
       )
       yield put(createAssessmentSuccessAction())
-      yield put(videoQuizActions.resetIsLoading())
 
       yield put(receiveTestByIdAction(assessment._id, true, false))
       yield put(push(`/author/assessments/${assessment._id}`))

@@ -11,7 +11,7 @@ const fetchYoutubeVideos = ({ query, safeSearch, nextPageToken }) =>
     })
     .then(({ data }) => data)
 
-const fetchVideoDetails = ({ id }) =>
+const fetchVideoDetails = (id) =>
   api
     .callApi({
       url: `/youtube/video/${id}`,

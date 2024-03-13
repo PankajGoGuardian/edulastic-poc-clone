@@ -33,6 +33,29 @@ export const AdministrationLevelOptions = [
   },
 ]
 
+export const FastBridgeSessionOptions = [
+  {
+    key: 'Fall',
+    title: 'Fall',
+  },
+  {
+    key: 'October',
+    title: 'October',
+  },
+  {
+    key: 'Winter',
+    title: 'Winter',
+  },
+  {
+    key: 'Feb/Mar',
+    title: 'Feb/Mar',
+  },
+  {
+    key: 'Spring',
+    title: 'Spring',
+  },
+]
+
 const generateDataStructure = (academicFeedTypes, nonAcademicFeedTypes) => {
   const dataStructure = []
 

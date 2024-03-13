@@ -34,7 +34,11 @@ import { receivePerformanceBandAction } from '../../../PerformanceBand/ducks'
 import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
 import SaSchoolSelect from '../../../src/components/common/SaSchoolSelect'
-import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
+import {
+  getUserOrgId,
+  getUserRole,
+  isPremiumUserSelector,
+} from '../../../src/selectors/user'
 import { receiveStandardsProficiencyAction } from '../../../StandardsProficiency/ducks'
 import { getSubscriptionSelector } from '../../../Subscription/ducks'
 // actions
@@ -206,6 +210,7 @@ class TestSetting extends Component {
       subscription: { subType } = {},
       role,
       t: i18translate,
+      isPremiumUser,
     } = this.props
 
     const { testSetting } = this.state
@@ -324,7 +329,9 @@ class TestSetting extends Component {
                     </EduIf>
                   </StyledCol>
                 </EduIf>
-                <EduIf condition={role === roleuser.DISTRICT_ADMIN}>
+                <EduIf
+                  condition={role === roleuser.DISTRICT_ADMIN && isPremiumUser}
+                >
                   <StyledCol data-cy="enableSpeechToText">
                     <InputLabel>
                       ENABLE SPEECH TO TEXT (SCRIBE) ON CONSTRUCTIVE RESPONSE
@@ -391,7 +398,9 @@ class TestSetting extends Component {
                     </StyledRadioGrp>
                   </StyledCol>
                 </EduIf>
-                <EduIf condition={role === roleuser.DISTRICT_ADMIN}>
+                <EduIf
+                  condition={role === roleuser.DISTRICT_ADMIN && isPremiumUser}
+                >
                   <StyledCol data-cy="editAccommodation">
                     <InputLabel>
                       ALLOW TEACHERS TO CONFIGURE ACCOMMODATIONS{' '}
@@ -624,6 +633,7 @@ const enhance = compose(
       role: getUserRole(state),
       schoolId: get(state, 'user.saSettingsSchool'),
       subscription: getSubscriptionSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       loadTestSetting: receiveTestSettingAction,

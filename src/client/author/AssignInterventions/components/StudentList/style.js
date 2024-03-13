@@ -1,4 +1,10 @@
-import { black, darkGrey2, grey, greyThemeLighter } from '@edulastic/colors'
+import {
+  black,
+  darkGrey2,
+  extraDesktopWidthMax,
+  grey,
+  greyThemeLighter,
+} from '@edulastic/colors'
 import styled from 'styled-components'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import { CircularDiv } from '../../../ClassBoard/components/DisneyCardContainer/styled'
@@ -23,7 +29,6 @@ export const STANDARD_SPACING = 2 * (STANDARD_PADDING + STANDARD_MARGIN)
 export const TOTAL_STANDARDS_MARGIN = 10
 export const TOTAL_STANDARDS_FONT_WIDTH = 13
 export const STANDARDS_FONT_WIDTH = 8
-export const STANDARDS_REMAINING_MARGIN = 3
 
 export const StudentListContainer = styled.div`
   position: relative;
@@ -39,9 +44,13 @@ export const StudentListHeading = styled.div`
 
 export const StudentListSubHeading = styled.div`
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   line-height: ${STUDENT_LIST_SUB_HEADING_LINE_HEIGHT}px;
   color: #555555;
+  display: flex;
+  flex-direction: horizontal;
+  align-items: center;
+  gap: 3px;
 `
 
 export const StyledNoDataNotification = styled(NoDataNotification)`
@@ -77,6 +86,7 @@ export const StudentFullName = styled.div`
 
 export const TableStudentMastery = styled.div`
   flex: 2;
+  font-size: 16px;
   display: flex;
   flex-direction: horizontal;
   align-items: center;
@@ -130,6 +140,11 @@ export const TableHeaderMastery = styled.div`
   gap: 2px;
 `
 
+export const MasteryHeader = styled.div`
+  @media (max-width: ${extraDesktopWidthMax}) {
+    width: min-content;
+  }
+`
 export const TableHeaderStandards = styled.div`
   flex: 5;
   font-weight: 600;
@@ -148,12 +163,26 @@ export const StandardTag = styled.span`
   padding: ${STANDARD_PADDING}px;
 `
 
-export const StandardRemaining = styled.span`
-  margin: 0px ${STANDARDS_REMAINING_MARGIN}px;
-`
-
 // If you change the font-size, update the TOTAL_STANDARDS_FONT_WIDTH value accordingly.
 export const StandardTotal = styled.span`
   font-size: 22px;
   margin: 0 ${TOTAL_STANDARDS_MARGIN}px 0 0;
+`
+
+export const TooltipContainer = styled.div`
+  font-weight: ${({ isLight }) => (isLight ? 400 : 600)};
+  text-align: left;
+  margin: 10px;
+`
+
+export const TooltipStandardLeft = styled.div`
+  padding: 0 10px 0 0;
+  border: 1px solid ${grey};
+  border-width: 0 1px 0 0;
+  width: ${({ width }) => width * 8}px;
+`
+
+export const TooltipStandardRight = styled.div`
+  padding: 0 0 0 10px;
+  width: ${({ width }) => width * 8}px;
 `

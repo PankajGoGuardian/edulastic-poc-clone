@@ -1,15 +1,18 @@
 import React from 'react'
 import { Divider } from 'antd'
+import { TestTypeIcon } from '@edulastic/common'
 import {
   ClassNameContainer,
   FiltersContainer,
   TestNameContainer,
-  StudentCountContainer,
+  StudentInfoContainer,
   HeaderContainer,
   HeaderInformationContainer,
   StyledImage,
   FilterContentContainer,
   FilterHeadingContainer,
+  EllipseSeparator,
+  StudentInfoElement,
 } from './style'
 import MasteryRangeFilter from './MasteryRangeFilter'
 import StandardsFilter from './StandardsFilter'
@@ -30,10 +33,19 @@ const Filters = ({
         <StyledImage src={classResponse.thumbnail} width="140" height="80" />
         <HeaderInformationContainer>
           <ClassNameContainer>{additionalData.className}</ClassNameContainer>
-          <TestNameContainer>{classResponse?.title}</TestNameContainer>
-          <StudentCountContainer>
-            Total : {additionalData.totalCount} Students
-          </StudentCountContainer>
+          <TestNameContainer>
+            {classResponse?.title}
+            <TestTypeIcon testType={additionalData.testType} />
+          </TestNameContainer>
+          <StudentInfoContainer>
+            <StudentInfoElement>
+              Status : {additionalData.status.toLowerCase()}
+            </StudentInfoElement>
+            <EllipseSeparator />
+            <StudentInfoElement>
+              Total : {additionalData.totalCount} Students
+            </StudentInfoElement>
+          </StudentInfoContainer>
         </HeaderInformationContainer>
       </HeaderContainer>
       <Divider />

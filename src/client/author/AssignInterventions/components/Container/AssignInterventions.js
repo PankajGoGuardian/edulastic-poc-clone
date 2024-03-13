@@ -121,6 +121,7 @@ const AssignInterventions = ({
           if (!studentWithStandards.standards.length) return false
           return true
         })
+        .sort((a, b) => a.avgMastery - b.avgMastery)
     }
     return []
   }, [studentStandardsData, allStudentList, masteryRange, selectedStandards])

@@ -19,14 +19,36 @@ export const TestNameContainer = styled.div`
   line-height: 18px;
   color: ${greyThemeDark4};
   padding-top: 14px;
+  width: max-content;
+
+  @media (min-width: 1400px) {
+    padding-top: 20px;
+  }
 `
 
-export const StudentCountContainer = styled.div`
+export const StudentInfoContainer = styled.div`
   font-weight: 400;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 18px;
   color: #555555;
   padding-top: 8px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+
+  @media (min-width: 1400px) {
+    padding-top: 11px;
+  }
+`
+
+export const StudentInfoElement = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipses;
+  text-transform: capitalize;
 `
 
 export const HeaderContainer = styled.div`
@@ -50,12 +72,12 @@ export const FilterContentContainer = styled.div`
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-between;
-  gap: 16px;
+  gap: 20px;
 `
 
 export const FilterHeadingContainer = styled.div`
   font-weight: 600;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 24px;
   color: ${black};
 `
@@ -64,20 +86,29 @@ export const StyledImage = styled.img`
   width: ${({ width }) => (width ? `${width}px` : 'auto')};
   height: ${({ height }) => (height ? `${height}px` : 'auto')};
   border-radius: 4px;
+
+  @media (min-width: 1400px) {
+    width: 200px;
+    height: 114px;
+  }
 `
 
 export const FilterSubHeadingContainer = styled.div`
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 24px;
   color: ${black};
   margin-bottom: 6px;
+  display: flex;
+  flex-direction: horizontal;
+  align-items: center;
+  gap: 3px;
 `
 
 export const StyledSlider = styled(Slider)`
   width: 87%;
   height: 6px;
-  margin: 0px 10px;
+  margin: 16px 10px 0px 10px;
   > div {
     height: 10px;
   }
@@ -157,4 +188,10 @@ export const SliderMarkContainer = styled.div`
 export const MasteryRangeContainer = styled.div`
   margin-top: 20px;
   height: 83px;
+`
+export const EllipseSeparator = styled.div`
+  background-color: #d8d8d8;
+  border-radius: 3px;
+  width: 6px;
+  height: 6px;
 `

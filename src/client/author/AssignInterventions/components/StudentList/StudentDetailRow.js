@@ -1,9 +1,8 @@
 import React from 'react'
-import { Tooltip } from 'antd'
 import { CheckboxLabel, EduIf } from '@edulastic/common'
+import { Col, Row } from 'antd'
 import {
   RowContainer,
-  StandardRemaining,
   StandardTag,
   StandardTotal,
   StudentFullName,
@@ -15,8 +14,11 @@ import {
   TOTAL_STANDARDS_MARGIN,
   STANDARDS_FONT_WIDTH,
   TOTAL_STANDARDS_FONT_WIDTH,
-  STANDARDS_REMAINING_MARGIN,
+  TooltipContainer,
+  TooltipStandardLeft,
+  TooltipStandardRight,
 } from './style'
+import { CustomTableTooltip } from '../../../Reports/common/components/customTableTooltip'
 
 const getInitials = (firstName, lastName) => {
   if (firstName && lastName)
@@ -32,8 +34,9 @@ const StudentDetailRow = ({
   handleRowCheckboxChange,
   selectedStudentsById,
 }) => {
-  let remainingStandardsCount = 0 // Count of the overflowing standards
-  let remainingStandardsText = '' // Tooltip text with info for each overflowing standard
+  let remainingStandardsCount = 0
+  const remainingStandardsArray = [] // Tooltip text with info for each overflowing standard
+  let currStandardsArrayIndex = 0
   const {
     _id: studentId,
     standards,
@@ -42,8 +45,7 @@ const StudentDetailRow = ({
     avgMastery,
   } = studentData
   const totalStandardsCount = standards.length
-  const remainingStandardsWidth =
-    2 * STANDARDS_FONT_WIDTH + 2 * STANDARDS_REMAINING_MARGIN // E.g. "+4" So there will be 2 characters
+  const remainingStandardsWidth = 2 * STANDARDS_FONT_WIDTH + STANDARD_SPACING // E.g. "+4" So there will be 2 characters
 
   // Total length used till now in pixels.
   // Initialised with the length to display the total standards.
@@ -90,26 +92,72 @@ const StudentDetailRow = ({
                 std.identifier.length * STANDARDS_FONT_WIDTH + STANDARD_SPACING
               return (
                 <StandardTag>
-                  <Tooltip
-                    title={`${std.mastery}% - ${std.desc}`}
-                  >{` ${std.identifier} `}</Tooltip>
+                  <CustomTableTooltip
+                    title={
+                      <TooltipContainer>
+                        <div style={{ marginBottom: '20px' }}>
+                          Mastery: {std.mastery}%
+                        </div>
+                        <div>{std.desc}</div>
+                      </TooltipContainer>
+                    }
+                    getCellContents={() => ` ${std.identifier} `}
+                  />
                 </StandardTag>
               )
             }
+          } else {
+            if (!remainingStandardsArray[currStandardsArrayIndex][1]) {
+              remainingStandardsArray[currStandardsArrayIndex].push(
+                `${std.identifier} : ${std.mastery}%`
+              )
+            } else {
+              remainingStandardsArray.push([
+                `${std.identifier} : ${std.mastery}%`,
+              ])
+              currStandardsArrayIndex += 1
+            }
+            return null
           }
-          // If the standards start to overflow, just update the overflow count and tooltip text.
-          remainingStandardsCount += 1
-          remainingStandardsText += `${std.identifier} - ${std.mastery}%`
-          if (standardIndex < totalStandardsCount - 1)
-            remainingStandardsText += ' | '
+          // If the standards start to overflow, start pushing the mastery information
+          // into the remaining standards array in sets of two.
+          remainingStandardsCount = totalStandardsCount - standardIndex
+          remainingStandardsArray.push([`${std.identifier} : ${std.mastery}%`])
           return null
         })}
         <EduIf condition={remainingStandardsCount}>
-          <StandardRemaining>
-            <Tooltip title={remainingStandardsText}>
-              +{remainingStandardsCount}
-            </Tooltip>
-          </StandardRemaining>
+          <StandardTag>
+            <CustomTableTooltip
+              placement="left"
+              title={
+                <TooltipContainer>
+                  {remainingStandardsCount > 1 ? (
+                    remainingStandardsArray.map((std) => (
+                      <Row>
+                        <Col span={12}>
+                          <TooltipStandardLeft width={std[0].length}>
+                            {std[0]}
+                          </TooltipStandardLeft>
+                        </Col>
+                        {std[1] ? (
+                          <Col span={12}>
+                            <TooltipStandardRight width={std[1].length}>
+                              {std[1]}
+                            </TooltipStandardRight>
+                          </Col>
+                        ) : null}
+                      </Row>
+                    ))
+                  ) : (
+                    <Row>
+                      <Col>{remainingStandardsArray[0]}</Col>
+                    </Row>
+                  )}
+                </TooltipContainer>
+              }
+              getCellContents={() => `+${remainingStandardsCount}`}
+            />
+          </StandardTag>
         </EduIf>
       </TableStudentStandards>
     </RowContainer>

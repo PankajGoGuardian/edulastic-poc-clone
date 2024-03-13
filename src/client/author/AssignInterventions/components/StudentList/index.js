@@ -3,9 +3,9 @@ import { FixedSizeList } from 'react-window'
 import { CheckboxLabel, EduElse, EduIf, EduThen } from '@edulastic/common'
 import { IconInfoCircle } from '@edulastic/icons'
 import { grey } from '@edulastic/colors'
-import { Tooltip } from 'antd'
 import { keyBy, sortBy } from 'lodash'
 import {
+  MasteryHeader,
   StudentListContainer,
   StudentListHeading,
   StudentListSubHeading,
@@ -15,6 +15,7 @@ import {
   TableHeaderMastery,
   TableHeaderName,
   TableHeaderStandards,
+  TooltipContainer,
 } from './style'
 import { FOOTER_HEIGHT } from '../Footer/style'
 import {
@@ -23,6 +24,7 @@ import {
 } from '../Container/style'
 import SortingArrows from './SortingArrows'
 import StudentDetailRow from './StudentDetailRow'
+import { CustomTableTooltip } from '../../../Reports/common/components/customTableTooltip'
 
 const StudentList = ({
   studentListWithStandards,
@@ -112,9 +114,18 @@ const StudentList = ({
       </StudentListHeading>
       <StudentListSubHeading>
         {selectedStudents.length}/{sortedStudentList.length} students selected{' '}
-        <Tooltip title="Student list below only includes those who have atleast one Standard to be improved as per left criteria">
-          <IconInfoCircle width="16px" height="16px" />
-        </Tooltip>
+        <CustomTableTooltip
+          title={
+            <TooltipContainer isLight>
+              Student list below only includes those who have{' '}
+              <span style={{ fontWeight: 600 }}>
+                at least one Standard to be improved
+              </span>{' '}
+              as per left criteria
+            </TooltipContainer>
+          }
+          getCellContents={() => <IconInfoCircle width="16px" height="16px" />}
+        />
       </StudentListSubHeading>
       <TableHeaderContainer>
         <TableHeaderName>
@@ -130,10 +141,18 @@ const StudentList = ({
           STUDENT NAME
         </TableHeaderName>
         <TableHeaderMastery>
-          AVG. MASTERY
-          <Tooltip title="Average mastery is calculated based on selected standards to be improved">
-            <IconInfoCircle width="16px" height="16px" />
-          </Tooltip>
+          <MasteryHeader>AVG. MASTERY</MasteryHeader>
+          <CustomTableTooltip
+            title={
+              <TooltipContainer>
+                Average mastery is calculated based on selected standards to be
+                improved
+              </TooltipContainer>
+            }
+            getCellContents={() => (
+              <IconInfoCircle width="16px" height="16px" />
+            )}
+          />
           <SortingArrows
             sortDirection={masterySort}
             changeSortDirection={setMasterySort}

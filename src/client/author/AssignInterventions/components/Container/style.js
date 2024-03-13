@@ -31,7 +31,7 @@ export const LeftSectionContainer = styled.div`
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-evenly;
-  gap: 36px;
+  gap: 75px;
   height: max-content;
   flex-grow: 4;
   padding-left: 52px;

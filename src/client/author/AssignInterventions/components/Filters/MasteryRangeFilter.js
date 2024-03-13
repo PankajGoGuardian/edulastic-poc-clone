@@ -1,11 +1,14 @@
 import React, { useCallback, useState } from 'react'
 import { debounce } from 'lodash'
+import { IconInfoCircle } from '@edulastic/icons'
 import {
   FilterSubHeadingContainer,
   StyledSlider,
   SliderMarkContainer,
   MasteryRangeContainer,
 } from './style'
+import { CustomTableTooltip } from '../../../Reports/common/components/customTableTooltip'
+import { TooltipContainer } from '../StudentList/style'
 
 const MasteryRangeFilter = ({ masteryRange, setMasteryRange }) => {
   const [currentMasteryRange, setCurrentMasteryRange] = useState(masteryRange)
@@ -28,7 +31,17 @@ const MasteryRangeFilter = ({ masteryRange, setMasteryRange }) => {
   return (
     <MasteryRangeContainer>
       <FilterSubHeadingContainer>
-        Standards mastery range
+        Standards mastery range{' '}
+        <CustomTableTooltip
+          title={
+            <TooltipContainer>
+              Choose standards needing improvement by using the mastery range.
+              For example, selecting 0-30% will filter and display standards
+              with mastery below 30% for each student in the right-side table.
+            </TooltipContainer>
+          }
+          getCellContents={() => <IconInfoCircle width="16px" height="16px" />}
+        />
       </FilterSubHeadingContainer>
       <StyledSlider
         range

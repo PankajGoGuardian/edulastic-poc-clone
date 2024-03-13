@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { SelectInputStyled } from '@edulastic/common'
-import { Select, Tooltip } from 'antd'
+import { Select } from 'antd'
 import { keyBy, sortBy } from 'lodash'
 import {
   FilterSubHeadingContainer,
@@ -8,6 +8,8 @@ import {
   StandardDescContainer,
   StandardStudentCountContainer,
 } from './style'
+import { CustomTableTooltip } from '../../../Reports/common/components/customTableTooltip'
+import { TooltipContainer } from '../StudentList/style'
 
 const StandardsFilter = ({
   options,
@@ -67,9 +69,12 @@ const StandardsFilter = ({
             label={option.name}
           >
             <StandardNameContainer>{option.name}</StandardNameContainer>
-            <Tooltip title={option.desc}>
-              <StandardDescContainer>{option.desc}</StandardDescContainer>
-            </Tooltip>
+            <CustomTableTooltip
+              title={<TooltipContainer isLight>{option.desc}</TooltipContainer>}
+              getCellContents={() => (
+                <StandardDescContainer>{option.desc}</StandardDescContainer>
+              )}
+            />
             <StandardStudentCountContainer>
               {StudentCountPerStandard[option._id].studentCount} STUDENTS
             </StandardStudentCountContainer>

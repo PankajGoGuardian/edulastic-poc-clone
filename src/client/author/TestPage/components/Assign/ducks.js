@@ -293,6 +293,9 @@ function* saveAssignment({ payload }) {
     if (payload.showSpeechToText === null) {
       payload = omit(payload, 'showSpeechToText')
     }
+    if (payload.showTextToSpeech === null) {
+      payload = omit(payload, 'showTextToSpeech')
+    }
     if (
       payload.scoringType ===
       testConstants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT

@@ -209,6 +209,7 @@ function* loadAssignmentSaga({ payload }) {
       showTtsForPassages,
       showImmersiveReader,
       showSpeechToText,
+      showTextToSpeech,
       allowAutoEssayEvaluation,
       attemptWindow,
       vqPreventSkipping,
@@ -245,6 +246,9 @@ function* loadAssignmentSaga({ payload }) {
     }
     if (data.showSpeechToText) {
       data.showSpeechToText = showSpeechToText
+    }
+    if (data.showTextToSpeech) {
+      data.showTextToSpeech = showTextToSpeech
     }
     if (typeof vqPreventSkipping === 'boolean') {
       data.vqPreventSkipping = vqPreventSkipping
@@ -317,6 +321,7 @@ function getSettingsSelector(state) {
     showTtsForPassages,
     showImmersiveReader,
     showSpeechToText,
+    showTextToSpeech,
     allowAutoEssayEvaluation,
     attemptWindow,
     vqPreventSkipping,
@@ -430,6 +435,7 @@ function getSettingsSelector(state) {
       showTtsForPassages,
       showImmersiveReader,
       showSpeechToText,
+      showTextToSpeech,
       allowAutoEssayEvaluation,
       attemptWindow,
       vqPreventSkipping,

@@ -97,7 +97,7 @@ import { getSebUrl } from '../../student/Assignments/ducks'
 import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
-import { Fscreen } from '../utils/helpers'
+import { Fscreen, isTextToSpeechEnabled } from '../utils/helpers'
 import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
 import BlockScreenOnCtrlPress from '../../../utils/anticheating/keypressEventBlocker/BlockScreenOnCtrlPress'
 import AppConfig from '../../../app-config'
@@ -664,7 +664,7 @@ const AssessmentContainer = ({
     qLabels: [],
     show: false,
   })
-  const { enableSkipAlert = false } = testSettings || {}
+  const { enableSkipAlert = false, showTextToSpeech } = testSettings || {}
   const [showRegradedModal, setShowRegradedModal] = useState(false)
 
   const [, uploadFile] = useUploadToS3(userId)
@@ -1412,9 +1412,9 @@ const AssessmentContainer = ({
    * Visible when user is tts user or current view is author view
    * @returns {boolean}
    */
+  const isTtsEnabled = isTextToSpeechEnabled(showTextToSpeech, showUserTTS)
   const ttsVisibility =
-    (userRole === roleuser.STUDENT && showUserTTS === 'yes') ||
-    isTestPreviewModalVisible
+    (userRole === roleuser.STUDENT && isTtsEnabled) || isTestPreviewModalVisible
 
   /**
    * Checks for at least one tts is completed in a test

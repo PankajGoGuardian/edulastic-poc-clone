@@ -920,20 +920,20 @@ class SideMenu extends Component {
                     onClick={this.toggleMenu}
                   />
                 </EduIf>
-                {isCollapsed ? (
+                {isCollapsed &&
                   !isMobile &&
                   (isPearDomain ? (
                     <AssessPeardeckLogoCompact />
                   ) : (
                     <LogoCompact />
-                  ))
-                ) : (
+                  ))}
+                <EduIf condition={showPearAppTray}>
+                  <PSILauncherStyled visible={!isCollapsed}>
+                    <div id="psi_launcher" />
+                  </PSILauncherStyled>
+                </EduIf>
+                {!isCollapsed && (
                   <>
-                    <EduIf condition={showPearAppTray}>
-                      <PSILauncherStyled>
-                        <div id="psi_launcher" />
-                      </PSILauncherStyled>
-                    </EduIf>
                     <EduIf
                       condition={userRole === roleuser.DISTRICT_GROUP_ADMIN}
                     >
@@ -1218,6 +1218,7 @@ class SideMenu extends Component {
 }
 
 const PSILauncherStyled = styled.div`
+  display: ${({ visible }) => (visible ? 'unset' : 'none')};
   margin-left: -3px;
 `
 

@@ -920,19 +920,19 @@ class SideMenu extends Component {
                     onClick={this.toggleMenu}
                   />
                 </EduIf>
-                {isCollapsed &&
-                  !isMobile &&
-                  (isPearDomain ? (
-                    <AssessPeardeckLogoCompact />
-                  ) : (
-                    <LogoCompact />
-                  ))}
                 <EduIf condition={showPearAppTray}>
                   <PSILauncherStyled visible={!isCollapsed}>
                     <div id="psi_launcher" />
                   </PSILauncherStyled>
                 </EduIf>
-                {!isCollapsed && (
+                {isCollapsed ? (
+                  !isMobile &&
+                  (isPearDomain ? (
+                    <AssessPeardeckLogoCompact />
+                  ) : (
+                    <LogoCompact />
+                  ))
+                ) : (
                   <>
                     <EduIf
                       condition={userRole === roleuser.DISTRICT_GROUP_ADMIN}

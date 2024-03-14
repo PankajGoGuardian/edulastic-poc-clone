@@ -50,7 +50,11 @@ import {
 } from '../../author/ClassBoard/ducks'
 import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemInvisible'
 import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
-import { getFontSize, isSpeechToTextEnabled } from '../utils/helpers'
+import {
+  getFontSize,
+  isSpeechToTextEnabled,
+  isTextToSpeechEnabled,
+} from '../utils/helpers'
 import { changeDataToPreferredLanguage } from '../utils/question'
 import {
   languagePreferenceSelector,
@@ -456,6 +460,7 @@ class QuestionWrapper extends Component {
         showHintsToStudents: showHintsToStudentsTest = true,
         penaltyOnUsingHints: penaltyOnUsingHintsTest = 0,
         showTtsForPassages: showTtsForPassagesTest = true,
+        showTextToSpeech,
       },
       classLevelSettings,
       viewAsStudent,
@@ -523,8 +528,10 @@ class QuestionWrapper extends Component {
         ? showTtsForPassages
         : true
 
+    const isTtsEnabled = isTextToSpeechEnabled(showTextToSpeech, showUserTTS)
+
     const canShowPlayer =
-      ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
+      ((isTtsEnabled && userRole === roleuser.STUDENT) ||
         this.ttsVisibilityAuthorSide) &&
       data.tts &&
       data.tts.taskStatus === 'COMPLETED' &&

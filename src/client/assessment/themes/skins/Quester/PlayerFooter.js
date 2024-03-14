@@ -24,6 +24,7 @@ import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import { themes } from '../../../../theme'
 import ItemAudioControl from './ItemAudioControl'
 import { getAccommodationsTtsSelector } from '../../../../student/Login/ducks'
+import { isTextToSpeechEnabled } from '../../../utils/helpers'
 
 const { IconAnswerEliminator, IconBookMark, IconCalculator } = IconQuester
 
@@ -77,6 +78,7 @@ const PlayerFooter = ({
     showMagnifier,
     maxAnswerChecks,
     showTtsForPassages = true,
+    showTextToSpeech,
   } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
@@ -101,8 +103,9 @@ const PlayerFooter = ({
     checkAnswer()
   }
 
+  const isTtsEnabled = isTextToSpeechEnabled(showTextToSpeech, showUserTTS)
   const canShowPlayer =
-    (showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
+    (isTtsEnabled && userRole === roleuser.STUDENT) ||
     (userRole !== roleuser.STUDENT &&
       (!!LCBPreviewModal || isTestPreviewModalVisible))
 

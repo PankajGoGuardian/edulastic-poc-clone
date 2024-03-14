@@ -691,3 +691,10 @@ export const isSpeechToTextEnabled = (
   }
   return showSpeechToText
 }
+
+export const isTextToSpeechEnabled = (showTextToSpeech, userTts) => {
+  if (showTextToSpeech === undefined) {
+    return userTts === 'yes'
+  }
+  return showTextToSpeech
+}

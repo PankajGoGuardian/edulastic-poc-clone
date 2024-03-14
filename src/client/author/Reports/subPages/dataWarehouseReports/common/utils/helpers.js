@@ -6,6 +6,7 @@ import { isEmpty, round } from 'lodash'
 import { roleuser } from '@edulastic/constants'
 import {
   PERIOD_TYPES,
+  TEST_UNIQ_ID_SEPARATOR,
   RISK_BAND,
   getDistrictGroupTestTermIds,
   getDistrictTermIdsForDistrictGroup,
@@ -307,8 +308,8 @@ export const getUrlDistricts = (districts, districtIds) => {
 export const getIsMultiSchoolYearDataPresent = (testTermIds) =>
   convertItemToArray(testTermIds).length > 1
 
-export const getTestUniqId = (assessment) =>
-  `${assessment.testId}_${assessment.termId}`
+export const getTestUniqId = (test) =>
+  [test.testId || test.testName, test.termId].join(TEST_UNIQ_ID_SEPARATOR)
 
 export const getXTickTooltipText = (payload, data) => {
   const { shortTestName = '', testName = '', externalTestType = '' } = data[

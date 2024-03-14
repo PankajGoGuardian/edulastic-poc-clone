@@ -119,8 +119,6 @@ const getTableColumns = ({
     )
     _columns[compareByIdx].title = compareBy.title
     _columns[compareByIdx].dataIndex = compareByMap[compareBy.key]
-    _columns[compareByIdx].sortOrder =
-      sortFilters.sortKey === sortKeys.COMPARE_BY && sortFilters.sortOrder
     _columns[compareByIdx].render = (data, record) => {
       const disableDrillDownCheck =
         isSharedReport ||
@@ -159,7 +157,6 @@ const getTableColumns = ({
         .toLowerCase()
         .localeCompare((b[dataIndex] || '').toLowerCase())
     }
-    _columns[compareByIdx].defaultSortOrder = 'ascend'
 
     if (
       isDistrictGroupAdmin &&
@@ -183,7 +180,7 @@ const getTableColumns = ({
     // render rectangular tag for assessment performance
     const assessmentColumns = overallAssessmentsData.flatMap((assessment) => {
       const {
-        testId, // here testId refers to testUniqId in case of multiSchoolYear
+        testUniqId,
         externalTestType,
         averageScore,
         assessmentDate = '',
@@ -195,6 +192,7 @@ const getTableColumns = ({
         isNumber(averageScore) ? round(averageScore) : averageScore,
         assessment
       )
+      const columnKey = `${sortKeys.ASSESSMENT_}${testUniqId}`
 
       const tooltipTitle = (
         <>
@@ -205,7 +203,7 @@ const getTableColumns = ({
       return [
         // assessment column to be rendered in browser
         {
-          key: testId,
+          key: columnKey,
           title: (
             <AssessmentNameContainer isPrinting={isPrinting}>
               <Tooltip title={tooltipTitle}>
@@ -231,7 +229,7 @@ const getTableColumns = ({
           dataIndex: 'tests',
           visibleOn: ['browser'],
           render: (tests = {}) => {
-            const currentTest = tests[testId]
+            const currentTest = tests[testUniqId]
             if (currentTest) {
               const normScore = currentTest.externalTestType
                 ? currentTest.averageScore
@@ -258,16 +256,16 @@ const getTableColumns = ({
             }
             return '-'
           },
+          sorter: true,
         },
         // assessment column to be downloaded in csv
         {
-          key: testId,
+          key: columnKey,
           title: `${_testName} Score(%)`,
-          align: 'center',
           dataIndex: 'tests',
           visibleOn: ['csv'],
           render: (tests = {}) => {
-            const currentTest = tests[testId]
+            const currentTest = tests[testUniqId]
             let averageScoreRender = '-'
             if (currentTest) {
               const normScore = currentTest.externalTestType
@@ -284,16 +282,14 @@ const getTableColumns = ({
     })
     const additionalDownloadCsvColumns = overallAssessmentsData.map(
       (assessment) => {
-        const { testId, testName, isIncomplete = false } = assessment
-        const _testName = isIncomplete ? `${testName} *` : testName
+        const { testUniqId, testName } = assessment
         return {
-          key: testId,
-          title: `${_testName} Performance Band`,
-          align: 'center',
+          key: testUniqId,
+          title: `${testName} Performance Band`,
           dataIndex: 'tests',
           visibleOn: ['csv'],
           render: (tests = {}) => {
-            const currentTest = tests[testId]
+            const currentTest = tests[testUniqId]
             return currentTest ? `${currentTest.band.name}` : '-'
           },
         }
@@ -302,6 +298,13 @@ const getTableColumns = ({
     // push assessment columns to the original table columns
     _columns.push(...assessmentColumns)
     _columns.push(...additionalDownloadCsvColumns)
+
+    // apply sort order for the column that the sortKey belongs to
+    _columns.forEach((column) => {
+      if (column.key.includes(sortFilters.sortKey)) {
+        Object.assign(column, { sortOrder: sortFilters.sortOrder })
+      }
+    })
   })
 }
 
@@ -390,7 +393,7 @@ const AssessmentsTable = ({
   const handleTableChange = useCallback(
     (_pagination, _filters, sorter) => {
       setSortFilters({
-        sortKey: sorter.columnKey,
+        sortKey: sorter.order ? sorter.columnKey : sortKeys.COMPARE_BY,
         sortOrder: sorter.order || TABLE_SORT_ORDER_TYPES.ASCEND,
       })
     },

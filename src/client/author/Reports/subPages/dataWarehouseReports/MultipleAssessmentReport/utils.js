@@ -22,15 +22,10 @@ import {
   compareByOptions,
   compareByOptionsInfo,
   getExternalScoreFormattedByType,
-  getIsMultiSchoolYearDataPresent,
   getTestUniqId,
 } from '../common/utils'
 
-const {
-  getProficiencyBand,
-  percentage,
-  TABLE_SORT_ORDER_TYPES,
-} = reportUtils.common
+const { getProficiencyBand, percentage } = reportUtils.common
 const { getAchievementLevels } = dataWarehouseConstants
 
 /**
@@ -100,7 +95,6 @@ export const staticDropDownData = {
     testSubjects: '',
     tagIds: '',
     assessmentTypes: '',
-    testIds: '', // TODO: check if still required?
     testUniqIds: '',
     profileId: '',
     externalScoreType: 'scaledScore',
@@ -128,7 +122,6 @@ export const staticDropDownData = {
     testGrades: '',
     assessmentTypes: '',
     tagIds: '',
-    testIds: '',
     profileId: '',
     race: 'all',
     gender: 'all',
@@ -171,6 +164,8 @@ export const staticDropDownData = {
 
 export const sortKeys = {
   COMPARE_BY: 'compareBy',
+  // DISTRICT: 'districtName',
+  ASSESSMENT_: 'ASSESSMENT_',
 }
 
 export const compareByMap = mapValues(compareByOptionsInfo, ({ name }) => name)
@@ -280,23 +275,16 @@ const augmentBandData = (tests, bandInfo, externalBands) => {
   return testsWithBandInfo
 }
 
-const getAggregatedDataByTestId = (
-  metricInfo,
-  filters = {},
-  isMultiSchoolYear
-) => {
+const getAggregatedDataByTestUniqId = (metricInfo, filters = {}) => {
   const { externalScoreType } = filters
   const result = {}
-  const groupedByTestId = isMultiSchoolYear
-    ? groupBy(metricInfo, getTestUniqId)
-    : groupBy(metricInfo, 'testId')
-  Object.keys(groupedByTestId).forEach((testId) => {
+  const groupedByTestUniqId = groupBy(metricInfo, 'testUniqId')
+  Object.keys(groupedByTestUniqId).forEach((testUniqId) => {
     const {
       testName = 'N/A',
       isIncomplete = false,
       ...testData
-    } = groupedByTestId[testId].reduce(
-      // Note: testId refers to testUniqId i.e. testId_termId in case of multiSchoolYear
+    } = groupedByTestUniqId[testUniqId].reduce(
       (res, ele) => {
         const _isIncomplete = ele.isIncomplete || res.isIncomplete
         const _res =
@@ -328,7 +316,9 @@ const getAggregatedDataByTestId = (
         totalStudentCount: 0,
       }
     )
-    const { band, bands } = findTestWithAverageBand(groupedByTestId[testId])
+    const { band, bands } = findTestWithAverageBand(
+      groupedByTestUniqId[testUniqId]
+    )
     testData.band = band
     if (bands) testData.bands = bands
     let totalTotalScore = round(testData.totalTotalScore, 2)
@@ -379,7 +369,7 @@ const getAggregatedDataByTestId = (
     const _testName = testData.externalTestType
       ? testName
       : `${testName} (${TEST_TYPE_LABELS[testData.testType]})`
-    result[testId] = {
+    result[testUniqId] = {
       ...testData,
       testName: _testName,
       isIncomplete,
@@ -404,12 +394,12 @@ const getAggregatedDataByTestId = (
   })
   return result
 }
+
 /**
  * Method to generate table data from table and chart api response to render table.
  * @param {Record[]} reportTableData - table api response.
  * @param {Record[]} reportChartData - chart api response.
  * @param {Record[]} feedTypes - contains supported feedTypes for the ditrict.
- * @param {String[]} incompleteTests - contains list of incomplete test ids.
  * @param {Record[]} bandInfo - contains performance bands data.
  * @param {string} compareByKey - selected compare by filter key in the table.
  * @param {Record} sortFilters - contains sort filters data.
@@ -421,7 +411,6 @@ export const getTableData = (
   reportTableData,
   reportChartData,
   feedTypes,
-  incompleteTests,
   bandInfo = [],
   compareByKey,
   sortFilters,
@@ -432,134 +421,72 @@ export const getTableData = (
   const { externalBands = [] } = get(reportChartData, 'data.result', {})
   const { districts: districtsInfo = [] } = orgData?.districtGroup || {}
   const feedTypeKeys = (feedTypes || []).map(({ key }) => key)
-  let externalMetricsForTable = metricInfo
-    .filter(({ testType }) => feedTypeKeys.includes(testType))
-    .map(({ testType: externalTestType, ...t }) => ({
-      ...t,
-      externalTestType,
-      districtName:
-        isDistrictGroupAdmin && !t.districtName
-          ? districtsInfo.find((d) => d._id === t.districtId)?.name
-          : t.districtName,
-    }))
-  const internalMetricsForTable = metricInfo
-    .filter(({ testType }) => !feedTypeKeys.includes(testType))
-    .map((t) => ({
-      ...t,
-      isIncomplete: incompleteTests.includes(t.testId),
-    }))
-  if (isEmpty(externalBands) && !isEmpty(externalMetricsForTable)) {
-    externalMetricsForTable = []
-  }
-  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
-  // fallback to prevent intermittent crashes when bandInfo is empty
-  const _metricInfo = isEmpty(bandInfo) ? [] : internalMetricsForTable
-  // filter out external tests data without achievement level
-  const filteredExternalMetricInfo = externalMetricsForTable
-    .filter((t) => t.externalTestType && t.achievementLevel)
-    .map((t) => ({
-      ...t,
-      assessmentDate: +new Date(t.assessmentDate),
-      achievementLevel: +t.achievementLevel,
-      testId: t.testName,
-    }))
-  const compositeMetricInfo = [
-    ..._metricInfo,
-    ...filteredExternalMetricInfo,
-  ].map((t) => {
-    const averageScorePercentage = t.externalTestType
-      ? undefined
-      : (t.totalScore * 100) / t.maxScore || 0
-    return {
-      ...t,
-      title: t.testTitle,
-      averageScorePercentage,
-    }
-  })
-  const compositeMetricInfoWithBandData = augmentBandData(
-    compositeMetricInfo,
+
+  const filteredMetricInfo = metricInfo
+    .map(({ ...item }) => {
+      const testUniqId = getTestUniqId(item)
+
+      if (feedTypeKeys.includes(item.testType)) {
+        // map data for external test type
+        const districtName =
+          isDistrictGroupAdmin && !item.districtName
+            ? districtsInfo.find((d) => d._id === item.districtId)?.name
+            : item.districtName
+        Object.assign(item, {
+          externalTestType: item.testType,
+          districtName,
+          assessmentDate: +new Date(item.assessmentDate),
+          achievementLevel: +item.achievementLevel,
+        })
+      } else {
+        // map data for internal tests
+        const averageScorePercentage =
+          (item.totalScore * 100) / item.maxScore || 0
+        Object.assign(item, { averageScorePercentage })
+      }
+
+      return { ...item, testUniqId, title: item.testTitle }
+    })
+    .filter(
+      ({ externalTestType }) =>
+        (!isEmpty(bandInfo) && !externalTestType) ||
+        (!isEmpty(externalBands) && externalTestType)
+    )
+
+  const metricInfoWithBandData = augmentBandData(
+    filteredMetricInfo,
     bandInfo,
     externalBands
   )
 
   // table data for each assessment
   const groupedByCompareByKey = groupByCompareByKey(
-    compositeMetricInfoWithBandData,
+    metricInfoWithBandData,
     compareByKey
   )
   const compareByLabelKey = compareByMap[compareByKey]
-  let tableData = Object.keys(groupedByCompareByKey).map((compareByValue) => {
-    const _data = groupedByCompareByKey[compareByValue]
-    const tests = getAggregatedDataByTestId(_data, filters, isMultiSchoolYear)
-    const compareByLabelValue = _data[0][compareByLabelKey]
+  const tableData = Object.keys(groupedByCompareByKey).map((compareByValue) => {
+    const rowData = groupedByCompareByKey[compareByValue]
+    const compareByLabelValue = rowData[0][compareByLabelKey]
+    const tests = getAggregatedDataByTestUniqId(rowData, filters)
     return {
       id: compareByValue,
       [compareByKey]: compareByValue,
       [compareByLabelKey]: compareByLabelValue || '',
-      districtId: _data[0].districtId,
-      districtName: _data[0].districtName,
+      districtId: rowData[0].districtId,
+      districtName: rowData[0].districtName,
       tests,
     }
   })
-  if (sortFilters.sortKey === sortKeys.COMPARE_BY) {
-    tableData = tableData.sort((a, b) => {
-      return sortFilters.sortOrder === TABLE_SORT_ORDER_TYPES.ASCEND
-        ? a[compareByLabelKey].localeCompare(b[compareByLabelKey])
-        : b[compareByLabelKey].localeCompare(a[compareByLabelKey])
-    })
-  }
 
   return tableData
 }
 
-/**
- * Method to generate transformed chart data for rendering the chart.
- * @param {Record[]} metricInfo - contains internal test metrics.
- * @param {Record[]} externalMetricInfo - contains external test metrics.
- * @param {Record[]} bandInfo - contains internal tests performance band info.
- * @param {Record[]} externalBands - contains external tests performance band info.
- * @param {Record} filters - contains either shared report filters or popup filters data.
- * @param {Object{}} termsKeyedById - contains terms with termId as the key
- * @returns {Record[]} - transformed chart data to render chart.
- */
-export const getChartData = (
-  metricInfo = [],
-  externalMetricInfo = [],
-  bandInfo = [],
-  externalBands = [],
-  filters = {},
-  termsKeyedById = {}
-) => {
-  const { externalScoreType } = filters
-  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
-  // fallback to prevent intermittent crashes when bandInfo is empty
-  const _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
-  // filter out external tests data without achievement level
-  const filteredExternalMetricInfo = externalMetricInfo
-    .filter((t) => t.externalTestType && t.achievementLevel)
-    .map((t) => {
-      const selectedTerm = termsKeyedById[t.termId]
-      return {
-        ...t,
-        assessmentDate: +new Date(t.assessmentDate),
-        achievementLevel: +t.achievementLevel,
-        testId: t.testName,
-        termName: selectedTerm?.name,
-        termEndDate: selectedTerm?.endDate,
-      }
-    })
-  if (isEmpty(metricInfo) && isEmpty(filteredExternalMetricInfo)) {
-    return []
-  }
-  const _bandInfo = bandInfo.sort((a, b) => b.threshold - a.threshold)
-
-  // curate chart data for internal tests
-  const internalGroupedByTestId = isMultiSchoolYear
-    ? groupBy(_metricInfo, getTestUniqId)
-    : groupBy(_metricInfo, 'testId')
-  const internalChartData = Object.keys(internalGroupedByTestId).map(
-    (testId) => {
-      const records = internalGroupedByTestId[testId]
+const getInternalChartData = (internalMetricInfo, bandInfo) => {
+  const internalGroupedByTestUniqId = groupBy(internalMetricInfo, 'testUniqId')
+  const internalChartData = Object.keys(internalGroupedByTestUniqId).map(
+    (testUniqId) => {
+      const records = internalGroupedByTestUniqId[testUniqId]
       const [defaultTestData] = records
       const {
         testName = 'N/A',
@@ -597,10 +524,10 @@ export const getChartData = (
         testData.totalMaxScore
       )
       const averageScoreBand =
-        _bandInfo.find((band) => band.threshold < averageScore) || bandInfo[0]
+        bandInfo.find((band) => band.threshold < averageScore) || bandInfo[0]
 
       // curate records for each performance band
-      const _records = _bandInfo.map((band) => {
+      const _records = bandInfo.map((band) => {
         const _default = {
           totalGraded: 0,
           totalGradedPercentage: 0,
@@ -621,7 +548,7 @@ export const getChartData = (
 
       return {
         ...testData,
-        testId,
+        testUniqId,
         testName: `${testName} (${TEST_TYPE_LABELS[testData.testType]})`,
         isIncomplete,
         totalScore: round(testData.totalScore, 2),
@@ -638,16 +565,19 @@ export const getChartData = (
       }
     }
   )
+  return internalChartData
+}
 
-  // curate chart data for external tests
-  const externalGroupedByTestId = isMultiSchoolYear
-    ? groupBy(filteredExternalMetricInfo, getTestUniqId)
-    : groupBy(filteredExternalMetricInfo, 'testId')
-  const externalChartData = Object.keys(externalGroupedByTestId).map(
-    (testId) => {
-      // Note: testId refers to testUniqId i.e. testId_termId in case of multiSchoolYear
-      const records = externalGroupedByTestId[testId]
-      const testData = externalGroupedByTestId[testId].reduce(
+const getExternalChartData = (
+  externalMetricInfo,
+  externalBands,
+  externalScoreType
+) => {
+  const externalGroupedByTestUniqId = groupBy(externalMetricInfo, 'testUniqId')
+  const externalChartData = Object.keys(externalGroupedByTestUniqId).map(
+    (testUniqId) => {
+      const records = externalGroupedByTestUniqId[testUniqId]
+      const testData = externalGroupedByTestUniqId[testUniqId].reduce(
         (res, ele) => {
           const _res =
             parseInt(ele.assessmentDate, 10) > res.assessmentDate ? ele : res
@@ -685,7 +615,7 @@ export const getChartData = (
         }
       )
       testData.achievementLevel = getWeightedAchievementLevel(
-        externalGroupedByTestId[testId]
+        externalGroupedByTestUniqId[testUniqId]
       )
 
       let totalScore = testData.totalScore
@@ -774,7 +704,7 @@ export const getChartData = (
 
       return {
         ...testData,
-        testId,
+        testUniqId,
         totalScore,
         lineScore,
         averageScore,
@@ -787,9 +717,78 @@ export const getChartData = (
       }
     }
   )
+  return externalChartData
+}
 
+/**
+ * Method to generate transformed chart data for rendering the chart.
+ * @param {Record[]} internalMetricsForChart - contains internal test metrics.
+ * @param {Record[]} externalMetricsForChart - contains external test metrics.
+ * @param {Record[]} bandInfo - contains internal tests performance band info.
+ * @param {Record[]} externalBands - contains external tests performance band info.
+ * @param {Record} filters - contains either shared report filters or popup filters data.
+ * @param {Object.<string, object>} termsKeyedById - contains terms with termId as the key
+ * @returns {Record[]} - transformed chart data to render chart.
+ */
+export const getChartData = (
+  internalMetricsForChart = [],
+  externalMetricsForChart = [],
+  bandInfo = [],
+  externalBands = [],
+  filters = {},
+  termsKeyedById = {}
+) => {
+  const { externalScoreType } = filters
+  // fallback to prevent intermittent crashes when bandInfo is empty
+  const internalMetricInfo = !isEmpty(bandInfo)
+    ? internalMetricsForChart.map((t) => {
+        const selectedTerm = termsKeyedById[t.termId]
+        return {
+          ...t,
+          testUniqId: getTestUniqId(t),
+          termName: selectedTerm?.name,
+          termEndDate: selectedTerm?.endDate,
+        }
+      })
+    : []
+  // filter out external tests data without achievement level
+  const externalMetricInfo = externalMetricsForChart
+    .filter((t) => t.testType && t.achievementLevel)
+    .map((t) => {
+      const selectedTerm = termsKeyedById[t.termId]
+      return {
+        ...t,
+        externalTestType: t.testType,
+        assessmentDate: +new Date(t.assessmentDate),
+        achievementLevel: +t.achievementLevel,
+        testUniqId: getTestUniqId(t),
+        termName: selectedTerm?.name,
+        termEndDate: selectedTerm?.endDate,
+      }
+    })
+  if (isEmpty(internalMetricInfo) && isEmpty(externalMetricInfo)) {
+    return []
+  }
+
+  // curate chart data for internal tests
+  const sortedBandInfo = bandInfo.sort((a, b) => b.threshold - a.threshold)
+  const internalChartData = getInternalChartData(
+    internalMetricInfo,
+    sortedBandInfo
+  )
+
+  // curate chart data for external tests
+  const externalChartData = getExternalChartData(
+    externalMetricInfo,
+    externalBands,
+    externalScoreType
+  )
+
+  // sort assessments by date and alphabetically
   const chartData = [...internalChartData, ...externalChartData].sort(
-    (a, b) => a.assessmentDate - b.assessmentDate
+    (a, b) =>
+      a.assessmentDate - b.assessmentDate ||
+      a.testName.toLowerCase().localeCompare(b.testName.toLowerCase())
   )
 
   return chartData
@@ -809,9 +808,12 @@ export const getChartSpecifics = (
   sharedReportFilters,
   settings,
   reportChartData,
-  terms = []
+  orgData
 ) => {
-  const termsKeyedById = keyBy(terms, '_id')
+  const { terms = [], districtGroup = {} } = orgData
+  const { terms: districtGroupTerms = [] } = districtGroup
+  const termsKeyedById = keyBy([...terms, ...districtGroupTerms], '_id')
+
   // performance band for chart should update post chart data API response
   const { bandInfo = [] } = get(filtersData, 'data.result', {})
   const selectedPerformanceBand =
@@ -821,34 +823,23 @@ export const getChartSpecifics = (
           x._id === (sharedReportFilters || settings.requestFilters).profileId
       ) || bandInfo[0]
     )?.performanceBand || []
-  // curate chart data from API response
 
+  // curate chart data from API response
   const {
     internalMetricsForChart = [],
     externalMetricsForChart = [],
-    incompleteTests = [],
     externalBands = [],
   } = get(reportChartData, 'data.result', {})
-  const _internalMetricsForChart = internalMetricsForChart.map((d) => {
-    const selectedTerm = termsKeyedById[d.termId]
-    return {
-      ...d,
-      isIncomplete: incompleteTests.includes(d.testId),
-      termName: selectedTerm?.name,
-      termEndDate: selectedTerm?.endDate,
-    }
-  })
-
   const chartData = getChartData(
-    _internalMetricsForChart,
+    internalMetricsForChart,
     externalMetricsForChart,
     selectedPerformanceBand,
     externalBands,
     sharedReportFilters || settings.requestFilters,
     termsKeyedById
   )
+
   return {
-    incompleteTests,
     selectedPerformanceBand,
     chartData,
   }

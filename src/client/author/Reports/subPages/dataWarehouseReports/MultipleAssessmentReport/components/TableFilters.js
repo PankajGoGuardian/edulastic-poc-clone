@@ -11,8 +11,9 @@ import {
 } from '../../../../common/styled'
 import StudentGroupBtn from '../../common/components/StudentGroupBtn'
 
-const TITLE_TOOLTIP_NOTE =
+const INFO_TOOLTIP_MESSAGE =
   'Note: Metrics are based on student enrolment in the displayed school, class, or teacher. Data may include tests taken by these students that were not assigned to the displayed class or teacher.'
+
 const TableFilters = ({
   isDistrictGroupAdmin,
   updateFilterDropdownCB,
@@ -20,7 +21,6 @@ const TableFilters = ({
   selectedCompareBy,
   handleAddToGroupClick,
   showAddToStudentGroupBtn,
-  isMultiSchoolYear,
 }) => {
   return (
     <Row
@@ -34,11 +34,9 @@ const TableFilters = ({
           Performance Deep-dive across Assessments by{' '}
           {selectedCompareBy?.title || '-'}
         </StyledH3>
-        <EduIf condition={isMultiSchoolYear}>
-          <StyledTooltip placement="right" title={TITLE_TOOLTIP_NOTE}>
-            <Icon type="warning" theme="filled" style={{ color: orange }} />
-          </StyledTooltip>
-        </EduIf>
+        <StyledTooltip placement="right" title={INFO_TOOLTIP_MESSAGE}>
+          <Icon type="warning" theme="filled" style={{ color: orange }} />
+        </StyledTooltip>
       </TableTitleContainer>
 
       <FlexContainer>

@@ -16,19 +16,19 @@ import {
   getTestListSelector,
   receiveMultiSchoolYearTestListAction,
   receiveTestListAction,
-} from '../../../../../ducks'
+} from '../../../ducks'
 
-import MultiSelectSearch from '../../../../../common/components/widgets/MultiSelectSearch'
+import MultiSelectSearch from '../widgets/MultiSelectSearch'
 import {
   currentDistrictInstitutionIds,
   getUser,
   getUserOrgId,
-} from '../../../../../../src/selectors/user'
-import { MandatorySymbol } from '../styledComponents'
+} from '../../../../src/selectors/user'
+import { MandatorySymbol } from '../../../subPages/dataWarehouseReports/common/components/styledComponents'
 import {
   convertItemToArray,
   getIsMultiSchoolYearDataPresent,
-} from '../../utils'
+} from '../../../subPages/dataWarehouseReports/common/utils'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = {
@@ -39,7 +39,7 @@ const DEFAULT_SEARCH_TERMS = {
 }
 const MAX_TEST_COUNT = 20
 
-const SelectAssessmentsForMultiSchoolYear = ({
+const MultiTermAssessmentAutoComplete = ({
   userDetails,
   testList,
   loading,
@@ -89,9 +89,8 @@ const SelectAssessmentsForMultiSchoolYear = ({
   const isMultiYearSelected = testTermIdsArr.length > 1
   const dropDownDataMapper = (_tests) => {
     return _tests.map((test) => {
-      const testTermId = isMultiYearSelected ? test.termId : testTermIdsArr[0]
-      const term = termsMap[testTermId]
-      const testTermName = test.termName || term.title || ''
+      const testTermId = test.termId || testTermIdsArr[0]
+      const testTermName = test.termName || termsMap[testTermId]?.title || ''
       return {
         key: `${!test.isExternal ? test._id : test.testName}_${testTermId}`,
         title: `${test.title}${
@@ -274,4 +273,4 @@ export default connect(
     loadTestList: receiveTestListAction,
     loadMultiSchoolYearTestList: receiveMultiSchoolYearTestListAction,
   }
-)(SelectAssessmentsForMultiSchoolYear)
+)(MultiTermAssessmentAutoComplete)

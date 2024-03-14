@@ -29,7 +29,7 @@ import SchoolAutoComplete from '../../../../common/components/autocompletes/Scho
 import ClassAutoComplete from '../../../../common/components/autocompletes/ClassAutoComplete'
 import TeacherAutoComplete from '../../../../common/components/autocompletes/TeacherAutoComplete'
 import TagFilter from '../../../../../src/components/common/TagFilter'
-import SelectAssessmentsForMultiSchoolYear from '../../common/components/SelectAssessmentsForMultiSchoolYear'
+import MultiTermAssessmentAutoComplete from '../../../../common/components/autocompletes/MultiTermAssessmentAutoComplete'
 import CourseAutoComplete from '../../../../common/components/autocompletes/CourseAutoComplete'
 import GroupsAutoComplete from '../../../../common/components/autocompletes/GroupsAutoComplete'
 
@@ -220,7 +220,6 @@ const MultipleAssessmentReportFilters = ({
           testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
           tagIds: search.tagIds || '',
           assessmentTypes: search.assessmentTypes || defaultTestTypes,
-          testIds: search.testIds || '', // TODO: check if still required?
           testUniqIds: search.testUniqIds || '',
           // student set filters
           termId: urlSchoolYear.key,
@@ -271,7 +270,7 @@ const MultipleAssessmentReportFilters = ({
           ...demographicsFilterTagsData,
         }
 
-        // set filterTagsData, filters and testId
+        // set filterTagsData, filters and testUniqId
         setFilterTagsData(_filterTagsData)
         setFilters(_filters)
         if (location.state?.source === 'data-warehouse-reports') {
@@ -817,7 +816,7 @@ const MultipleAssessmentReportFilters = ({
                         </Col>
                       </EduIf>
                       <Col span={18}>
-                        <SelectAssessmentsForMultiSchoolYear
+                        <MultiTermAssessmentAutoComplete
                           dataCy="multiSchoolYearTests"
                           termId={filters.termId}
                           grades={filters.testGrades}

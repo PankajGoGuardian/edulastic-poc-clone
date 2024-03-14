@@ -48,6 +48,7 @@ const getAchievementLevels = (test, allExternalBands) => {
   const testBands = bands.map((band) => ({
     ...band,
     active: band.rank === test.achievementLevel,
+    testUniqId: test.testUniqId,
     testId: test.testId,
     termId: test.termId,
     id: band.rank,

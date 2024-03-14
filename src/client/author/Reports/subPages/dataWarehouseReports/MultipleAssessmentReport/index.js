@@ -73,7 +73,6 @@ import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import {
   enhanceQueryWithTermIds,
-  getIsMultiSchoolYearDataPresent,
   isAddToStudentGroupEnabled,
 } from '../common/utils'
 import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../GoalsAndInterventions/constants/form'
@@ -212,7 +211,6 @@ const MultipleAssessmentReport = ({
         ...pick(_requestFilters, requestFilterKeys),
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
-        testIds: _requestFilters.testIds || '',
         testUniqIds: _requestFilters.testUniqIds || '',
       },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
@@ -296,14 +294,14 @@ const MultipleAssessmentReport = ({
     }
   }, [reportChartData, reportTableData])
 
-  const { incompleteTests, selectedPerformanceBand, chartData } = useMemo(
+  const { selectedPerformanceBand, chartData } = useMemo(
     () =>
       getChartSpecifics(
         filtersData,
         sharedReportFilters,
         settings,
         reportChartData,
-        orgData?.terms
+        orgData
       ),
     [reportChartData]
   )
@@ -317,7 +315,6 @@ const MultipleAssessmentReport = ({
         reportTableData,
         reportChartData,
         availableFeedTypes,
-        incompleteTests,
         selectedPerformanceBand,
         settings.selectedCompareBy.key,
         sortFilters,
@@ -328,7 +325,6 @@ const MultipleAssessmentReport = ({
       orgData,
       reportChartData,
       reportTableData,
-      incompleteTests,
       selectedPerformanceBand,
       availableFeedTypes,
       isDistrictGroupAdmin,
@@ -336,11 +332,7 @@ const MultipleAssessmentReport = ({
   )
 
   const filteredOverallAssessmentsData = filter(chartData, (test) =>
-    selectedTests.length ? includes(selectedTests, test.testId) : true
-  )
-
-  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(
-    sharedReportFilters?.testTermIds || filters.testTermIds
+    selectedTests.length ? includes(selectedTests, test.testUniqId) : true
   )
 
   // handle add student to group
@@ -525,7 +517,6 @@ const MultipleAssessmentReport = ({
               setSelectedTests={setSelectedTests}
               showInterventions={showInterventions}
               interventionsData={interventionsData}
-              isMultiSchoolYear={isMultiSchoolYear}
             />
             <FeaturesSwitch
               inputFeatures="studentGroups"
@@ -545,13 +536,11 @@ const MultipleAssessmentReport = ({
               selectedCompareBy={selectedCompareBy}
               handleAddToGroupClick={handleAddToGroupClick}
               showAddToStudentGroupBtn={showAddToStudentGroupBtn}
-              isMultiSchoolYear={isMultiSchoolYear}
             />
             <Table
               isDistrictGroupAdmin={isDistrictGroupAdmin}
               tableData={tableData}
               overallAssessmentsData={filteredOverallAssessmentsData}
-              showIncompleteTestsMessage={!!incompleteTests.length}
               settings={settings}
               isSharedReport={isSharedReport}
               onCsvConvert={onCsvConvert}

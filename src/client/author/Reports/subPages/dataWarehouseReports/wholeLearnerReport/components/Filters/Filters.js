@@ -53,7 +53,7 @@ import {
   getDefaultTestTypesForUser,
   getIsMultiSchoolYearDataPresent,
 } from '../../../common/utils'
-import SelectAssessmentsForMultiSchoolYear from '../../../common/components/SelectAssessmentsForMultiSchoolYear'
+import MultiTermAssessmentAutoComplete from '../../../../../common/components/autocompletes/MultiTermAssessmentAutoComplete'
 import TagFilter from '../../../../../../src/components/common/TagFilter'
 import { MandatorySymbol } from '../../../common/components/styledComponents'
 
@@ -690,7 +690,7 @@ const WholeLearnerReportFilters = ({
                         />
                       </Col>
                       <Col span={18}>
-                        <SelectAssessmentsForMultiSchoolYear
+                        <MultiTermAssessmentAutoComplete
                           dataCy="multiSchoolYearTests"
                           termId={filters.termId}
                           grades={filters.testGrades}

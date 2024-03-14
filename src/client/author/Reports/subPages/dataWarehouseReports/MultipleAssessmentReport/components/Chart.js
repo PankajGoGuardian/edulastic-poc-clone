@@ -19,11 +19,7 @@ import {
 } from '../../../../common/styled'
 import { toggleItem } from '../../../../common/util'
 import { getTestName } from '../utils'
-import {
-  getTestUniqId,
-  getXTickTagText,
-  getXTickTooltipText,
-} from '../../common/utils'
+import { getXTickTagText, getXTickTooltipText } from '../../common/utils'
 import { ChartPreLabelWrapper } from '../../../../common/components/charts/styled-components'
 
 const { formatDate } = reportUtils.common
@@ -78,11 +74,11 @@ const getTooltipJSX = (payload, barIndex) => {
 
     let colorBandComponent = null
     if (externalTestType) {
-      const achievementLevels = [...bands].reverse()
+      const externalBands = [...bands].reverse()
       colorBandComponent = (
         <>
-          <TooltipRowItem title={`${achievementLevels.length} color band`} />
-          {achievementLevels.map((band) => (
+          <TooltipRowItem title={`${externalBands.length} color band`} />
+          {externalBands.map((band) => (
             <ColorBandItem
               highlight={false}
               color={band.color}
@@ -139,9 +135,8 @@ const getRightTooltipJSX = (payload, barIndex) => {
     if (isEmpty(bar)) return null
     let name = bar[0].bandName
     if (barData.externalTestType) {
-      const achievementLevels = [...barData.bands]
-      name = achievementLevels.filter((e) => e.color === recordColor.fill)[0]
-        .name
+      const externalBands = barData.bands
+      name = externalBands.filter((e) => e.color === recordColor.fill)[0].name
     }
     const colorBandComponent = (
       <ColorBandItem color={bar[0].color} name={name} />
@@ -180,9 +175,8 @@ const Chart = ({
   setSelectedTests,
   showInterventions,
   interventionsData,
-  isMultiSchoolYear,
 }) => {
-  const achievementLevels = chartData.flatMap((cdItem) =>
+  const externalBands = chartData.flatMap((cdItem) =>
     cdItem.externalTestType ? cdItem.bands : []
   )
 
@@ -221,7 +215,7 @@ const Chart = ({
   }))
 
   // use constant EXTERNAL_TEST_TYPES to identify between different external tests
-  const barsDataForExternal = achievementLevels.map((al, index) => ({
+  const barsDataForExternal = externalBands.map((al, index) => ({
     ...al,
     key: `bar${index + 1}`,
     insideLabelKey: `inside-label-bar${index + 1}`,
@@ -229,16 +223,14 @@ const Chart = ({
     name: al.name,
     fill: al.color,
     stackId: 'a',
-    [`bar${index + 1}`]: Math.floor(100 / achievementLevels.length),
+    [`bar${index + 1}`]: Math.floor(100 / externalBands.length),
   }))
 
   const data = chartData.map((d) => {
     if (d.externalTestType) {
       // for external assessments
-      const filteredBarsDataForExternal = barsDataForExternal.filter((b) =>
-        isMultiSchoolYear
-          ? getTestUniqId(b) === d.testId // here d.testId refer testUniqId in case of multiSchoolYear
-          : b.testId === d.testId
+      const filteredBarsDataForExternal = barsDataForExternal.filter(
+        (b) => b.testUniqId === d.testUniqId
       )
       const barsCellDataForExternal = filteredBarsDataForExternal.reduce(
         (res, ele) => {
@@ -322,7 +314,7 @@ const Chart = ({
           ? barsDataForExternal
           : barsDataForInternal
       }
-      xAxisDataKey="testId"
+      xAxisDataKey="testUniqId"
       lineDataKey="lineScore"
       lineProps={chartLineProps}
       getTooltipJSX={getTooltipJSX}

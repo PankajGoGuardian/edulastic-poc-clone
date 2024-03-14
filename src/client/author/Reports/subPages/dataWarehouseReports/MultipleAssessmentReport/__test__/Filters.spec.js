@@ -14,7 +14,7 @@ jest.mock('../../../../common/components/autocompletes/TeacherAutoComplete')
 const location = {
   pathname: '/author/reports/multiple-assessment-report-dw',
   search:
-    '?termId=632307a1cabdd8000986640e&testSubjects=All&testGrades=All&tagIds=All&assessmentTypes=All&testIds=All&schoolIds=All&teacherIds=All&subjects=All&grades=All&courseId=All&classIds=All&groupIds=All&profileId=6322e2b799978a000a298469&reportId=',
+    '?termId=632307a1cabdd8000986640e&testSubjects=All&testGrades=All&tagIds=All&assessmentTypes=All&testUniqIds=All&schoolIds=All&teacherIds=All&subjects=All&grades=All&courseId=All&classIds=All&groupIds=All&profileId=6322e2b799978a000a298469&reportId=',
   hash: '',
   key: 'mfur8j',
 }

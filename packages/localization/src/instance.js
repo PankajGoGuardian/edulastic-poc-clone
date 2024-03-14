@@ -59,6 +59,7 @@ i18n
         notifications: require('./locales/notifications/en'),
         upgradePlan: require('./locales/upgradePlan/en'),
         dataStudio: require('./locales/dataStudio/en'),
+        bubbleSheet: require('./locales/bubbleSheet/en.json'),
       },
       es: {
         default: require('./locales/default/es'),

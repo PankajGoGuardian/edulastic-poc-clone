@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Progress } from 'antd'
+import { compose } from 'redux'
+import { withNamespaces } from '@edulastic/localization'
 
 import {
   themeColor,
@@ -14,18 +16,15 @@ import {
 import { getUserConfirmation } from '../../../common/utils/helpers'
 import { omrSheetScanStatus, omrUploadSessionStatus } from '../utils'
 
-const uploadAgainHandler = (assignmentId, groupId, history) => {
-  getUserConfirmation(
-    'Sheets for this class is already scanned. Do you want to replace?',
-    (ok) => {
-      if (ok) {
-        history.push({
-          pathname: '/uploadAnswerSheets',
-          search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
-        })
-      }
+const uploadAgainHandler = (assignmentId, groupId, history, t) => {
+  getUserConfirmation(t('uploadAgain'), (ok) => {
+    if (ok) {
+      history.push({
+        pathname: '/uploadAnswerSheets',
+        search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
+      })
     }
-  )
+  })
 }
 
 const SessionStatus = ({
@@ -37,6 +36,7 @@ const SessionStatus = ({
   handleAbortClick,
   toggleStatusFilter,
   history,
+  t,
 }) => {
   const [fakeProgress, setFakeProgress] = useState(0)
 
@@ -51,7 +51,10 @@ const SessionStatus = ({
     failedCount,
     scannedCount,
     scanProgress,
+    scanResultMessage,
   } = useMemo(() => {
+    let _scanResultMessage = t('success')
+
     const _successCount = pages.filter(
       (p) => p.status === omrSheetScanStatus.DONE
     ).length
@@ -66,26 +69,29 @@ const SessionStatus = ({
     if (sessionStatus > omrUploadSessionStatus.SCANNING) {
       _scanProgress = 100
     }
+
+    if (
+      sessionStatus === omrUploadSessionStatus.ABORTED ||
+      _failedCount === pages.length
+    ) {
+      _scanResultMessage = sessionMessage
+    } else if (_failedCount !== 0) {
+      _scanResultMessage = t('partialFailure')
+    }
     return {
       successCount: _successCount,
       failedCount: _failedCount,
       scannedCount: _successCount + _failedCount,
       scanProgress: _scanProgress > 1 ? _scanProgress : 1,
+      scanResultMessage: _scanResultMessage,
     }
   }, [pages, sessionStatus])
 
   const isDone = scanProgress === 100
   const progressMessage = isDone
-    ? 'Form Processing Done'
-    : 'Form Processing In Progress...'
-  const progressHint = isDone
-    ? ''
-    : '(System is processing the uploaded bubble sheets. You can either wait or close the page and revisit the scan bubble sheet page after sometime.)'
-  const scanResultMessage =
-    sessionStatus === omrUploadSessionStatus.FAILED ||
-    sessionStatus === omrUploadSessionStatus.ABORTED
-      ? sessionMessage
-      : 'Successfully scanned responses have been recorded on Edulastic.'
+    ? t('processingDone')
+    : t('processingInProgress')
+  const progressHint = isDone ? '' : t('progressHint')
 
   const viewLiveClassboardNavigation =
     sessionStatus === omrUploadSessionStatus.FAILED ||
@@ -171,7 +177,7 @@ const SessionStatus = ({
                 data-cy="uploadAgainButton"
                 className="upload-again-link"
                 onClick={() => {
-                  uploadAgainHandler(assignmentId, groupId, history)
+                  uploadAgainHandler(assignmentId, groupId, history, t)
                 }}
               >
                 Upload Again
@@ -185,7 +191,7 @@ const SessionStatus = ({
   )
 }
 
-export default withRouter(SessionStatus)
+export default compose(withNamespaces('bubbleSheet'), withRouter)(SessionStatus)
 
 const SessionStatusContainer = styled.div`
   margin: 0 40px;

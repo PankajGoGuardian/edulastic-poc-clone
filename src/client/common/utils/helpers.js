@@ -15,11 +15,9 @@ import {
   MULTIPLE_SELECTION,
   SHORT_TEXT,
   TRUE_OR_FALSE,
-} from '@edulastic/constants/const/questionType'
-import {
   CHOICE_MATRIX_STANDARD,
   CLOZE_DROP_DOWN,
-} from '@edulastic/constants/const/questionTitle'
+} from '@edulastic/constants/const/questionType'
 import { Partners } from './static/partnerData'
 import { smallestZoomLevel } from './static/zoom'
 import { breakpoints } from '../../student/zoomTheme'
@@ -302,7 +300,7 @@ export const validateQuestionsForGoogleForm = (
     )
     .every((question) => {
       const validationValue = get(question, 'validation.validResponse.value')
-      if (question.type === 'math') {
+      if (question.type === CLOZE_DROP_DOWN) {
         return validationValue.every((value) => !isEmpty(value.value))
       }
       return !isEmpty(validationValue)

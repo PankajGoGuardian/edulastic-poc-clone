@@ -47,7 +47,7 @@ const AddOnTag = ({ history, margin, message, component }) => {
 
 export default withRouter(AddOnTag)
 
-const DollarSymbolWrapper = styled.span`
+export const DollarSymbolWrapper = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;

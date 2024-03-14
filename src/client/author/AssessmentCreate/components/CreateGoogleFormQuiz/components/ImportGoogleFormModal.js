@@ -76,7 +76,7 @@ const ImportGoogleFormModal = ({
               <StyledList>
                 <li>
                   <Typography.Text>
-                    {successCount} out of {itemCount} questions imported.
+                    {successCount} out of {itemCount} questions imported
                   </Typography.Text>
                 </li>
                 {!!unsupportedItemIndexes?.length && (

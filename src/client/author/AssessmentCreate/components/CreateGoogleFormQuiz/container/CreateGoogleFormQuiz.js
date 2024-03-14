@@ -11,6 +11,7 @@ import {
 } from '../ducks'
 import ImportGoogleFormModal from '../components/ImportGoogleFormModal'
 import { DEFAULT_TEST_TITLE } from '../../../../TestPage/utils'
+import { stopPropagation } from '../../CreationOptions/utils'
 
 const GoogleFormQuiz = ({
   children,
@@ -43,8 +44,9 @@ const GoogleFormQuiz = ({
     }
   }
 
-  const onCreate = () => {
+  const onCreate = (e) => {
     if (!userFeatures?.premium) {
+      stopPropagation(e)
       return history.push('/author/subscription')
     }
   }

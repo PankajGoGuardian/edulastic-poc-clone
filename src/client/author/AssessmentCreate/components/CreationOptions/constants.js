@@ -9,9 +9,11 @@ import {
   IconSurveyTest,
   IconVideoQuizTest,
   IconWhiteLightBulb,
-  IconWhiteStar,
+  IconPremiumStar,
+  IconStar,
 } from '@edulastic/icons'
 import { navigationState } from '../../../src/constants/navigation'
+import { AddOnIconWrapper, AddOnTextWrapper } from './Components/styled'
 
 export const AccessType = {
   OR: 'OR',
@@ -32,16 +34,23 @@ export const TestKeys = {
 export const AccessNavigation = {
   PREMIUM: {
     key: 'premium',
-    icon: <IconWhiteStar />,
+    icon: <IconPremiumStar />,
     infoMessage: 'Buy Premium to unlock this feature.',
     navigation: {
       pathname: '/author/subscription',
     },
   },
-  PREMIUM_ADDON: {
-    key: 'premium',
-    icon: <IconWhiteStar />,
-    infoMessage: 'Buy Premium Addons to unlock this feature.',
+  PREMIUM_AI_ADDON: {
+    key: 'premium-ai-addon',
+    icon: <IconPremiumStar />,
+    infoMessage: (
+      <>
+        <AddOnIconWrapper>
+          <IconStar /> <AddOnTextWrapper>ADD-ON</AddOnTextWrapper>
+        </AddOnIconWrapper>
+        <div>Buy VideoQuiz and AI Suite to unlock this feature.</div>
+      </>
+    ),
     navigation: {
       pathname: '/author/subscription',
       state: { view: navigationState.SUBSCRIPTION.view.ADDON },
@@ -73,7 +82,6 @@ export const TestSections = [
       },
       {
         key: TestKeys.DYNAMIC_TEST,
-        dataCy: 'smartBuildCreateTest',
         icon: <IconSmartBuildTest />,
         heading: 'Smart Build',
         description:
@@ -98,12 +106,7 @@ export const TestSections = [
         description: 'Use AI to create tests quickly',
         access: {
           type: AccessType.OR,
-          features: [
-            {
-              ...AccessNavigation.PREMIUM_ADDON,
-              infoMessage: 'Buy VideoQuiz and AI Suite to unlock this feature',
-            },
-          ],
+          features: [AccessNavigation.PREMIUM_AI_ADDON],
         },
       },
     ],
@@ -114,7 +117,6 @@ export const TestSections = [
     tests: [
       {
         key: TestKeys.SNAP_QUIZ_TEST,
-        dataCy: 'uploadPdf',
         icon: <IconSnapQuizTest />,
         heading: 'Snap Quiz',
         description: 'Import PDF to build a interactive PDF quiz',
@@ -124,7 +126,6 @@ export const TestSections = [
       },
       {
         key: TestKeys.VIDEO_QUIZ_TEST,
-        dataCy: 'videoQuizCreateTest',
         icon: <IconVideoQuizTest />,
         heading: 'Video Quiz',
         description:
@@ -133,7 +134,6 @@ export const TestSections = [
           title: 'Get Started with VideoQuiz',
           infoMessage: 'Watch Quick Tour',
           url: '//fast.wistia.net/embed/iframe/jd8y6sdt1m',
-          dataCy: 'videoQuizQuickTourLink',
         },
         segmentEvent: {
           name: 'VideoQuizCreateTestClick',
@@ -146,12 +146,7 @@ export const TestSections = [
         },
         access: {
           type: AccessType.OR,
-          features: [
-            {
-              ...AccessNavigation.PREMIUM_ADDON,
-              infoMessage: 'Buy VideoQuiz and AI Suite to unlock this feature',
-            },
-          ],
+          features: [AccessNavigation.PREMIUM_AI_ADDON],
         },
       },
       {
@@ -163,6 +158,7 @@ export const TestSections = [
           type: AccessType.OR,
           features: [AccessNavigation.PREMIUM],
         },
+        isNew: new Date() <= new Date('2024-04-14'),
       },
       {
         key: TestKeys.QTI_IMPORT_TEST,

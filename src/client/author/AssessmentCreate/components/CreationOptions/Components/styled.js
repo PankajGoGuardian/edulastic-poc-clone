@@ -1,6 +1,7 @@
 import { premiumBg } from '@edulastic/colors'
 import { Row, Typography } from 'antd'
 import styled from 'styled-components'
+import { DollarSymbolWrapper } from '../../common/AddOnTag'
 
 export const HeadingWrapper = styled(Typography.Text)`
   font-size: 16px;
@@ -19,18 +20,26 @@ export const StyledCardWrapper = styled.div`
 `
 
 export const StyledIconWrapper = styled.div`
-  background: ${({ background }) => background || premiumBg};
   position: absolute;
-  top: 0px;
-  right: 16px;
-  width: 32px;
+  top: 6px;
+  right: 22px;
   text-align: center;
-  border-radius: 0px 8px;
-  line-height: 24px;
-  height: 24px;
 `
 
 export const SectionWrapper = styled(Row)`
   padding: 16px 0px;
   cursor: pointer;
+`
+
+export const AddOnIconWrapper = styled(DollarSymbolWrapper)`
+  background: ${premiumBg};
+  padding-left: 4px;
+  width: max-content;
+`
+
+export const AddOnTextWrapper = styled.span`
+  color: white;
+  font-weight: bolder;
+  font-size: 11px;
+  padding-right: 12px;
 `

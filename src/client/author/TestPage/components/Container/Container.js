@@ -1409,7 +1409,6 @@ class Container extends PureComponent {
   handleSave = (action, nextLocation, nextAction) => {
     const {
       test = {},
-      questions: assessmentQuestions,
       updateTest,
       createTest,
       currentTab,
@@ -1424,13 +1423,6 @@ class Container extends PureComponent {
 
     if (!isTestTypeWithDefaultTestTitle && !test?.title?.trim()?.length) {
       notification({ messageKey: 'nameFieldRequired' })
-      return
-    }
-
-    if (
-      test?.importData?.googleForm &&
-      !validateQuestionsForGoogleForm(assessmentQuestions, true)
-    ) {
       return
     }
 

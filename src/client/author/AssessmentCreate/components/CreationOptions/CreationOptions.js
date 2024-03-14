@@ -76,6 +76,8 @@ const CreationOptions = ({
   return TestSections.map(({ key, title, tests }, index) => {
     const cardItems = tests
       .map((test) => {
+        const testKey = test.key
+
         const cardVisible = isTestCardVisible(test)
         if (test.access?.features) {
           test.access.features = validateAndUpdateAccessFeatures(
@@ -85,21 +87,27 @@ const CreationOptions = ({
         }
 
         if (cardVisible) {
-          if (test.key === TestKeys.AI_TEST) {
+          if (testKey === TestKeys.AI_TEST) {
             return (
               <EduAIQuiz>
-                <TestCard {...test} />
+                <TestCard testKey={testKey} {...test} />
               </EduAIQuiz>
             )
           }
-          if (test.key === TestKeys.GOOGLE_FORM_TEST) {
+          if (testKey === TestKeys.GOOGLE_FORM_TEST) {
             return (
               <GoogleFormQuiz>
-                <TestCard {...test} />
+                <TestCard testKey={testKey} {...test} />
               </GoogleFormQuiz>
             )
           }
-          return <TestCard onClick={() => onTestCardClick(test)} {...test} />
+          return (
+            <TestCard
+              testKey={testKey}
+              onClick={() => onTestCardClick(test)}
+              {...test}
+            />
+          )
         }
         return false
       })

@@ -64,9 +64,9 @@ const MiscellaneousGroupContainer = ({
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
     keypad: keyPadData = testSettings.keypad || {},
     enableSkipAlert = testSettings.enableSkipAlert,
-    showImmersiveReader = testSettings.showImmersiveReader,
-    showSpeechToText = testSettings.showSpeechToText,
-    showTextToSpeech = testSettings.showTextToSpeech,
+    showImmersiveReader,
+    showSpeechToText,
+    showTextToSpeech,
   } = assignmentSettings
 
   const [selectedKeypad, setKeypad] = useState(null)

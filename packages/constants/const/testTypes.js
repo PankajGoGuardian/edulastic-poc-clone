@@ -54,11 +54,14 @@ const NON_ACADEMIC_DATA_TYPES = {
   [ATTENDANCE]: 'Attendance',
 }
 
+const TEST_TYPE_SURVEY = 'survey'
+
 const TEST_TYPES = {
   ASSESSMENT: ['assessment'],
   COMMON: ['common assessment', 'school common assessment'],
   PRACTICE: ['practice', 'homework', 'quiz'],
   TESTLET: ['testlet'],
+  SURVEY: [TEST_TYPE_SURVEY],
 }
 
 const ALL_TEST_TYPES_VALUES = Object.values(TEST_TYPES).flat()
@@ -84,6 +87,7 @@ const TEST_TYPE_LABELS = {
   practice: 'Practice Assessment',
   homework: 'Homework',
   quiz: 'Quiz',
+  survey: 'Survey',
 }
 
 const DEFAULT_ADMIN_TEST_TYPE_MAP = {
@@ -158,6 +162,7 @@ module.exports = {
   FASTBRIDGE_AMath,
   FASTBRIDGE_AReading,
   FASTBRIDGE_TEST_TYPES,
+  TEST_TYPE_SURVEY,
   IAP_EOY,
   IAP_Window,
   MCAS_Historical,

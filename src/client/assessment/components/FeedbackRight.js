@@ -4,6 +4,8 @@ import {
   notification,
   EduButton,
   EduIf,
+  EduThen,
+  EduElse,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -24,6 +26,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
 import UnScored from '@edulastic/common/src/components/Unscored'
+import { LIKERT_SCALE } from '@edulastic/constants/const/questionType'
 import { setTeacherEditedScore as setTeacherEditedScoreAction } from '../../author/ExpressGrader/ducks'
 import { updateStudentQuestionActivityScoreAction } from '../../author/sharedDucks/classResponses'
 import { hasValidAnswers } from '../utils/answer'
@@ -641,7 +644,12 @@ class FeedbackRight extends Component {
     // }
 
     const showHintUsed = !isUndefined(hintsUsed)
-
+    const isLikertQuestion = activity.qType === LIKERT_SCALE
+    const _isScoreInputDisabled = [
+      isPresentationMode,
+      isPracticeQuestion,
+      isScoreInputDisabled,
+    ].some((o) => !!o)
     return (
       <StyledCardTwo
         data-cy="feedbackContainer"
@@ -657,52 +665,57 @@ class FeedbackRight extends Component {
             responseLoading={studentResponseLoading}
           />
         )}
-        {!isPracticeQuestion ? (
-          <>
-            <StyledDivSec>
-              <ScoreInputWrapper>
-                <ScoreInput
-                  data-cy="scoreInput"
-                  onChange={(e) =>
-                    this.onChangeScore(showGradingRubricButton)(
-                      e.target.value,
-                      InputType.InputScore
-                    )
-                  }
-                  onFocus={this.handleScoreInputFocus}
-                  onBlur={this.submitScore}
-                  value={_score}
-                  disabled={
-                    isPresentationMode ||
-                    isPracticeQuestion ||
-                    isScoreInputDisabled
-                  }
-                  ref={this.scoreInput}
-                  onKeyDown={this.onKeyDownFeedback}
-                  tabIndex={0}
-                />
-                <TextPara>{_maxScore}</TextPara>
-              </ScoreInputWrapper>
-            </StyledDivSec>
-            <GradingPolicyWrapper>
-              GRADING POLICY &nbsp;
-              <GradingPolicy data-cy="gradingPolicyType">
-                {activity.scoringType}
-              </GradingPolicy>
-            </GradingPolicyWrapper>
-          </>
-        ) : (
-          <UnScored data-cy="unscoredInput" text="Zero Point" height="50px" />
-        )}
+        <EduIf condition={!isLikertQuestion}>
+          <EduIf condition={!isPracticeQuestion}>
+            <EduThen>
+              <>
+                <StyledDivSec>
+                  <ScoreInputWrapper>
+                    <ScoreInput
+                      data-cy="scoreInput"
+                      onChange={(e) =>
+                        this.onChangeScore(showGradingRubricButton)(
+                          e.target.value,
+                          InputType.InputScore
+                        )
+                      }
+                      onFocus={this.handleScoreInputFocus}
+                      onBlur={this.submitScore}
+                      value={_score}
+                      disabled={_isScoreInputDisabled}
+                      ref={this.scoreInput}
+                      onKeyDown={this.onKeyDownFeedback}
+                      tabIndex={0}
+                    />
+                    <TextPara>{_maxScore}</TextPara>
+                  </ScoreInputWrapper>
+                </StyledDivSec>
+                <GradingPolicyWrapper>
+                  GRADING POLICY &nbsp;
+                  <GradingPolicy data-cy="gradingPolicyType">
+                    {activity.scoringType}
+                  </GradingPolicy>
+                </GradingPolicyWrapper>
+              </>
+            </EduThen>
+            <EduElse>
+              <UnScored
+                data-cy="unscoredInput"
+                text="Zero Point"
+                height="50px"
+              />
+            </EduElse>
+          </EduIf>
+        </EduIf>
 
-        {showHintUsed && (
+        <EduIf condition={showHintUsed && !isLikertQuestion}>
           <GradingPolicyWrapper>
             HINTS USED &nbsp;
             <GradingPolicy data-cy="hintsUsed">
               {hintsUsed ? 'Yes' : 'No'}
             </GradingPolicy>
           </GradingPolicyWrapper>
-        )}
+        </EduIf>
 
         {showGradingRubricButton && (
           <RubricGrading

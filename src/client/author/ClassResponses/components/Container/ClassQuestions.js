@@ -176,6 +176,15 @@ const transformTestItems = (props) => {
           if (filter === 'notGraded' && !(firstQAct.graded === false)) {
             return false
           }
+
+          if (
+            filter === 'attempted' &&
+            !(
+              firstQAct.score >= 0 || firstQAct.score <= firstQAct.maxScore
+            )
+          ) {
+            return false
+          }
         }
       }
 
@@ -249,6 +258,15 @@ const transformTestItems = (props) => {
               !(
                 qActivities[0].score > 0 &&
                 qActivities[0].score < qActivities[0].maxScore
+              )
+            ) {
+              return false
+            }
+            if (
+              filter === 'attempted' &&
+              !(
+                qActivities[0].score >= 0 ||
+                qActivities[0].score <= qActivities[0].maxScore
               )
             ) {
               return false

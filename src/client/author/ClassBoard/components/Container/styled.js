@@ -395,3 +395,18 @@ export const FilterSpan = styled.span`
 export const TagWrapper = styled.div`
   margin-bottom: 15px;
 `
+export const FilterContainer = styled.div`
+  margin-right: 10px;
+`
+
+export const LeftContainer = styled.div`
+  display: flex;
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    flex-direction: column;
+    gap: 10px;
+  }
+  align-items: baseline;
+`
+export const LegendContainer = styled.div`
+  margin-left: 10px;
+`

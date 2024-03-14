@@ -262,13 +262,21 @@ export const reducer = (state = initialState, { type, payload }) => {
         sort: { ...payload.sort },
         needToSetFilter: true,
       }
-    case CLEAR_SEARCH_FILTER_STATE:
+    case CLEAR_SEARCH_FILTER_STATE: {
+      const search = payload?.search || {}
+      if (payload?.search) {
+        delete payload.search
+      }
       return {
         ...state,
-        search: { ...initialSearchState },
+        search: {
+          ...initialSearchState,
+          ...search,
+        },
         sort: { ...initialSortState },
         ...(payload || {}),
       }
+    }
     case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
       return {
         ...state,
@@ -359,7 +367,14 @@ function* receiveTestItemsSaga({
     const currentLocation = yield select(
       (state) => state.router.location.pathname
     )
-    yield put(push(`${currentLocation}?page=${page}`))
+    const existingSearchParams = new URLSearchParams(window.location.search)
+    let newSearchParams = `?page=${page}`
+    if (existingSearchParams.has('testType')) {
+      newSearchParams = `${newSearchParams}&testType=${existingSearchParams.get(
+        'testType'
+      )}`
+    }
+    yield put(push(`${currentLocation}${newSearchParams}`))
 
     const { tags = [] } = search
     let searchTags = []

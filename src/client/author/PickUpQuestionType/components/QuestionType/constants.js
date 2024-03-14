@@ -98,8 +98,12 @@ import TextResource from '../../../src/assets/video-and-passages/text-blue.svg'
 // Rulers & Calculators
 import Protractor from '../../../src/assets/rulers-calculators/protractor-blue.svg'
 
+// Likert Scale
+import LikertScale from '../../../src/assets/likert-scale/likert-scale.svg'
+
 // Others
 import CodingImage from '../../../src/assets/others/coding.svg'
+import { scaleData } from '../../../../assessment/widgets/LikertScale/constants'
 
 export const getCards = (
   onSelectQuestionType,
@@ -107,6 +111,7 @@ export const getCards = (
   enableAudioResponseQuestion = false
 ) => {
   const { EMBED_RESPONSE, defaultNumberPad } = math
+  const { options: likertScaleOptions } = scaleData.agreement
   // use it for ids of MCQ, Orderlist, and Choice Matrix
   const uuids = [uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid()]
 
@@ -1004,6 +1009,55 @@ export const getCards = (
       ...audioResponseConfig,
       onSelectQuestionType,
       isAudioResponseQuestionType: true,
+    },
+    {
+      type: 'likert-scale',
+      cardImage: LikertScale,
+      data: {
+        title: questionTitle.LIKERT_SCALE,
+        type: questionType.LIKERT_SCALE,
+        stimulus: '',
+        scaleType: 'agreement',
+        displayOrder: 'ASC',
+        options: [
+          {
+            value: uuids[0],
+            label: likertScaleOptions[0].label,
+            score: likertScaleOptions[0].score,
+            bgColor: likertScaleOptions[0].bgColor,
+          },
+          {
+            value: uuids[1],
+            label: likertScaleOptions[1].label,
+            score: likertScaleOptions[1].score,
+            bgColor: likertScaleOptions[1].bgColor,
+          },
+          {
+            value: uuids[2],
+            label: likertScaleOptions[2].label,
+            score: likertScaleOptions[2].score,
+            bgColor: likertScaleOptions[2].bgColor,
+          },
+          {
+            value: uuids[3],
+            label: likertScaleOptions[3].label,
+            score: likertScaleOptions[3].score,
+            bgColor: likertScaleOptions[3].bgColor,
+          },
+          {
+            value: uuids[4],
+            label: likertScaleOptions[4].label,
+            score: likertScaleOptions[4].score,
+            bgColor: likertScaleOptions[4].bgColor,
+          },
+        ],
+        validation: {
+          validResponse: {
+            score: likertScaleOptions[4].score,
+          },
+        },
+      },
+      onSelectQuestionType,
     },
     {
       type: 'multiple-choice',

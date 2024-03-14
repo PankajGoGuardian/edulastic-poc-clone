@@ -58,6 +58,8 @@ import {
   DISTRICT_ADMIN,
   SCHOOL_ADMIN,
 } from '@edulastic/constants/const/roleType'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
+
 import {
   SHOW_TEXT_TO_SPEECH,
   VQ_QUOTA_EXHAUSTED,
@@ -124,6 +126,7 @@ import { getProfileKey } from '../../common/utils/testTypeUtils'
 import selectsData from './components/common/selectsData'
 import { itemFields } from '../AssessmentCreate/components/CreateAITest/ducks/constants'
 import { setUserFeaturesAction } from '../../student/Login/ducks'
+import { getSearchParams } from '../src/utils/util'
 
 const {
   ITEM_GROUP_TYPES,
@@ -796,6 +799,11 @@ export const isTestTypeWithDefaultTestTitleSelector = createSelector(
 export const isDynamicTestSelector = createSelector(
   getTestEntitySelector,
   (test) => test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+)
+
+export const isSurveyTestSelector = createSelector(
+  getTestEntitySelector,
+  (test) => test?.testType === TEST_TYPE_SURVEY
 )
 
 export const hasSectionsSelector = createSelector(
@@ -3520,6 +3528,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
               isAuthoredNow: true,
               scrollToBottom: true,
             },
+            ...getSearchParams(),
           })
         )
       }
@@ -4119,11 +4128,15 @@ function* updateTestAndNavigate({ payload }) {
     }
     yield put(setScrollToBottomAction(scrollToBottom))
     yield put(
-      push(pathname, {
-        isTestFlow: true,
-        fadeSidebar,
-        regradeFlow,
-        previousTestId,
+      push({
+        pathname,
+        state: {
+          isTestFlow: true,
+          fadeSidebar,
+          regradeFlow,
+          previousTestId,
+        },
+        ...getSearchParams('testType'),
       })
     )
   } catch (e) {

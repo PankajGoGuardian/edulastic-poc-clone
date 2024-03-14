@@ -66,6 +66,7 @@ import {
   isDynamicTestSelector,
   hasSectionsSelector,
   getCurrentGroupIndexSelector,
+  isSurveyTestSelector,
 } from '../../ducks'
 import ItemFilter from '../../../ItemList/components/ItemFilter/ItemFilter'
 import {
@@ -163,6 +164,7 @@ class AddItems extends PureComponent {
       sort: initSort,
       userId,
       districtId,
+      isSurveyTest,
     } = this.props
     const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
     let search = {}
@@ -202,6 +204,7 @@ class AddItems extends PureComponent {
         ...initSearch,
         ...sessionFilters,
         ...applyAuthoredFilter,
+        ...(isSurveyTest ? { questionType: 'likertScale' } : {}),
         subject: selectedSubjects[0] || subject || [],
         grades: uniq([...selectedGrades, ...grades]),
         curriculumId: parseInt(curriculumId, 10) || '',
@@ -265,8 +268,20 @@ class AddItems extends PureComponent {
   }
 
   handleClearSearch = () => {
-    const { clearFilterState, receiveTestItems, limit } = this.props
-    clearFilterState({ needToSetFilter: false })
+    const {
+      clearFilterState,
+      receiveTestItems,
+      limit,
+      isSurveyTest,
+    } = this.props
+    const clearFilterObj = {
+      needToSetFilter: false,
+    }
+    if (isSurveyTest) {
+      clearFilterObj.search = { questionType: 'likertScale' }
+      initialSearchState.questionType = 'likertScale'
+    }
+    clearFilterState(clearFilterObj)
     receiveTestItems(initialSearchState, initialSortState, 1, limit)
     setDefaultInterests({ subject: [], grades: [], curriculumId: '' })
   }
@@ -884,6 +899,7 @@ const enhance = compose(
       isDynamicTest: isDynamicTestSelector(state),
       hasSections: hasSectionsSelector(state),
       currentGroupIndexValueFromStore: getCurrentGroupIndexSelector(state),
+      isSurveyTest: isSurveyTestSelector(state),
     }),
     {
       receiveTestItems: (search, sort, page, limit) => {

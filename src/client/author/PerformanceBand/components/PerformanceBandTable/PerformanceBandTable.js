@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { themeColor, white } from '@edulastic/colors'
+import { sectionBorder, themeColor, white } from '@edulastic/colors'
 import { CheckboxLabel, notification } from '@edulastic/common'
 import { Col, Form, Icon, Input, InputNumber, Row, Slider } from 'antd'
 import produce from 'immer'
@@ -8,6 +8,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { colors as colorConstants } from '@edulastic/constants'
+import ColorPicker from '@edulastic/common/src/components/ColorPickers'
 import { ThemeButton } from '../../../src/components/common/ThemeButton'
 import { getUserOrgId } from '../../../src/selectors/user'
 import {
@@ -17,7 +19,6 @@ import {
   setPerformanceBandChangesAction,
   updatePerformanceBandAction,
 } from '../../ducks'
-import ColorPicker, { colors as colorsList } from '../Container/ColorPicker'
 import {
   PercentText,
   SaveAlert,
@@ -29,6 +30,8 @@ import {
   StyledTableContainer,
   StyledBandTable,
 } from './styled'
+
+const colorsList = [...colorConstants.performanceBandColors]
 
 function Ellipsify({ children: text, limit }) {
   // needed to handle multibyte chars(unicode,emojis)
@@ -89,6 +92,33 @@ const StyledAddBandButton = styled(ThemeButton)`
   text-align: center;
   line-height: 34px;
   font-size: 11px;
+`
+
+const ColorBox = styled.div`
+  width: 100%;
+  height: 20px;
+  box-sizing: border-box;
+  border: 1px solid ${sectionBorder};
+  margin-bottom: 4px;
+  cursor: pointer;
+  background-color: ${({ color }) => `${color}`};
+`
+
+const StyledIcon = styled(Icon)`
+  vertical-align: middle;
+  margin-top: -20px;
+  padding: 0px 5px;
+  font-size: 10px;
+  cursor: pointer;
+  path {
+    fill: ${themeColor};
+  }
+`
+
+const ColorPickerContainer = styled.div`
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: 7;
 `
 
 class EditableCell extends React.Component {
@@ -461,11 +491,31 @@ export class PerformanceBandTable extends React.Component {
         render: (text, record) => {
           return (
             <>
-              <ColorPicker
-                disabled={this.props.readOnly}
-                value={record.color}
-                onChange={(c) => this.changeColor(c, record.key)}
-              />{' '}
+              <ColorPickerContainer>
+                <ColorPicker
+                  disabled={this.props.readOnly}
+                  colors={colorsList}
+                  onChange={(c) => this.changeColor(c, record.key)}
+                  componentToRender={({ onClick }) => (
+                    <>
+                      <div
+                        style={{ width: 20, display: 'inline-block' }}
+                        onClick={onClick}
+                      >
+                        <ColorBox
+                          style={{
+                            height: 20,
+                            width: 20,
+                            display: 'inline-block',
+                          }}
+                          color={record.color || '#576BA9'}
+                        />
+                      </div>
+                      <StyledIcon onClick={onClick} type="down" />
+                    </>
+                  )}
+                />
+              </ColorPickerContainer>{' '}
               <span title={record.name}>
                 <Ellipsify limit={20}>{record.name}</Ellipsify>
               </span>

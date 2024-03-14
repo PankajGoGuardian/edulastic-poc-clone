@@ -19,7 +19,7 @@ import EduAIQuiz from '../CreateAITest'
 import GoogleFormQuiz from '../CreateGoogleFormQuiz'
 import TestCard from './Components/TestCard'
 import { HeadingWrapper, SectionWrapper } from './Components/styled'
-import { TestKeys, TestSections } from './constants'
+import { TestKeys, TestSections, TestsNotAllowedForGcps } from './constants'
 import { isAccessAllowed, validateAndUpdateAccessFeatures } from './utils'
 
 const CreationOptions = ({
@@ -33,7 +33,7 @@ const CreationOptions = ({
 }) => {
   const isTestCardVisible = ({ key }) => {
     if (
-      (key === TestKeys.VIDEO_QUIZ_TEST && isGcpsDistrict) || // don't allow VQ for GCPS
+      (TestsNotAllowedForGcps.includes(key) && isGcpsDistrict) || // don't allow any test coming under TestsNotAllowedForGcps for GCPS
       (key === TestKeys.QTI_IMPORT_TEST && !isQTIDistrict) || // allow QTI import for enabled district
       (key === TestKeys.DYNAMIC_TEST && !userFeatures?.enableDynamicTests) // allow dynamic test for enabled users only
     ) {

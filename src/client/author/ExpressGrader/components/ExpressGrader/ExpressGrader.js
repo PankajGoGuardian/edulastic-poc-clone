@@ -61,6 +61,7 @@ import {
 } from '../../../../student/Login/ducks'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import { TagWrapper } from '../../../ClassBoard/components/Container/styled'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 
 /**
  *
@@ -268,7 +269,8 @@ class ExpressGrader extends Component {
     const { assignmentId, classId, testActivityId } = match.params
     const isMobile = this.isMobile()
     const testActivity = transformMemoized(_testActivity)
-
+    const isSurveyTest = additionalData?.testType === TEST_TYPE_SURVEY
+    const OnlyScoreMode = isSurveyTest ? false : scoreMode
     return (
       <FeaturesSwitch
         inputFeatures="expressGrader"
@@ -301,10 +303,12 @@ class ExpressGrader extends Component {
                   <ClassBreadBrumb />
 
                   <FlexContainer justifyContent="space-between">
-                    <ViewModeSwitch
-                      scoreMode={scoreMode}
-                      toggleScoreMode={toggleScoreMode}
-                    />
+                    <EduIf condition={!isSurveyTest}>
+                      <ViewModeSwitch
+                        scoreMode={scoreMode}
+                        toggleScoreMode={toggleScoreMode}
+                      />
+                    </EduIf>
                     <GridEditSwitch
                       isGridEditOn={isGridEditOn}
                       toggleGridEdit={this.toggleGridEdit}
@@ -326,7 +330,7 @@ class ExpressGrader extends Component {
                 {!isMobile && (
                   <>
                     <ScoreTable
-                      scoreMode={scoreMode}
+                      scoreMode={OnlyScoreMode}
                       tableData={columnData}
                       isGridEditOn={isGridEditOn}
                       testActivity={testActivity}
@@ -342,7 +346,7 @@ class ExpressGrader extends Component {
 
                 {isMobile && (
                   <ScoreCard
-                    scoreMode={scoreMode}
+                    scoreMode={OnlyScoreMode}
                     testActivity={testActivity}
                   />
                 )}
@@ -356,7 +360,7 @@ class ExpressGrader extends Component {
                     isPresentationMode={isPresentationMode}
                     groupId={classId}
                     windowWidth={windowWidth}
-                    scoreMode={scoreMode}
+                    scoreMode={OnlyScoreMode}
                     updateRecord={this.updateRecord}
                   />
                 )}

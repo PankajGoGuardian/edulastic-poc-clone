@@ -31,6 +31,11 @@ export const TestKeys = {
   SURVEY_TEST: 'survey',
 }
 
+export const TestsNotAllowedForGcps = [
+  TestKeys.VIDEO_QUIZ_TEST,
+  TestKeys.SURVEY_TEST,
+]
+
 export const AccessNavigation = {
   PREMIUM: {
     key: 'premium',
@@ -183,6 +188,10 @@ export const TestSections = [
         access: {
           type: AccessType.OR,
           features: [AccessNavigation.DATA_WAREHOUSE_REPORTS],
+        },
+        navigation: {
+          pathname: '/author/tests/create',
+          search: 'testType=survey',
         },
       },
     ],

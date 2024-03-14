@@ -21,6 +21,7 @@ import { getMathHtml } from '@edulastic/common'
 import { red, yellow, themeColorLighter, darkBlue2 } from '@edulastic/colors'
 import { getServerTs } from '../../student/utils'
 import { getFormattedName } from '../Gradebook/transformers'
+import { LIKERT_SCALE } from '@edulastic/constants/const/questionType'
 
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
@@ -447,11 +448,14 @@ export function getResponseTobeDisplayed(
   const question =
     (testItem.data?.questions || [])?.find((q) => q.id === questionId) || {}
 
-  const qType = question.type
+  let qType = question.type
   if (currentQuestionActivity?.skipped) {
     return '-'
   }
-
+  if (question.type === LIKERT_SCALE) {
+    qType = questionType.MULTIPLE_CHOICE
+    userResponse = [userResponse]
+  }
   if (extractFunctions[qType]) {
     return extractFunctions[qType](
       question,

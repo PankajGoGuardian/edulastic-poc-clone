@@ -1,4 +1,4 @@
-import { LegendContainer, Legends } from '@edulastic/common'
+import { EduIf, LegendContainer, Legends } from '@edulastic/common'
 import { Select } from 'antd'
 import { find } from 'lodash'
 import PropTypes from 'prop-types'
@@ -14,6 +14,7 @@ const SortBar = ({
   isCliUser,
   studentsPrevSubmittedUtas,
   dataCy,
+  showLegend = true,
 }) => {
   const onSortChange = (testActivityId) => {
     if (testActivityId !== undefined) {
@@ -48,7 +49,10 @@ const SortBar = ({
     <>
       {students && students.filter(valid).length !== 0 && (
         <LegendContainer>
-          <Legends />
+          <EduIf condition={showLegend}>
+            <Legends />
+          </EduIf>
+
           <Container>
             {!isCliUser && (
               <StyledSelect

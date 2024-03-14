@@ -49,6 +49,7 @@ import {
   hasSectionsSelector,
 } from '../../TestPage/ducks'
 import { setItemLanguage } from '../../ItemDetail/ducks'
+import { getSearchParams } from '../utils/util'
 
 function* createTestItemSaga({
   payload: { data, testFlow, testId, newPassageItem = false, testName },
@@ -122,6 +123,7 @@ function* createTestItemSaga({
         push({
           pathname: `/author/tests/${testId}/createItem/${item._id}`,
           state: { fadeSidebar: true, testName },
+          ...getSearchParams(),
         })
       )
     }

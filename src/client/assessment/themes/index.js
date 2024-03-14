@@ -1036,6 +1036,8 @@ const AssessmentContainer = ({
           const keys = Object.keys(qAnswers || {})
           return keys.some((key) => !qAnswers[key])
         }
+        case questionType.LIKERT_SCALE:
+          return false
         default:
           return isEmpty(qAnswers)
       }
@@ -1175,6 +1177,7 @@ const AssessmentContainer = ({
         await saveUserAnswer(currentItem, timeSpent, false, groupId, {
           urlToGo,
           locState: { ...history?.location?.state, fromSummary: true },
+          testType,
         })
       } else {
         if (!enableSkipAlert) {

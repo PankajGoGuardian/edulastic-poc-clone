@@ -33,6 +33,7 @@ import {
   IconCollapse,
 } from '@edulastic/icons'
 import CustomPrompt from '@edulastic/common/src/components/CustomPrompt'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import QuestionTypes from '../QuestionType/QuestionTypes'
 import { getItemSelector } from '../../../src/selectors/items'
 import Header from '../Header/Header'
@@ -65,11 +66,33 @@ import { toggleCreateItemModalAction } from '../../../src/actions/testItem'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 
 import { SMALL_DESKTOP_WIDTH } from '../../../src/constants/others'
-import { getIsAudioResponseQuestionEnabled } from '../../../TestPage/ducks'
+import {
+  getIsAudioResponseQuestionEnabled,
+  isSurveyTestSelector,
+  setTestDataAction,
+} from '../../../TestPage/ducks'
+import {
+  getSearchParamsForBreadcrumbs,
+  getSearchParams,
+} from '../../../src/utils/util'
 
 class Container extends Component {
   state = {
     isShowCategories: false,
+  }
+
+  componentDidMount() {
+    const { isSurveyTest, setCategory, setData } = this.props
+    if (
+      window.location.search.includes(`testType=${TEST_TYPE_SURVEY}`) ||
+      isSurveyTest
+    ) {
+      setData({
+        testType: TEST_TYPE_SURVEY,
+        updated: false,
+      })
+      setCategory('likert-scale')
+    }
   }
 
   // when a particular question type is picked, populate the "authorQuestions" collection
@@ -160,6 +183,7 @@ class Container extends Component {
           backText: t('component.pickupcomponent.headertitle'),
           fadeSidebar: true,
         },
+        ...getSearchParams('testType'),
       })
       return
     }
@@ -229,9 +253,9 @@ class Container extends Component {
 
     if (isTestFlow) {
       const test_id = testId || params.testId || ''
-      let testPath = `/author/tests/create/description`
+      let testPath = `/author/tests/create/description${getSearchParamsForBreadcrumbs()}`
       if (test_id) {
-        testPath = `/author/tests/tab/description/id/${test_id}`
+        testPath = `/author/tests/tab/description/id/${test_id}${getSearchParamsForBreadcrumbs()}`
       }
       return [
         {
@@ -287,6 +311,7 @@ class Container extends Component {
       testId,
       match: { params },
       enableAudioResponseQuestion,
+      isSurveyTest,
     } = this.props
     const { mobileViewShow, isShowCategories } = this.state
     const { multipartItem } = itemDetails
@@ -295,7 +320,10 @@ class Container extends Component {
       : 'Writing'
     if (!itemDetails._id) {
       if (pathname.includes('/author/tests')) {
-        push('/author/tests/create/description')
+        push({
+          pathname: '/author/tests/create/description',
+          ...getSearchParams(),
+        })
         return <div />
       }
       if (pathname.includes('/author/items')) {
@@ -379,56 +407,66 @@ class Container extends Component {
                   selectedKeys={[selectedCategory]}
                   onClick={this.handleCategory}
                 >
-                  <Menu.Item key="multiple-choice">
-                    <IconNewList />
-                    Multiple Choice
-                  </Menu.Item>
-                  <Menu.Item key="fill-blanks">
-                    <IconSelection />
-                    Fill in the Blanks
-                  </Menu.Item>
-                  <Menu.Item key="classify">
-                    <IconLayout />
-                    Classify, Match & Order
-                  </Menu.Item>
-                  <Menu.Item key="edit">
-                    <IconWrite />
-                    {audioResponseQuestionTypeText}
-                  </Menu.Item>
-                  {!multipartItem && (
+                  {!isSurveyTest && [
+                    <Menu.Item key="multiple-choice">
+                      <IconNewList />
+                      Multiple Choice
+                    </Menu.Item>,
+                    <Menu.Item key="fill-blanks">
+                      <IconSelection />
+                      Fill in the Blanks
+                    </Menu.Item>,
+                    <Menu.Item key="classify">
+                      <IconLayout />
+                      Classify, Match & Order
+                    </Menu.Item>,
+                    <Menu.Item key="edit">
+                      <IconWrite />
+                      {audioResponseQuestionTypeText}
+                    </Menu.Item>,
+                  ]}
+                  {!multipartItem && !isSurveyTest && (
                     <Menu.Item key="read">
                       <IconRead />
                       PASSAGE
                     </Menu.Item>
                   )}
-                  <Menu.Item key="highlight">
-                    <IconTarget />
-                    Highlight
-                  </Menu.Item>
-                  <Menu.Item key="math">
-                    <IconMath />
-                    Math
-                  </Menu.Item>
-                  <Menu.Item key="graphing">
-                    <IconLineChart />
-                    Graphing
-                  </Menu.Item>
-                  <Menu.Item key="charts">
-                    <IconBarChart />
-                    Charts
-                  </Menu.Item>
-                  <Menu.Item key="multipart">
-                    <IconMultipart />
-                    Multipart
-                  </Menu.Item>
+                  {!isSurveyTest && [
+                    <Menu.Item key="highlight">
+                      <IconTarget />
+                      Highlight
+                    </Menu.Item>,
+                    <Menu.Item key="math">
+                      <IconMath />
+                      Math
+                    </Menu.Item>,
+                    <Menu.Item key="graphing">
+                      <IconLineChart />
+                      Graphing
+                    </Menu.Item>,
+                    <Menu.Item key="charts">
+                      <IconBarChart />
+                      Charts
+                    </Menu.Item>,
+                    <Menu.Item key="multipart">
+                      <IconMultipart />
+                      Multipart
+                    </Menu.Item>,
+                  ]}
                   <Menu.Item key="instruction">
                     <IconPlay />
                     Instructions
                   </Menu.Item>
-                  {multipartItem && (
+                  {!isSurveyTest && multipartItem && (
                     <Menu.Item key="rulers-calculators">
                       <IconRulerPencil />
                       Tools
+                    </Menu.Item>
+                  )}
+                  {isSurveyTest && (
+                    <Menu.Item key="likert-scale">
+                      <IconMultipart />
+                      Likert Scale
                     </Menu.Item>
                   )}
                   {/* implementation is in progress */}
@@ -504,59 +542,74 @@ class Container extends Component {
               selectedKeys={[selectedCategory]}
               onClick={this.handleCategory}
             >
-              <Menu.Item key="multiple-choice" onClick={this.toggleCategories}>
-                <IconNewList />
-                Multiple Choice
-              </Menu.Item>
-              <Menu.Item key="fill-blanks" onClick={this.toggleCategories}>
-                <IconSelection />
-                Fill in the Blanks
-              </Menu.Item>
-              <Menu.Item key="classify" onClick={this.toggleCategories}>
-                <IconLayout />
-                Classify, Match & Order
-              </Menu.Item>
-              <Menu.Item key="edit" onClick={this.toggleCategories}>
-                <IconWrite />
-                {audioResponseQuestionTypeText}
-              </Menu.Item>
-              {!multipartItem && (
+              {!isSurveyTest && [
+                <Menu.Item
+                  key="multiple-choice"
+                  onClick={this.toggleCategories}
+                >
+                  <IconNewList />
+                  Multiple Choice
+                </Menu.Item>,
+                <Menu.Item key="fill-blanks" onClick={this.toggleCategories}>
+                  <IconSelection />
+                  Fill in the Blanks
+                </Menu.Item>,
+                <Menu.Item key="classify" onClick={this.toggleCategories}>
+                  <IconLayout />
+                  Classify, Match & Order
+                </Menu.Item>,
+                <Menu.Item key="edit" onClick={this.toggleCategories}>
+                  <IconWrite />
+                  {audioResponseQuestionTypeText}
+                </Menu.Item>,
+              ]}
+              {!multipartItem && !isSurveyTest && (
                 <Menu.Item key="read" onClick={this.toggleCategories}>
                   <IconRead />
                   Reading
                 </Menu.Item>
               )}
-              <Menu.Item key="highlight" onClick={this.toggleCategories}>
-                <IconTarget />
-                Highlight
-              </Menu.Item>
-              <Menu.Item key="math" onClick={this.toggleCategories}>
-                <IconMath />
-                Math
-              </Menu.Item>
-              <Menu.Item key="graphing" onClick={this.toggleCategories}>
-                <IconLineChart />
-                Graphing
-              </Menu.Item>
-              <Menu.Item key="charts" onClick={this.toggleCategories}>
-                <IconBarChart />
-                Charts
-              </Menu.Item>
-              <Menu.Item key="multipart">
-                <IconMultipart />
-                Multipart
-              </Menu.Item>
+              {!isSurveyTest && [
+                <Menu.Item key="highlight" onClick={this.toggleCategories}>
+                  <IconTarget />
+                  Highlight
+                </Menu.Item>,
+                <Menu.Item key="math" onClick={this.toggleCategories}>
+                  <IconMath />
+                  Math
+                </Menu.Item>,
+                <Menu.Item key="graphing" onClick={this.toggleCategories}>
+                  <IconLineChart />
+                  Graphing
+                </Menu.Item>,
+                <Menu.Item key="charts" onClick={this.toggleCategories}>
+                  <IconBarChart />
+                  Charts
+                </Menu.Item>,
+                <Menu.Item key="multipart">
+                  <IconMultipart />
+                  Multipart
+                </Menu.Item>,
+              ]}
               <Menu.Item key="instruction">
                 <IconPlay />
                 Instructions
               </Menu.Item>
-              <Menu.Item
-                key="rulers-calculators"
-                onClick={this.toggleCategories}
-              >
-                <IconRulerPencil />
-                Tools
-              </Menu.Item>
+              {isSurveyTest && (
+                <Menu.Item key="likert-scale">
+                  <IconMultipart />
+                  Likert Scale
+                </Menu.Item>
+              )}
+              {!isSurveyTest && (
+                <Menu.Item
+                  key="rulers-calculators"
+                  onClick={this.toggleCategories}
+                >
+                  <IconRulerPencil />
+                  Tools
+                </Menu.Item>
+              )}
               {/* implementation is in progress */}
               {/* <Menu.Item key="other" onClick={this.toggleCategories}>
                 <IconMore />
@@ -583,6 +636,7 @@ const enhance = compose(
       testId: state.tests.entity._id,
       itemDetails: getItemDetailSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
+      isSurveyTest: isSurveyTestSelector(state),
     }),
     {
       setQuestion: setQuestionAction,
@@ -593,6 +647,7 @@ const enhance = compose(
       toggleModalAction: toggleCreateItemModalAction,
       convertToMultipart: convertItemToMultipartAction,
       convertToPassageWithQuestions: convertItemToPassageWithQuestionsAction,
+      setData: setTestDataAction,
     }
   )
 )

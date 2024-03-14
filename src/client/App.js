@@ -103,6 +103,7 @@ const {
   ASSESSMENT,
   PRACTICE,
   TESTLET,
+  SURVEY,
 } = testTypesConstants.TEST_TYPES_VALUES_MAP
 // route wise splitting
 const AssessmentPlayer = lazy(() =>
@@ -937,6 +938,10 @@ class App extends Component {
                   />
                   <Route
                     path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+                    render={() => <AssessmentPlayer defaultAP />}
+                  />
+                  <Route
+                    path={`/student/${SURVEY}/:id/class/:groupId/uta/:utaId`}
                     render={() => <AssessmentPlayer defaultAP />}
                   />
                   <Route

@@ -41,6 +41,7 @@ import {
   testContentVisibility as contentVisiblityOptions,
   testCategoryTypes,
 } from '@edulastic/constants/const/test'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import { isFeatureAccessible } from '../../../../../../features/components/FeaturesSwitch'
 import {
   getUserFeatures,
@@ -375,6 +376,11 @@ class Setting extends Component {
           Object.assign(dataToSet, { applyEBSR: false })
         } else {
           value = evalTypeLabels.PARTIAL_CREDIT
+        }
+        if (testType === TEST_TYPE_SURVEY) {
+          Object.assign(dataToSet, {
+            scoringType: evalTypeLabels.ITEM_LEVEL_EVALUATION,
+          })
         }
         setTestData(dataToSet)
         break

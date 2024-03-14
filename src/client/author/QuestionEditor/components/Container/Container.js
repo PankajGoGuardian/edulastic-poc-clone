@@ -68,6 +68,11 @@ import { getCurrentLanguage } from '../../../../common/components/LanguageSelect
 import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
 import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 import { EDIT } from '../../../../assessment/constants/constantsForQuestions'
+import { isSurveyTestSelector } from '../../../TestPage/ducks'
+import {
+  getSearchParamsForBreadcrumbs,
+  getSearchParams,
+} from '../../../src/utils/util'
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -171,7 +176,7 @@ class Container extends Component {
     const testPath = `/author/tests/tab/review/id/${testId || 'create'}`
     // above dispatched action needs to flip the flag, hence setTimeout to get around it
     setTimeout(() => {
-      history.push(testPath)
+      history.push({ pathName: testPath, ...getSearchParams() })
     }, 0)
   }
 
@@ -296,7 +301,7 @@ class Container extends Component {
       let crumbs = [
         {
           title: 'Back to Create Test',
-          to: testPath,
+          to: `${testPath}${getSearchParamsForBreadcrumbs()}`,
           onClick: toggleModalAction,
           state: { persistStore: true },
         },
@@ -345,7 +350,13 @@ class Container extends Component {
   }
 
   renderButtons = () => {
-    const { view, question, preview, itemFromState = {} } = this.props
+    const {
+      view,
+      question,
+      preview,
+      itemFromState = {},
+      isSurveyTest,
+    } = this.props
     const { showHints } = this.state
     const { checkAnswerButton = false, checkAttempts = 1 } =
       question.validation || {}
@@ -354,7 +365,10 @@ class Container extends Component {
     const hideScoreBlock = multipartItem && itemLevelScoring
     const isShowAnswerVisible =
       question &&
-      !constantsQuestionType.manuallyGradableQn.includes(question.type)
+      !constantsQuestionType.manuallyGradableQn.includes(question.type) &&
+      !isSurveyTest
+    const isShowCheckButton =
+      (isShowAnswerVisible || checkAnswerButton) && !isSurveyTest
 
     return (
       <ButtonAction
@@ -366,7 +380,7 @@ class Container extends Component {
         handleShowHints={this.toggleHints}
         showHints={showHints}
         view={view}
-        showCheckButton={isShowAnswerVisible || checkAnswerButton}
+        showCheckButton={isShowCheckButton}
         allowedAttempts={checkAttempts}
         previewTab={preview}
         showSettingsButton={false}
@@ -537,7 +551,10 @@ class Container extends Component {
           history.push(`/author/items/${itemId}/item-detail`)
         } else {
           // while creating new test
-          history.push(`/author/tests/create/description`)
+          history.push({
+            pathname: `/author/tests/create/description`,
+            ...getSearchParams(),
+          })
         }
       } else {
         history.push('/author/items')
@@ -698,6 +715,7 @@ const enhance = compose(
       previewMode: getPreviewSelector(state),
       currentLanguage: getCurrentLanguage(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      isSurveyTest: isSurveyTestSelector(state),
     }),
     {
       changeView: changeViewAction,

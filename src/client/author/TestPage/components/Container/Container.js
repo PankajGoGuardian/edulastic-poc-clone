@@ -38,6 +38,7 @@ import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import { SUBSCRIPTION_SUB_TYPES } from '@edulastic/constants/const/subscriptions'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   getAllAssignmentsSelector,
   fetchAssignmentsByTestAction,
@@ -152,7 +153,10 @@ import {
 } from '../../../../student/Assignments/ducks'
 import { setSelectedLanguageAction } from '../../../../student/sharedDucks/AssignmentModule/ducks'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
-import { convertCollectionOptionsToArray } from '../../../src/utils/util'
+import {
+  convertCollectionOptionsToArray,
+  getSearchParams,
+} from '../../../src/utils/util'
 import TeacherSignup from '../../../../student/Signup/components/TeacherContainer/Container'
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import ConfirmTabChange from './ConfirmTabChange'
@@ -242,6 +246,7 @@ class Container extends PureComponent {
     history.push({
       pathname: url,
       state: { ...history.location.state, showCancelButton },
+      ...getSearchParams(),
     })
   }
 
@@ -327,21 +332,30 @@ class Container extends PureComponent {
           : this.gotoTab('addItems')
         clearTestAssignments([])
         setDefaultData()
-        if (
-          userRole === roleuser.DISTRICT_ADMIN ||
-          userRole === roleuser.SCHOOL_ADMIN
-        ) {
+
+        if (_location.search.includes(`testType=${TEST_TYPE_SURVEY}`)) {
           setData({
-            testType: testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole],
-            freezeSettings: !isOrganizationDA,
+            testType: TEST_TYPE_SURVEY,
             updated: false,
           })
-        }
-        if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
-          setData({
-            releaseScore: releaseGradeLabels.WITH_ANSWERS,
-            updated: false,
-          })
+        } else {
+          if (
+            userRole === roleuser.DISTRICT_ADMIN ||
+            userRole === roleuser.SCHOOL_ADMIN
+          ) {
+            setData({
+              testType:
+                testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole],
+              freezeSettings: !isOrganizationDA,
+              updated: false,
+            })
+          }
+          if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
+            setData({
+              releaseScore: releaseGradeLabels.WITH_ANSWERS,
+              updated: false,
+            })
+          }
         }
       }
       // run only when creating a new test and not during edit test

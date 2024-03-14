@@ -4,6 +4,7 @@ import {
   FlexContainer,
   notification,
   useRealtimeV2,
+  EduIf,
 } from '@edulastic/common'
 import { IconReport } from '@edulastic/icons'
 import { Spin } from 'antd'
@@ -15,6 +16,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import { clearUserWorkAction } from '../../../assessment/actions/userWork'
 import {
   getQuestionsArraySelector,
@@ -74,7 +76,8 @@ const ReportListContainer = ({
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null)
   const [showGraph, setShowGraph] = useState(true)
-  const { isDocBased } = test
+  const { isDocBased, testType } = test
+
   const { releaseScore, userWork, _id: testActivityId } = testActivity
   const [showAttachmentsModal, taggleAttachmentModal] = useState(false)
   const [attachmentIndexForPreview, setAttachmentIndex] = useState(null)
@@ -180,16 +183,18 @@ const ReportListContainer = ({
         />
         {showGraph && (
           <>
-            <ProgressGraph
-              onClickBar={setCurrentItemFromGraph}
-              testActivity={testActivity}
-              questionActivities={questionActivities}
-              testItems={testItems}
-              isGreyBar={greyBars.includes(releaseScore)}
-              dontRelease={dontRelease}
-              isCliUser={isCliUser}
-            />
-            {!isCliUser && <OverallFeedback />}
+            <EduIf condition={testType !== TEST_TYPE_SURVEY}>
+              <ProgressGraph
+                onClickBar={setCurrentItemFromGraph}
+                testActivity={testActivity}
+                questionActivities={questionActivities}
+                testItems={testItems}
+                isGreyBar={greyBars.includes(releaseScore)}
+                dontRelease={dontRelease}
+                isCliUser={isCliUser}
+              />
+            </EduIf>
+            {!isCliUser && <OverallFeedback testType={testType} />}
           </>
         )}
         {attachments && (

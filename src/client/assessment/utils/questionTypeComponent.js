@@ -35,6 +35,7 @@ import { Chart } from '../widgets/Charts'
 import Pictograph from '../widgets/Pictorgraph'
 import { Graph } from '../components/Graph'
 import { Drawing } from '../components/Drawing'
+import LikertScale from '../widgets/LikertScale'
 
 const {
   LINE_PLOT,
@@ -77,6 +78,7 @@ const {
   UPLOAD_FILE,
   PICTOGRAPH,
   AUDIO_RESPONSE,
+  LIKERT_SCALE,
 } = questionType
 
 const DummyQuestion = () => <></>
@@ -122,5 +124,6 @@ export const questionTypeToComponent = {
   [UPLOAD_FILE]: UploadFile,
   [PICTOGRAPH]: Pictograph,
   [AUDIO_RESPONSE]: AudioResponse,
+  [LIKERT_SCALE]: LikertScale,
   default: () => null,
 }

@@ -274,6 +274,7 @@ export const testTypeColor = {
   'school common assessment': '#FF9100',
   homework: '#e82a83',
   quiz: '#873fe5',
+  survey: '#8D4F1A',
 }
 
 export const authorAssignment = {

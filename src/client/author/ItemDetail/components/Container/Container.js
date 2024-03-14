@@ -109,6 +109,7 @@ import QuestionManageModal from '../QuestionManageModal'
 import PassageDivider from '../../../../common/components/PassageDivider'
 import Ctrls from '../ItemDetailRow/components/ItemDetailWidget/Controls'
 import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
+import { getSearchParams } from '../../../src/utils/util'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -234,6 +235,7 @@ class Container extends Component {
           testName: state?.testName || '',
           regradeFlow: state?.regradeFlow,
         },
+        ...getSearchParams('testType'),
       })
     }
 

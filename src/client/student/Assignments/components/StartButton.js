@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Tooltip } from 'antd'
 import { borders, mobileWidthMax } from '@edulastic/colors'
 // assets
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import lockIcon from '../../assets/lock-icon.svg'
 // components
 import StartButton from '../../styled/AssignmentCardButton'
@@ -20,12 +21,17 @@ const AssignmentButton = ({
   isTimeWindowRestricted = false,
   restrictedButtonText,
   restrictedButtonTooltip,
+  testType,
 }) => {
+  const startAssignmentText =
+    testType === TEST_TYPE_SURVEY
+      ? t('common.startSurvey')
+      : t('common.startAssignment')
   const startButtonText = resume
     ? t('common.resume')
     : attempted
     ? t('common.retake')
-    : t('common.startAssignment')
+    : startAssignmentText
   const isTimeExpired = new Date(startDate) > new Date(serverTimeStamp)
   const isNotStarted = !startDate
   let lockButtonText = ''

@@ -363,7 +363,7 @@ export const enhanceQueryWithTermIds = (
 }
 
 export const RISK_LEGEND_PAYLOAD = Object.keys(RISK_BAND).map((riskType) => {
-  const { min, max, color } = RISK_BAND[riskType]
-  const name = `${riskType} (${min}-${max})`.toUpperCase()
+  const { min, max, color, label } = RISK_BAND[riskType]
+  const name = `${label.toUpperCase()} (${min}-${max})`
   return { name, color }
 })

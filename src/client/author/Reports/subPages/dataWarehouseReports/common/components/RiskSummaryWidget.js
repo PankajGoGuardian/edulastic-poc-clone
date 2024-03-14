@@ -39,7 +39,7 @@ import { DW_EARLY_WARNING_REPORT_URL } from '../../../../common/constants/dataWa
 import { Spacer } from '../../../../../../common/styled'
 
 const {
-  RISK_BAND_COLOR_INFO,
+  RISK_BAND,
   RISK_BAND_LABELS,
   RISK_TYPE_OPTIONS,
   RISK_TYPE_KEYS,
@@ -129,9 +129,11 @@ const RiskSummary = ({ settings, loc = '' }) => {
               <ContentWrapper>
                 <div className="left-content">
                   <WidgetCell
-                    header="HIGH"
+                    header={RISK_BAND[
+                      RISK_BAND_LABELS.HIGH
+                    ].label.toUpperCase()}
                     value={postPeriodhighRisk}
-                    color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH]}
+                    color={RISK_BAND[RISK_BAND_LABELS.HIGH].color}
                     dataCy="highRiskValue"
                     footer={
                       <Footer
@@ -149,9 +151,11 @@ const RiskSummary = ({ settings, loc = '' }) => {
                     dashColor={lightGrey8}
                   />
                   <WidgetCell
-                    header="MEDIUM"
+                    header={RISK_BAND[
+                      RISK_BAND_LABELS.MEDIUM
+                    ].label.toUpperCase()}
                     value={postPeriodMediumRisk}
-                    color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM]}
+                    color={RISK_BAND[RISK_BAND_LABELS.MEDIUM].color}
                     dataCy="mediumRiskValue"
                     footer={
                       <Footer

@@ -5,8 +5,11 @@ import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import { CustomStyledTable } from '../../../common/components/styledComponents'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { RiskLabel } from '../../common/styled'
+import { RISK_LABEL_SUFFIX } from '../../../common/utils'
 
-const { RISK_BAND_COLOR_INFO } = reportUtils.common
+const { RISK_BAND } = reportUtils.common
+
+const popupTitle = `Academic Proficiency and Risk${RISK_LABEL_SUFFIX}`
 
 const tableColumns = [
   {
@@ -28,15 +31,22 @@ const tableColumns = [
     ),
   },
   {
-    title: 'Risk',
+    title: `Risk${RISK_LABEL_SUFFIX}`,
     dataIndex: 'riskBandLabel',
     key: 'riskBandLabel',
     sorter: (a, b) => a.riskBandLevel - b.riskBandLevel,
-    render: (riskBandLabel) => (
-      <RiskLabel $color={RISK_BAND_COLOR_INFO[riskBandLabel]} fontSize="14px">
-        <p>{riskBandLabel}</p>
-      </RiskLabel>
-    ),
+    render: (riskBandLabel, record) => {
+      const riskLevelValue = record.riskBandLevel?.toFixed(1) || ''
+      const value = `${RISK_BAND[riskBandLabel].label} (${riskLevelValue})`
+      return (
+        <RiskLabel
+          $color={RISK_BAND[riskBandLabel].secondaryColor}
+          fontSize="14px"
+        >
+          <p>{value}</p>
+        </RiskLabel>
+      )
+    },
   },
   {
     title: '',
@@ -55,7 +65,7 @@ const tableColumns = [
 const TestRiskListPopup = ({ visible, onCancel, tableData }) => {
   return (
     <CustomModalStyled
-      title="Academic Proficiency and Risk"
+      title={popupTitle}
       modalWidth="1000px"
       visible={visible}
       onCancel={onCancel}

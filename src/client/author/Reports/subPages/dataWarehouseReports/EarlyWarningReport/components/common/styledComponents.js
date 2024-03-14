@@ -99,6 +99,9 @@ export const StyledStudentTable = styled(StyledEarlyWarningTable)`
     .risk-name {
       padding-inline: 10px;
     }
+    .school > span {
+      margin-left: 25px;
+    }
   }
   .ant-table-scroll .ant-table-tbody {
     .risk-name {

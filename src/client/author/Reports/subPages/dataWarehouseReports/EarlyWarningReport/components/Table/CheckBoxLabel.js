@@ -4,7 +4,7 @@ import { CustomStyledCell } from '../common/styledComponents'
 const CheckBoxLabel = ({ value }) => {
   return (
     <CustomStyledCell color={value.color} width="65px" fontSize="11px">
-      {value.level}
+      {value.label}
     </CustomStyledCell>
   )
 }

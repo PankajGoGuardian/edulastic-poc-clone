@@ -1,6 +1,7 @@
 import React from 'react'
 import { reportUtils } from '@edulastic/constants'
 import { FlexContainer } from '@edulastic/common'
+import { pick } from 'lodash'
 import { ColoredText } from '../../common/components/styledComponents'
 import { RISK_LABEL_SUFFIX } from '../../common/utils'
 
@@ -12,7 +13,7 @@ const {
   RISK_TYPE_OPTIONS,
   RISK_TYPE_KEYS,
   RISK_BAND_LABELS,
-  RISK_BAND_COLOR_INFO,
+  RISK_BAND,
 } = reportUtils.common
 
 export const CHART_LABEL_KEY = 'chartTimeLabel'
@@ -79,14 +80,14 @@ export const compareByStudentColumns = [
     dataIndex: 'dimension',
     align: 'left',
     fixed: 'left',
-    width: 280,
+    width: 220,
     className: 'dimension',
   },
   {
     key: tableColumnKeys.SCHOOL,
     title: 'SCHOOLS',
     dataIndex: 'schools',
-    align: 'center',
+    align: 'left',
     width: 250,
     className: 'school',
   },
@@ -117,24 +118,32 @@ export const compareByStudentColumns = [
     children: [
       {
         key: tableColumnKeys.HIGH_RISK,
-        title: 'HIGH RISK',
+        title: RISK_BAND[RISK_BAND_LABELS.HIGH].label.toUpperCase(),
         dataIndex: 'highRiskMeasures',
         align: 'center',
         render: (value) => {
           const color =
-            value > 0 ? RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH] : ''
-          return <ColoredText $color={color}>{value}</ColoredText>
+            value > 0 ? RISK_BAND[RISK_BAND_LABELS.HIGH].secondaryColor : ''
+          return (
+            <ColoredText $color={color} $fontSize="14px">
+              {value}
+            </ColoredText>
+          )
         },
       },
       {
         key: tableColumnKeys.MEDIUM_RISK,
-        title: 'MEDIUM RISK',
+        title: RISK_BAND[RISK_BAND_LABELS.MEDIUM].label.toUpperCase(),
         dataIndex: 'mediumRiskMeasures',
         align: 'center',
         render: (value) => {
           const color =
-            value > 0 ? RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM] : ''
-          return <ColoredText $color={color}>{value}</ColoredText>
+            value > 0 ? RISK_BAND[RISK_BAND_LABELS.MEDIUM].secondaryColor : ''
+          return (
+            <ColoredText $color={color} $fontSize="14px">
+              {value}
+            </ColoredText>
+          )
         },
       },
     ],
@@ -170,11 +179,8 @@ export const timeframeFilterValues = {
   [timeframeFilterKeys.QUARTERLY]: 'quarter',
 }
 
-export const riskCheckBoxDropdownOptions = Object.keys(RISK_BAND_LABELS).map(
-  (key) => {
-    const level = RISK_BAND_LABELS[key]
-    return { level, color: RISK_BAND_COLOR_INFO[level] }
-  }
+export const riskCheckBoxDropdownOptions = Object.keys(RISK_BAND).map((key) =>
+  pick(RISK_BAND[key], ['label', 'color'])
 )
 
 export const TABLE_PAGE_SIZE = 25
@@ -254,18 +260,7 @@ export const staticDropDownData = {
 }
 
 // Lines z-index on the chart is directly proportional to line index in below array
-export const CHART_LINES = [
-  {
-    dataKey: RISK_BAND_LABELS.HIGH,
-    stroke: RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH],
-  },
-  {
-    dataKey: RISK_BAND_LABELS.MEDIUM,
-    stroke: RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM],
-  },
-  {
-    dataKey: RISK_BAND_LABELS.LOW,
-    stroke: RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.LOW],
-    hide: true,
-  },
-]
+export const CHART_LINES = Object.keys(RISK_BAND).map((key) => ({
+  dataKey: key,
+  stroke: RISK_BAND[key].color,
+}))

@@ -33,8 +33,7 @@ const {
   percentage,
   DECIMAL_BASE,
   RISK_BAND_LABELS,
-  RISK_BAND_LEVELS,
-  RISK_BAND_COLOR_INFO,
+  RISK_BAND,
 } = reportUtils.common
 
 export const getWidgetCellFooterInfo = (change) => {
@@ -72,6 +71,11 @@ export const getTableColumns = ({
     }
 
     if (isStudentCompareBy) {
+      const schoolColumn = _columns.find(
+        (col) => col.key === tableColumnKeys.SCHOOL
+      )
+      schoolColumn.render = (name) => <LinkCell value={{ name }} />
+
       if (filters.riskType === RISK_TYPE_KEYS.ACADEMIC) {
         const attendanceColumnIdx = _columns.findIndex(
           ({ key }) => key === tableColumnKeys.AVG_ATTENDANCE
@@ -82,8 +86,8 @@ export const getTableColumns = ({
         (col) => col.key === tableColumnKeys.RISK
       )
       riskColumn.render = (value, { riskScore }) => (
-        <CustomStyledCell width="100px" color={RISK_BAND_COLOR_INFO[value]}>
-          {value} ({round(riskScore, 1).toFixed(1)})
+        <CustomStyledCell width="100px" color={RISK_BAND[value]?.color}>
+          {RISK_BAND[value]?.label} ({round(riskScore, 1).toFixed(1)})
         </CustomStyledCell>
       )
     } else {
@@ -92,10 +96,10 @@ export const getTableColumns = ({
       )
       highRiskColumn.title = (
         <CustomStyledCell
-          color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH]}
+          color={RISK_BAND[RISK_BAND_LABELS.HIGH].color}
           showBoxShadow
         >
-          HIGH
+          {RISK_BAND[RISK_BAND_LABELS.HIGH].label}
         </CustomStyledCell>
       )
 
@@ -113,10 +117,10 @@ export const getTableColumns = ({
       )
       mediumRiskColumn.title = (
         <CustomStyledCell
-          color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM]}
+          color={RISK_BAND[RISK_BAND_LABELS.MEDIUM].color}
           showBoxShadow
         >
-          MEDIUM
+          {RISK_BAND[RISK_BAND_LABELS.MEDIUM].label}
         </CustomStyledCell>
       )
       mediumRiskColumn.render = (_, { mediumRisk, totalStudents }) => (
@@ -135,7 +139,7 @@ export const getTableColumns = ({
         const academicRisk =
           value?.academicRisk?.map((b) => ({
             ...b,
-            color: RISK_BAND_COLOR_INFO[b.bandLabel],
+            color: RISK_BAND[b.bandLabel].color,
           })) || []
         return <HorizontalBar data={academicRisk} />
       }
@@ -147,7 +151,7 @@ export const getTableColumns = ({
         const attendanceRisk =
           value?.attendanceRisk?.map((b) => ({
             ...b,
-            color: RISK_BAND_COLOR_INFO[b.bandLabel],
+            color: RISK_BAND[b.bandLabel].color,
           })) || []
         return <HorizontalBar data={attendanceRisk} />
       }
@@ -245,14 +249,13 @@ const getRiskSummaryPieChartData = (distribution = []) => {
   )
   const pieChartData = distribution
     .map(({ studentCount, bandLabel }) => ({
-      name: bandLabel,
+      name: RISK_BAND[bandLabel].label,
       value: percentage(
         parseInt(studentCount, DECIMAL_BASE),
         totalStudentCount,
         true
       ),
-      fill: RISK_BAND_COLOR_INFO[bandLabel],
-      bandLevel: RISK_BAND_LEVELS[bandLabel],
+      fill: RISK_BAND[bandLabel].color,
     }))
     .sort((a, b) => b.bandLevel - a.bandLevel)
   return pieChartData

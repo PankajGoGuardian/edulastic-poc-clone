@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Icon, Popover } from 'antd'
 import { IconFilter } from '@edulastic/icons'
 import { EduButton } from '@edulastic/common'
+import { RISK_BAND } from '@edulastic/constants/reportUtils/common'
 import CheckBoxDropdown from '../../../../../common/components/CheckBoxDropdown'
 import { riskCheckBoxDropdownOptions, tableFilterTypes } from '../../utils'
 import { StyledEduButton } from '../../../common/components/styledComponents'
@@ -43,7 +44,9 @@ const RiskFilter = ({ tableFilters, setTableFilters }) => {
             Label={CheckBoxLabel}
             data={riskCheckBoxDropdownOptions}
             handleChange={handleCheckBoxChange}
-            defaultValues={tableFilters[tableFilterTypes.RISK]}
+            defaultValues={tableFilters[tableFilterTypes.RISK].map(
+              (value) => RISK_BAND[value].label
+            )}
           />
           <EduButton
             width="60px"

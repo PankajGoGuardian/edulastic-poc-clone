@@ -3,7 +3,7 @@ import { isEmpty } from 'lodash'
 import { Row, Col } from 'antd'
 
 import {
-  RISK_BAND_LABELS,
+  RISK_BAND,
   stringifyArrayFilters,
 } from '@edulastic/constants/reportUtils/common'
 import { dataWarehouseApi } from '@edulastic/api'
@@ -52,18 +52,12 @@ const getTooltipJSX = (payload) => {
         <Row type="flex" justify="start">
           <Col className="tooltip-key">{tooltipData[CHART_LABEL_KEY]}</Col>
         </Row>
-        <TooltipRowItem
-          label={RISK_BAND_LABELS.HIGH}
-          value={tooltipData[RISK_BAND_LABELS.HIGH]}
-        />
-        <TooltipRowItem
-          label={RISK_BAND_LABELS.MEDIUM}
-          value={tooltipData[RISK_BAND_LABELS.MEDIUM]}
-        />
-        <TooltipRowItem
-          label={RISK_BAND_LABELS.LOW}
-          value={tooltipData[RISK_BAND_LABELS.LOW]}
-        />
+        {Object.keys(RISK_BAND).map((key) => (
+          <TooltipRowItem
+            label={RISK_BAND[key].label}
+            value={tooltipData[key]}
+          />
+        ))}
       </div>
     )
   }
@@ -82,7 +76,7 @@ const renderLegend = ({ payload }) => (
         return (
           <ChartLegendItem key={`item-${index}`}>
             <ChartLegendPill color={color} />
-            {`${value}`.toUpperCase()}
+            {RISK_BAND[value].label.toUpperCase()}
           </ChartLegendItem>
         )
       })}

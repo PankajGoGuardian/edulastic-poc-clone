@@ -10,11 +10,14 @@ import {
 import { Label } from '../../common/styled'
 import { RISK_LABEL_SUFFIX } from '../../../common/utils'
 
-const { RISK_BAND_COLOR_INFO } = reportUtils.common
+const { RISK_BAND } = reportUtils.common
 const labelText = `OVERALL RISK${RISK_LABEL_SUFFIX.toUpperCase()}`
 
 const OverallRisk = ({ overallRisk }) => {
-  const { bandLabel } = overallRisk
+  const { bandLabel, bandLevel } = overallRisk
+  const bandLabelText = RISK_BAND[bandLabel].label.toUpperCase()
+  const bandLevelText = bandLevel.toFixed(1)
+  const label = `${bandLabelText} (${bandLevelText})`
   return (
     <div>
       <Label $margin="0 0 20px 0" $fontSize="14px">
@@ -22,8 +25,8 @@ const OverallRisk = ({ overallRisk }) => {
       </Label>
       <EduIf condition={!isEmpty(overallRisk)}>
         <EduThen>
-          <CustomStyledCell $backgroundColor={RISK_BAND_COLOR_INFO[bandLabel]}>
-            {bandLabel.toUpperCase()}
+          <CustomStyledCell $backgroundColor={RISK_BAND[bandLabel].color}>
+            {label}
           </CustomStyledCell>
         </EduThen>
         <EduElse>

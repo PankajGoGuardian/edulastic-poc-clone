@@ -198,6 +198,7 @@ export const yellow1 = '#FDCC3B'
 export const yellow2 = '#ffd500'
 export const yellow3 = '#FDCA40'
 export const yellow4 = '#FFDF88'
+export const yellow5 = '#E49B0F'
 
 export const orange = '#FFA200'
 export const darkOrange = '#F9942D'

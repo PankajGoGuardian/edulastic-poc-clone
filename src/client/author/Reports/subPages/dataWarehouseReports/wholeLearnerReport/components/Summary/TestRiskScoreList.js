@@ -10,33 +10,30 @@ import {
 } from '@edulastic/constants'
 import { Tooltip } from 'antd'
 import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
+import { isEmpty } from 'lodash'
 import { TestLabel, RiskLabel, TestDetailContainer } from '../../common/styled'
-import { getSubjectRiskText } from '../../utils'
+import { getSubjectRiskTooltipData } from '../../utils'
+import { CustomWhiteBackgroundTooltip } from '../../../../../common/components/customTableTooltip'
+import RiskTooltip from './RiskTooltip'
 
-const { RISK_BAND_COLOR_INFO } = reportUtils.common
+const { RISK_BAND } = reportUtils.common
 const { TEST_TYPE_LABELS } = testTypesConstants
-
-const renderTooltip = (tooltipTexts) => (
-  <>
-    {tooltipTexts.map((text) => (
-      <p key={text}>{text}</p>
-    ))}
-  </>
-)
 
 const TestRiskScoreList = ({ riskData }) => (
   <>
     {riskData.map((testRisk) => {
       const { type, score, riskBandLabel, isExternalTest } = testRisk
-      const tooltipTexts = getSubjectRiskText(testRisk)
+      const tooltipData = getSubjectRiskTooltipData(testRisk)
       const scoreLabel = getScoreLabel(score, testRisk)
-      const tooltipTitle = `${type}: ${scoreLabel}`
+      const tooltipTitle = `${
+        isExternalTest ? type : TEST_TYPE_LABELS[type]
+      }: ${scoreLabel}`
       const testType = isExternalTest
         ? type.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
         : type
       const testName = isExternalTest
         ? `${testType}`
-        : `${TEST_TYPE_LABELS[testType].split(' ')[0]}`
+        : `${TEST_TYPE_LABELS[testType]}`
       return (
         <FlexContainer
           justifyContent="space-between"
@@ -49,12 +46,15 @@ const TestRiskScoreList = ({ riskData }) => (
               <span>{scoreLabel}</span>
             </TestDetailContainer>
           </Tooltip>
-          <RiskLabel $color={RISK_BAND_COLOR_INFO[riskBandLabel]}>
-            <span>{riskBandLabel}</span>
-            <EduIf condition={tooltipTexts.some((text) => !!text)}>
-              <Tooltip title={renderTooltip(tooltipTexts)}>
-                <IconInfo fill={themeColor} />
-              </Tooltip>
+          <RiskLabel $color={RISK_BAND[riskBandLabel].secondaryColor}>
+            <span>{RISK_BAND[riskBandLabel].label}</span>
+            <EduIf condition={tooltipData.some((item) => !isEmpty(item))}>
+              <CustomWhiteBackgroundTooltip
+                data={<RiskTooltip data={tooltipData} />}
+                str={
+                  <IconInfo fill={themeColor} style={{ marginTop: '3px' }} />
+                }
+              />
             </EduIf>
           </RiskLabel>
         </FlexContainer>

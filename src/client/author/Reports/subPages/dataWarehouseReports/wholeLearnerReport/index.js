@@ -8,6 +8,7 @@ import {
   EduElse,
   EduIf,
   EduThen,
+  FlexContainer,
   SpinLoader,
   useApiQuery,
 } from '@edulastic/common'
@@ -53,11 +54,14 @@ import {
 } from '../../../common/util'
 import {
   EXTERNAL_SCORE_TYPES,
+  RISK_LEGEND_PAYLOAD,
   enhanceQueryWithTermIds,
   getIsMultiSchoolYearDataPresent,
 } from '../common/utils'
 import WLRDetails from './components/WLRDetails'
 import { getUserOrgData, getUserRole } from '../../../../src/selectors/user'
+import Legend from '../common/components/Legend'
+import { StyledText } from '../common/components/styledComponents'
 
 const { downloadCSV } = reportUtils.common
 
@@ -514,11 +518,30 @@ const WholeLearnerReport = ({
                     >
                       Whole Learner
                     </SectionLabel>
-                    <SectionDescription $margin="0px 0px 30px 0px">
+                    <SectionDescription $margin="0px 0px 10px 0px">
                       Get a complete understanding of a learner&apos;s academic
                       and behavioral profiles and take necessary actions for the
                       learner&apos;s growth.
                     </SectionDescription>
+                    <FlexContainer
+                      justifyContent="right"
+                      marginBottom="20px"
+                      mr="10px"
+                    >
+                      <Legend
+                        payload={RISK_LEGEND_PAYLOAD}
+                        title={
+                          <StyledText fontSize="14px">
+                            PRIORITY (SCORE RANGE)
+                          </StyledText>
+                        }
+                        legendStyles={{
+                          fontSize: '14px',
+                          fontWeight: 600,
+                          gap: '10px',
+                        }}
+                      />
+                    </FlexContainer>
                     <Summary
                       studentInformation={settings.selectedStudentInformation}
                       studentClassData={studentClassData}

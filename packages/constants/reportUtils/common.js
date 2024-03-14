@@ -18,7 +18,12 @@ const {
 } = require('lodash')
 const { produce: next } = require('immer')
 const moment = require('moment')
-const { lightRed7, yellow3, lightGreen14 } = require('@edulastic/colors')
+const {
+  lightRed7,
+  yellow3,
+  lightGreen14,
+  yellow5,
+} = require('@edulastic/colors')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
@@ -665,18 +670,24 @@ const RISK_BAND = {
     min: 1,
     max: 3.9,
     color: lightRed7,
+    secondaryColor: lightRed7,
+    label: 'High',
   },
   [RISK_BAND_LABELS.MEDIUM]: {
     level: 1,
     min: 4,
     max: 6.9,
     color: yellow3,
+    secondaryColor: yellow5,
+    label: 'Med',
   },
   [RISK_BAND_LABELS.LOW]: {
     level: 0,
     min: 7,
     max: 10,
     color: lightGreen14,
+    secondaryColor: lightGreen14,
+    label: 'Low',
   },
 }
 

@@ -669,12 +669,22 @@ export const getSubjectRiskText = (test, prefix = '') =>
     }
   )
 
+export const getSubjectRiskTooltipData = (test) =>
+  test.subjectData.map(({ subject, riskBandLabel, riskBandLevel, score }) => {
+    const subjectScore = getScoreLabel(score, test)
+    const subjectsArr = subject.split(',')
+    if (subjectsArr.length > 1 || riskBandLabel === RISK_BAND_LABELS.LOW) {
+      return null
+    }
+    return { subject, scoreLabel: subjectScore, riskBandLabel, riskBandLevel }
+  })
+
 export const getTestRiskTableData = (riskData) => {
   return riskData.map((testRisk) => {
     const { type, isExternalTest } = testRisk
     const subjectRiskTexts = getSubjectRiskText(testRisk, 'Avg Score - ')
     const testTypeTitle = !isExternalTest
-      ? `PEAR ASSESSMENT - ${TEST_TYPE_LABELS[type].split(' ')[0]}`
+      ? `PEAR ASSESSMENT - ${TEST_TYPE_LABELS[type]}`
       : type.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
     return {
       ...testRisk,

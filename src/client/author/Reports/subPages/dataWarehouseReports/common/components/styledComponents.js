@@ -240,6 +240,7 @@ export const CustomStyledCell = styled.div`
 `
 export const ColoredText = styled.div`
   font-weight: ${(p) => p.$fontWeight || 'bold'};
+  font-size: ${(p) => p.$fontSize};
   color: ${(p) => p.$color};
 `
 export const StyledFilledButton = styled(Button)`

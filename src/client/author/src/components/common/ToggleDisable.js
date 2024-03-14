@@ -13,7 +13,9 @@ const WithDisableMessage = ({ children, disabled, errMessage }) => {
   }
   return disabled ? (
     <Tooltip title={errMessage || 'Option is currently disabled.'}>
-      <span onClick={handleClick}>{children}</span>
+      <span className="tool-tip" onClick={handleClick}>
+        {children}
+      </span>
     </Tooltip>
   ) : (
     children

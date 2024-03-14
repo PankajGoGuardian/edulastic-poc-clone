@@ -8,6 +8,8 @@ import { captureSentryException, notification } from '@edulastic/common'
 import { aiTestActions } from '.'
 import { STATUS } from './constants'
 import {
+  clearCartTestDataAction,
+  getCartTestSelector,
   getTestEntitySelector,
   setTestDataAction,
 } from '../../../../TestPage/ducks'
@@ -41,6 +43,7 @@ function* processAiGeneratedTestItemsSaga({
           []
         )
         assessment.savePreselected = true
+        yield put(clearCartTestDataAction())
       }
 
       const aiGeneratedItems = processAiGeneratedItems(
@@ -241,7 +244,9 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       standardDescriptions: commonCoresStandardDescriptions,
     } = getAlignmentDataForAiQuestions(alignment)
 
-    const testEntity = yield select(getTestEntitySelector)
+    const testEntity = savePreselected
+      ? yield select(getCartTestSelector)
+      : yield select(getTestEntitySelector)
 
     const assessment = cloneDeep(testEntity)
     assessment.aiGenerated = true

@@ -289,6 +289,7 @@ export const TEST_SHARE = '[test] send test share request'
 export const TEST_PUBLISH = '[test] publish test'
 export const UPDATE_TEST_STATUS = '[test] update test status'
 export const CLEAR_TEST_DATA = '[test] clear test data'
+export const CLEAR_CART_TEST_DATA = '[test] clear cart test data'
 export const TEST_CREATE_SUCCESS = '[test] create test succes'
 export const SET_REGRADE_OLD_TESTID = '[test] set regrade old test_id'
 export const UPDATE_ENTITY_DATA = '[test] update entity data'
@@ -601,9 +602,9 @@ export const updateTestErrorAction = (error) => ({
   payload: { error },
 })
 
-export const setTestDataAction = (data) => ({
+export const setTestDataAction = ({ cart, ...data }) => ({
   type: SET_TEST_DATA,
-  payload: { data },
+  payload: { data, cart },
 })
 
 export const setTestDataAndUpdateAction = (data) => ({
@@ -612,6 +613,10 @@ export const setTestDataAndUpdateAction = (data) => ({
 })
 export const clearTestDataAction = () => ({
   type: CLEAR_TEST_DATA,
+})
+
+export const clearCartTestDataAction = () => ({
+  type: CLEAR_CART_TEST_DATA,
 })
 
 export const setDefaultTestDataAction = () => ({
@@ -720,6 +725,11 @@ export const getTestSelector = createSelector(
   (state) => state.entity
 )
 
+export const getCartTestSelector = createSelector(
+  stateSelector,
+  (state) => state.cartTest
+)
+
 export const getPlaylistSelector = createSelector(
   playlistStateSelector,
   (state) => state.entity
@@ -791,6 +801,16 @@ export const isDynamicTestSelector = createSelector(
 export const hasSectionsSelector = createSelector(
   getTestEntitySelector,
   (test) => !!test?.hasSections
+)
+
+export const isCartTestHasSectionsSelector = createSelector(
+  getCartTestSelector,
+  (test) => !!test?.hasSections
+)
+
+export const isCartTestDynamicSelector = createSelector(
+  getCartTestSelector,
+  (test) => test?.testCategory === testCategoryTypes.DYNAMIC_TEST
 )
 
 export const sectionsEnabledDistrictSelector = createSelector(
@@ -1197,6 +1217,9 @@ export const createBlankTest = () => ({
 
 const initialState = {
   entity: createBlankTest(),
+  // new state is added for retaining the cart state globally until user creates test
+  // entity state is getting cleared in multiple places which is causing some issue
+  cartTest: createBlankTest(),
   error: null,
   page: 1,
   limit: 20,
@@ -1367,7 +1390,23 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_TEST_ERROR:
       return { ...state, creating: false, error: payload.error }
     case SET_TEST_DATA: {
-      const { updated = true, ...payloadData } = payload.data
+      const { cart = false, data } = payload
+      const { updated = true, ...payloadData } = data
+      /** **********
+       * The Entity object is utilized to store either a fetched test or a test being edited.
+       * Since the entity is involved in assignment, review, and publishing processes,
+       * it's necessary to clear or replace this data to maintain state integrity.
+       * Introducing the new cartTest state allows us to preserve the cart contents
+       * even during assignment, review, or publishing actions.
+       * The cartTest state is specifically designed for managing test creation from the cart.
+       ********* */
+      if (cart) {
+        const cartTest = { ...state.cartTest, ...payloadData }
+        return {
+          ...state,
+          cartTest,
+        }
+      }
       let entity = { ...state.entity, ...payloadData }
       if (
         payload.data?.restrictNavigationOut ===
@@ -1480,17 +1519,19 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CLEAR_TEST_DATA:
       return {
         ...state,
-        entity: {
-          ...state.entity,
-          itemGroups: [createNewStaticGroup()],
-          grades: [],
-          subjects: [],
-        },
+        entity: createBlankTest(),
         updated: false,
         createdItems: [],
         thumbnail: '',
         sharedUsersList: [],
         ytThumbnail: '',
+      }
+    case CLEAR_CART_TEST_DATA:
+      return {
+        ...state,
+        cartTest: createBlankTest(),
+        updated: false,
+        createdItems: [],
       }
     case SET_CREATED_ITEM_TO_TEST:
       return {
@@ -1968,6 +2009,24 @@ export const getUserFeatures = createSelector(
 
 export const getReleaseScorePremiumSelector = createSelector(
   getTestSelector,
+  getUserFeatures,
+  (entity, features) => {
+    const { subjects, grades } = entity
+    return (
+      features?.assessmentSuperPowersReleaseScorePremium ||
+      (grades &&
+        subjects &&
+        isFeatureAccessible({
+          features,
+          inputFeatures: 'assessmentSuperPowersReleaseScorePremium',
+          gradeSubject: { grades, subjects },
+        }))
+    )
+  }
+)
+
+export const getCartTestReleaseScorePremiumSelector = createSelector(
+  getCartTestSelector,
   getUserFeatures,
   (entity, features) => {
     const { subjects, grades } = entity
@@ -2540,6 +2599,9 @@ function* createTestSaga({ payload }) {
         testItemsApi.addItems,
         aiGeneratedTestItems
       )
+    }
+    if (payload.data.savePreselected && newTestItems?.length) {
+      yield put(clearCartTestDataAction())
     }
     const allTestItems = [...newTestItems, ...aiGeneratedTestItems]
     const entity = yield createTest(

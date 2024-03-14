@@ -157,6 +157,10 @@ export const ButtonContainer = styled.div`
   display: flex;
   margin-bottom: 10px;
   justify-content: space-between;
+  .tool-tip {
+    width: 100%;
+    display: flex;
+  }
 `
 
 export const ButtonComponent = styled.div`

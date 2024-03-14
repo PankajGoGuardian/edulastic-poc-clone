@@ -18,12 +18,12 @@ import {
   setTestDataAction,
   createTestAction,
   getTestEntitySelector,
-  getReleaseScorePremiumSelector,
-  hasSectionsSelector,
+  isCartTestHasSectionsSelector,
   getCurrentGroupIndexSelector,
-  isDynamicTestSelector,
-  setDefaultTestDataAction,
-  clearCreatedItemsAction,
+  isCartTestDynamicSelector,
+  getCartTestSelector,
+  getCartTestReleaseScorePremiumSelector,
+  clearCartTestDataAction,
 } from '../TestPage/ducks'
 import {
   getUserRole,
@@ -160,9 +160,9 @@ function getItemGroupsForTest(test, updatedTestItems, currentGroupIndex) {
 
 export function* addItemToCartSaga({ payload }) {
   const { item, showNotification = true } = payload
-  const test = yield select(getTestEntitySelector)
-  const hasSections = yield select(hasSectionsSelector)
-  const isDynamicTest = yield select(isDynamicTestSelector)
+  const test = yield select(getCartTestSelector)
+  const hasSections = yield select(isCartTestHasSectionsSelector)
+  const isDynamicTest = yield select(isCartTestDynamicSelector)
   let currentGroupIndex = yield select(getCurrentGroupIndexSelector)
 
   if (hasSections || isDynamicTest) {
@@ -224,7 +224,9 @@ export function* addItemToCartSaga({ payload }) {
     })
   }
   const userRole = yield select(getUserRole)
-  const isReleaseScorePremium = yield select(getReleaseScorePremiumSelector)
+  const isReleaseScorePremium = yield select(
+    getCartTestReleaseScorePremiumSelector
+  )
   const releaseScore =
     userRole === roleuser.TEACHER && isReleaseScorePremium
       ? testConstant.releaseGradeLabels.WITH_RESPONSE
@@ -249,6 +251,7 @@ export function* addItemToCartSaga({ payload }) {
     ...extraProperties,
     releaseScore,
     itemGroups,
+    cart: true,
   }
 
   yield put(setTestItemsAction(updatedTestItems.map((o) => o._id)))
@@ -256,7 +259,7 @@ export function* addItemToCartSaga({ payload }) {
 }
 
 export function* createTestFromCart({ payload: { testName } }) {
-  const test = yield select(getTestEntitySelector)
+  const test = yield select(getCartTestSelector)
   const testItems = test.itemGroups.flatMap(
     (itemGroup) => itemGroup.items || []
   )
@@ -307,8 +310,7 @@ export function* createTestFromCart({ payload: { testName } }) {
     grades: uniq([...grades, ...questionGrades]),
     subjects: uniq([...subjects, ...questionSubjects]),
   }
-  yield put(setDefaultTestDataAction())
-  yield put(clearCreatedItemsAction())
+  yield put(clearCartTestDataAction())
   notification({ type: 'info', messageKey: 'Creatingatestwithselecteditems' })
   yield put(createTestAction(updatedTest, false, true))
 }

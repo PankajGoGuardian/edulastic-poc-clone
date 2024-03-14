@@ -22,8 +22,8 @@ import {
   SET_ALL_TAGS,
   SET_ALL_TAGS_FAILED,
   getTestEntitySelector,
-  getSelectedTestItemsSelector,
   setTestDataAction,
+  getCartTestSelector,
 } from '../../ducks'
 import { DELETE_ITEM_SUCCESS } from '../../../ItemDetail/ducks'
 import {
@@ -408,7 +408,7 @@ function* reportContentErrorSaga({ payload }) {
 }
 
 function* clearSelectedItemsSaga() {
-  const test = yield select(getTestEntitySelector)
+  const test = yield select(getCartTestSelector)
   const itemsToRemove = yield select(
     (state) => state?.testsAddItems?.selectedItems
   )
@@ -427,6 +427,7 @@ function* clearSelectedItemsSaga() {
           }
         }
       })
+      draft.cart = true
     })
   }
 
@@ -506,8 +507,12 @@ export const getTestsItemsPageSelector = createSelector(
 )
 
 export const getSelectedItemSelector = createSelector(
-  (s) => getSelectedTestItemsSelector(s),
-  (testItems) => testItems.map((item) => item._id)
+  getCartTestSelector,
+  (_test) => {
+    const testItems =
+      _test.itemGroups.flatMap((itemGroup) => itemGroup.items || []) || []
+    return testItems.map((item) => item._id)
+  }
 )
 
 export const getItemsSubjectAndGradeSelector = createSelector(

@@ -87,13 +87,13 @@ const enhance = compose(
 export default enhance(CombineTestButton)
 
 const StyledCombineBtn = styled(EduButton)`
-  width: ${({ listView }) => (!listView ? '100%' : 'auto')};
-  height: ${({ listView }) => (!listView ? '100%' : 'auto')};
+  width: ${({ listView }) => (listView ? 'auto' : '100%')};
+  height: ${({ listView }) => (listView ? 'auto' : '40px !important')};
   &.ant-btn.ant-btn-primary,
   &.ant-btn.ant-btn-primary:hover,
   &.ant-btn.ant-btn-primary: focus {
     ${(props) => (props.listView ? 'margin-right: 10px' : 0)};
-    ${(props) => (props.listView ? 'height: 40px' : 0)};
+    ${(props) => (props.listView ? 'height: 36px' : '40px')};
     background-color: ${white};
     border-color: ${themeColor};
     color: ${themeColor};

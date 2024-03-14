@@ -1360,6 +1360,7 @@ class Setting extends Component {
                           onChange={(v) =>
                             this.updateTestData('vqPreventSkipping')(v)
                           }
+                          disabled={disabled}
                         />
                       </Title>
                       <Body smallSize={isSmallSize}>

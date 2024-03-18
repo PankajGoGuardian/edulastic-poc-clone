@@ -788,6 +788,11 @@ export const isDefaultTestSelector = createSelector(
   (test) => test?.testCategory === testCategoryTypes.DEFAULT
 )
 
+export const isVideoQuizSelector = createSelector(
+  getTestEntitySelector,
+  (test) => test?.testCategory === testCategoryTypes.VIDEO_BASED
+)
+
 export const isTestTypeWithDefaultTestTitleSelector = createSelector(
   getTestEntitySelector,
   (test) => {

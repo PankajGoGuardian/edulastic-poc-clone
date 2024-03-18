@@ -39,6 +39,7 @@ import { themeColor } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import { SUBSCRIPTION_SUB_TYPES } from '@edulastic/constants/const/subscriptions'
 import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
+import { docBasedAssessment } from '@edulastic/constants/const/test'
 import {
   getAllAssignmentsSelector,
   fetchAssignmentsByTestAction,
@@ -87,6 +88,7 @@ import {
   isDefaultTestSelector,
   setCurrentGroupIndexAction,
   isTestTypeWithDefaultTestTitleSelector,
+  isVideoQuizSelector,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -166,7 +168,10 @@ import { getSubscriptionSelector } from '../../../Subscription/ducks'
 import SectionsTestGroupItems from '../GroupItems/SectionsTestGroupItems'
 import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
 import TestNameChangeModal from '../TestNameChangeModal/TestNameChangeModal'
-import { getIsBuyAiSuiteAlertModalVisible } from '../../../utils/videoQuiz'
+import {
+  getIsBuyAiSuiteAlertModalVisible,
+  isValidVqVideoURL,
+} from '../../../utils/videoQuiz'
 import { getUserAccommodations } from '../../../../student/Login/ducks'
 import { checkInvalidTestTitle } from '../../../utils/tests'
 
@@ -705,6 +710,12 @@ class Container extends PureComponent {
       notification({ type: 'warn', messageKey: 'pleaseEnterName' })
       return false
     }
+    if (
+      !isValidVqVideoURL(test) &&
+      value !== docBasedAssessment.tabs.DESCRIPTION
+    ) {
+      return false
+    }
 
     let hasValidGroups = false
     let hasValidGroupsForSectionsTest = false
@@ -934,6 +945,9 @@ class Container extends PureComponent {
       location,
     } = this.props
 
+    if (!isValidVqVideoURL(test)) {
+      return
+    }
     if (
       test?.importData?.googleForm &&
       !validateQuestionsForGoogleForm(assessmentQuestions, true)
@@ -1440,6 +1454,10 @@ class Container extends PureComponent {
       return
     }
 
+    if (!isValidVqVideoURL(test)) {
+      return
+    }
+
     if (
       !this.validateTimedAssignment() ||
       !this.validatePenaltyOnUsingHintsValue() ||
@@ -1507,6 +1525,9 @@ class Container extends PureComponent {
       test,
       updateDocBasedTest,
     } = this.props
+    if (!isValidVqVideoURL(test)) {
+      return
+    }
     if (
       test.isDocBased &&
       !validateQuestionsForDocBased(assessmentQuestions, true, !!test.videoUrl)
@@ -1670,6 +1691,10 @@ class Container extends PureComponent {
     const { showShareModal } = this.state
     const { test, isTestTypeWithDefaultTestTitle } = this.props
 
+    if (!isValidVqVideoURL(test)) {
+      return
+    }
+
     if (isTestTypeWithDefaultTestTitle && checkInvalidTestTitle(test.title)) {
       this.setState({
         showTestNameChangeModal: true,
@@ -1718,6 +1743,9 @@ class Container extends PureComponent {
     } = this.props
     const { _id } = test
 
+    if (!isValidVqVideoURL(test)) {
+      return
+    }
     if (
       test?.importData?.googleForm &&
       !validateQuestionsForGoogleForm(assessmentQuestions, true)
@@ -2253,6 +2281,7 @@ const enhance = compose(
       isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
       isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
       accommodations: getUserAccommodations(state),
+      isVideoQuiz: isVideoQuizSelector(state),
     }),
     {
       createTest: createTestAction,

@@ -87,7 +87,7 @@ const Sidebar = ({
     }
   }, [test.videoUrl])
 
-  const VideoUrlInput = ({ disabled }) => (
+  const videoUrlInput = (disabled = false) => (
     <TextInputStyled
       showArrow
       value={videoUrl}
@@ -144,14 +144,10 @@ const Sidebar = ({
                     placement="rightTop"
                     title="Video URL can’t be edited for assigned test"
                   >
-                    <div>
-                      <VideoUrlInput disabled />
-                    </div>
+                    <div>{videoUrlInput(!!test?.isUsed)}</div>
                   </Tooltip>
                 </EduThen>
-                <EduElse>
-                  <VideoUrlInput />
-                </EduElse>
+                <EduElse>{videoUrlInput()}</EduElse>
               </EduIf>
               <EduIf condition={isVideoUrlTouched}>
                 <EduIf

@@ -33,6 +33,7 @@ import {
   setCurrentTestSettingsIdAction,
   removeTestEntityAction,
   isTestTypeWithDefaultTestTitleSelector,
+  isVideoQuizSelector,
 } from '../../../TestPage/ducks'
 import {
   getQuestionsArraySelector,
@@ -63,6 +64,7 @@ import { hasUserGotAccessToPremiumItem } from '../../../dataUtils'
 import { isValidVideoUrl } from '../../VideoQuiz/utils/videoPreviewHelpers'
 import { checkInvalidTestTitle } from '../../../utils/tests'
 import TestNameChangeModal from '../../../TestPage/components/TestNameChangeModal/TestNameChangeModal'
+import { isValidVqVideoURL } from '../../../utils/videoQuiz'
 
 const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants
 
@@ -128,7 +130,6 @@ class Container extends React.Component {
       match,
       receiveTestById,
       getDefaultTestSettings,
-
       userRole,
       isPremiumUser,
       fetchTestSettingsList,
@@ -200,11 +201,14 @@ class Container extends React.Component {
     const {
       changeView,
       currentTab,
-      assessment: { title, videoUrl },
+      assessment,
       changePreview,
       authorQuestionStatus: newQuestionsAdded,
       updated,
+      isVideoQuiz,
     } = this.props
+
+    const { title, videoUrl } = assessment
 
     if (
       currentTab === tabs.DESCRIPTION &&
@@ -214,13 +218,15 @@ class Container extends React.Component {
     ) {
       changeView(tab)
       changePreview('clear')
+    } else if (
+      isVideoQuiz &&
+      tab !== tabs.DESCRIPTION &&
+      !isValidVqVideoURL(assessment)
+    ) {
+      return
     } else if (currentTab !== tabs.DESCRIPTION) {
       changeView(tab)
       changePreview('clear')
-    } else if (videoUrl === '') {
-      return notification({ messageKey: 'pleaseEnterVideoUrl' })
-    } else if (!isValidVideoUrl(videoUrl)) {
-      return notification({ messageKey: 'linkCantPlayed' })
     } else {
       return notification({ messageKey: 'pleaseEnterName' })
     }
@@ -240,8 +246,12 @@ class Container extends React.Component {
       assessment,
       updateDocBasedTest,
     } = this.props
-
     const { videoUrl } = assessment
+
+    if (!isValidVqVideoURL(assessment)) {
+      return
+    }
+
     if (!validateQuestionsForDocBased(assessmentQuestions, true, !!videoUrl)) {
       return
     }
@@ -315,6 +325,9 @@ class Container extends React.Component {
       match,
     } = this.props
     const { _id, videoUrl } = assessment
+    if (!isValidVqVideoURL(assessment)) {
+      return
+    }
     if (!validateQuestionsForDocBased(assessmentQuestions, false, !!videoUrl)) {
       return
     }
@@ -338,6 +351,9 @@ class Container extends React.Component {
       updated,
     } = this.props
     const { status, videoUrl } = assessment
+    if (!isValidVqVideoURL(assessment)) {
+      return
+    }
     if (!validateQuestionsForDocBased(assessmentQuestions, false, !!videoUrl)) {
       return
     }
@@ -371,6 +387,9 @@ class Container extends React.Component {
   onShareModalChange = (titleUpdated) => {
     const { showShareModal } = this.state
     const { isTestTypeWithDefaultTestTitle, assessment = {} } = this.props
+    if (!isValidVqVideoURL(assessment)) {
+      return
+    }
     if (
       isTestTypeWithDefaultTestTitle &&
       checkInvalidTestTitle(assessment.title)
@@ -663,6 +682,7 @@ const enhance = compose(
       isTestTypeWithDefaultTestTitle: isTestTypeWithDefaultTestTitleSelector(
         state
       ),
+      isVideoQuiz: isVideoQuizSelector(state),
     }),
     {
       receiveTestById: receiveTestByIdAction,

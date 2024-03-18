@@ -2295,5 +2295,8 @@
   "itemsFromTestIsAdded": {
     "message": "Items from this test are added",
     "description": ""
+  },
+  "warnValidVideoURL": {
+    "message": "Please provide a valid video URL."
   }
 }

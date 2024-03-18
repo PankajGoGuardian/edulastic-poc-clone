@@ -149,7 +149,7 @@ export const formateSecondsToMMSS = (totalSeconds) => {
     : `${hours}:${minutes}:${seconds}`
 }
 
-export const isValidVideoUrl = (url: string) => {
+export const isValidVideoUrl = (url: string = '') => {
   try {
     return ReactPlayer.canPlay(new URL(url))
   } catch (e) {

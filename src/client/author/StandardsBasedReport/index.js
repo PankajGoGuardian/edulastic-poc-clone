@@ -9,6 +9,7 @@ import { withNamespaces } from '@edulastic/localization'
 import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
 import { red } from '@edulastic/colors'
 import { Divider } from 'antd'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
 import PresentationToggleSwitch from '../Shared/Components/PresentationToggleSwitch'
@@ -23,6 +24,7 @@ import {
 import { StyledFlexContainer, DivWrapper } from './components/styled'
 import ClassBreadBrumb from '../Shared/Components/ClassBreadCrumb'
 import {
+  getDataWarehouseReports,
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
 } from '../src/selectors/user'
@@ -103,10 +105,16 @@ class StandardsBasedReport extends Component {
       },
       labels,
       testQIds,
+      testStandardsLength,
+      showDataWarehouseReport,
       t,
     } = this.props
     const testActivityId = this.getTestActivity(testActivity)
-
+    const isDSUserAndSurveyTest =
+      additionalData.testType === TEST_TYPE_SURVEY && showDataWarehouseReport
+    const detailedAnalysisReportLink = isDSUserAndSurveyTest
+      ? '/author/reports/sel-insights'
+      : '/author/reports/performance-by-standards/test/'
     return (
       <>
         <ClassHeader
@@ -128,12 +136,13 @@ class StandardsBasedReport extends Component {
             >
               <AnalyzeLink
                 linkText="DETAILED ANALYSIS"
-                linkPrefix="/author/reports/performance-by-standards/test/"
+                linkPrefix={detailedAnalysisReportLink}
                 testId={additionalData.testId}
                 showAnalyseLink
                 visible={!!additionalData.testId}
                 classId={classId}
                 termId={additionalData.termId}
+                isDSUserAndSurveyTest={isDSUserAndSurveyTest}
               />
               <Divider type="vertical" />
               <PresentationToggleSwitch groupId={classId} />
@@ -176,6 +185,7 @@ const enhance = compose(
       isDefaultDA: isDefaultDASelector(state),
       userRole: get(state.user, 'user.role', null),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
+      showDataWarehouseReport: getDataWarehouseReports(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

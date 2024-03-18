@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash'
 
 import { Col, Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import { StyledH3, StyledSlider, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { StackedBarChartContainer } from './components/charts/stackedBarChartContainer'
@@ -36,6 +37,7 @@ const ResponseFrequency = ({
   sharedReport,
   toggleFilter,
   demographicFilters,
+  testTypesAllowed,
 }) => {
   const isSharedReport = !!sharedReport?._id
   const [difficultItems, setDifficultItems] = useState(40)
@@ -122,6 +124,16 @@ const ResponseFrequency = ({
     setFilter({})
   }
 
+  const tableColumns = useMemo(() => {
+    return jsonData.columns.filter(
+      (o) =>
+        !(
+          testTypesAllowed === TEST_TYPE_SURVEY &&
+          ['maxScore', 'total_score'].includes(o.key)
+        )
+    )
+  }, [testTypesAllowed, jsonData])
+
   if (loading) {
     return (
       <SpinLoader
@@ -151,6 +163,7 @@ const ResponseFrequency = ({
       </NoDataContainer>
     )
   }
+
   return (
     <div>
       <StyledContainer type="flex">
@@ -158,62 +171,67 @@ const ResponseFrequency = ({
           <StyledH3 data-testid="title">
             Question Type performance for Assessment: {assessmentName}
           </StyledH3>
-          <StackedBarChartContainer
-            data={obj.data}
-            assessment={obj.metaData}
-            filter={filter}
-            onBarClickCB={onBarClickCB}
-            onResetClickCB={onResetClickCB}
-          />
+          {testTypesAllowed !== TEST_TYPE_SURVEY && (
+            <StackedBarChartContainer
+              data={obj.data}
+              assessment={obj.metaData}
+              filter={filter}
+              onBarClickCB={onBarClickCB}
+              onResetClickCB={onResetClickCB}
+            />
+          )}
         </StyledCard>
-        <StyledCard>
-          <Row type="flex" justify="center" className="question-area">
-            <Col className="question-container">
-              <p>What are the most difficult items?</p>
-              <p>Highlight performance% in red if it falls below:</p>
-              <Row type="flex" justify="start" align="middle">
-                <Col className="answer-slider-percentage">
-                  <span>{difficultItems}%</span>
-                </Col>
-                <Col className="answer-slider">
-                  <StyledSlider
-                    data-slider-id="difficult"
-                    defaultValue={difficultItems}
-                    onChange={onChangeDifficultSlider}
-                  />
-                </Col>
-              </Row>
-            </Col>
-            <Col className="question-container">
-              <p>What items are misunderstood?</p>
-              <p>
-                Highlight incorrect answer choices with gray if response% is
-                above:
-              </p>
-              <Row type="flex" justify="start" align="middle">
-                <Col className="answer-slider-percentage">
-                  <span>{misunderstoodItems}%</span>
-                </Col>
-                <Col className="answer-slider">
-                  <StyledSlider
-                    data-slider-id="misunderstood"
-                    defaultValue={misunderstoodItems}
-                    onChange={onChangeMisunderstoodSlider}
-                  />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </StyledCard>
+        {testTypesAllowed !== TEST_TYPE_SURVEY && (
+          <StyledCard>
+            <Row type="flex" justify="center" className="question-area">
+              <Col className="question-container">
+                <p>What are the most difficult items?</p>
+                <p>Highlight performance% in red if it falls below:</p>
+                <Row type="flex" justify="start" align="middle">
+                  <Col className="answer-slider-percentage">
+                    <span>{difficultItems}%</span>
+                  </Col>
+                  <Col className="answer-slider">
+                    <StyledSlider
+                      data-slider-id="difficult"
+                      defaultValue={difficultItems}
+                      onChange={onChangeDifficultSlider}
+                    />
+                  </Col>
+                </Row>
+              </Col>
+              <Col className="question-container">
+                <p>What items are misunderstood?</p>
+                <p>
+                  Highlight incorrect answer choices with gray if response% is
+                  above:
+                </p>
+                <Row type="flex" justify="start" align="middle">
+                  <Col className="answer-slider-percentage">
+                    <span>{misunderstoodItems}%</span>
+                  </Col>
+                  <Col className="answer-slider">
+                    <StyledSlider
+                      data-slider-id="misunderstood"
+                      defaultValue={misunderstoodItems}
+                      onChange={onChangeMisunderstoodSlider}
+                    />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </StyledCard>
+        )}
         <ResponseFrequencyTable
           data={tableData}
-          columns={jsonData.columns}
+          columns={tableColumns}
           assessment={obj.metaData}
           correctThreshold={difficultItems}
           incorrectFrequencyThreshold={misunderstoodItems}
           isPrinting={isPrinting}
           isCsvDownloading={isCsvDownloading}
           isSharedReport={isSharedReport}
+          testTypesAllowed={testTypesAllowed}
         />
       </StyledContainer>
     </div>

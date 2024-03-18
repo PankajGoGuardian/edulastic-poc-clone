@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   IconAdminDashboardAddOn,
   IconPerformanceTrendAddOn,
@@ -23,6 +24,8 @@ import {
   DW_EFFICACY_REPORT_URL,
   CUSTOM_REPORTS_URL,
 } from '../../common/constants/dataWarehouseReports'
+import { INSIGHT_REPORTS_MAP } from '../../common/constants/standard-reports'
+import IconSurveyResponseSummary from '@edulastic/icons/src/IconSurveyResponseSummary'
 
 export const DATA_WAREHOUSE_MODAL_MODES = {
   UPLOAD: 'upload',
@@ -84,12 +87,25 @@ export const DATA_WAREHOUSE_REPORT_CARDS_DATA = [
       },
       {
         id: 3,
-        comingSoon: true,
         IconThumbnail: IconSurveyInsightsAddOn,
         title: 'Survey Insights',
         description:
           'Get insights from responses in Skill Surveys and build a positive school culture.',
-        url: '',
+        url: INSIGHT_REPORTS_MAP.standardMasteryReport.cards.standardsPerformanceSummary.location.replace(
+          'standards-performance-summary',
+          'sel-insights'
+        ),
+      },
+      {
+        id: 4,
+        IconThumbnail: IconSurveyResponseSummary,
+        title: 'Survey Response Summary',
+        description:
+          'View the distribution of survey responses by question, and identify dominant trends based on frequently chosen answers',
+        url: INSIGHT_REPORTS_MAP.singleAssessmentReport.cards.responseFrequency.location.replace(
+          'response-frequency',
+          'sel-response-summary'
+        ),
       },
     ],
   },

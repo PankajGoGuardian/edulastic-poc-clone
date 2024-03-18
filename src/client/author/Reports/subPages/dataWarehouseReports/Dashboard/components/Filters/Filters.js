@@ -62,7 +62,8 @@ const Filters = ({
     {}
   )
   const availableTestTypes = testTypes.filter(
-    ({ key }) => !TEST_TYPES.PRACTICE.includes(key)
+    ({ key }) =>
+      !TEST_TYPES.PRACTICE.includes(key) && !TEST_TYPES.SURVEY.includes(key)
   )
 
   useFiltersPreload({

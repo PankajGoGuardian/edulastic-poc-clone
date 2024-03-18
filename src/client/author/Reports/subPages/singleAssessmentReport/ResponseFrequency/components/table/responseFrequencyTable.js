@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { isNaN } from 'lodash'
 import { EduIf, FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-
 import { StyledCard, StyledIconInfo, StyledTable } from '../styled'
 import PrintableTable from '../../../../../common/components/tables/PrintableTable'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
@@ -22,6 +21,7 @@ const ResponseFrequencyTable = ({
   correctThreshold,
   incorrectFrequencyThreshold,
   isSharedReport,
+  testTypesAllowed,
   t,
 }) => {
   /**
@@ -152,33 +152,46 @@ const ResponseFrequencyTable = ({
         record={record}
         incorrectFrequencyThreshold={incorrectFrequencyThreshold}
         isPrinting={isPrinting}
+        testTypesAllowed={testTypesAllowed}
       />
     ),
     [incorrectFrequencyThreshold, isPrinting]
   )
 
   const columns = useMemo(() => {
-    const cols = [..._columns]
-    cols[0] = {
-      ...cols[0],
-      sorter: qLabelColumnSorter,
-      render: qLabelColumnRender,
-    }
-
-    cols[2] = { ...cols[2], render: standardsColumnRender }
-
-    cols[3] = { ...cols[3], render: maxScoreColumnRender }
-
-    cols[4] = {
-      ...cols[4],
-      sorter: performanceColumnSorter,
-      render: performanceColumnRender,
-    }
-
-    cols[5] = { ...cols[5], render: skipColumnRender }
-
-    cols[6] = { ...cols[6], render: responseColumnRender }
-    return cols
+    return _columns.map((col) => {
+      const updatedColumn = { ...col }
+      switch (updatedColumn.key) {
+        case 'qLabel': {
+          updatedColumn.sorter = qLabelColumnSorter
+          updatedColumn.render = qLabelColumnRender
+          break
+        }
+        case 'standards': {
+          updatedColumn.render = standardsColumnRender
+          break
+        }
+        case 'maxScore': {
+          updatedColumn.render = maxScoreColumnRender
+          break
+        }
+        case 'total_score': {
+          updatedColumn.sorter = performanceColumnSorter
+          updatedColumn.render = performanceColumnRender
+          break
+        }
+        case 'skip_cnt': {
+          updatedColumn.render = skipColumnRender
+          break
+        }
+        case 'resp_cnts': {
+          updatedColumn.render = responseColumnRender
+          break
+        }
+        default:
+      }
+      return updatedColumn
+    })
   }, [
     _columns,
     qLabelColumnSorter,

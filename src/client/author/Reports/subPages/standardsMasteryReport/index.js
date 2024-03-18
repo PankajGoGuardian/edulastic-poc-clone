@@ -86,6 +86,7 @@ const StandardsMasteryReportContainer = (props) => {
     standardsGradebookSkillInfo,
     filters,
     setEnableReportSharing,
+    testTypesAllowed,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -337,13 +338,17 @@ const StandardsMasteryReportContainer = (props) => {
           selectedDomainIds={selectedDomainIds}
           skillInfo={skillInfo}
           selectedStandardId={selectedStandardId}
+          sharedReport={sharedReport}
         />
       </SubHeader>
       <ReportContainer>
         {firstLoad && <Spin size="large" />}
         <Route
           exact
-          path="/author/reports/standards-performance-summary"
+          path={[
+            '/author/reports/standards-performance-summary',
+            '/author/reports/sel-insights',
+          ]}
           render={(_props) => {
             setShowHeader(true)
             return (
@@ -353,6 +358,7 @@ const StandardsMasteryReportContainer = (props) => {
                 settings={settings}
                 userRole={userRole}
                 sharedReport={sharedReport}
+                testTypesAllowed={testTypesAllowed}
               />
             )
           }}

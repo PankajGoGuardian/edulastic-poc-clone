@@ -472,6 +472,7 @@ const Container = ({
               loc={reportType}
               updateNavigation={setNavigationItems}
               setShowHeader={setShowHeader}
+              navigationItems={navigationItems}
             />
           )}
         />

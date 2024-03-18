@@ -595,7 +595,9 @@ export const getTabNavigationItems = ({
     navigationItems = next(_navigationItems, (draft) => {
       draft.forEach((item) => {
         if (item.key !== reportNavType.DW_GOALS_AND_INTERVENTIONS_REPORT) {
-          item.location += `${selected}?${qs.stringify(_filters, {
+          item.location += item.location.endsWith('/') ? '' : '/'
+          item.location += item.exactPath ? '' : selected
+          item.location += `?${qs.stringify(_filters, {
             arrayFormat: 'comma',
           })}`
         }

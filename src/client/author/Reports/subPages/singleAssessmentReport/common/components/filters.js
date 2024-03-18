@@ -9,7 +9,11 @@ import { Spin, Tabs, Row, Col } from 'antd'
 import { roleuser, testTypes as testTypesConstants } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 
-import { reportGroupType } from '@edulastic/constants/const/report'
+import {
+  reportGroupType,
+  reportNavType,
+} from '@edulastic/constants/const/report'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import FilterTags from '../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
@@ -67,6 +71,7 @@ const getTestIdFromURL = (url) => {
 
 const SingleAssessmentReportFilters = ({
   loc,
+  pageTitle,
   isCliUser,
   isPrinting,
   loading,
@@ -103,9 +108,13 @@ const SingleAssessmentReportFilters = ({
   testList,
   fetchUpdateTagsData,
   pickAddionalFilters,
+  sharedReport,
 }) => {
+  const isSelReport = pageTitle === reportNavType.DW_SEL_RESPONSE_SUMMARY_REPORT
   const { DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER } = testTypesConstants
-  const availableAssessmentType = getArrayOfAllTestTypes()
+  const availableAssessmentType = getArrayOfAllTestTypes().filter(({ key }) =>
+    isSelReport ? TEST_TYPE_SURVEY === key : TEST_TYPE_SURVEY !== key
+  )
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
@@ -291,7 +300,9 @@ const SingleAssessmentReportFilters = ({
         testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
         testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
         tagIds: search.tagIds || '',
-        assessmentTypes: search.assessmentTypes || '',
+        assessmentTypes: isSelReport
+          ? TEST_TYPE_SURVEY
+          : search.assessmentTypes || '',
         networkIds: search.networkIds || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
@@ -309,7 +320,9 @@ const SingleAssessmentReportFilters = ({
         delete _filters.schoolIds
         delete _filters.teacherIds
       }
-      const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+      const assessmentTypesArr = isSelReport
+        ? [TEST_TYPE_SURVEY]
+        : (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
         termId: urlSchoolYear,
         testGrades: urlTestGrades,
@@ -373,6 +386,14 @@ const SingleAssessmentReportFilters = ({
     splitted.splice(splitted.length - 1)
     return `${splitted.join('/')}/`
   }
+  useEffect(() => {
+    if (isSelReport && reportId) {
+      const urlFilter = sharedReport.filters
+      history.push(
+        `${getNewPathname()}${urlFilter.testId}?${qs.stringify(urlFilter)}`
+      )
+    }
+  }, [loc])
 
   const updateTestId = (selected) => {
     const _tempTagsData = { ...tempTagsData, testId: selected }
@@ -405,6 +426,7 @@ const SingleAssessmentReportFilters = ({
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
     // update tags data
+    if (isSelReport && keyName === 'assessmentTypes') return
     const _tempTagsData = { ...tempTagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
       delete _tempTagsData[keyName]
@@ -576,12 +598,15 @@ const SingleAssessmentReportFilters = ({
                           )
                         }}
                         value={
-                          filters.assessmentTypes &&
-                          filters.assessmentTypes !== 'All'
+                          isSelReport
+                            ? availableAssessmentType.map(({ key }) => key)
+                            : filters.assessmentTypes &&
+                              filters.assessmentTypes !== 'All'
                             ? filters.assessmentTypes.split(',')
                             : []
                         }
                         options={availableAssessmentType}
+                        disable={isSelReport}
                       />
                     </Col>
                     <Col span={6}>

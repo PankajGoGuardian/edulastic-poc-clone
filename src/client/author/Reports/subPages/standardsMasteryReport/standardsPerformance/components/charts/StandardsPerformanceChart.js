@@ -29,6 +29,7 @@ const StandardsPerformanceChart = ({
   maxMasteryScore,
   skillInfo,
   scaleInfo,
+  displayTextForMastery,
   ...chartProps
 }) => {
   const ticks = getTicks(maxMasteryScore)
@@ -47,11 +48,11 @@ const StandardsPerformanceChart = ({
         <BarTooltipRow title="Domain: " value={domainInfo.domain} />
         <BarTooltipRow title="Description: " value={domainInfo.domainName} />
         <BarTooltipRow
-          title="Avg Mastery Score: "
+          title={`Avg ${displayTextForMastery} Score: `}
           value={payload.masteryScore}
         />
         <BarTooltipRow
-          title="Mastery Level: "
+          title={`${displayTextForMastery} Level: `}
           value={getMasteryLevel(payload.masteryScore, scaleInfo).masteryName}
         />
         <BarTooltipRow title="Student #: " value={studentCount} />
@@ -83,14 +84,14 @@ const StandardsPerformanceChart = ({
 
   return (
     <>
-      <StyledH3>Mastery Level Distribution by Domain</StyledH3>
+      <StyledH3>{`${displayTextForMastery}  Level Distribution by Domain`}</StyledH3>
       <StyledChartContainer>
         <SimpleStackedBarChart
           margin={{ top: 10, right: 60, left: 60, bottom: 0 }}
           xAxisDataKey="domainName"
           bottomStackDataKey="masteryScore"
           topStackDataKey="diffMasteryScore"
-          yAxisLabel="Avg. Mastery Score"
+          yAxisLabel={`Avg. ${displayTextForMastery} Score`}
           yTickFormatter={_yTickFormatter}
           getXTickTooltipText={getXTickTooltipText}
           xTickTooltipStyles={{ textAlign: 'left' }}

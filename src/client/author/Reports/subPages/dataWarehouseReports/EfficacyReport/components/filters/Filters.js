@@ -4,6 +4,7 @@ import { get, isEmpty, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 import { reportGroupType } from '@edulastic/constants/const/report'
+import { TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import {
   getPerformanceBandsListByTestType,
   resetStudentFilters as resetFilters,
@@ -95,6 +96,10 @@ const Filters = ({
     {}
   )
 
+  const requiredTestTypes = availableAssessmentType.filter(
+    ({ key }) => !TEST_TYPES.SURVEY.includes(key)
+  )
+
   const [
     performanceBandsList,
     defaultPerformanceBandsList,
@@ -132,7 +137,7 @@ const Filters = ({
     reportId,
     schoolYears,
     performanceBandsList,
-    availableAssessmentType,
+    availableAssessmentType: requiredTestTypes,
     search,
     setFilters,
     setPrevFiltersData,
@@ -286,7 +291,7 @@ const Filters = ({
       schoolYears={schoolYears}
       performanceBandsList={performanceBandsList}
       assessmentTypesRef={assessmentTypesRef}
-      availableAssessmentType={availableAssessmentType}
+      availableAssessmentType={requiredTestTypes}
       externalTests={externalTests}
       externalBands={externalBands}
       userRole={userRole}

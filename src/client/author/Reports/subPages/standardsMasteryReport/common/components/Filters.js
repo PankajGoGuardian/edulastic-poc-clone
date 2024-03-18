@@ -13,6 +13,7 @@ import {
   reportGroupType,
   reportNavType,
 } from '@edulastic/constants/const/report'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import FilterTags from '../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import { MultipleSelect } from '../../../../common/components/widgets/MultipleSelect'
@@ -104,10 +105,15 @@ const StandardsMasteryReportFilters = ({
   selectedDomainIds,
   skillInfo,
   selectedStandardId,
+  sharedReport,
 }) => {
-  const availableAssessmentType = isPremium
+  const isSelReport = loc === reportNavType.DW_SEL_REPORT
+  const availableAssessmentType = (isPremium
     ? getArrayOfAllTestTypes()
     : getArrayOfNonPremiumTestTypes()
+  ).filter(({ key }) =>
+    isSelReport ? TEST_TYPE_SURVEY === key : !TEST_TYPE_SURVEY === key
+  )
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.CLASS_FILTERS.key
   )
@@ -134,8 +140,18 @@ const StandardsMasteryReportFilters = ({
       scaleInfo.map((s) => ({ key: s._id, title: s.name, default: s.default })),
     [scaleInfo]
   )
-  const defaultStandardProficiency =
+  let defaultStandardProficiency =
     standardProficiencyList.find((s) => s.default) || standardProficiencyList[0]
+  if (isSelReport && !filters.profileId) {
+    const profileIdForSurvey = get(
+      standardsFilters,
+      'data.result.standardProficiency.survey',
+      ''
+    )
+    defaultStandardProficiency =
+      standardProficiencyList.find((o) => o.key === profileIdForSurvey) ||
+      standardProficiencyList[0]
+  }
   const schoolYears = useMemo(() => processSchoolYear(user), [user])
   const defaultTermId = get(user, 'orgData.defaultTermId', '')
   const curriculumsList = useMemo(() => {
@@ -316,7 +332,9 @@ const StandardsMasteryReportFilters = ({
         testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
         testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
         tagIds: search.tagIds || '',
-        assessmentTypes: search.assessmentTypes || '',
+        assessmentTypes: isSelReport
+          ? TEST_TYPE_SURVEY
+          : search.assessmentTypes || '',
         testIds: search.testIds || '',
         curriculumId: urlCurriculum.key || '',
         standardGrade: urlStandardGrade.key,
@@ -330,7 +348,9 @@ const StandardsMasteryReportFilters = ({
         delete _filters.schoolIds
         delete _filters.teacherIds
       }
-      const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+      const assessmentTypesArr = isSelReport
+        ? [TEST_TYPE_SURVEY]
+        : (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
         termId: urlSchoolYear,
         grades: urlGrades,
@@ -402,6 +422,7 @@ const StandardsMasteryReportFilters = ({
     isRowFilter = false
   ) => {
     // update tags data
+    if (isSelReport && keyName === 'assessmentTypes') return
     const _tempTagsData = { ...tempTagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
       delete _tempTagsData[keyName]
@@ -426,6 +447,13 @@ const StandardsMasteryReportFilters = ({
       setShowApply(true)
     }
   }
+
+  useEffect(() => {
+    if (isSelReport && reportId) {
+      const urlFilter = sharedReport.filters
+      history.push(`${location.pathname}?${qs.stringify(urlFilter)}`)
+    }
+  }, [loc])
 
   const onSelectDomain = (domain) => {
     const _domainIds = toggleItem(filters.domainIds, domain.key).filter((o) =>
@@ -604,10 +632,13 @@ const StandardsMasteryReportFilters = ({
                             )
                           }}
                           value={
-                            filters.assessmentTypes
+                            isSelReport
+                              ? availableAssessmentType.map(({ key }) => key)
+                              : filters.assessmentTypes
                               ? filters.assessmentTypes.split(',')
                               : []
                           }
+                          disable={isSelReport}
                           options={availableAssessmentType}
                         />
                       </Col>

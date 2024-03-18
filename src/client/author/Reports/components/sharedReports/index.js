@@ -79,6 +79,16 @@ const SharedReportsContainer = ({
           `/author/reports/${reportType}?termId=${filters.termId}&reportId=${_id}`
         )
         break
+      case report.reportNavType.DW_SEL_RESPONSE_SUMMARY_REPORT:
+        history.push(
+          `/author/reports/${reportType}/test/${filters.testId}?termId=${filters.termId}&reportId=${_id}`
+        )
+        break
+      case report.reportNavType.DW_SEL_REPORT:
+        history.push(
+          `/author/reports/${reportType}?termId=${filters.termId}&reportId=${_id}`
+        )
+        break
       default:
       // do nothing
     }

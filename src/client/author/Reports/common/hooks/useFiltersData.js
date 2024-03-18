@@ -18,7 +18,8 @@ const useFiltersData = (filtersData) =>
       filtersData?.data?.result || {}
 
     const availableTestTypes = testTypes.filter(
-      ({ key }) => !TEST_TYPES.PRACTICE.includes(key)
+      ({ key }) =>
+        !TEST_TYPES.PRACTICE.includes(key) && !TEST_TYPES.SURVEY.includes(key)
     )
 
     const externalAcademicFeedTypes = availableTestTypes.filter(

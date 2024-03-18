@@ -5,6 +5,7 @@ import { filter, get, isEmpty } from 'lodash'
 import { Col, Row } from 'antd'
 import { report as reportTypes, reportUtils } from '@edulastic/constants'
 import { SpinLoader } from '@edulastic/common'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   DropDownContainer,
   StyledCard,
@@ -35,8 +36,8 @@ const {
   getParsedData,
 } = reportUtils.standardsPerformanceSummary
 
-const { compareByData, analyseByData } = dropDownData
-
+const { compareByData } = dropDownData
+let { analyseByData } = dropDownData
 const StandardsPerformance = ({
   standardsPerformanceSummary,
   standardsFilters,
@@ -50,7 +51,16 @@ const StandardsPerformance = ({
   userRole,
   sharedReport,
   generateCSV,
+  testTypesAllowed,
 }) => {
+  const displayTextForMastery =
+    testTypesAllowed === TEST_TYPE_SURVEY ? 'Survey' : 'Mastery'
+  // chnage analyse by titles
+  if (testTypesAllowed === TEST_TYPE_SURVEY) {
+    analyseByData = analyseByData.map((o) => {
+      return { key: o.key, title: o.title.replace('Mastery', 'Survey') }
+    })
+  }
   const sharedReportFilters = useMemo(
     () =>
       sharedReport?._id
@@ -212,11 +222,15 @@ const StandardsPerformance = ({
                 className="students-stats"
               >
                 <Col>
-                  <p className="students-title">Overall Mastery Score</p>
+                  <p className="students-title">
+                    Overall {displayTextForMastery} Score
+                  </p>
                   <p className="students-value">{overallMetricMasteryScore}</p>
                 </Col>
                 <Col>
-                  <p className="students-title">Overall Mastery Level</p>
+                  <p className="students-title">
+                    Overall {displayTextForMastery} Level
+                  </p>
                   <p className="students-value">
                     {overallMetricMasteryLevel.masteryName}
                   </p>
@@ -239,6 +253,7 @@ const StandardsPerformance = ({
             pageCount: Math.ceil(res.domainsCount / pageFilters.pageSize) || 1,
           }}
           setBackendPagination={setPageFilters}
+          displayTextForMastery={displayTextForMastery}
         />
       </StyledCard>
       <StyledCard>
@@ -255,6 +270,7 @@ const StandardsPerformance = ({
             (sharedReportFilters || settings?.requestFilters)?.termId || ''
           }
           isSharedReport={!!sharedReport?._id}
+          displayTextForMastery={displayTextForMastery}
         />
       </StyledCard>
     </DropDownContainer>

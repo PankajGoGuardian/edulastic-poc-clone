@@ -10,7 +10,10 @@ import {
   themeColorLighter,
   incorrect,
   greyLight1,
+  black,
 } from '@edulastic/colors'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import { StyledResponseTagContainer } from '../styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 
@@ -82,23 +85,47 @@ export class ResponseTag extends Component {
   }
 
   getCellContents = () => {
-    const { data, incorrectFrequencyThreshold, isPrinting } = this.props
+    const {
+      data,
+      incorrectFrequencyThreshold,
+      isPrinting,
+      testTypesAllowed,
+    } = this.props
     const name = get(data, 'name', '')
     const value = Number(get(data, 'value', 0))
-
-    const style = data.isCorrect
+    const isSurveyReport = testTypesAllowed === TEST_TYPE_SURVEY
+    let style = data.isCorrect
       ? { borderColor: themeColorLighter, color: themeColorLighter }
       : value > incorrectFrequencyThreshold
       ? { borderColor: incorrect, backgroundColor: greyLight1 }
       : { borderColor: incorrect }
-
+    if (testTypesAllowed === TEST_TYPE_SURVEY) {
+      style = {
+        color: data.color,
+        border: 'none',
+        flexDirection: 'column',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '3px',
+      }
+    }
     if (isPrinting) {
       return this.getPrintableTag(style, name, value)
     }
-
     return (
       <StyledTag style={style}>
-        <p>{name}</p>
+        <EduIf condition={isSurveyReport}>
+          <EduThen>
+            <StyledPTag bgColor={data.color}>{name}</StyledPTag>
+            <p style={{ color: black, fontWeight: 600, fontSize: '12px' }}>
+              {data?.optionText || ''}
+            </p>
+          </EduThen>
+          <EduElse>
+            <p>{name}</p>
+          </EduElse>
+        </EduIf>
         <p>{value}%</p>
       </StyledTag>
     )
@@ -136,4 +163,16 @@ const StyledTag = styled.div`
       flex-grow: 1;
     }
   }
+`
+
+const StyledPTag = styled.p`
+  height: 20px;
+  width: 20px;
+  background: ${({ bgColor }) => bgColor};
+  border-radius: 3px;
+  color: white;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `

@@ -13,6 +13,7 @@ export function ResponseColumn({
   record,
   incorrectFrequencyThreshold,
   isPrinting,
+  testTypesAllowed,
 }) {
   const numToAlp = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   let arr = []
@@ -75,12 +76,16 @@ export function ResponseColumn({
     arr = Object.keys(data).map((comboKey) => {
       const slittedKeyArr = comboKey.split(',')
       let str = ''
+      let optionText = ''
       let isCorrect = true
+      let color = ''
       for (const key of slittedKeyArr) {
         for (let i = 0; i < record.options.length; i++) {
           // NOTE: comparison of number keys with string keys
           if (record.options[i].value == key) {
             str += numToAlp[i]
+            optionText = record.options[i].label || ''
+            color = record.options[i].bgColor
             const tmp = find(record.validation, (vstr) => key == vstr)
             isCorrect = !!(isCorrect && tmp)
           }
@@ -101,6 +106,8 @@ export function ResponseColumn({
         value: (data[comboKey] / sum) * 100 || 0,
         count: data[comboKey] || 0,
         name: str,
+        optionText,
+        color,
         key: str,
         isCorrect,
         isUnselected: false,
@@ -182,6 +189,7 @@ export function ResponseColumn({
             key={i}
             data={_data}
             incorrectFrequencyThreshold={incorrectFrequencyThreshold}
+            testTypesAllowed={testTypesAllowed}
           />
         ) : null
       )}

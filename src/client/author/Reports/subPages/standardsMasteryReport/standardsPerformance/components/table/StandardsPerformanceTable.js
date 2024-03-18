@@ -191,6 +191,7 @@ const StandardsPerformanceTable = ({
   isCsvDownloading,
   selectedTermId,
   isSharedReport,
+  displayTextForMastery,
 }) => {
   // augment analyseByKey to tableData records for conditional sorting
   const augmentedTableData = useMemo(
@@ -234,7 +235,8 @@ const StandardsPerformanceTable = ({
       <Row type="flex" justify="start" className={className}>
         <Col xs={24} sm={24} md={11} lg={11} xl={12}>
           <StyledH3>
-            Domain Mastery Details by {tableFilters.compareBy.title}
+            Domain {displayTextForMastery} Details by{' '}
+            {tableFilters.compareBy.title}
           </StyledH3>
         </Col>
         <Col xs={24} sm={24} md={13} lg={13} xl={12}>

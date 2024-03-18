@@ -121,6 +121,8 @@ const dataStudioPattern = [
   /\/author\/reports\/goals-and-interventions/,
   /\/author\/reports\/early-warning-report/,
   /\/author\/reports\/efficacy-report/,
+  /\/author\/reports\/sel-insights/,
+  /\/author\/reports\/sel-response-summary/,
 ]
 
 const menuItems = [

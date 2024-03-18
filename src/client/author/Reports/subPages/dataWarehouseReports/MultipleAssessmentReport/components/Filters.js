@@ -12,6 +12,7 @@ import {
 } from '@edulastic/constants/reportUtils/common'
 
 import { withNamespaces } from 'react-i18next'
+import { TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import {
   ReportFiltersContainer,
   StyledEduButton,
@@ -61,7 +62,6 @@ const DGA_DISABLE_FILTERS_MESSAGE =
   'Please select a single district to activate this filter'
 
 const internalTestTypes = getArrayOfAllTestTypes()
-
 const getLabel = (text, isRequired) => {
   return isRequired ? (
     <>
@@ -121,6 +121,9 @@ const MultipleAssessmentReportFilters = ({
     testTypes: availableAssessmentTypes = internalTestTypes,
     externalTests = [],
   } = get(filtersData, 'data.result', {})
+  const requiredTestTypes = availableAssessmentTypes.filter(
+    ({ key }) => !TEST_TYPES.SURVEY.includes(key)
+  )
   const performanceBandsList = useMemo(
     () => bandInfo.map((p) => ({ key: p._id, title: p.name })),
     [bandInfo]
@@ -131,7 +134,7 @@ const MultipleAssessmentReportFilters = ({
 
   const externalScoreTypesList = getExternalScoreTypesListByTestTypes(
     filters.assessmentTypes,
-    availableAssessmentTypes
+    requiredTestTypes
   )
   const selectedExternalScoreType =
     externalScoreTypesList.find(
@@ -261,7 +264,7 @@ const MultipleAssessmentReportFilters = ({
           testSubjects: urlTestSubjects,
           testTermIds: urlTestTermIds.length ? urlTestTermIds : [urlSchoolYear],
           testGrades: urlTestGrades,
-          assessmentTypes: availableAssessmentTypes.filter((a) =>
+          assessmentTypes: requiredTestTypes.filter((a) =>
             assessmentTypesArr.includes(a.key)
           ),
           subjects: urlSubjects,
@@ -779,8 +782,8 @@ const MultipleAssessmentReportFilters = ({
                           dataCy="testTypes"
                           label="Test Type"
                           onChange={(e) => {
-                            const selected = availableAssessmentTypes.filter(
-                              (a) => e.includes(a.key)
+                            const selected = requiredTestTypes.filter((a) =>
+                              e.includes(a.key)
                             )
                             updateFilterDropdownCB(
                               selected,
@@ -793,7 +796,7 @@ const MultipleAssessmentReportFilters = ({
                               ? filters.assessmentTypes.split(',')
                               : []
                           }
-                          options={availableAssessmentTypes}
+                          options={requiredTestTypes}
                         />
                       </Col>
                       <EduIf condition={!isDistrictGroupAdmin}>

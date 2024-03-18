@@ -10,6 +10,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { EduIf } from '@edulastic/common'
 import { Tooltip } from 'antd'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import { Container, SpaceElement } from './styled'
 
 import { isPremiumUserSelector } from '../../../src/selectors/user'
@@ -18,7 +19,7 @@ import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 const getReportPathForAnalyze = (
   linkPrefix,
-  { testId = '', termId, testType, classId }
+  { testId = '', termId, testType, classId, isDSUserAndSurveyTest }
 ) => {
   const q = {
     termId,
@@ -27,7 +28,16 @@ const getReportPathForAnalyze = (
     grade: 'All',
     classIds: classId,
   }
-  return `${linkPrefix}${testId}?${qs.stringify(q)}`
+  if (isDSUserAndSurveyTest) {
+    Object.assign(q, {
+      testIds: testId,
+      assessmentTypes: TEST_TYPE_SURVEY,
+    })
+  }
+  const urlPrefix = isDSUserAndSurveyTest
+    ? `${linkPrefix}`
+    : `${linkPrefix}${testId}`
+  return `${urlPrefix}?${qs.stringify(q)}`
 }
 
 const AnalyzeLink = ({
@@ -37,6 +47,7 @@ const AnalyzeLink = ({
   testType,
   showAnalyseLink = false,
   isPremiumUser,
+  isDSUserAndSurveyTest = false,
   linkText = 'Analyze',
   linkPrefix = '',
   visible = true,
@@ -56,6 +67,7 @@ const AnalyzeLink = ({
     termId,
     testType,
     classId,
+    isDSUserAndSurveyTest,
   })
 
   return (

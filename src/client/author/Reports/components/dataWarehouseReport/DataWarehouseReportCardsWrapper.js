@@ -10,7 +10,7 @@ const DataWarehoureReportCardsWrapper = ({ loc, allowAccess }) => {
       {DATA_WAREHOUSE_REPORT_CARDS_DATA.map(({ id, title, cards }) => (
         <div key={id}>
           <StyledSectionHeader>{title}</StyledSectionHeader>
-          <Row gutter={32}>
+          <Row gutter={32} style={{ display: 'flex', flexWrap: 'wrap' }}>
             {cards.map((card) => (
               <ReportLinkCard
                 key={card.id}

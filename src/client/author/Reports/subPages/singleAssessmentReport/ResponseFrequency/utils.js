@@ -7,21 +7,23 @@ export const NOT_AVAILABLE_LABEL = 'NA'
 export function onCsvConvert(data, rawData) {
   // extract all rows except the columns name
   const csvRows = rawData.splice(1, rawData.length)
+  const responseColumnIndex = rawData[0].indexOf('"RESPONSE"')
   const modifiedCsvRows = csvRows.map((csvRow) => {
-    const item = csvRow[6]
-    csvRow[6] = `"${item
-      .replace(/"/g, '')
-      .replace(/%/g, '%,')
-      .split(',')
-      .filter((_item) => _item)
-      .map((_item) => {
-        const option = _item.replace(/\d+%/g, '')
-        if (option === NOT_AVAILABLE_LABEL) return NOT_AVAILABLE_LABEL
-        const number = _item.match(/\d+%/g)?.[0]
-        return `${option ? `${option} :` : ''} ${number || 'N/A'}`
-      })
-      .join(', ')}"`
-
+    const item = csvRow[responseColumnIndex]
+    if (item) {
+      csvRow[responseColumnIndex] = `"${item
+        .replace(/"/g, '')
+        .replace(/%/g, '%,')
+        .split(',')
+        .filter((_item) => _item)
+        .map((_item) => {
+          const option = _item.replace(/\d+%/g, '')
+          if (option === NOT_AVAILABLE_LABEL) return NOT_AVAILABLE_LABEL
+          const number = _item.match(/\d+%/g)?.[0]
+          return `${option ? `${option} :` : ''} ${number || 'N/A'}`
+        })
+        .join(', ')}"`
+    }
     return csvRow.join(',')
   })
   const csvData = [rawData[0].join(','), ...modifiedCsvRows].join('\n')

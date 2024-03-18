@@ -71,7 +71,9 @@ const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(
   {}
 )
 const ddFilterKeys = Object.keys(staticDropDownData.initialDdFilters)
-const allTestTypes = getArrayOfAllTestTypes()
+const allTestTypes = getArrayOfAllTestTypes().filter(
+  ({ key }) => !TEST_TYPES.SURVEY.includes(key)
+)
 const clearTestFilterKeys = [
   FILTER_KEYS_MAP.termId,
   FILTER_KEYS_MAP.testGrades,

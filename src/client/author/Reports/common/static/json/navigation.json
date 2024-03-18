@@ -445,6 +445,34 @@
       ],
       "group": "data-warehouse-reports",
       "groupTitle": "Data Warehouse Reports"
+    },
+    "sel-response-summary": {
+      "title": "Survey Response Summary",
+      "breadcrumb": [
+        {
+          "title": "DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "Survey Response Summary"
+        }
+      ],
+      "group": "ds-sel-reports",
+      "groupTitle": "Data Warehouse Reports"
+    },
+    "sel-insights": {
+      "title": "Survey Insights",
+      "breadcrumb": [
+        {
+          "title": "DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "Survey Insights"
+        }
+      ],
+      "group": "ds-sel-reports",
+      "groupTitle": "Data Warehouse Reports"
     }
   },
   "navigation": {
@@ -626,6 +654,20 @@
         "key": "efficacy-report",
         "title": "Efficacy",
         "location": "/author/reports/efficacy-report"
+      }
+    ],
+    "ds-sel-reports": [
+      {
+        "key": "sel-response-summary",
+        "title": "Survey Response Summary",
+        "location": "/author/reports/sel-response-summary/test/",
+        "exactPath": false
+      },
+      {
+        "key": "sel-insights",
+        "title": "Survey Insights",
+        "location": "/author/reports/sel-insights/",
+        "exactPath": true
       }
     ]
   }

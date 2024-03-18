@@ -11,6 +11,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { reportNavType } from '@edulastic/constants/const/report'
 
+import { TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import {
   ReportFiltersContainer,
   StyledEduButton,
@@ -142,6 +143,9 @@ const WholeLearnerReportFilters = ({
     testTypes: availableTestTypes = getArrayOfAllTestTypes(),
     externalTests = [],
   } = get(filtersData, 'data.result', {})
+  const requiredTestTypes = availableTestTypes.filter(
+    ({ key }) => !TEST_TYPES.SURVEY.includes(key)
+  )
 
   const performanceBandsList = useMemo(
     () => bandInfo.map((p) => ({ key: p._id, title: p.name })),
@@ -227,7 +231,7 @@ const WholeLearnerReportFilters = ({
       setFirstLoad(false)
     } else if (firstLoad && !reportId && filters.termId && urlStudentId) {
       const defaultTestTypes = getDefaultTestTypesForUser(
-        availableTestTypes,
+        requiredTestTypes,
         userRole
       )
       const selectedTestTypes = search.testTypes || defaultTestTypes
@@ -238,7 +242,7 @@ const WholeLearnerReportFilters = ({
       }
       const testTypes = getTestTypesFromUrl(
         selectedTestTypes,
-        availableTestTypes
+        requiredTestTypes
       )
       const _filterTagsData = {
         ...filterTagsData,
@@ -662,7 +666,7 @@ const WholeLearnerReportFilters = ({
                           dataCy="testTypes"
                           label="Test Type"
                           onChange={(e) => {
-                            const selected = availableTestTypes.filter((a) =>
+                            const selected = requiredTestTypes.filter((a) =>
                               e.includes(a.key)
                             )
                             updateFilterDropdownCB(selected, 'testTypes', true)
@@ -672,7 +676,7 @@ const WholeLearnerReportFilters = ({
                               ? filters.testTypes.split(',')
                               : []
                           }
-                          options={availableTestTypes}
+                          options={requiredTestTypes}
                         />
                       </Col>
                       <Col span={6}>

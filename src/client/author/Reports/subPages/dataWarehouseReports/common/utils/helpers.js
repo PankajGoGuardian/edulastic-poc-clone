@@ -347,7 +347,7 @@ export const enhanceQueryWithTermIds = (
     })
     Object.assign(query, {
       districtIds: districtIdsArr.join(','),
-      termIds: termIdsArr.join(','),
+      termIds: isEmpty(termIdsArr) ? query.termId : termIdsArr.join(','),
     })
   } else {
     const testTermIdsArr = convertItemToArray(query.testTermIds)

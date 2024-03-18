@@ -8,14 +8,11 @@ import {
   extractVideoId,
   isValidVideoUrl,
 } from '../../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
-import { navigationState } from '../../../../src/constants/navigation'
 import { isURL } from '../utils'
 
 const useVideoAssessmentUtils = ({
   createVQAssessment,
-  history,
   scrollerRef,
-  allowedToCreateVideoQuiz,
   setYoutubeThumbnail,
 }) => {
   const [linkValue, setLinkValue] = useState('')
@@ -36,15 +33,6 @@ const useVideoAssessmentUtils = ({
       setYoutubeThumbnail('')
     }
   }, [])
-
-  useEffect(() => {
-    if (!allowedToCreateVideoQuiz) {
-      history.push({
-        pathname: '/author/subscription',
-        state: { view: navigationState.SUBSCRIPTION.view.ADDON },
-      })
-    }
-  }, [allowedToCreateVideoQuiz])
 
   const fetchVideos = async (append = false, userInput = '') => {
     try {
@@ -124,17 +112,6 @@ const useVideoAssessmentUtils = ({
   useEffect(() => {
     handleFetchVideos(false, searchedText)
   }, [isModerateRestriction])
-
-  // Removing default search
-  // useEffect(() => {
-  //   const defaultValue = getDefaultSearchString(
-  //     interestedSubjects,
-  //     interestedGrades
-  //   )
-
-  //   setLinkValue(defaultValue)
-  //   handleFetchVideos(false, defaultValue)
-  // }, [interestedSubjects, interestedGrades])
 
   const handleOnChange = (e) => {
     const searchString = e.target.value

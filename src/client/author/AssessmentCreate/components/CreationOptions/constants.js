@@ -46,7 +46,7 @@ export const AccessNavigation = {
     },
   },
   PREMIUM_AI_ADDON: {
-    key: 'premium-ai-addon',
+    key: 'isVideoQuizAndAIEnabled',
     icon: <IconPremiumStar />,
     infoMessage: (
       <>
@@ -151,7 +151,7 @@ export const TestSections = [
         },
         access: {
           type: AccessType.OR,
-          features: [AccessNavigation.PREMIUM_AI_ADDON],
+          features: [AccessNavigation.PREMIUM],
         },
       },
       {

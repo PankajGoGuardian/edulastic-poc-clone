@@ -101,9 +101,6 @@ const CreateVideoQuiz = ({
     createVQAssessment,
   })
 
-  if (!allowedToCreateVideoQuiz) {
-    return null
-  }
   const errorMessage = () => {
     if (linkValue && hasError) {
       return `This link can't be played.`

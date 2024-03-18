@@ -8,7 +8,6 @@ import {
   clearCreatedItemsAction,
   clearTestDataAction,
 } from '../../../TestPage/ducks'
-import { navigationState } from '../../../src/constants/navigation'
 import {
   allowedToCreateVideoQuizSelector,
   getUserFeatures,
@@ -29,7 +28,6 @@ const CreationOptions = ({
   history,
   clearTestData,
   clearCreatedItems,
-  allowedToCreateVideoQuiz,
 }) => {
   const isTestCardVisible = ({ key }) => {
     if (
@@ -54,14 +52,6 @@ const CreationOptions = ({
         if ([TestKeys.DEFAULT_TEST, TestKeys.DYNAMIC_TEST].includes(key)) {
           clearTestData()
           clearCreatedItems()
-        }
-        if (key === TestKeys.VIDEO_QUIZ_TEST) {
-          if (!allowedToCreateVideoQuiz) {
-            return history.push({
-              pathname: '/author/subscription',
-              state: { view: navigationState.SUBSCRIPTION.view.ADDON },
-            })
-          }
         }
         return history.push(navigation)
       }

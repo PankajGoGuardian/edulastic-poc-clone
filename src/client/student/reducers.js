@@ -12,6 +12,7 @@ import user from './Login/ducks'
 import signup from './Signup/duck'
 import { slice as studentPlaylistSlice } from './StudentPlaylist/ducks'
 import { slice as sectionStartSlice } from './SectionsStart/ducks'
+import { assessmentPageReducer } from '../author/AssessmentPage/ducks'
 
 const studentReducer = {
   ui,
@@ -26,6 +27,7 @@ const studentReducer = {
   signup,
   studentPlaylist: studentPlaylistSlice.reducer,
   studentSections: sectionStartSlice.reducer,
+  assessmentPageReducer,
 }
 
 export default studentReducer

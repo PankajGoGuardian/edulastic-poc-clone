@@ -12,6 +12,11 @@ export const currentItemIndexSelector = createSelector(
   (state) => state.currentItem
 )
 
+export const currentTestActivityIdSelector = createSelector(
+  stateSelector,
+  (test) => test?.testActivityId
+)
+
 export const itemsSelector = createSelector(
   stateSelector,
   (state) => state.items

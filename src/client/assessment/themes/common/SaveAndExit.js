@@ -25,6 +25,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { themeColor } from '@edulastic/colors'
+import { STUDENT } from '@edulastic/constants/const/roleType'
 import { getUserNameSelector } from '../../../author/src/selectors/user'
 import {
   toggleScratchpadVisbilityAction,
@@ -44,8 +45,13 @@ import {
 } from './styledCompoenents'
 
 import TimedTestTimer from './TimedTestTimer'
-import { getUserAccommodations } from '../../../student/Login/ducks'
+import {
+  getUserAccommodations,
+  getUserRole,
+} from '../../../student/Login/ducks'
 import { isImmersiveReaderEnabled } from '../../utils/helpers'
+import { isVideoEndedSelector } from '../../../author/AssessmentPage/ducks/selectors'
+import { vqPreventQuestionSkippingSelector } from '../../selectors/test'
 
 export function useUtaPauseAllowed(utaId) {
   if (!utaId) {
@@ -94,6 +100,9 @@ const SaveAndExit = ({
   userName,
   t: i18Translate,
   accommodations,
+  vqPreventSkipping,
+  isVideoEnded,
+  userRole,
 }) => {
   const utaPauseAllowed = useUtaPauseAllowed(utaId)
 
@@ -115,6 +124,9 @@ const SaveAndExit = ({
 
   const isTestTakenByCliUser = isCliUserPreview && isCliUser
   const showExitButton = showPause && !inSEB && !isTestTakenByCliUser
+
+  const isSubmitDisabled =
+    userRole === STUDENT && vqPreventSkipping && !isVideoEnded
 
   const menu = (
     <Menu>
@@ -306,6 +318,7 @@ const SaveAndExit = ({
             isGhost
             onClick={onSubmit}
             loading={savingResponse}
+            disabled={isSubmitDisabled}
           >
             <IconSend />
             {i18Translate('saveAndExit.submit')}
@@ -346,6 +359,9 @@ export default compose(
       showImmersiveReader: get(state, 'test.settings.showImmersiveReader'),
       userName: getUserNameSelector(state),
       accommodations: getUserAccommodations(state),
+      isVideoEnded: isVideoEndedSelector(state),
+      userRole: getUserRole(state),
+      vqPreventSkipping: vqPreventQuestionSkippingSelector(state),
     }),
     {
       adjustScratchpad: adjustScratchpadDimensionsAction,

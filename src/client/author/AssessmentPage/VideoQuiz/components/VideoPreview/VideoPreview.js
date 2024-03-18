@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { test as testConstants } from '@edulastic/constants'
+import { STUDENT } from '@edulastic/constants/const/roleType'
 import { removeUserAnswerAction } from '../../../../../assessment/actions/answers'
 import { getPreviewSelector } from '../../../../src/selectors/view'
 import QuestionItem from '../QuestionItem/QuestionItem'
@@ -38,12 +39,19 @@ import {
 } from '../../utils/videoPreviewHelpers'
 import appConfig from '../../../../../../app-config'
 import { isiOS } from '../../../../../assessment/utils/helpers'
-import { isVideoQuizAndAIEnabledSelector } from '../../../../src/selectors/user'
-import { vqPreventQuestionSkippingSelector } from '../../../../../assessment/selectors/test'
+import {
+  getUserRole,
+  isVideoQuizAndAIEnabledSelector,
+} from '../../../../src/selectors/user'
+import {
+  currentTestActivityIdSelector,
+  vqPreventQuestionSkippingSelector,
+} from '../../../../../assessment/selectors/test'
 import {
   getTestEntitySelector,
   setTestDataAction,
 } from '../../../../TestPage/ducks'
+import { assessmentPageActions } from '../../../ducks'
 
 const { statusConstants } = testConstants
 const { DRAFT } = statusConstants
@@ -82,6 +90,9 @@ const VideoPreview = ({
   isVideoQuizAndAIEnabled,
   setTestData,
   test: { status, videoDuration: vqVideoDuration },
+  setIsVideoEnded,
+  currentTestActivityId,
+  userRole,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -308,6 +319,9 @@ const VideoPreview = ({
   const onEnded = () => {
     seekTo(0)
     onPause()
+    if (userRole === STUDENT) {
+      setIsVideoEnded(currentTestActivityId)
+    }
   }
 
   const handleDropQuestion = ({ data, itemRect }) => {
@@ -683,9 +697,12 @@ export default connect(
     vqPreventSkipping: vqPreventQuestionSkippingSelector(state),
     vqEnableYouTubeEd: state.studentAssignment.vqEnableYouTubeEd,
     test: getTestEntitySelector(state),
+    currentTestActivityId: currentTestActivityIdSelector(state),
+    userRole: getUserRole(state),
   }),
   {
     removeAnswers: removeUserAnswerAction,
     setTestData: setTestDataAction,
+    setIsVideoEnded: assessmentPageActions.setIsVideoEnded,
   }
 )(withRouter(VideoPreview))

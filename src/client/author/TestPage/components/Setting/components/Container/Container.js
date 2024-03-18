@@ -1329,7 +1329,9 @@ class Setting extends Component {
                           <Col span={12}>
                             <SelectInputStyled
                               value={testType}
-                              disabled={disabled}
+                              disabled={
+                                disabled || testType === TEST_TYPE_SURVEY
+                              }
                               onChange={this.updateTestData('testType')}
                               getPopupContainer={(trigger) =>
                                 trigger.parentNode

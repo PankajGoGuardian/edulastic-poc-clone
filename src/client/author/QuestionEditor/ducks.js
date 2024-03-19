@@ -806,7 +806,7 @@ function* saveQuestionSaga({
       item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
     // incase item save is happening from test edit flow do not add it to cart
-    if (!_testId) {
+    if (!isTestFlow) {
       yield put(addItemToCartAction(item))
     }
     yield put(changeUpdatedFlagAction(false))

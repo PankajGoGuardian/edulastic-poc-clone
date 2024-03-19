@@ -1,4 +1,5 @@
 import React from 'react'
+import Helmet from 'react-helmet'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import i18n, { I18nextProvider } from '@edulastic/localization'
@@ -84,6 +85,9 @@ const RootComp = () => (
   <I18nextProvider i18n={i18n}>
     <Provider store={store}>
       <ConnectedRouter history={history}>
+        <Helmet>
+          <link rel="canonical" href="https://assessment.peardeck.com/" />
+        </Helmet>
         <App />
       </ConnectedRouter>
     </Provider>

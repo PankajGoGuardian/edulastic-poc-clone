@@ -195,7 +195,6 @@ function StudentAutoComplete({
         dataSource={dropdownData}
         onFocus={() => setIsFocused(true)}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
-        placeholder="Enter student name"
         allowClear={!loading && searchTerms.selectedText && isFocused}
         clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
         notFoundContent={
@@ -207,7 +206,10 @@ function StudentAutoComplete({
           />
         }
       >
-        <Input suffix={InputSuffixIcon} />
+        <Input
+          suffix={InputSuffixIcon}
+          placeholder="Search and select student"
+        />
       </AutoComplete>
     </AutoCompleteContainer>
   )
@@ -237,5 +239,8 @@ const AutoCompleteContainer = styled.div`
     & > svg {
       fill: ${themeColorBlue};
     }
+  }
+  .ant-input::placeholder {
+    font-size: 13px;
   }
 `

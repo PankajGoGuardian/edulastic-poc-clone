@@ -36,6 +36,7 @@ import Hints from './Hints'
 import {
   EDIT,
   sttEnabledQuestionTypes,
+  PREVIEW,
 } from '../constants/constantsForQuestions'
 import BottomAction from './Common/QuestionBottomAction'
 import {
@@ -353,6 +354,7 @@ class QuestionWrapper extends Component {
       accommodations,
       type: qType,
       features,
+      view,
     } = this.props
 
     if (!sttEnabledQuestionTypes.includes(qType)) {
@@ -369,9 +371,11 @@ class QuestionWrapper extends Component {
         features?.enableSpeechToText
       )
     }
-
     if (isTestPreview) {
       return testLevelShowSpeechToText
+    }
+    if (view === PREVIEW) {
+      return features?.enableSpeechToText
     }
 
     return isPremiumUser

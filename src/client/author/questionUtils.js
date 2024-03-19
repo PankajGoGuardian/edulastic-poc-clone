@@ -237,7 +237,7 @@ const passageCheck = (i) => {
   if (isRichTextFieldEmpty(i.content) && !i.paginated_content) {
     invalidPassage = true
   }
-  if (isRichTextFieldEmpty(item.content) && !item.paginated_content) {
+  if (isRichTextFieldEmpty(item?.content) && !item?.paginated_content) {
     invalidLanguagePassage = true
   }
   if (i.paginated_content) {
@@ -247,7 +247,7 @@ const passageCheck = (i) => {
       }
     }
   }
-  if (item.paginated_content) {
+  if (item?.paginated_content) {
     for (const o of item.pages) {
       if (isRichTextFieldEmpty(o)) {
         invalidLanguagePassage = true

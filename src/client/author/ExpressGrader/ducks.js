@@ -197,6 +197,17 @@ function* scratchPadLoadSaga({ payload }) {
       for (const attachment of attachments) {
         const { data } = attachment
         scratchpadData[qActId] = data.scratchpad
+        if (
+          attachment.type === 'doc-annotations' &&
+          !userWork[testActivityId]
+        ) {
+          // fetch the doc annotation for the doc based assignments if not already present.
+          const response = yield call(
+            attachmentApi.loadDataFromUrl,
+            data.freeNotesStd
+          )
+          scratchpadData[testActivityId] = { freeNotesStd: response.data }
+        }
       }
       yield put({ type: SAVE_USER_WORK, payload: scratchpadData })
       yield put(updateScratchpadAction({ loading: false }))

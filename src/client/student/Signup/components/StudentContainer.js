@@ -1,5 +1,4 @@
 import React from 'react'
-import Helmet from 'react-helmet'
 import PropTypes from 'prop-types'
 import { Col, Form, Input, message } from 'antd'
 import { Link, Redirect } from 'react-router-dom'
@@ -516,12 +515,6 @@ class StudentSignup extends React.Component {
               : partner.background
           }
         >
-          <Helmet>
-            <link
-              rel="canonical"
-              href="https://assessment.peardeck.com/studentsignup"
-            />
-          </Helmet>
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
               <EduIf condition={isPearDomain}>

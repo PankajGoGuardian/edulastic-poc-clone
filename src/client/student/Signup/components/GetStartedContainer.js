@@ -19,7 +19,6 @@ import { withNamespaces } from '@edulastic/localization'
 import { Col, Form, Row, Spin, Tooltip } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
-import Helmet from 'react-helmet'
 import { Link, Redirect } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -161,12 +160,6 @@ const GetStarted = ({
   return (
     <Spin spinning={isLoading}>
       <RegistrationWrapper>
-        <Helmet>
-          <link
-            rel="canonical"
-            href="https://assessment.peardeck.com/getStarted"
-          />
-        </Helmet>
         {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
           <Redirect exact to="/" />
         ) : null}

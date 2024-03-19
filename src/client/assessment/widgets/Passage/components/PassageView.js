@@ -34,6 +34,7 @@ const PassageView = ({
   page,
   setPage,
   authLanguage,
+  currentLang,
   isStudentAttempt,
 }) => {
   const { highlightedContent, saveHighlights } = useSaveHighlights({
@@ -46,6 +47,7 @@ const PassageView = ({
     highlights,
     setHighlights,
     saveUserWork,
+    currentLang,
   })
 
   const showPaginateContent = useMemo(() => {

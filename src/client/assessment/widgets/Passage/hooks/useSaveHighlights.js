@@ -11,12 +11,15 @@ export const useSaveHighlights = ({
   highlights,
   setHighlights,
   saveUserWork,
+  currentLang,
 }) => {
   const highlightIndex = useMemo(() => {
-    return item.paginated_content
-      ? `${widgetIndex || 0}-${pageNumber}`
-      : widgetIndex || 0
-  }, [item.paginated_content, pageNumber, widgetIndex])
+    return `${currentLang}_${
+      item.paginated_content
+        ? `${widgetIndex || 0}-${pageNumber}`
+        : widgetIndex || 0
+    }`
+  }, [item.paginated_content, pageNumber, widgetIndex, currentLang])
 
   const highlightedContent = useMemo(() => {
     const isAuthorPreviewMode =

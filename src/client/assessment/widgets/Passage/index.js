@@ -15,6 +15,7 @@ import { saveUserWorkAction, clearUserWorkAction } from '../../actions/userWork'
 import { replaceVariables } from '../../utils/variables'
 
 import { ContentArea } from '../../styled/ContentArea'
+import { getCurrentLanguage } from '../../../common/components/LanguageSelectorTab/duck'
 
 const Passage = ({
   item,
@@ -27,6 +28,7 @@ const Passage = ({
   advancedAreOpen,
   flowLayout,
   isDefaultTheme = true,
+  currentLang,
   ...restProps
 }) => {
   const itemForPreview = useMemo(() => replaceVariables(item), [item])
@@ -53,6 +55,7 @@ const Passage = ({
             item={itemForPreview}
             flowLayout={flowLayout}
             setQuestionData={setQuestionData}
+            currentLang={currentLang}
             {...restProps}
           />
         </Wrapper>
@@ -64,6 +67,7 @@ const Passage = ({
 Passage.propTypes = {
   item: PropTypes.object.isRequired,
   view: PropTypes.string.isRequired,
+  currentLang: PropTypes.string.isRequired,
   smallSize: PropTypes.bool,
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
@@ -89,6 +93,7 @@ const enhance = compose(
   connect(
     (state, props) => ({
       userWork: getHighlightForAuthor(state, props),
+      currentLang: getCurrentLanguage(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

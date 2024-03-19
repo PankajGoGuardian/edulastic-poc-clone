@@ -2285,7 +2285,7 @@
     "description": ""
   },
   "combineLimitExceeded": {
-    "message": "Combining tests limit exceeded",
+    "message": "Combining tests/items limit exceeded",
     "description": ""
   },
   "testAlreadyAdded": {

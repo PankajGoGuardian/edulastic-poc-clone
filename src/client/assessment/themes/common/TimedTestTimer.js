@@ -206,6 +206,13 @@ const TimedTestTimer = ({
     }
   }, TIMER_INTERVAL)
 
+  useEffect(() => {
+    if (autoSubmitPopUp) {
+      const pauseVQVideoOnTestTimeOut = new Event('pauseVQVideoOnTestTimeOut')
+      document?.dispatchEvent(pauseVQVideoOnTestTimeOut)
+    }
+  }, [autoSubmitPopUp])
+
   useInterval(() => {
     if (docRef && utaId && currentAssignmentTime && currentAssignmentTime > 0) {
       if (docRef.current) {

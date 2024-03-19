@@ -38,7 +38,7 @@ import {
   useStateRef,
 } from '../../utils/videoPreviewHelpers'
 import appConfig from '../../../../../../app-config'
-import { isiOS } from '../../../../../assessment/utils/helpers'
+import { Fscreen, isiOS } from '../../../../../assessment/utils/helpers'
 import {
   getUserRole,
   isVideoQuizAndAIEnabledSelector,
@@ -475,13 +475,22 @@ const VideoPreview = ({
     onPause()
   }
 
+  const handleCloseFullScreen = () => {
+    if (!Fscreen.fullscreenElement) {
+      handleOnPause()
+    }
+  }
+
   useEffect(() => {
     window?.addEventListener('blur', handleOnPause)
     window?.addEventListener('visibilitychange', handleOnPause)
-
+    Fscreen?.addEventListener('fullscreenchange', handleCloseFullScreen)
+    document?.addEventListener('pauseVQVideoOnTestTimeOut', handleOnPause)
     return () => {
-      window?.addEventListener('blur', handleOnPause)
+      window?.removeEventListener('blur', handleOnPause)
       window?.removeEventListener('visibilitychange', handleOnPause)
+      Fscreen?.removeEventListener('fullscreenchange', handleCloseFullScreen)
+      document?.removeEventListener('pauseVQVideoOnTestTimeOut', handleOnPause)
     }
   }, [])
 

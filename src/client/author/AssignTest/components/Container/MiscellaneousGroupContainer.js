@@ -321,6 +321,7 @@ const MiscellaneousGroupContainer = ({
                                 overRideSettings(key, e.target.value)
                               }
                               value={value}
+                              marginRight="15px"
                             >
                               <Radio data-cy={`${key}-enable`} value>
                                 ENABLE
@@ -329,7 +330,7 @@ const MiscellaneousGroupContainer = ({
                                 DISABLE
                               </Radio>
                               <Radio data-cy={`${key}-student-level`}>
-                                Student Level
+                                STUDENT LEVEL
                               </Radio>
                             </StyledRadioGroup>
                           </Col>

@@ -402,11 +402,11 @@ export const StyledRadioGroup = styled(Radio.Group)`
   }
 
   .ant-radio {
-    margin-right: 25px;
+    margin-right: ${({ marginRight }) => marginRight || '25px'};
   }
 
   .ant-radio-wrapper {
-    margin-right: 40px;
+    margin-right: ${({ marginRight }) => marginRight || '40px'};
   }
 `
 

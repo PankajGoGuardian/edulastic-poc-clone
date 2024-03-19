@@ -21,6 +21,7 @@
     "bubbleScanAssignmentDoneMessage": "Scan disabled as Assignment is closed. Please contact support to reopen.",
     "bubbleSheetGenerateAssignmentDoneMessage": "Generate sheet disabled as Assignment is closed. Please contact support to reopen.",
     "uqaArchiveMessage": "Question level data for this assignment has been archived. Please contact support@edulastic.com for assistance.",
-    "selectStudentAttemptTooltipMessage": "Select attempt for scoring."
+    "selectStudentAttemptTooltipMessage": "Select attempt for scoring.",
+    "disableStudentAttemptTooltipMessage": "Please ask the student to submit the latest attempt to unlock attempt selection."
   }
 }

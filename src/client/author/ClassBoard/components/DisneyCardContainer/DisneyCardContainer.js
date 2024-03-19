@@ -596,6 +596,7 @@ class DisneyCardContainer extends Component {
                               viewResponses={viewResponses}
                               t={t}
                               score={score}
+                              recentAttemptsGrouped={recentAttemptsGrouped}
                             />
                           )
                         })}

@@ -10,7 +10,7 @@ import {
   ButtonWrapper,
 } from './styled'
 
-const { ABSENT, NOT_STARTED } = testActivityStatus
+const { ABSENT, NOT_STARTED, START } = testActivityStatus
 
 const AttemptContainer = (props) => {
   const {
@@ -20,11 +20,20 @@ const AttemptContainer = (props) => {
     viewResponses,
     t,
     score,
+    recentAttemptsGrouped,
   } = props
   const studentId = testActivity.studentId || testActivity.userId
   const testActivityId = testActivity.testActivityId || testActivity._id
   const status = testActivity.UTASTATUS || testActivity.status
-
+  const allAttempstStatus = [
+    status,
+    ...(recentAttemptsGrouped[studentId] || []).map(
+      (attempt) => attempt?.status
+    ),
+  ]
+  const disableAttemptSelection = allAttempstStatus.some((attemptStatus) =>
+    [START, NOT_STARTED].includes(attemptStatus)
+  )
   const notStartedOrAbsent = status === NOT_STARTED || status === ABSENT
   const Attempt = (
     <AttemptDiv
@@ -66,7 +75,13 @@ const AttemptContainer = (props) => {
         </StyledParaSSS>
       )}
       <ButtonWrapper>
-        <Tooltip title={t('common.selectStudentAttemptTooltipMessage')}>
+        <Tooltip
+          title={
+            disableAttemptSelection
+              ? t('common.disableStudentAttemptTooltipMessage')
+              : t('common.selectStudentAttemptTooltipMessage')
+          }
+        >
           <RadioBtn
             key={testActivityId}
             value={testActivityId}
@@ -80,6 +95,7 @@ const AttemptContainer = (props) => {
             onClick={(e) => {
               e.stopPropagation()
             }}
+            disabled={disableAttemptSelection}
           />
         </Tooltip>
         <p style={{ fontSize: '12px' }}>Attempt {testActivity?.number || 0}</p>

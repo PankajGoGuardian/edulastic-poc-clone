@@ -13,7 +13,7 @@ import React from 'react'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
 import { validateEmail } from '../../../../../common/utils/helpers'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
-import { daRoleList } from '../helpers'
+import { daRoleList, dataOpsRoleSelected } from '../helpers'
 
 class CreateDistrictAdminModal extends React.Component {
   constructor(props) {
@@ -138,7 +138,7 @@ class CreateDistrictAdminModal extends React.Component {
     this.setState({
       isSuperAdmin: e.target.checked,
       insightNotSupRoleChecked:
-        daRole === userPermissions.DATA_OPS || e.target.checked,
+        e.target.checked || dataOpsRoleSelected([daRole]),
     })
   }
 
@@ -149,10 +149,9 @@ class CreateDistrictAdminModal extends React.Component {
     const { isSuperAdmin } = this.state
     this.setState({
       daRole: value,
-      insightNotSupRoleChecked:
-        isSuperAdmin || value === userPermissions.DATA_OPS,
+      insightNotSupRoleChecked: isSuperAdmin || dataOpsRoleSelected([value]),
     })
-    if (value === userPermissions.DATA_OPS) {
+    if (dataOpsRoleSelected([value])) {
       this.setState({ isInsightsOnly: false })
     }
   }

@@ -13,17 +13,18 @@ import { IconInfo } from '@edulastic/icons'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 
-import { canEnableInsightOnly, daRoleList } from '../helpers'
+import {
+  canEnableInsightOnly,
+  daRoleList,
+  dataOpsRoleSelected,
+} from '../helpers'
 
 class EditDistrictAdminModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      insightNotSupRoleChecked: props?.districtAdminData?._source?.permissions.some(
-        (permission) =>
-          [userPermissions.SUPER_ADMIN, userPermissions.DATA_OPS].includes(
-            permission
-          )
+      insightNotSupRoleChecked: !canEnableInsightOnly(
+        props?.districtAdminData?._source?.permissions || []
       ),
     }
   }
@@ -99,20 +100,19 @@ class EditDistrictAdminModal extends Component {
     }
     const role = form.getFieldValue('daRole')
     this.setState({
-      insightNotSupRoleChecked:
-        role === userPermissions.DATA_OPS || e.target.checked,
+      insightNotSupRoleChecked: dataOpsRoleSelected([role]) || e.target.checked,
     })
   }
 
   handleRoleChange = (role) => {
     const { form } = this.props
-    if (role === userPermissions.DATA_OPS) {
+    if (dataOpsRoleSelected([role])) {
       form.setFieldsValue({ isInsightsOnly: false })
     }
     const isSuperAdminChecked = form.getFieldValue('isSuperAdmin')
     this.setState({
       insightNotSupRoleChecked:
-        isSuperAdminChecked || role === userPermissions.DATA_OPS,
+        isSuperAdminChecked || dataOpsRoleSelected([role]),
     })
   }
 

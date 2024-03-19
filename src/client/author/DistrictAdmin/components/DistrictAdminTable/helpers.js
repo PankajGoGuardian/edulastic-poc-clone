@@ -40,5 +40,13 @@ export const canEnableInsightOnly = (existingPermissions) => {
   return ![
     userPermissions.SUPER_ADMIN,
     userPermissions.DATA_OPS,
+    userPermissions.DATA_OPS_ONLY,
   ].some((permission) => existingPermissions.includes(permission))
+}
+
+export const dataOpsRoleSelected = (selectedRoles) => {
+  return [
+    userPermissions.DATA_OPS,
+    userPermissions.DATA_OPS_ONLY,
+  ].some((permission) => selectedRoles.includes(permission))
 }

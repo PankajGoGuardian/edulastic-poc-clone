@@ -8,10 +8,13 @@ import {
 import { Col, Form, Row, Select, Tooltip } from 'antd'
 import { omit, uniqBy } from 'lodash'
 import React, { Component } from 'react'
-import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
 import { userPermissions, roleuser } from '@edulastic/constants'
 import { IconInfo } from '@edulastic/icons'
-import { canEnableInsightOnly } from '../../../../DistrictAdmin/components/DistrictAdminTable/helpers'
+import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
+import {
+  canEnableInsightOnly,
+  dataOpsRoleSelected,
+} from '../../../../DistrictAdmin/components/DistrictAdminTable/helpers'
 
 const Option = Select.Option
 
@@ -19,14 +22,12 @@ class EditSchoolAdminModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      insightNotSupRoleChecked: props?.schoolAdminData?._source?.permissions.some(
-        (permission) =>
-          [userPermissions.SUPER_ADMIN, userPermissions.DATA_OPS].includes(
-            permission
-          )
+      insightNotSupRoleChecked: !canEnableInsightOnly(
+        props?.schoolAdminData?._source?.permissions || []
       ),
     }
   }
+
   onSaveSchoolAdmin = () => {
     this.props?.form.validateFields((err, row = {}) => {
       if (!err) {
@@ -85,13 +86,18 @@ class EditSchoolAdminModal extends Component {
     const { closeModal } = this.props
     closeModal()
   }
+
   handelSuperAdminChange = (e) => {
-    const { form } = this.props
+    const {
+      form,
+      schoolAdminData: { _source },
+    } = this.props
     if (e.target.checked) {
       form.setFieldsValue({ isInsightsOnly: !e.target.checked })
     }
     this.setState({
-      insightNotSupRoleChecked: e.target.checked,
+      insightNotSupRoleChecked:
+        e.target.checked || dataOpsRoleSelected(_source?.permissions || []),
     })
   }
 

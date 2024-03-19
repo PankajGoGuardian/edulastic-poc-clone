@@ -93,6 +93,7 @@ const VideoPreview = ({
   setIsVideoEnded,
   currentTestActivityId,
   userRole,
+  showAuthorReviewTabVideoPlayer,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -507,40 +508,43 @@ const VideoPreview = ({
         className={`${currentAnnotationTool}-tool-selected`}
       >
         <RelativeContainer>
-          <CombinedPlayer
-            onReady={onReady}
-            url={videoUrl}
-            playing={playing}
-            controls={false}
-            ref={videoRef}
-            height="100%"
-            width="100%"
-            onEnded={onEnded}
-            config={{
-              youtube: {
-                playerVars: {
-                  iv_load_policy: 3,
-                  rel: 0,
-                  autoplay: playing ? 1 : 0,
-                  controls: 0,
-                  playsinline: 1,
-                  api_key: appConfig.edYouTubePlayerKey,
+          {showAuthorReviewTabVideoPlayer && (
+            <CombinedPlayer
+              onReady={onReady}
+              url={videoUrl}
+              playing={playing}
+              controls={false}
+              ref={videoRef}
+              height="100%"
+              width="100%"
+              onEnded={onEnded}
+              config={{
+                youtube: {
+                  playerVars: {
+                    iv_load_policy: 3,
+                    rel: 0,
+                    autoplay: playing ? 1 : 0,
+                    controls: 0,
+                    playsinline: 1,
+                    api_key: appConfig.edYouTubePlayerKey,
+                  },
+                  // 0: Off, 1: Moderate, 2: Strict Content filter
+                  embedConfig: { contentFilter: 0 },
                 },
-                // 0: Off, 1: Moderate, 2: Strict Content filter
-                embedConfig: { contentFilter: 0 },
-              },
-            }}
-            onPause={onPause}
-            onPlay={onPlay}
-            progressInterval={1000}
-            onProgress={onProgress}
-            volume={volumne}
-            muted={muted}
-            handleKeyboardSeek={handleKeyboardSeek}
-            isVideoQuizAndAIEnabled={
-              isVideoQuizAndAIEnabled || vqEnableYouTubeEd
-            }
-          />
+              }}
+              onPause={onPause}
+              onPlay={onPlay}
+              progressInterval={1000}
+              onProgress={onProgress}
+              volume={volumne}
+              muted={muted}
+              handleKeyboardSeek={handleKeyboardSeek}
+              isVideoQuizAndAIEnabled={
+                isVideoQuizAndAIEnabled || vqEnableYouTubeEd
+              }
+            />
+          )}
+
           {!playing && currentTime === 0 && (
             <BigPlayButton>
               <PlayPause

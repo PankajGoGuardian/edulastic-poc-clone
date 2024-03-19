@@ -17,6 +17,7 @@ import {
   notification,
   CustomPrompt,
   SpinLoader,
+  EduIf,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { docBasedAssessment } from '@edulastic/constants/const/test'
@@ -65,6 +66,9 @@ import { isValidVideoUrl } from '../../VideoQuiz/utils/videoPreviewHelpers'
 import { checkInvalidTestTitle } from '../../../utils/tests'
 import TestNameChangeModal from '../../../TestPage/components/TestNameChangeModal/TestNameChangeModal'
 import { isValidVqVideoURL } from '../../../utils/videoQuiz'
+import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
+import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 
 const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants
 
@@ -532,6 +536,9 @@ class Container extends React.Component {
       collections,
       isTestTypeWithDefaultTestTitle,
       t,
+      isVideoQuiz,
+      isPreviewModalVisible,
+      setIsTestPreviewVisible,
     } = this.props
 
     const {
@@ -628,6 +635,18 @@ class Container extends React.Component {
           />
         )}
 
+        <EduIf condition={isVideoQuiz}>
+          <TestPreviewModal
+            isModalVisible={isPreviewModalVisible}
+            testId={testId}
+            closeTestPreviewModal={() => setIsTestPreviewVisible(false)}
+            resetOnClose={() => {
+              setIsTestPreviewVisible(false)
+            }}
+            unmountOnClose
+          />
+        </EduIf>
+
         <TestPageHeader
           onChangeNav={this.handleChangeCurrentTab}
           current={currentTab}
@@ -683,6 +702,7 @@ const enhance = compose(
         state
       ),
       isVideoQuiz: isVideoQuizSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       receiveTestById: receiveTestByIdAction,
@@ -697,6 +717,7 @@ const enhance = compose(
       fetchTestSettingsList: fetchTestSettingsListAction,
       setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
       removeTestEntity: removeTestEntityAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

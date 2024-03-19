@@ -89,6 +89,7 @@ import {
   setCurrentGroupIndexAction,
   isTestTypeWithDefaultTestTitleSelector,
   isVideoQuizSelector,
+  getTestQuestionsSelector,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -936,21 +937,22 @@ class Container extends PureComponent {
 
   handleAssign = () => {
     const {
-      questions: assessmentQuestions,
       test,
       history,
       match,
       updated,
       collections: orgCollections,
       location,
+      testQuestions,
     } = this.props
 
     if (!isValidVqVideoURL(test)) {
       return
     }
+
     if (
       test?.importData?.googleForm &&
-      !validateQuestionsForGoogleForm(assessmentQuestions, true)
+      !validateQuestionsForGoogleForm(testQuestions, true)
     ) {
       return
     }
@@ -1740,15 +1742,17 @@ class Container extends PureComponent {
       currentTab,
       updateLastUsedCollectionList,
       setEditEnable,
+      testQuestions,
     } = this.props
     const { _id } = test
 
     if (!isValidVqVideoURL(test)) {
       return
     }
+
     if (
       test?.importData?.googleForm &&
-      !validateQuestionsForGoogleForm(assessmentQuestions, true)
+      !validateQuestionsForGoogleForm(testQuestions, true)
     ) {
       return
     }
@@ -2230,6 +2234,7 @@ const enhance = compose(
   connect(
     (state) => ({
       test: getTestSelector(state),
+      testQuestions: getTestQuestionsSelector(state),
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
       user: getUserSelector(state),

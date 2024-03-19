@@ -728,6 +728,22 @@ export const getTestSelector = createSelector(
   (state) => state.entity
 )
 
+export const getTestQuestionsSelector = createSelector(
+  getTestSelector,
+  (test) => {
+    const questions = []
+    test?.itemGroups?.forEach((itemGroup) => {
+      itemGroup?.items?.forEach((item) => {
+        item?.data?.questions?.forEach((question) => {
+          questions.push(question)
+        })
+      })
+    })
+
+    return questions
+  }
+)
+
 export const getCartTestSelector = createSelector(
   stateSelector,
   (state) => state.cartTest

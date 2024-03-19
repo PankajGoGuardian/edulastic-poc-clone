@@ -109,7 +109,7 @@ const CreationOptions = ({
           <HeadingWrapper strong>{title}</HeadingWrapper>
           <SectionWrapper gutter={32}>
             {cardItems.map((cardItem, cardItemIndex) => (
-              <Col key={cardItemIndex} xxl={6} xl={6} md={3} sm={1}>
+              <Col key={cardItemIndex} xxs={24} md={12} lg={8} xl={6}>
                 {cardItem}
               </Col>
             ))}

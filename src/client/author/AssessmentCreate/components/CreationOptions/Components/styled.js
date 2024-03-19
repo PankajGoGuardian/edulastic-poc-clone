@@ -16,7 +16,8 @@ export const StyledCardWrapper = styled.div`
   border: 1px solid #d8d8d8;
   border-radius: 8px;
   padding: 16px 8px;
-  height: 108px;
+  min-height: 108px;
+  margin-bottom: 16px;
 `
 
 export const StyledIconWrapper = styled.div`
@@ -27,7 +28,7 @@ export const StyledIconWrapper = styled.div`
 `
 
 export const SectionWrapper = styled(Row)`
-  padding: 16px 0px;
+  padding-top: 16px;
   cursor: pointer;
 `
 

@@ -26,3 +26,13 @@ export const ButtonContainer = styled.div`
     border-radius: 2px;
   }
 `
+
+export const EduButtonContainer = styled.div`
+  position: relative;
+`
+
+export const CoverDiv = styled.div`
+  position: absolute;
+  width: ${({ cover }) => (cover ? 100 : 0)}%;
+  height: ${({ cover }) => (cover ? 100 : 0)}%;
+`

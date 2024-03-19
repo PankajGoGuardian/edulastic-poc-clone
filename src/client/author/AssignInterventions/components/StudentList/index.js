@@ -121,7 +121,7 @@ const StudentList = ({
               <span style={{ fontWeight: 600 }}>
                 at least one Standard to be improved
               </span>{' '}
-              as per left criteria
+              as per left criteria.
             </TooltipContainer>
           }
           getCellContents={() => <IconInfoCircle width="16px" height="16px" />}
@@ -135,6 +135,11 @@ const StudentList = ({
               sortedStudentList.length &&
               selectedStudents.length === sortedStudentList.length
             }
+            indeterminate={
+              sortedStudentList.length &&
+              selectedStudents.length &&
+              selectedStudents.length < sortedStudentList.length
+            }
             onChange={handleAllSelect}
             style={{ marginRight: '10px' }}
           />
@@ -144,9 +149,9 @@ const StudentList = ({
           <MasteryHeader>AVG. MASTERY</MasteryHeader>
           <CustomTableTooltip
             title={
-              <TooltipContainer>
+              <TooltipContainer isLight>
                 Average mastery is calculated based on selected standards to be
-                improved
+                improved.
               </TooltipContainer>
             }
             getCellContents={() => (

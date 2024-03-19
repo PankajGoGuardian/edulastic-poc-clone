@@ -34,7 +34,7 @@ const MasteryRangeFilter = ({ masteryRange, setMasteryRange }) => {
         Standards mastery range{' '}
         <CustomTableTooltip
           title={
-            <TooltipContainer>
+            <TooltipContainer isLight>
               Choose standards needing improvement by using the mastery range.
               For example, selecting 0-30% will filter and display standards
               with mastery below 30% for each student in the right-side table.

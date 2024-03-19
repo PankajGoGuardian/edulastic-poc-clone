@@ -106,6 +106,7 @@ const AssignInterventions = ({
                 studentStandardsData[student._id][standardInfo._id] || 0
               ),
             }))
+            .sort((a, b) => a.mastery - b.mastery)
 
           if (standards.length === 0) return
 

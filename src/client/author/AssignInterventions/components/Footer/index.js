@@ -5,7 +5,14 @@ import {
   IconAssignPearPractice,
   IconAssignPearDeckTutor,
 } from '@edulastic/icons'
-import { ButtonContainer, FooterContainer } from './style'
+import {
+  ButtonContainer,
+  CoverDiv,
+  EduButtonContainer,
+  FooterContainer,
+} from './style'
+import { CustomTableTooltip } from '../../../Reports/common/components/customTableTooltip'
+import { TooltipContainer } from '../StudentList/style'
 
 const Footer = ({ selectedStudents, studentListWithStandards }) => {
   const printStudentDetails = () => {
@@ -27,15 +34,30 @@ const Footer = ({ selectedStudents, studentListWithStandards }) => {
           <IconAssignPearPractice />
           Assign Pear Practice
         </EduButton>
-        <EduButton
-          disabled={selectedStudents.length != 1}
-          onClick={() =>
-            console.log('Assign Pear Deck Tutor', printStudentDetails())
+        <CustomTableTooltip
+          title={
+            selectedStudents.length != 1 ? (
+              <TooltipContainer isLight>
+                <div>Tutoring can be assigned</div>
+                <div>to one student at a time</div>
+              </TooltipContainer>
+            ) : null
           }
-        >
-          <IconAssignPearDeckTutor />
-          Assign Pear Deck Tutor
-        </EduButton>
+          getCellContents={() => (
+            <EduButtonContainer>
+              <EduButton
+                disabled={selectedStudents.length != 1}
+                onClick={() =>
+                  console.log('Assign Pear Deck Tutor', printStudentDetails())
+                }
+              >
+                <IconAssignPearDeckTutor />
+                Assign Pear Deck Tutor
+              </EduButton>
+              <CoverDiv cover={selectedStudents.length != 1} />
+            </EduButtonContainer>
+          )}
+        />
       </ButtonContainer>
     </FooterContainer>
   )

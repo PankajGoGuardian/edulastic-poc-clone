@@ -5,13 +5,13 @@ import { EduButton, notification } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
 import styled from 'styled-components'
 import { themeColor, white } from '@edulastic/colors'
+import { Tooltip } from 'antd'
 import {
   getTestsSelector,
   addItemsToCartFromTestAction,
   getIsAddingTestToCartStateSelector,
 } from '../../ducks'
 import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
-import WithDisableMessage from '../../../src/components/common/ToggleDisable'
 
 const MAX_COMBINED_TEST_LIMIT = 150
 
@@ -56,18 +56,23 @@ const CombineTestButton = ({
     })
   }
   return (
-    <WithDisableMessage
-      disabled={testCategory !== testConstants.testCategoryTypes.DEFAULT}
-      errMessage="Video, SnapQuiz & Smart Build tests cannot be combined with other tests"
+    <Tooltip
+      title={
+        testCategory !== testConstants.testCategoryTypes.DEFAULT
+          ? 'Video, SnapQuiz & Smart Build tests cannot be combined with other tests'
+          : undefined
+      }
     >
-      <StyledCombineBtn
-        onClick={handleCombineTest}
-        listView={listView}
-        disabled={testCategory !== testConstants.testCategoryTypes.DEFAULT}
-      >
-        Add to new test
-      </StyledCombineBtn>
-    </WithDisableMessage>
+      <StyledCombineBtnContainer listView={listView}>
+        <StyledCombineBtn
+          onClick={handleCombineTest}
+          listView={listView}
+          disabled={testCategory !== testConstants.testCategoryTypes.DEFAULT}
+        >
+          Add to new test
+        </StyledCombineBtn>
+      </StyledCombineBtnContainer>
+    </Tooltip>
   )
 }
 
@@ -86,11 +91,19 @@ const enhance = compose(
 
 export default enhance(CombineTestButton)
 
+const StyledCombineBtnContainer = styled.div`
+  width: 110%;
+  height: 100%;
+  margin-right: ${({ listView }) => (!listView ? '5px' : 'auto')};
+  display: ${({ listView }) => (!listView ? 'block' : 'inline')};
+`
+
 const StyledCombineBtn = styled(EduButton)`
   width: ${({ listView }) => (listView ? 'auto' : '100%')};
   height: ${({ listView }) => (listView ? 'auto' : '40px !important')};
-  &.ant-btn.ant-btn-primary,
-  &.ant-btn.ant-btn-primary:hover,
+
+  &.ant-btn.ant-btn-primary, ${({ listView }) =>
+    listView ? '&.ant-btn.ant-btn-primary:hover,' : ''}
   &.ant-btn.ant-btn-primary: focus {
     ${(props) => (props.listView ? 'margin-right: 10px' : 0)};
     ${(props) => (props.listView ? 'height: 36px' : '40px')};

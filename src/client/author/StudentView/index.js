@@ -328,13 +328,8 @@ class StudentViewContainer extends Component {
         )}
 
         <StudentResponse>
-          <StudentButtonWrapper>
+          <StudentButtonWrapper mt={isSurveyTest ? '30px' : '0px'}>
             <StudentButtonDiv>
-              <EduIf condition={isSurveyTest}>
-                <FilterContainer>
-                  <StudentFilter />
-                </FilterContainer>
-              </EduIf>
               <FilterSpan>FILTER BY STATUS</FilterSpan>
               <FilterSelect
                 data-cy="filterByAttemptType"
@@ -385,27 +380,29 @@ class StudentViewContainer extends Component {
                   <span>Attachments</span>
                 </EduButton>
               )}
-              <EduButton
-                isGhost
-                height="24px"
-                fontSize="9px"
-                mr="10px"
-                ml="0px"
-                onClick={this.toggleShowCorrectAnswers}
-                title="Minimizing view hides correct answers, maximize to view them"
-              >
-                {hideCorrectAnswer ? (
-                  <IconExpand height="11.3px" width="11.3px" />
-                ) : (
-                  <IconCollapse height="11.3px" width="11.3px" />
-                )}
-                <span
-                  data-cy="showCorrectAnswer"
-                  data-test={!hideCorrectAnswer}
+              <EduIf condition={!isSurveyTest}>
+                <EduButton
+                  isGhost
+                  height="24px"
+                  fontSize="9px"
+                  mr="10px"
+                  ml="0px"
+                  onClick={this.toggleShowCorrectAnswers}
+                  title="Minimizing view hides correct answers, maximize to view them"
                 >
-                  {hideCorrectAnswer ? 'Maximize view' : 'Minimize view'}
-                </span>
-              </EduButton>
+                  {hideCorrectAnswer ? (
+                    <IconExpand height="11.3px" width="11.3px" />
+                  ) : (
+                    <IconCollapse height="11.3px" width="11.3px" />
+                  )}
+                  <span
+                    data-cy="showCorrectAnswer"
+                    data-test={!hideCorrectAnswer}
+                  >
+                    {hideCorrectAnswer ? 'Maximize view' : 'Minimize view'}
+                  </span>
+                </EduButton>
+              </EduIf>
               {!isCliUser && (
                 <Tooltip
                   title={
@@ -432,6 +429,11 @@ class StudentViewContainer extends Component {
                   </EduButton>
                 </Tooltip>
               )}
+              <EduIf condition={isSurveyTest}>
+                <FilterContainer>
+                  <StudentFilter />
+                </FilterContainer>
+              </EduIf>
             </FlexContainer>
           </StudentButtonWrapper>
         </StudentResponse>

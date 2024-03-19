@@ -25,6 +25,7 @@ class ScoreTable extends Component {
       t,
       testActivity,
       windowWidth,
+      isSurveyTest,
     } = this.props
 
     this.tableRef = createRef()
@@ -163,6 +164,7 @@ class ScoreTable extends Component {
                   scoreMode={scoreMode}
                   isGridEditOn={isGridEditOn}
                   groupId={groupId}
+                  isSurveyTest={isSurveyTest}
                 />
               )
               return cell

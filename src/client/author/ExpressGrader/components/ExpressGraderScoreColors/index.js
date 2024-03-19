@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlexContainer } from '@edulastic/common'
+import { EduIf, FlexContainer } from '@edulastic/common'
 import { ExpressGraderLegend, Color, Label } from './styled'
 
 const colorLabelsMap = [
@@ -32,21 +32,27 @@ const ColorLabel = ({ item }) => (
   </FlexContainer>
 )
 
-const ExpressGraderScoreColors = () => (
-  <ExpressGraderLegend
-    padding="10px 0"
-    width="calc(100% - 68px)"
-    justifyContent="space-between"
-  >
-    <FlexContainer>
-      {colorLabelsMap.map((item) => (
-        <ColorLabel item={item} />
-      ))}
-    </FlexContainer>
-    <FlexContainer>
-      <Label>Click on any score to open express grader</Label>
-    </FlexContainer>
-  </ExpressGraderLegend>
-)
+const ExpressGraderScoreColors = (props) => {
+  const { isSurveyTest } = props
+
+  return (
+    <ExpressGraderLegend
+      padding="10px 0"
+      width="calc(100% - 68px)"
+      justifyContent={isSurveyTest ? 'flex-end' : 'space-between'}
+    >
+      <EduIf condition={!isSurveyTest}>
+        <FlexContainer>
+          {colorLabelsMap.map((item) => (
+            <ColorLabel item={item} />
+          ))}
+        </FlexContainer>
+      </EduIf>
+      <FlexContainer>
+        <Label>Click on any score to open express grader</Label>
+      </FlexContainer>
+    </ExpressGraderLegend>
+  )
+}
 
 export default ExpressGraderScoreColors

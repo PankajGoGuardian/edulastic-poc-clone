@@ -18,6 +18,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { red } from '@edulastic/colors'
 import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import AppConfig from '../../../../../app-config'
 import ScoreTable from '../ScoreTable/ScoreTable'
 import ScoreCard from '../ScoreCard/ScoreCard'
@@ -61,7 +62,6 @@ import {
 } from '../../../../student/Login/ducks'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import { TagWrapper } from '../../../ClassBoard/components/Container/styled'
-import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 
 /**
  *
@@ -339,8 +339,9 @@ class ExpressGrader extends Component {
                       windowWidth={windowWidth}
                       groupId={classId}
                       isDemoProxy={isProxyUser}
+                      isSurveyTest={isSurveyTest}
                     />
-                    <ExpressGraderScoreColors />
+                    <ExpressGraderScoreColors isSurveyTest={isSurveyTest} />
                   </>
                 )}
 

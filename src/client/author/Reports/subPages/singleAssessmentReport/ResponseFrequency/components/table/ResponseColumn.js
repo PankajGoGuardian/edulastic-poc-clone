@@ -2,6 +2,7 @@ import React from 'react'
 import { find, groupBy, keyBy, omitBy, isEmpty } from 'lodash'
 import { Row } from 'antd'
 import { FlexContainer } from '@edulastic/common'
+import { LIKERT_SCALE } from '@edulastic/constants/const/questionTitle'
 import { ResponseTag } from './responseTag'
 import { CustomWhiteBackgroundTooltip } from '../../../../../common/components/customTableTooltip'
 import { StyledIconInfo } from '../styled'
@@ -42,6 +43,14 @@ export function ResponseColumn({
   // filter out empty keys from data
   const emptyKeyList = ['[]']
   data = omitBy(data || {}, (_, key) => emptyKeyList.includes(key))
+
+  if (record.qType === LIKERT_SCALE) {
+    record.options.forEach(({ value }) => {
+      if (data[value] === undefined) {
+        data[value] = 0
+      }
+    })
+  }
   // show correct, incorrect & partial correct if data is empty
   if (isEmpty(data)) {
     arr.push({
@@ -178,10 +187,14 @@ export function ResponseColumn({
       (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase())
     )
 
+  const checkIsValidValue = (val) => {
+    if (record.qType === LIKERT_SCALE && val >= 0) return true
+    return !!val
+  }
   return (
     <Row type="flex" justify="start" className="table-tag-container">
       {arr.map((_data, i) =>
-        _data.value ||
+        checkIsValidValue(_data.value) ||
         (checkForQtypes.includes(_data.record.qType.toLocaleLowerCase()) &&
           hasChoiceData) ? (
           <ResponseTag

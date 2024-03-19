@@ -15,6 +15,8 @@ import {
   LCBScrollContext,
   BackTop,
   EduIf,
+  EduThen,
+  EduElse,
 } from '@edulastic/common'
 import {
   IconAddStudents,
@@ -1846,21 +1848,27 @@ class ClassBoard extends Component {
             {selectedTab === 'Both' && (
               <>
                 <EduIf condition={!isSurveyTest}>
-                  <GraphContainer>
-                    <StyledCard bordered={false}>
-                      <Graph
-                        gradebook={gradebook}
-                        title={additionalData.testName}
-                        testActivity={testActivity}
-                        testQuestionActivities={testQuestionActivities}
-                        onClickHandler={this.onClickBarGraph}
-                        isLoading={isLoading}
-                        isBoth
-                      />
-                    </StyledCard>
-                  </GraphContainer>
+                  <EduThen>
+                    <GraphContainer>
+                      <StyledCard bordered={false}>
+                        <Graph
+                          gradebook={gradebook}
+                          title={additionalData.testName}
+                          testActivity={testActivity}
+                          testQuestionActivities={testQuestionActivities}
+                          onClickHandler={this.onClickBarGraph}
+                          isLoading={isLoading}
+                          isBoth
+                        />
+                      </StyledCard>
+                    </GraphContainer>
+                  </EduThen>
+                  <EduElse>
+                    <Divider />
+                  </EduElse>
                 </EduIf>
                 <StickyFlex
+                  mt={isSurveyTest ? '30px' : '0px'}
                   justifyContent="space-between"
                   hasStickyHeader={hasStickyHeader}
                   className="lcb-student-sticky-bar"

@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { isNaN } from 'lodash'
-import { EduIf, FlexContainer } from '@edulastic/common'
+import { EduIf, FlexContainer, Stimulus } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import { StyledCard, StyledIconInfo, StyledTable } from '../styled'
 import PrintableTable from '../../../../../common/components/tables/PrintableTable'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
@@ -32,6 +33,7 @@ const ResponseFrequencyTable = ({
     standardsColumnRender,
     performanceColumnSorter,
     skipColumnRender,
+    questionColumnRender,
   ] = useMemo(() => {
     const _qLabelColumnSorter = (a, b) =>
       Number(a.qLabel.substring(1)) - Number(b.qLabel.substring(1))
@@ -87,11 +89,16 @@ const ResponseFrequencyTable = ({
       return `${Math.round(skip)}%`
     }
 
+    const _questionRender = (data) => {
+      return <Stimulus dangerouslySetInnerHTML={{ __html: data }} />
+    }
+
     return [
       _qLabelColumnSorter,
       _standardsColumnRender,
       _performanceColumnSorter,
       _skipColumnRender,
+      _questionRender,
     ]
   }, [])
 
@@ -165,6 +172,20 @@ const ResponseFrequencyTable = ({
         case 'qLabel': {
           updatedColumn.sorter = qLabelColumnSorter
           updatedColumn.render = qLabelColumnRender
+          if (testTypesAllowed === TEST_TYPE_SURVEY) {
+            delete updatedColumn.fixed
+          }
+          break
+        }
+        case 'qType': {
+          if (testTypesAllowed === TEST_TYPE_SURVEY) {
+            updatedColumn.title = 'Question'
+            updatedColumn.dataIndex = 'stimulus'
+            updatedColumn.key = 'stimulus'
+            updatedColumn.width = 200
+            updatedColumn.align = 'left'
+            updatedColumn.render = questionColumnRender
+          }
           break
         }
         case 'standards': {

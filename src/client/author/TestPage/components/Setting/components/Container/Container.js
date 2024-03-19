@@ -1522,7 +1522,7 @@ class Setting extends Component {
                         <Row>
                           <Col span={8}>
                             <StyledRadioGroup
-                              disabled={disabled || testType === 'survey'}
+                              disabled={disabled}
                               onChange={(e) =>
                                 this.updateTestData('scoringType')(
                                   e.target.value

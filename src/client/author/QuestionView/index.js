@@ -570,11 +570,8 @@ class QuestionViewContainer extends Component {
           </StyledFlexContainer>
         </EduIf>
         <StudentResponse isPresentationMode={isPresentationMode}>
-          <StudentButtonWrapper>
+          <StudentButtonWrapper mt={isSurveyTest ? '30px' : '0px'}>
             <StudentButtonDiv>
-              <EduIf condition={isSurveyTest}>
-                <FilterContainer>{children}</FilterContainer>
-              </EduIf>
               <FilterSpan>FILTER BY STATUS</FilterSpan>
               <FilterSelect
                 data-cy="filterByAttemptType"
@@ -600,23 +597,31 @@ class QuestionViewContainer extends Component {
                 )}
               </FilterSelect>
             </StudentButtonDiv>
-            <EduButton
-              isGhost
-              height="24px"
-              fontSize="9px"
-              ml="10px"
-              onClick={this.toggleShowCorrectAnswers}
-              title="Minimizing view hides correct answers, maximize to view them"
-            >
-              {hideCorrectAnswer ? (
-                <IconExpand height="11.3px" width="11.3px" />
-              ) : (
-                <IconCollapse height="11.3px" width="11.3px" />
-              )}
-              <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
-                {hideCorrectAnswer ? 'Maximize view' : 'Minimize view'}
-              </span>
-            </EduButton>
+            <EduIf condition={!isSurveyTest}>
+              <EduButton
+                isGhost
+                height="24px"
+                fontSize="9px"
+                ml="10px"
+                onClick={this.toggleShowCorrectAnswers}
+                title="Minimizing view hides correct answers, maximize to view them"
+              >
+                {hideCorrectAnswer ? (
+                  <IconExpand height="11.3px" width="11.3px" />
+                ) : (
+                  <IconCollapse height="11.3px" width="11.3px" />
+                )}
+                <span
+                  data-cy="showCorrectAnswer"
+                  data-test={!hideCorrectAnswer}
+                >
+                  {hideCorrectAnswer ? 'Maximize view' : 'Minimize view'}
+                </span>
+              </EduButton>
+            </EduIf>
+            <EduIf condition={isSurveyTest}>
+              <FilterContainer>{children}</FilterContainer>
+            </EduIf>
           </StudentButtonWrapper>
         </StudentResponse>
         {itemsToRender.map(({ testActivityData: student }, index) => {

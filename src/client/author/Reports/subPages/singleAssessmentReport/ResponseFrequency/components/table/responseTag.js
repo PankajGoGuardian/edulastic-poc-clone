@@ -166,10 +166,10 @@ const StyledTag = styled.div`
 `
 
 const StyledPTag = styled.p`
-  height: 20px;
-  width: 20px;
+  height: 25px;
+  width: 25px;
   background: ${({ bgColor }) => bgColor};
-  border-radius: 3px;
+  border-radius: 50%;
   color: white;
   font-size: 12px;
   display: flex;

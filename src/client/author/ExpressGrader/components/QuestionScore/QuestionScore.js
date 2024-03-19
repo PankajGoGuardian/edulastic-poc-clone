@@ -13,6 +13,7 @@ class QuestionScore extends Component {
       scoreMode = true,
       isGridEditOn,
       groupId,
+      isSurveyTest,
     } = this.props
     const isQuestion =
       question &&
@@ -33,6 +34,9 @@ class QuestionScore extends Component {
       answerStatus = 'wrong'
     } else if (studentScore > 0 && studentScore < maxScore && maxScore > 0) {
       answerStatus = 'partiallyCorrect'
+    }
+    if (isSurveyTest) {
+      answerStatus = null
     }
 
     if (!isQuestion) {

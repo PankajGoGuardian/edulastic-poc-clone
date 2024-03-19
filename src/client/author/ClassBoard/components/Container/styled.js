@@ -396,7 +396,7 @@ export const TagWrapper = styled.div`
   margin-bottom: 15px;
 `
 export const FilterContainer = styled.div`
-  margin-right: 10px;
+  margin-left: 10px;
 `
 
 export const LeftContainer = styled.div`

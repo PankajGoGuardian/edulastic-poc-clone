@@ -21,12 +21,13 @@ const AttemptContainer = (props) => {
     t,
     score,
     recentAttemptsGrouped,
+    latestAttemptStatus,
   } = props
   const studentId = testActivity.studentId || testActivity.userId
   const testActivityId = testActivity.testActivityId || testActivity._id
   const status = testActivity.UTASTATUS || testActivity.status
   const allAttempstStatus = [
-    status,
+    latestAttemptStatus,
     ...(recentAttemptsGrouped[studentId] || []).map(
       (attempt) => attempt?.status
     ),

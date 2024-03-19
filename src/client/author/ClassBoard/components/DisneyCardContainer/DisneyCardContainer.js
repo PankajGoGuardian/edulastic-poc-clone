@@ -597,6 +597,7 @@ class DisneyCardContainer extends Component {
                               t={t}
                               score={score}
                               recentAttemptsGrouped={recentAttemptsGrouped}
+                              latestAttemptStatus={student.UTASTATUS}
                             />
                           )
                         })}

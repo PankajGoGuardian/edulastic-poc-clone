@@ -1,28 +1,27 @@
 import React from 'react'
 import { IconCaretDown } from '@edulastic/icons'
-import { grey, greyThemeDark1 } from '@edulastic/colors'
+import { grey, themeColor } from '@edulastic/colors'
+import { SortingArrowContainer } from './style'
 
 const SortingArrows = ({ sortDirection, changeSortDirection }) => {
   return (
-    <div>
-      <div style={{ fontSize: '0px', margin: '6px 0', cursor: 'pointer' }}>
+    <SortingArrowContainer onClick={changeSortDirection}>
+      <div style={{ margin: '6px 0' }}>
         <IconCaretDown
           style={{
             transform: 'rotate(180deg)',
             height: '6px',
           }}
-          onClick={() => changeSortDirection(sortDirection === 1 ? 0 : 1)}
-          color={sortDirection === 1 ? greyThemeDark1 : grey}
+          color={sortDirection === 1 ? themeColor : grey}
         />
       </div>
-      <div style={{ fontSize: '0px', margin: '6px 0', cursor: 'pointer' }}>
+      <div style={{ margin: '6px 0' }}>
         <IconCaretDown
           style={{ height: '6px' }}
-          onClick={() => changeSortDirection(sortDirection === -1 ? 0 : -1)}
-          color={sortDirection === -1 ? greyThemeDark1 : grey}
+          color={sortDirection === -1 ? themeColor : grey}
         />
       </div>
-    </div>
+    </SortingArrowContainer>
   )
 }
 

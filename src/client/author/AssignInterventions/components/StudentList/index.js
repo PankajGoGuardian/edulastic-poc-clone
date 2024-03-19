@@ -57,11 +57,13 @@ const StudentList = ({
   // Average Mastery = Sum of mastery in standards/Total number of standards
   const sortedStudentList = useMemo(
     () =>
-      masterySort || standardSort
-        ? sortBy(studentListWithStandards, [
-            (x) => masterySort * x.avgMastery,
-            (x) => standardSort * x.standards.length,
-          ])
+      masterySort
+        ? sortBy(studentListWithStandards, (x) => masterySort * x.avgMastery)
+        : standardSort
+        ? sortBy(
+            studentListWithStandards,
+            (x) => standardSort * x.standards.length
+          )
         : studentListWithStandards,
     [masterySort, standardSort, studentListWithStandards]
   )
@@ -106,6 +108,24 @@ const StudentList = ({
     ),
     [standardsColumnWidth, sortedStudentList, selectedStudents]
   )
+
+  const handleSortChange = (type) => {
+    if (type === 'mastery') {
+      if (standardSort || !masterySort) {
+        setStandardSort(0)
+        setMasterySort(1)
+        return
+      }
+      setMasterySort(masterySort === 1 ? -1 : 0)
+    } else {
+      if (masterySort || !standardSort) {
+        setMasterySort(0)
+        setStandardSort(1)
+        return
+      }
+      setStandardSort(standardSort === 1 ? -1 : 0)
+    }
+  }
 
   return (
     <StudentListContainer>
@@ -160,14 +180,14 @@ const StudentList = ({
           />
           <SortingArrows
             sortDirection={masterySort}
-            changeSortDirection={setMasterySort}
+            changeSortDirection={() => handleSortChange('mastery')}
           />
         </TableHeaderMastery>
         <TableHeaderStandards ref={standardColumnRef}>
           STANDARDS TO BE IMPROVED
           <SortingArrows
             sortDirection={standardSort}
-            changeSortDirection={setStandardSort}
+            changeSortDirection={() => handleSortChange('standards')}
           />
         </TableHeaderStandards>
       </TableHeaderContainer>

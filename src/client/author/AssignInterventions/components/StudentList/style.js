@@ -186,3 +186,8 @@ export const TooltipStandardRight = styled.div`
   padding: 0 0 0 10px;
   width: ${({ width }) => width * 8}px;
 `
+
+export const SortingArrowContainer = styled.div`
+  font-size: 0px;
+  cursor: pointer;
+`

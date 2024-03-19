@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import loadable from '@loadable/component'
 import { Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
@@ -257,7 +257,9 @@ const Author = ({
   isCliUser,
   isDemoAccount,
   updateRecentCollections,
+  isSidebarCollapsed,
 }) => {
+  const wrapperRef = useRef(null)
   useEffect(() => {
     if (orgId) {
       const recentCollections = getFromLocalStorage(
@@ -305,6 +307,12 @@ const Author = ({
     'worksheet',
   ]
 
+  useEffect(() => {
+    if (isSidebarCollapsed && wrapperRef?.current) {
+      wrapperRef.current.click()
+    }
+  }, [isSidebarCollapsed, wrapperRef?.current])
+
   return (
     <ThemeProvider theme={themeToPass}>
       <StyledLayout isBannerShown={isProxyUser || isDemoAccount}>
@@ -314,8 +322,9 @@ const Author = ({
             isPrintPreview={isPrintPreview || isCliUser}
             isBannerShown={isProxyUser || isDemoAccount}
             style={{ display: isCliUser && 'none' }}
+            wrapperRef={wrapperRef}
           />
-          <Wrapper>
+          <Wrapper ref={wrapperRef}>
             <ErrorHandler
               disablePage={isDisablePageInMobile(history.location.pathname)}
             >
@@ -965,6 +974,7 @@ export default connect(
     isProxyUser: isProxyUserSelector(state),
     isCliUser: get(state, 'user.isCliUser', false),
     isDemoAccount: isDemoPlaygroundUser(state),
+    isSidebarCollapsed: authorUi?.isSidebarCollapsed,
   }),
   {
     loadDistrictPolicy: receiveDistrictPolicyAction,

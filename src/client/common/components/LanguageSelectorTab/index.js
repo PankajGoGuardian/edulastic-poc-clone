@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { appLanguages } from '@edulastic/constants'
 import Menu from 'antd/lib/menu'
@@ -6,7 +6,11 @@ import styled from 'styled-components'
 
 import get from 'lodash/get'
 import { LANGUAGE_EN, LANGUAGE_ES } from '@edulastic/constants/const/languages'
-import { getCurrentLanguage, setLangAction } from './duck'
+import {
+  getCurrentLanguage,
+  languageStateSelector,
+  setLangAction,
+} from './duck'
 import {
   getItemDetailSelector,
   getPassageSelector,
@@ -16,19 +20,19 @@ import { StyledBetaTag } from '../../../author/AssessmentPage/VideoQuiz/styled-c
 const { LANGUAGES_OPTIONS } = appLanguages
 
 const LanguageSelectorTab = ({
+  initialLang,
   currentLang,
   setLanguage,
   isEditView,
   item,
   passage,
 }) => {
-  const isIntialLanguageSet = useRef()
   const handleChangeLanguage = ({ key }) => {
     setLanguage(key)
   }
 
   useEffect(() => {
-    if (item._id !== 'new' && !isIntialLanguageSet.current) {
+    if (item._id !== 'new' && !initialLang) {
       let languageCode = LANGUAGE_EN
       if (item.isPassageWithQuestions) {
         languageCode =
@@ -45,15 +49,8 @@ const LanguageSelectorTab = ({
         }
       }
       setLanguage(languageCode)
-      isIntialLanguageSet.current = true
     }
   }, [item, passage])
-
-  useEffect(() => {
-    return () => {
-      setLanguage('')
-    }
-  }, [])
 
   return (
     <StyledMenu
@@ -78,6 +75,7 @@ const LanguageSelectorTab = ({
 
 export default connect(
   (state) => ({
+    initialLang: languageStateSelector(state),
     currentLang: getCurrentLanguage(state),
     item: getItemDetailSelector(state),
     passage: getPassageSelector(state),

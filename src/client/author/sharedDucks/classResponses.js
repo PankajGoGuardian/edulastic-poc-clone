@@ -18,7 +18,7 @@ import {
 import { questionType, roleuser } from '@edulastic/constants'
 import { createAction } from 'redux-starter-kit'
 import { notification } from '@edulastic/common'
-import { get, isEmpty, groupBy, isPlainObject, isNil, isArray } from 'lodash'
+import { get, isEmpty, isPlainObject, isNil, isArray } from 'lodash'
 
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -540,38 +540,6 @@ function* receiveClassQuestionSaga({ payload }) {
       feedbackResponse = yield call(
         classResponseApi.questionClassQuestionResponse,
         payload
-      )
-    }
-
-    const sc = yield feedbackResponse.filter(
-      (uqa) =>
-        uqa?.scratchPad?.scratchpad &&
-        uqa.qType === questionType.HIGHLIGHT_IMAGE
-    )
-    const scGrouped = yield groupBy(sc, 'testActivityId')
-    yield all(
-      Object.keys(scGrouped).map((utaId) =>
-        fork(getAttachmentsForItems, {
-          testActivityId: utaId,
-          testItemsIdArray: scGrouped[utaId],
-        })
-      )
-    )
-
-    const isDocBased = yield select(
-      (state) => state.author_classboard_testActivity?.data?.test?.isDocBased
-    )
-    if (isDocBased) {
-      const responseGroupedByUta = groupBy(feedbackResponse, 'testActivityId')
-
-      yield all(
-        Object.keys(responseGroupedByUta).map((utaId) => {
-          const { testItemId } = responseGroupedByUta[utaId][0]
-          return fork(loadAnnotationsFromServer, {
-            referrerId: utaId,
-            referrerId2: testItemId,
-          })
-        })
       )
     }
 

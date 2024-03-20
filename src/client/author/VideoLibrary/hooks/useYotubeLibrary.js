@@ -6,7 +6,9 @@ import {
 } from '../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
 import { isURL } from '../../AssessmentCreate/components/CreateVideoQuiz/utils'
 import { vqConst } from '../const'
+import appConfig from '../../../../app-config'
 
+const { vqLibraryQueryParams } = appConfig
 const useYoutubeLibrary = ({
   createVQAssessment,
   searchString,
@@ -14,6 +16,7 @@ const useYoutubeLibrary = ({
   ytSearchRequest,
   ytNextPageToken,
   currentTab,
+  isInvalidUrl,
 }) => {
   // const videoDetailsFromTests = getVideoDetailsFromTests(testList, currentTab)
 
@@ -22,28 +25,40 @@ const useYoutubeLibrary = ({
   /** As soon as we enter the Valid URL we start creating assessment */
   useEffect(() => {
     const _searchString = searchString?.trim()
-
     const ableToCreateTestFromUrl =
       textIsUrl &&
       isValidVideoUrl(_searchString) &&
       !isLoading &&
-      !!_searchString.length
+      !!_searchString.length &&
+      !isInvalidUrl &&
+      !hasError
 
     if (!ableToCreateTestFromUrl) return
 
     const youtubeVideoId = extractVideoId(_searchString)
 
     if (youtubeVideoId) {
-      createVQAssessment({ youtubeVideoId, validVideoUrl: _searchString })
+      createVQAssessment({
+        youtubeVideoId,
+        validVideoUrl: _searchString,
+        searchParam: vqLibraryQueryParams,
+      })
       return
     }
 
-    createVQAssessment({ validVideoUrl: _searchString })
-  }, [searchString, hasError, isLoading, textIsUrl])
+    createVQAssessment({
+      validVideoUrl: _searchString,
+      searchParam: vqLibraryQueryParams,
+    })
+  }, [searchString, hasError, isInvalidUrl, isLoading, textIsUrl])
 
   const handleVideoSelect = (youtubeVideoId, selectedVideoTitle) => {
     if (!youtubeVideoId) return
-    createVQAssessment({ youtubeVideoId, selectedVideoTitle })
+    createVQAssessment({
+      youtubeVideoId,
+      selectedVideoTitle,
+      searchParam: vqLibraryQueryParams,
+    })
   }
 
   /** Load/Append YouTube videos - result from YouTube APIs  */

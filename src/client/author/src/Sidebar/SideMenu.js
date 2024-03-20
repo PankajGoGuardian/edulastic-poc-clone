@@ -112,6 +112,7 @@ import { navigationItemLabels, navigationState } from '../constants/navigation'
 import { DATA_STUDIO_DISABLED_DISTRICTS } from '../constants/others'
 import { isPearDomain } from '../../../../utils/pear'
 import { AssessPeardeckLogoCompact } from '../../../admin/Common/StyledComponents'
+import appConfig from '../../../../app-config'
 
 const dataStudioPattern = [
   /\/author\/reports\/dashboard-report/,
@@ -189,7 +190,7 @@ const menuItems = [
   {
     label: 'Test',
     icon: IconTestBank,
-    allowedPathPattern: [/author\/tests/],
+    allowedPathPattern: [/author\/tests|\/author\/assessments/],
     path: 'author/tests',
   },
   {
@@ -197,6 +198,7 @@ const menuItems = [
     icon: IconVideoLibrary,
     allowedPathPattern: [/author\/vqlibrary/],
     path: 'author/vqlibrary',
+    isVQLibraryMenu: true,
   },
   {
     label: 'Playlist',
@@ -641,7 +643,7 @@ class SideMenu extends Component {
 
     const isCollapsed = isSidebarCollapsed
     const isMobile = windowWidth < parseFloat(tabletWidth)
-    const defaultSelectedMenu = this.MenuItems.findIndex((menuItem) => {
+    let defaultSelectedMenu = this.MenuItems.findIndex((menuItem) => {
       if (
         menuItem.customSelection &&
         menuItem.condtition &&
@@ -664,6 +666,14 @@ class SideMenu extends Component {
         !matchedDisallowed
       )
     })
+
+    const search = history.location.search || ''
+
+    if (search === appConfig.vqLibraryQueryParams) {
+      defaultSelectedMenu = this.MenuItems.findIndex(
+        (menuItem) => !!menuItem.isVQLibraryMenu
+      )
+    }
 
     const lmsIds = [
       'googleId',

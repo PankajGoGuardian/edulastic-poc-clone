@@ -31,6 +31,7 @@ const initialState = {
   vqCount: 0,
   vqPage: 1,
   limit: vqConst.resultLimit,
+  isInvalidUrl: false,
 }
 
 const slice = createSlice({
@@ -85,6 +86,7 @@ const slice = createSlice({
       state.vqCount = 0
       state.vqPage = 1
       state.limit = vqConst.resultLimit
+      state.isInvalidUrl = false
     },
     updateCurrentTab: (state, { payload = defaultTab }) => {
       state.currentTab = payload
@@ -94,15 +96,20 @@ const slice = createSlice({
     updateSearchString: (state, { payload = '' }) => {
       state.searchString = payload
       state.ytTotalResult = 1
+      state.isInvalidUrl = false
     },
     createVQAssessmentRequest: (state) => {
       state.isLoading = true
     },
-    getYoutubeThumbnailSuccess: (state) => {
+    getYoutubeThumbnailRequest: (state) => {
       state.isLoading = true
     },
     getYoutubeThumbnailFailure: (state) => {
       state.isLoading = false
+      state.isInvalidUrl = true
+    },
+    resetInvalidUrl: (state) => {
+      state.isInvalidUrl = false
     },
     resetIsLoading: (state) => {
       state.isLoading = false
@@ -125,10 +132,11 @@ const {
   updateCurrentTab,
   updateSearchString,
   createVQAssessmentRequest,
-  getYoutubeThumbnailSuccess,
+  getYoutubeThumbnailRequest,
   getYoutubeThumbnailFailure,
   resetIsLoading,
   setVQFilters,
+  resetInvalidUrl,
 } = slice.actions
 
 export const actions = {
@@ -142,10 +150,11 @@ export const actions = {
   updateCurrentTab,
   updateSearchString,
   createVQAssessmentRequest,
-  getYoutubeThumbnailSuccess,
+  getYoutubeThumbnailRequest,
   getYoutubeThumbnailFailure,
   resetIsLoading,
   setVQFilters,
+  resetInvalidUrl,
 }
 
 export const { reducer } = slice

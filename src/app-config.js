@@ -253,6 +253,8 @@ const videoQuizDefaultCollection = {
   collectionType: process.env.REACT_APP_VIDEO_QUIZ_COLLECTION_TYPE,
 }
 
+const vqLibraryQueryParams = '?source=vq-library'
+
 export default {
   initEmbeddedServiceCloudWidget,
   sentryIgnoreErrors,
@@ -293,4 +295,5 @@ export default {
   pearScriptPath,
   pearScriptDomainIdentifier,
   videoQuizDefaultCollection,
+  vqLibraryQueryParams,
 }

@@ -1845,12 +1845,13 @@ class Container extends PureComponent {
   }
 
   handleDuplicateTest = (cloneItems) => {
-    const { test, duplicateTest } = this.props
+    const { test, duplicateTest, history } = this.props
     duplicateTest({
       _id: test._id,
       title: test.title,
       redirectToNewTest: true,
       cloneItems,
+      searchParam: history?.location?.search,
     })
     this.setState({ showCloneModal: false })
   }

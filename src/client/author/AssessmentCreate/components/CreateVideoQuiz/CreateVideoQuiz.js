@@ -58,6 +58,7 @@ import {
 import { StyledBetaTag } from '../../../AssessmentPage/VideoQuiz/styled-components/QuestionForm'
 import VideoQuizUsageBanner from './Components/VideoQuizUsageBanner'
 import { videoQuizActions } from '../../../VideoLibrary/ducks'
+import { isInvalidUrlSelector } from '../../../VideoLibrary/ducks/selectors'
 
 const CreateVideoQuiz = ({
   onValidUrl,
@@ -70,10 +71,11 @@ const CreateVideoQuiz = ({
   isThumbnailLoading,
   creatingAssessment,
   scrollerRef,
-
+  isInvalidUrl,
   createVQAssessment,
   showVQCount,
   allowedToCreateVideoQuiz,
+  resetInvalidUrl,
 }) => {
   const {
     linkValue,
@@ -99,10 +101,13 @@ const CreateVideoQuiz = ({
     scrollerRef,
     allowedToCreateVideoQuiz,
     createVQAssessment,
+    resetInvalidUrl,
+    isInvalidUrl,
   })
 
+  const showErrorMessage = [hasError, isInvalidUrl].some((x) => x)
   const errorMessage = () => {
-    if (linkValue && hasError) {
+    if (linkValue && showErrorMessage) {
       return `This link can't be played.`
     }
   }
@@ -140,7 +145,7 @@ const CreateVideoQuiz = ({
                       </sub>
                     </SubHeader>
                     <FormItem
-                      validateStatus={hasError ? 'error' : 'success'}
+                      validateStatus={showErrorMessage ? 'error' : 'success'}
                       help={errorMessage()}
                     >
                       <SearchInput
@@ -278,11 +283,13 @@ const enhance = compose(
       vqQuotaForDistrict: vqQuotaForDistrictSelector(state),
       vqUsageCount: vqUsageCountSelector(state),
       allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
+      isInvalidUrl: isInvalidUrlSelector(state),
     }),
     {
       getYoutubeThumbnail: getYoutubeThumbnailAction,
       setYoutubeThumbnail: setYoutubeThumbnailAction,
       createVQAssessment: videoQuizActions.createVQAssessmentRequest,
+      resetInvalidUrl: videoQuizActions.resetInvalidUrl,
     }
   )
 )

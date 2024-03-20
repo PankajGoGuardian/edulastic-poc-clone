@@ -152,6 +152,7 @@ const defaultPageStructure = [
 
 function* createAssessmentSaga({ payload }) {
   let { fileURI = '' } = payload
+  const { searchParam = '' } = payload
   let testItem
   let amountOfPDFPages = 0
   let pageStructure = []
@@ -386,10 +387,11 @@ function* createAssessmentSaga({ payload }) {
       yield put(createAssessmentSuccessAction())
 
       yield put(receiveTestByIdAction(assessment._id, true, false))
-      yield put(push(`/author/assessments/${assessment._id}`))
       if (assessment?.testCategory === testCategoryTypes.VIDEO_BASED) {
+        yield put(push(`/author/assessments/${assessment._id}${searchParam}`))
         yield put(changeViewAction(docBasedAssessment.tabs.WORKSHEET))
       } else {
+        yield put(push(`/author/assessments/${assessment._id}`))
         yield put(changeViewAction(docBasedAssessment.tabs.DESCRIPTION))
       }
     }

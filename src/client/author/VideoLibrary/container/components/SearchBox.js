@@ -17,12 +17,15 @@ const VideoLibrarySearchBox = ({
   handleOnChange,
   handleOnClear,
   hasError,
+  isInvalidUrl,
 }) => {
+  const showErrorMessage = [hasError, isInvalidUrl].some((x) => x)
   const errorMessage = () => {
-    if (searchString && hasError) {
+    if (searchString && showErrorMessage) {
       return `This link can't be played.`
     }
   }
+
   return (
     <StyledSearchBoxContainer>
       <FlexContainer
@@ -44,7 +47,7 @@ const VideoLibrarySearchBox = ({
       >
         <StyledForm colon={false}>
           <FormItem
-            validateStatus={hasError ? 'error' : 'success'}
+            validateStatus={showErrorMessage ? 'error' : 'success'}
             help={errorMessage()}
           >
             <StyledSearchInput

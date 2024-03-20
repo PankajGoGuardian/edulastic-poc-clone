@@ -9,6 +9,7 @@ const { COMMUNITY, MY_CONTENT } = vqConst.vqTabs
 
 const {
   videoQuizDefaultCollection: { collectionId = '' },
+  vqLibraryQueryParams,
 } = appConfig
 
 const useTestListFilter = ({
@@ -71,6 +72,7 @@ const useTestListFilter = ({
       state: {
         editTestFlow: true,
       },
+      search: vqLibraryQueryParams,
     })
   }
 

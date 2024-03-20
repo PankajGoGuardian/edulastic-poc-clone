@@ -15,7 +15,7 @@ import {
 
 import { videoQuizActions } from '../../ducks'
 import useYoutubeLibrary from '../../hooks/useYotubeLibrary'
-import { videoQuizSelector } from '../../ducks/selectors'
+import { isInvalidUrlSelector, videoQuizSelector } from '../../ducks/selectors'
 
 import useTestLibrary from '../../hooks/useTestLibrary'
 
@@ -35,6 +35,7 @@ const VideoLibrary = ({
   history,
   resetVQLibrary,
   isVideoQuizAndAIEnabled,
+  isInvalidUrl,
 }) => {
   const {
     testList = [],
@@ -84,6 +85,7 @@ const VideoLibrary = ({
     ytSearchRequest,
     ytNextPageToken,
     currentTab,
+    isInvalidUrl,
   })
 
   const { infiniteLoaderRef } = useVQLibraryCommon({
@@ -145,6 +147,7 @@ const VideoLibrary = ({
     searchString,
     hasError,
     disableSearchInput,
+    isInvalidUrl,
   }
 
   const videoLibraryTabsProps = {
@@ -183,6 +186,7 @@ const enhance = compose(
       isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
       videoQuizLibrary: videoQuizSelector(state),
       allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
+      isInvalidUrl: isInvalidUrlSelector(state),
     }),
     {
       createVQAssessment: videoQuizActions.createVQAssessmentRequest,

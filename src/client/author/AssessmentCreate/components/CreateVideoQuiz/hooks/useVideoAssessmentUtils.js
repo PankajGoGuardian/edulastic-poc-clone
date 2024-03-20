@@ -14,6 +14,8 @@ const useVideoAssessmentUtils = ({
   createVQAssessment,
   scrollerRef,
   setYoutubeThumbnail,
+  resetInvalidUrl,
+  isInvalidUrl,
 }) => {
   const [linkValue, setLinkValue] = useState('')
   const [isModerateRestriction, setIsModerateRestriction] = useState(false)
@@ -89,7 +91,7 @@ const useVideoAssessmentUtils = ({
   }, [fetchVideos])
 
   useEffect(() => {
-    if (textIsUrl && !hasError && linkValue.length > 0) {
+    if (textIsUrl && !isInvalidUrl && !hasError && linkValue.length > 0) {
       const youtubeVideoId = extractVideoId(linkValue)
       if (youtubeVideoId) {
         createVQAssessment({ youtubeVideoId })
@@ -101,7 +103,7 @@ const useVideoAssessmentUtils = ({
         createVQAssessment({ validVideoUrl: linkValue })
       }
     }
-  }, [linkValue, hasError, textIsUrl])
+  }, [linkValue, isInvalidUrl, hasError, textIsUrl])
 
   const handleOnSearch = (value) => {
     if (value) {
@@ -116,6 +118,7 @@ const useVideoAssessmentUtils = ({
   const handleOnChange = (e) => {
     const searchString = e.target.value
     setLinkValue(searchString)
+    resetInvalidUrl()
   }
 
   const handleIntersect = useCallback(

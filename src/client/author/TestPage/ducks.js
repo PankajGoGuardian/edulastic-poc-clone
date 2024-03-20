@@ -3943,7 +3943,7 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
 
 function* duplicateTestSaga({ payload }) {
   yield put(setTestsLoadingAction(true))
-  const { onRegrade = false } = payload
+  const { onRegrade = false, searchParam = '' } = payload
   try {
     const {
       _id,
@@ -3978,7 +3978,7 @@ function* duplicateTestSaga({ payload }) {
     }
     if (redirectToNewTest) {
       // cloning from test review page or test library (non-regrade flow)
-      yield put(push(`/author/tests/${data._id}`))
+      yield put(push(`/author/tests/${data._id}${searchParam}`))
       yield put(setEditEnableAction(true))
       yield put(setTestsLoadingAction(false))
       yield put(receiveTestByIdAction(data._id, true))

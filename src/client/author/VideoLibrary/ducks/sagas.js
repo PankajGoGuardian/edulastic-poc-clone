@@ -102,15 +102,35 @@ function* ytSearchRequestSaga({
   }
 }
 
+function* getYoutubeThumbnail(youtubeVideoId) {
+  try {
+    yield put(videoQuizActions.getYoutubeThumbnailRequest())
+    return yield call(testsApi.getYoutubeThumbnail, youtubeVideoId)
+  } catch (error) {
+    captureSentryException(error)
+    yield put(videoQuizActions.getYoutubeThumbnailFailure())
+  }
+}
+
 function* createVQAssessmentRequestSaga({
-  payload: { youtubeVideoId, validVideoUrl, selectedVideoTitle = '' },
+  payload: {
+    youtubeVideoId,
+    validVideoUrl,
+    selectedVideoTitle = '',
+    searchParam = '',
+  },
 }) {
   try {
     let videoUrl = ''
     let thumbnail = ''
     let title = ''
+
     if (youtubeVideoId) {
-      const result = yield call(testsApi.getYoutubeThumbnail, youtubeVideoId)
+      const result = yield getYoutubeThumbnail(youtubeVideoId)
+
+      if (!result?.cdnLocation) {
+        throw new Error('Failed to get thumbnail')
+      }
 
       if (!(selectedVideoTitle || '').trim().length) {
         try {
@@ -129,13 +149,6 @@ function* createVQAssessmentRequestSaga({
       } else {
         title = selectedVideoTitle
       }
-
-      if (!result?.cdnLocation) {
-        throw new Error('Failed to get thumbnail')
-      }
-      yield put(
-        videoQuizActions.getYoutubeThumbnailSuccess(result?.cdnLocation)
-      )
       videoUrl = `${vqConst.ytLinkPrefix}${youtubeVideoId}`
       thumbnail = result.cdnLocation
     } else {
@@ -150,6 +163,7 @@ function* createVQAssessmentRequestSaga({
         videoUrl,
         ...(thumbnail && { thumbnail }),
         title: title.trim() || DEFAULT_TEST_TITLE,
+        searchParam,
       })
     )
   } catch (err) {

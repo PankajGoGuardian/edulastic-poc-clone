@@ -43,3 +43,8 @@ export const vqIsLoadingSelector = createSelector(
   videoQuizSelector,
   (state) => state.isLoading
 )
+
+export const isInvalidUrlSelector = createSelector(
+  videoQuizSelector,
+  (state) => state.isInvalidUrl
+)

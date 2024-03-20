@@ -60,6 +60,11 @@ export const StyledNoDataNotification = styled(NoDataNotification)`
   top: 50%;
 `
 
+export const NoDataNotificationContainer = styled.div`
+  border: 1px solid ${grey};
+  border-top: none;
+`
+
 export const StyledCircularDiv = styled(CircularDiv)`
   margin-right: 10px;
   font-size: 16px;
@@ -175,16 +180,27 @@ export const TooltipContainer = styled.div`
   margin: 10px;
 `
 
-export const TooltipStandardLeft = styled.div`
-  padding: 0 10px 0 0;
-  border: 1px solid ${grey};
-  border-width: 0 1px 0 0;
-  width: ${({ width }) => width * 8}px;
+export const TooltipStandardContainer = styled.div`
+  width: max-content;
+  white-space: nowrap;
 `
 
-export const TooltipStandardRight = styled.div`
-  padding: 0 0 0 10px;
-  width: ${({ width }) => width * 8}px;
+export const TooltipStandardColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin: -16px 0px;
+  padding: ${({ isLeft }) =>
+    isLeft ? '16px 18px 16px 0px' : '16px 0px 16px 18px'};
+  border-right: ${({ isLeft }) => (isLeft ? '1px solid #EEEEEE' : 'none')};
+  height: max-content;
+`
+
+export const TooltipMultiColumnContainer = styled.div`
+  display: flex;
+  flex-direction: row;
 `
 
 export const SortingArrowContainer = styled.div`

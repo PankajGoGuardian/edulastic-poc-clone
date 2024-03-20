@@ -142,6 +142,8 @@ export const StandardNameContainer = styled.div`
   font-size: 12px;
   line-height: 24px;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 export const StandardDescContainer = styled.div`

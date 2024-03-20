@@ -15,8 +15,9 @@ import {
   STANDARDS_FONT_WIDTH,
   TOTAL_STANDARDS_FONT_WIDTH,
   TooltipContainer,
-  TooltipStandardLeft,
-  TooltipStandardRight,
+  TooltipStandardContainer,
+  TooltipMultiColumnContainer,
+  TooltipStandardColumn,
 } from './style'
 import { CustomTableTooltip } from '../../../Reports/common/components/customTableTooltip'
 
@@ -35,8 +36,7 @@ const StudentDetailRow = ({
   selectedStudentsById,
 }) => {
   let remainingStandardsCount = 0
-  const remainingStandardsArray = [] // Tooltip text with info for each overflowing standard
-  let currStandardsArrayIndex = 0
+
   const {
     _id: studentId,
     standards,
@@ -107,22 +107,11 @@ const StudentDetailRow = ({
               )
             }
           } else {
-            if (!remainingStandardsArray[currStandardsArrayIndex][1]) {
-              remainingStandardsArray[currStandardsArrayIndex].push(
-                `${std.identifier} : ${std.mastery}%`
-              )
-            } else {
-              remainingStandardsArray.push([
-                `${std.identifier} : ${std.mastery}%`,
-              ])
-              currStandardsArrayIndex += 1
-            }
             return null
           }
           // If the standards start to overflow, start pushing the mastery information
           // into the remaining standards array in sets of two.
           remainingStandardsCount = totalStandardsCount - standardIndex
-          remainingStandardsArray.push([`${std.identifier} : ${std.mastery}%`])
           return null
         })}
         <EduIf condition={remainingStandardsCount}>
@@ -132,25 +121,47 @@ const StudentDetailRow = ({
               title={
                 <TooltipContainer>
                   {remainingStandardsCount > 1 ? (
-                    remainingStandardsArray.map((std) => (
-                      <Row>
-                        <Col span={12}>
-                          <TooltipStandardLeft width={std[0].length}>
-                            {std[0]}
-                          </TooltipStandardLeft>
-                        </Col>
-                        {std[1] ? (
-                          <Col span={12}>
-                            <TooltipStandardRight width={std[1].length}>
-                              {std[1]}
-                            </TooltipStandardRight>
-                          </Col>
-                        ) : null}
-                      </Row>
-                    ))
+                    <TooltipMultiColumnContainer>
+                      <TooltipStandardColumn isLeft>
+                        {standards
+                          .slice(
+                            standards.length - remainingStandardsCount,
+                            Math.floor(
+                              standards.length - remainingStandardsCount / 2
+                            ) +
+                              (remainingStandardsCount % 2)
+                          )
+                          .map((std) => {
+                            return (
+                              <TooltipStandardContainer>
+                                {std.identifier} : {std.mastery}%
+                              </TooltipStandardContainer>
+                            )
+                          })}
+                      </TooltipStandardColumn>
+                      <TooltipStandardColumn>
+                        {standards
+                          .slice(
+                            Math.floor(
+                              standards.length - remainingStandardsCount / 2
+                            ) +
+                              (remainingStandardsCount % 2)
+                          )
+                          .map((std) => {
+                            return (
+                              <TooltipStandardContainer>
+                                {std.identifier} : {std.mastery}%
+                              </TooltipStandardContainer>
+                            )
+                          })}
+                      </TooltipStandardColumn>
+                    </TooltipMultiColumnContainer>
                   ) : (
                     <Row>
-                      <Col>{remainingStandardsArray[0]}</Col>
+                      <Col>
+                        {standards[standards.length - 1].identifier} :{' '}
+                        {standards[standards.length - 1].mastery}%
+                      </Col>
                     </Row>
                   )}
                 </TooltipContainer>

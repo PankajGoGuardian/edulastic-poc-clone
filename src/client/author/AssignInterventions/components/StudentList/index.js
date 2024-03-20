@@ -6,6 +6,7 @@ import { grey } from '@edulastic/colors'
 import { keyBy, sortBy } from 'lodash'
 import {
   MasteryHeader,
+  NoDataNotificationContainer,
   StudentListContainer,
   StudentListHeading,
   StudentListSubHeading,
@@ -194,7 +195,9 @@ const StudentList = ({
 
       <EduIf condition={!sortedStudentList.length}>
         <EduThen>
-          <StyledNoDataNotification heading="No Student found matching the standards mastery criteria" />
+          <NoDataNotificationContainer>
+            <StyledNoDataNotification heading="No Student found matching the standards mastery criteria" />
+          </NoDataNotificationContainer>
         </EduThen>
         <EduElse>
           <FixedSizeList

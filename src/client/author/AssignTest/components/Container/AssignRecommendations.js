@@ -12,7 +12,11 @@ import * as moment from 'moment'
 import { connect } from 'react-redux'
 import produce from 'immer'
 import ListHeader from '../../../src/components/common/ListHeader'
-import { getUserRole, getCurrentTerm } from '../../../src/selectors/user'
+import {
+  getUserRole,
+  getCurrentTerm,
+  getUserOrgId,
+} from '../../../src/selectors/user'
 import { getDefaultTestSettingsAction } from '../../../TestPage/ducks'
 import {
   clearAssignmentSettingsAction,
@@ -34,6 +38,10 @@ import {
   FullFlexContainer,
   PaginationInfo,
 } from './styled'
+import {
+  getTestSettings,
+  receiveTestSettingAction,
+} from '../../../TestSetting/ducks'
 
 const { ASSESSMENT } = testTypesConstants.TEST_TYPES_VALUES_MAP
 
@@ -53,6 +61,9 @@ const AssignRecommendations = ({
   isModalVisible,
   toggleModal,
   onClickFullSettings,
+  districtTestSettings,
+  userOrgId,
+  loadTestSetting,
 }) => {
   const isAdvancedView = userRole !== roleuser.TEACHER
   const [activeTab, setActiveTab] = useState('1')
@@ -91,6 +102,8 @@ const AssignRecommendations = ({
     }
 
     updateAssignmentSettings(updatedAssignment)
+
+    loadTestSetting({ orgType: 'district', orgId: userOrgId })
 
     return () => clearAssignmentSettings()
   }, [])
@@ -234,6 +247,7 @@ const AssignRecommendations = ({
           isAssignRecommendations
           isRecommendingStandards={isRecommendingStandards}
           selectedStandardsCount={selectedStandardsCount}
+          districtTestSettings={districtTestSettings}
         />
       </Container>
     </>
@@ -247,6 +261,8 @@ export default connect(
     termId: getCurrentTerm(state),
     recommendationsToAssign: getRecommendationsToAssignSelector(state),
     assignmentSettings: state.assignmentSettings,
+    districtTestSettings: getTestSettings(state),
+    userOrgId: getUserOrgId(state),
   }),
   {
     getDefaultTestSettings: getDefaultTestSettingsAction,
@@ -254,6 +270,7 @@ export default connect(
     clearAssignmentSettings: clearAssignmentSettingsAction,
     addRecommendations: addRecommendationsAction,
     setRecommendationsToAssign: setRecommendationsToAssignAction,
+    loadTestSetting: receiveTestSettingAction,
   }
 )(AssignRecommendations)
 

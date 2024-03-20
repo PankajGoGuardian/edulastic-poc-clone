@@ -83,8 +83,6 @@ class AddClassModal extends Component {
       districtId: this.props.userOrgId,
       limit: 25,
       page: 1,
-      sortField: 'name',
-      order: 'asc',
       ...searchParam,
     })
     this.setState({ schoolList: schoolListData.data, fetchingSchool: false })

@@ -190,8 +190,6 @@ class AddTeacherModal extends React.Component {
       districtId: this.props.userOrgId,
       limit: 25,
       page: 1,
-      sortField: 'name',
-      order: 'asc',
       search: { name: [{ type: 'cont', value }] },
     })
 

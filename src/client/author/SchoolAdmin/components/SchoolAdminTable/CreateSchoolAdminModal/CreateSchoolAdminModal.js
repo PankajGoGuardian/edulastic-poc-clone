@@ -146,8 +146,6 @@ class CreateSchoolAdminModal extends React.Component {
       districtId,
       limit: 25,
       page: 1,
-      sortField: 'name',
-      order: 'asc',
       ...searchParam,
     })
     this.setState({ schoolList: schoolListData.data, fetching: false })
@@ -169,6 +167,7 @@ class CreateSchoolAdminModal extends React.Component {
     }
     this.setState({ isSuperAdmin: e.target.checked })
   }
+
   changeInsightsOnly = (e) =>
     this.setState({ isInsightsOnly: e.target.checked })
 

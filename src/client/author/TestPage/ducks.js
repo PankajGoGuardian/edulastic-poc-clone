@@ -3367,6 +3367,11 @@ function* deleteSharedUserSaga({ payload }) {
 function* setTestDataAndUpdateSaga({ payload }) {
   try {
     let newTest = yield select(getTestSelector)
+    if (newTest.testType === TEST_TYPE_SURVEY) {
+      newTest = produce(newTest, (draft) => {
+        draft.scoringType = evalTypeLabels.ITEM_LEVEL_EVALUATION
+      })
+    }
     // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
     // Penalty true/false is set to determine the case
     if (

@@ -21,6 +21,7 @@ import {
   testContentVisibility as testContentVisibilityOptions,
 } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   AlignRight,
   AlignSwitchRight,
@@ -294,7 +295,7 @@ const TestBehaviorGroupContainer = ({
           <Col span={14}>
             <SelectInputStyled
               data-cy="eval-methods"
-              disabled={freezeSettings}
+              disabled={freezeSettings || testType === TEST_TYPE_SURVEY}
               onChange={(value) => {
                 if (!freezeSettings) {
                   overRideSettings('scoringType', value)

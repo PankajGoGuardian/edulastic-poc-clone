@@ -63,6 +63,7 @@ import {
   togglePenaltyOnUsingHintsAction,
   hasSectionsSelector,
   canSchoolAdminUseDistrictCommonSelector,
+  isSurveyTestSelector,
 } from '../../../../ducks'
 import Breadcrumb from '../../../../../src/components/Breadcrumb'
 
@@ -236,10 +237,13 @@ class Setting extends Component {
       resetUpdatedState,
       loadDistrictTestSetting,
       districtId,
+      isSurveyTest,
     } = this.props
     // Load district settings
     loadDistrictTestSetting({ orgType: 'district', orgId: districtId })
-    if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
+    if (isSurveyTest) {
+      this.updateTestData('scoringType')(ITEM_LEVEL_EVALUATION)
+    } else if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData('scoringType')(PARTIAL_CREDIT_IGNORE_INCORRECT)
     }
     if (entity?.safeBrowser) {
@@ -376,11 +380,6 @@ class Setting extends Component {
           Object.assign(dataToSet, { applyEBSR: false })
         } else {
           value = evalTypeLabels.PARTIAL_CREDIT
-        }
-        if (testType === TEST_TYPE_SURVEY) {
-          Object.assign(dataToSet, {
-            scoringType: evalTypeLabels.ITEM_LEVEL_EVALUATION,
-          })
         }
         setTestData(dataToSet)
         break
@@ -1522,7 +1521,9 @@ class Setting extends Component {
                         <Row>
                           <Col span={8}>
                             <StyledRadioGroup
-                              disabled={disabled}
+                              disabled={
+                                disabled || testType === TEST_TYPE_SURVEY
+                              }
                               onChange={(e) =>
                                 this.updateTestData('scoringType')(
                                   e.target.value
@@ -2934,6 +2935,7 @@ const enhance = compose(
       hasSections: hasSectionsSelector(state),
       districtId: getUserOrgId(state),
       districtTestSettings: getTestSettings(state),
+      isSurveyTest: isSurveyTestSelector(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,

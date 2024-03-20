@@ -8,10 +8,11 @@ import {
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { withWindowSizes, ScrollContext } from '@edulastic/common'
+import { withWindowSizes, ScrollContext, EduIf } from '@edulastic/common'
 import VideoThumbnail from '@edulastic/common/src/components/VideoThumbnail'
 import IframeVideoModal from '@edulastic/common/src/components/IframeVideoModal'
 
+import { LIKERT_SCALE } from '@edulastic/constants/const/questionTitle'
 import AdvancedOptionsLink from './AdvancedOptionsLink'
 
 class QuestionMenu extends Component {
@@ -162,12 +163,12 @@ class QuestionMenu extends Component {
               </Option>
             ))}
           </MainOptions>
-          {!isPowerTeacher && (
+          <EduIf condition={!isPowerTeacher && questionTitle !== LIKERT_SCALE}>
             <AdvancedOptionsLink
               handleAdvancedOpen={handleAdvancedOpen}
               isPremiumUser={isPremiumUser}
             />
-          )}
+          </EduIf>
         </ScrollbarContainer>
         <VideoThumbnailWapper onClick={this.openModal}>
           <VideoThumbnail

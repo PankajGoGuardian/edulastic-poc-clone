@@ -5,8 +5,9 @@ import { compose } from 'redux'
 import { get, keyBy } from 'lodash'
 import { IconReport } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { MainContentWrapper, FlexContainer } from '@edulastic/common'
+import { MainContentWrapper, FlexContainer, EduIf } from '@edulastic/common'
 import { collections as collectionConst } from '@edulastic/constants'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import ProgressGraph from '../../../../common/components/ProgressGraph'
 import TestAcivityHeader from '../../../../student/sharedComponents/Header'
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
@@ -129,11 +130,13 @@ const TestActivityPreview = ({
       />
       <MainContentWrapper padding="0px 20px">
         <StudentPerformancePreview>
-          <ProgressGraph
-            testActivity={testActivity}
-            questionActivities={questionActivities}
-            testItems={testItems}
-          />
+          <EduIf condition={test.testType !== TEST_TYPE_SURVEY}>
+            <ProgressGraph
+              testActivity={testActivity}
+              questionActivities={questionActivities}
+              testItems={testItems}
+            />
+          </EduIf>
         </StudentPerformancePreview>
         <div>{testItemsPreview}</div>
       </MainContentWrapper>

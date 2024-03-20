@@ -37,8 +37,8 @@ export const AVAILABLE_SCALE_COLORS = [
   '#FD6349',
   '#FF8641',
   '#FFA834',
-  '#FFC825',
-  '#FDE217',
+  '#FFBF00',
+  '#F5D801',
   '#D8DC3D',
   '#AED65B',
   '#86D275',
@@ -49,7 +49,7 @@ export const DEFAULT_SCORE = [0, 1, 2, 3, 4]
 export const DEFAULT_SCALE_COLORS = [
   '#E43836',
   '#FF7575',
-  '#FFC825',
+  '#FFBF00',
   '#9CCD2F',
   '#36AE26',
 ]

@@ -17,6 +17,8 @@ export const FEED_TYPES_WITH_TEST_DATE_INPUT = [
   testTypes.DRC_WIDA_ELL,
   testTypes.IAP_EOY,
   testTypes.IAP_Window,
+  testTypes.MCAS_Historical,
+  testTypes.ACCESS_v2,
 ]
 export const AdministrationLevelOptions = [
   {

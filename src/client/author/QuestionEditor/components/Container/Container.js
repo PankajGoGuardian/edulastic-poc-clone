@@ -176,7 +176,7 @@ class Container extends Component {
     const testPath = `/author/tests/tab/review/id/${testId || 'create'}`
     // above dispatched action needs to flip the flag, hence setTimeout to get around it
     setTimeout(() => {
-      history.push({ pathName: testPath, ...getSearchParams() })
+      history.push({ pathname: testPath, ...getSearchParams() })
     }, 0)
   }
 

@@ -142,6 +142,7 @@ const MultiTermAssessmentAutoComplete = ({
     searchTerms.text,
     testTermIds,
     grades,
+    termId,
     subjects,
     testTypes,
     tagIds,

@@ -71,13 +71,3 @@ export const getSearchParams = (searchParamToPick = 'all') => {
       }
     : {}
 }
-
-export const getSearchParamsForBreadcrumbs = (searchParamToPick = 'all') => {
-  const searchParams = new URLSearchParams(window.location.search)
-  if (searchParamToPick === 'all') {
-    return searchParams.size > 0 ? `?${searchParams.toString()}` : ''
-  }
-  return searchParams.has(searchParamToPick)
-    ? `?${searchParamToPick}=${searchParams.get(searchParamToPick)}`
-    : ''
-}

@@ -69,10 +69,7 @@ import LanguageSelectorTab from '../../../../common/components/LanguageSelectorT
 import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 import { EDIT } from '../../../../assessment/constants/constantsForQuestions'
 import { isSurveyTestSelector } from '../../../TestPage/ducks'
-import {
-  getSearchParamsForBreadcrumbs,
-  getSearchParams,
-} from '../../../src/utils/util'
+import { getSearchParams } from '../../../src/utils/util'
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -301,9 +298,10 @@ class Container extends Component {
       let crumbs = [
         {
           title: 'Back to Create Test',
-          to: `${testPath}${getSearchParamsForBreadcrumbs()}`,
+          to: `${testPath}`,
           onClick: toggleModalAction,
           state: { persistStore: true },
+          ...getSearchParams(),
         },
         {
           title: `Edit Item ( ${questionTitle} )`,

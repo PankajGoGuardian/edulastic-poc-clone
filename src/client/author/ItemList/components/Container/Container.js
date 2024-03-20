@@ -1,7 +1,7 @@
 import { EduElse, EduIf, EduThen, withWindowSizes } from '@edulastic/common'
 import { IconFilter, IconItemLibrary } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { roleuser, sortOptions } from '@edulastic/constants'
+import { roleuser, sortOptions, testTypes } from '@edulastic/constants'
 import { Pagination, Spin } from 'antd'
 import { debounce, omit, isEqual } from 'lodash'
 import moment from 'moment'
@@ -11,6 +11,8 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
+import { LIKERT_SCALE } from '@edulastic/constants/const/questionType'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import {
   updateDefaultGradesAction,
@@ -66,6 +68,7 @@ import {
   previewShowAnswerAction,
   setDefaultTestDataAction,
   getDefaultTestSettingsAction,
+  setTestDataAction,
 } from '../../../TestPage/ducks'
 import {
   approveOrRejectMultipleItem as approveOrRejectMultipleItemAction,
@@ -126,6 +129,7 @@ class Contaier extends Component {
       test,
       getDefaultTestSettings,
       userRole,
+      setTestData,
     } = this.props
 
     // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
@@ -166,10 +170,19 @@ class Contaier extends Component {
       grades,
       curriculumId: parseInt(curriculumId, 10) || '',
     }
+    if (search.questionType === LIKERT_SCALE) {
+      search.questionType = ''
+    }
     if (test && test._id) {
       setDefaultTestData()
     } else if (userRole !== roleuser.EDULASTIC_CURATOR) {
       getDefaultTestSettings()
+      if (test?.testType === TEST_TYPE_SURVEY) {
+        setTestData({
+          testType: testTypes.TEST_TYPES_VALUES_MAP.ASSESSMENT,
+          updated: false,
+        })
+      }
     }
     getAllTags({ type: 'testitem' })
     if (params.filterType) {
@@ -722,6 +735,7 @@ const enhance = compose(
       approveOrRejectMultipleItem: approveOrRejectMultipleItemAction,
       setApproveConfirmationOpen: setApproveConfirmationOpenAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
+      setTestData: setTestDataAction,
     }
   )
 )

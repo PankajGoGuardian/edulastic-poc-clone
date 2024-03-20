@@ -17,6 +17,7 @@ import { connect } from 'react-redux'
 import {
   AUDIO_RESPONSE,
   HIDE_QUESTION_TYPES,
+  LIKERT_SCALE,
 } from '@edulastic/constants/const/questionType'
 import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
 import {
@@ -173,7 +174,7 @@ const Search = ({
   // if test creation flow is having survey test selected
   // show only likert question type
   if (isSurveyTest) {
-    questionsType = [{ value: 'likertScale', text: 'Likert Scale' }]
+    questionsType = [{ value: LIKERT_SCALE, text: 'Likert Scale' }]
   }
 
   const getStatusFilter = () => (

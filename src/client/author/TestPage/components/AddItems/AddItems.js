@@ -27,6 +27,7 @@ import { themeColor, white } from '@edulastic/colors'
 import qs from 'qs'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 
+import { LIKERT_SCALE } from '@edulastic/constants/const/questionType'
 import { ItemsPagination, Selected, StyledVerticalDivider } from './styled'
 import {
   getCurriculumsListSelector,
@@ -205,12 +206,15 @@ class AddItems extends PureComponent {
         ...initSearch,
         ...sessionFilters,
         ...applyAuthoredFilter,
-        ...(isSurveyTest ? { questionType: 'likertScale' } : {}),
         subject: selectedSubjects[0] || subject || [],
         grades: uniq([...selectedGrades, ...grades]),
         curriculumId: parseInt(curriculumId, 10) || '',
       }
-
+      if (isSurveyTest) {
+        search.questionType = LIKERT_SCALE
+      } else if (search.questionType === LIKERT_SCALE) {
+        search.questionType = ''
+      }
       this.updateFilterState(search, sort)
     }
     if (!curriculums.length) getCurriculums()
@@ -279,8 +283,8 @@ class AddItems extends PureComponent {
       needToSetFilter: false,
     }
     if (isSurveyTest) {
-      clearFilterObj.search = { questionType: 'likertScale' }
-      initialSearchState.questionType = 'likertScale'
+      clearFilterObj.search = { questionType: LIKERT_SCALE }
+      initialSearchState.questionType = LIKERT_SCALE
     }
     clearFilterState(clearFilterObj)
     receiveTestItems(initialSearchState, initialSortState, 1, limit)

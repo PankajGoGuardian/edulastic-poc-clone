@@ -71,10 +71,7 @@ import {
   isSurveyTestSelector,
   setTestDataAction,
 } from '../../../TestPage/ducks'
-import {
-  getSearchParamsForBreadcrumbs,
-  getSearchParams,
-} from '../../../src/utils/util'
+import { getSearchParams } from '../../../src/utils/util'
 
 class Container extends Component {
   state = {
@@ -82,7 +79,7 @@ class Container extends Component {
   }
 
   componentDidMount() {
-    const { isSurveyTest, setCategory, setData } = this.props
+    const { isSurveyTest, setCategory, setData, selectedCategory } = this.props
     if (
       window.location.search.includes(`testType=${TEST_TYPE_SURVEY}`) ||
       isSurveyTest
@@ -92,6 +89,8 @@ class Container extends Component {
         updated: false,
       })
       setCategory('likert-scale')
+    } else if (selectedCategory === 'likert-scale') {
+      setCategory('multiple-choice')
     }
   }
 
@@ -253,9 +252,9 @@ class Container extends Component {
 
     if (isTestFlow) {
       const test_id = testId || params.testId || ''
-      let testPath = `/author/tests/create/description${getSearchParamsForBreadcrumbs()}`
+      let testPath = `/author/tests/create/description`
       if (test_id) {
-        testPath = `/author/tests/tab/description/id/${test_id}${getSearchParamsForBreadcrumbs()}`
+        testPath = `/author/tests/tab/description/id/${test_id}`
       }
       return [
         {
@@ -267,6 +266,7 @@ class Container extends Component {
           to: testPath,
           onClick: toggleModalAction,
           state: { persistStore: true },
+          ...getSearchParams(),
         },
         {
           title: 'SELECT A QUESTION TYPE',

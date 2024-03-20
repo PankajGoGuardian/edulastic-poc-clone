@@ -23,7 +23,11 @@ const BreadCrumb = (props) => {
               breadCrumb.state &&
               breadCrumb.to ? (
                 <Link
-                  to={{ pathname: breadCrumb.to, state: breadCrumb.state }}
+                  to={{
+                    pathname: breadCrumb.to,
+                    state: breadCrumb.state,
+                    ...(breadCrumb.search ? { search: breadCrumb.search } : {}),
+                  }}
                   onClick={breadCrumb.onClick}
                 >
                   {/* pass search here after processing the string or process string here by calling a helper function in utils, currently no such requirement */}

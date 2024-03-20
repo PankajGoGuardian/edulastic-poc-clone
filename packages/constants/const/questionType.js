@@ -170,6 +170,13 @@ const TTS_ENABLED_QUESTION_TYPES = [
   CLOZE_DROP_DOWN,
 ]
 
+const PassageDefaultTemplate = {
+  title: 'Passage',
+  heading: 'Section 3',
+  content:
+    'Enabling a <b>highlightable</b> text passage that can be used across multiple items.',
+}
+
 module.exports = {
   ALL_QUESTION_TYPES,
   SHORT_TEXT,
@@ -226,4 +233,5 @@ module.exports = {
   TTS_ENABLED_QUESTION_TYPES,
   LIKERT_SCALE,
   questionTypeWithoutCorrectAnswer,
+  PassageDefaultTemplate,
 }

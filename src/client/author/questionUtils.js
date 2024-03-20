@@ -15,6 +15,7 @@ import { templateHasImage, notification } from '@edulastic/common'
 import { testContentVisibility } from '@edulastic/constants/const/test'
 import { IN_PROGRESS } from '@edulastic/constants/const/assignmentStatus'
 import { LANGUAGE_ES } from '@edulastic/constants/const/languages'
+import { PassageDefaultTemplate } from '@edulastic/constants/const/questionType'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
 import { hasEmptyAnswers } from './utils/answerValidator'
 
@@ -218,46 +219,55 @@ const textCheck = (item) => {
 }
 
 const passageCheck = (i) => {
+  const itemsToValidate = []
   let item
+  const defaultHeading = PassageDefaultTemplate.heading
+  const defaultContent = PassageDefaultTemplate.content
+
   if (i.languageFeatures) {
     const languageCode = Object.keys(i.languageFeatures).shift()
     item = i.languageFeatures[languageCode]
   }
-  if (isRichTextFieldEmpty(i.heading || item?.heading)) {
-    return 'Heading cannot be empty.'
+
+  if (
+    (!isRichTextFieldEmpty(i.heading) && i.heading !== defaultHeading) ||
+    (!isRichTextFieldEmpty(i.content) && i.content !== defaultContent)
+  ) {
+    itemsToValidate.push(i)
   }
-  if (isRichTextFieldEmpty(i.contentsTitle || item?.contentsTitle)) {
-    return 'Title cannot be empty.'
+  if (
+    (!isRichTextFieldEmpty(item.heading) && item.heading !== defaultHeading) ||
+    (!isRichTextFieldEmpty(item.content) && item.content !== defaultContent)
+  ) {
+    itemsToValidate.push(item)
   }
 
-  const message = 'Passage cannot be empty.'
-  let invalidPassage = false
-  let invalidLanguagePassage = false
+  if (itemsToValidate.length === 0) {
+    itemsToValidate.push(i)
+  }
 
-  if (isRichTextFieldEmpty(i.content) && !i.paginated_content) {
-    invalidPassage = true
-  }
-  if (isRichTextFieldEmpty(item?.content) && !item?.paginated_content) {
-    invalidLanguagePassage = true
-  }
-  if (i.paginated_content) {
-    for (const o of i.pages) {
-      if (isRichTextFieldEmpty(o)) {
-        invalidPassage = true
-      }
+  let message
+  itemsToValidate.forEach((x) => {
+    if (isRichTextFieldEmpty(x.heading)) {
+      message = 'Heading cannot be empty.'
+      return
     }
-  }
-  if (item?.paginated_content) {
-    for (const o of item.pages) {
-      if (isRichTextFieldEmpty(o)) {
-        invalidLanguagePassage = true
-      }
+    if (isRichTextFieldEmpty(x.contentsTitle)) {
+      console.log('title error')
+      message = 'Title cannot be empty.'
+      return
     }
-  }
 
-  if (invalidPassage && invalidLanguagePassage) {
-    return message
-  }
+    if (isRichTextFieldEmpty(x.content) && !x.paginated_content) {
+      message = 'Passage cannot be empty.'
+      return
+    }
+
+    if (x?.paginated_content && x?.pages.some((o) => isRichTextFieldEmpty(o))) {
+      message = 'Passage cannot be empty.'
+    }
+  })
+  return message
 }
 
 const editingTaskOptionsCheck = ({

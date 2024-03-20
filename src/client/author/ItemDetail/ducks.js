@@ -117,6 +117,7 @@ import {
   LANGUAGES_OPTIONS,
   LANGUAGE_ES,
 } from '@edulastic/constants/const/languages'
+import { PassageDefaultTemplate } from '@edulastic/constants/const/questionType'
 
 // constants
 const testItemStatusConstants = {
@@ -2372,12 +2373,11 @@ function* addWidgetToPassage({ payload }) {
           }
         : {
             id: uuid(),
-            title: 'Passage',
+            title: PassageDefaultTemplate.title,
             type: questionType.PASSAGE,
-            heading: 'Section 3',
+            heading: PassageDefaultTemplate.heading,
             math_renderer: '',
-            content:
-              'Enabling a <b>highlightable</b> text passage that can be used across multiple items.',
+            content: PassageDefaultTemplate.content,
             hints: [{ value: uuid(), label: 'Hint A' }],
           }
     yield put(addQuestionAction(widget))

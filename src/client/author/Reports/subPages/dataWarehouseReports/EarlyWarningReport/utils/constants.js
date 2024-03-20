@@ -179,9 +179,14 @@ export const timeframeFilterValues = {
   [timeframeFilterKeys.QUARTERLY]: 'quarter',
 }
 
-export const riskCheckBoxDropdownOptions = Object.keys(RISK_BAND).map((key) =>
-  pick(RISK_BAND[key], ['label', 'color'])
-)
+export const riskCheckBoxDropdownOptions = Object.keys(RISK_BAND).map((key) => {
+  const { label, color } = RISK_BAND[key]
+  return {
+    key,
+    label,
+    color,
+  }
+})
 
 export const TABLE_PAGE_SIZE = 25
 

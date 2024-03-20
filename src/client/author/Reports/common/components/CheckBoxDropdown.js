@@ -12,7 +12,7 @@ const CheckBoxDropdown = ({
     <Checkbox.Group onChange={handleChange} defaultValue={defaultValues}>
       {data.map((checkBoxItem) => {
         return (
-          <StyledCheckBox key={checkBoxItem.label} value={checkBoxItem.label}>
+          <StyledCheckBox key={checkBoxItem.key} value={checkBoxItem.key}>
             <Label value={checkBoxItem} />
           </StyledCheckBox>
         )

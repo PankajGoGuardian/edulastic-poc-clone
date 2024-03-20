@@ -206,10 +206,7 @@ function StudentAutoComplete({
           />
         }
       >
-        <Input
-          suffix={InputSuffixIcon}
-          placeholder="Search and select student"
-        />
+        <Input suffix={InputSuffixIcon} placeholder="Enter student name" />
       </AutoComplete>
     </AutoCompleteContainer>
   )

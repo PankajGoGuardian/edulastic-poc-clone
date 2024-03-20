@@ -55,10 +55,7 @@ import {
   addItemToCartAction,
   approveOrRejectSingleItem as approveOrRejectSingleItemAction,
 } from '../../../../ItemList/ducks'
-import {
-  getSelectedItemSelector,
-  setTestItemsAction,
-} from '../../../../TestPage/components/AddItems/ducks'
+import { setTestItemsAction } from '../../../../TestPage/components/AddItems/ducks'
 import {
   getTestSelector,
   setNextPreviewItemAction,
@@ -1695,7 +1692,6 @@ const enhance = compose(
         preview: get(state, ['view', 'preview']),
         userId: get(state, ['user', 'user', '_id']),
         testItemPreviewData: get(state, ['testItemPreview', 'item'], {}),
-        selectedRows: getSelectedItemSelector(state),
         test: getTestSelector(state),
         testAssignments: getAssignmentsSelector(state),
         userFeatures: getUserFeatures(state),

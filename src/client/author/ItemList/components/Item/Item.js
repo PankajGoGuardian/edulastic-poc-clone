@@ -81,7 +81,6 @@ import {
 } from '../../../TestPage/ducks'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import PassageConfirmationModal from '../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal'
-import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
 import Tags from '../../../src/components/common/Tags'
 import appConfig from '../../../../../app-config'
 import SelectGroupModal from '../../../TestPage/components/AddItems/SelectGroupModal'
@@ -437,8 +436,8 @@ class Item extends Component {
   }
 
   isRemovingForAuthoring() {
-    const { item, selectedItems } = this.props
-    return selectedItems.includes(item?._id)
+    const { item, selectedRows } = this.props
+    return selectedRows.includes(item?._id)
   }
 
   /**
@@ -847,7 +846,6 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       isPublisherUser: isPublisherUserSelector(state),
       userRole: getUserRole(state),
-      selectedItems: getSelectedItemSelector(state),
       isDynamicTest: isDynamicTestSelector(state),
       hasSections: hasSectionsSelector(state),
     }),

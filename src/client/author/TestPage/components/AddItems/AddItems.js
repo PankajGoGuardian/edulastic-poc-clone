@@ -55,6 +55,7 @@ import {
   initialSearchState,
   getSortFilterStateSelector,
   initialSortState,
+  getAuthoringTestItemsSelector,
 } from './ducks'
 import {
   setAndSavePassageItemsAction,
@@ -672,6 +673,7 @@ class AddItems extends PureComponent {
       currentGroupIndexValueFromStore,
       setSectionsTestSetGroupIndex,
       setShowSectionsTestSelectGroupIndexModal,
+      selectedRows,
     } = this.props
     const { showSelectGroupModal } = this.state
     const selectedItemIds = test?.itemGroups?.flatMap(
@@ -838,7 +840,7 @@ class AddItems extends PureComponent {
                 <Spin spinning={aiTestStatus === STATUS.INPROGRESS}>
                   <PreviewModal
                     isVisible={!!this.selectedItem}
-                    page="itemList"
+                    page="addItems"
                     showAddPassageItemToTestButton
                     showEvaluationButtons
                     data={this.selectedItem}
@@ -861,6 +863,7 @@ class AddItems extends PureComponent {
                       setShowSectionsTestSelectGroupIndexModal
                     }
                     groupIndex={this.getGroupIndex}
+                    selectedRows={selectedRows}
                   />
                 </Spin>
               )}
@@ -900,6 +903,7 @@ const enhance = compose(
       hasSections: hasSectionsSelector(state),
       currentGroupIndexValueFromStore: getCurrentGroupIndexSelector(state),
       isSurveyTest: isSurveyTestSelector(state),
+      selectedRows: getAuthoringTestItemsSelector(state),
     }),
     {
       receiveTestItems: (search, sort, page, limit) => {

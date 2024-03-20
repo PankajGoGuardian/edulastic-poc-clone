@@ -154,6 +154,7 @@ const ItemListContainer = ({
           updateCurrentItemFromPassagePagination={
             updateCurrentItemFromPassagePagination
           }
+          selectedRows={selectedCartItems}
         />
       )}
       {items.map((item, index) => (
@@ -173,6 +174,7 @@ const ItemListContainer = ({
           showAnswer={showAnswer}
           search={search}
           page="itemList"
+          selectedRows={selectedCartItems}
         />
       ))}
     </>

@@ -35,6 +35,7 @@ import PreviewModal from '../../../../../src/components/common/PreviewModal'
 import HeaderBar from '../HeaderBar/HeaderBar'
 import {
   getItemsSubjectAndGradeSelector,
+  getAuthoringTestItemsSelector,
   setTestItemsAction,
 } from '../../../AddItems/ducks'
 import { getStandardsSelector } from '../../ducks'
@@ -711,6 +712,7 @@ class Review extends PureComponent {
       onSaveTestId,
       updated,
       showSelectGroupIndexModal,
+      selectedRows,
     } = this.props
     const {
       isCollapse,
@@ -927,6 +929,7 @@ class Review extends PureComponent {
               setShowSectionsTestSelectGroupIndexModal={
                 setShowSectionsTestSelectGroupIndexModal
               }
+              selectedRows={selectedRows}
             />
           </Spin>
         )}
@@ -1008,6 +1011,7 @@ const enhance = compose(
       aiTestStatus: get(state, 'aiTestDetails.status'),
       hasSections: hasSectionsSelector(state),
       isDefaultTest: isDefaultTestSelector(state),
+      selectedRows: getAuthoringTestItemsSelector(state),
     }),
     {
       setData: setTestDataAction,

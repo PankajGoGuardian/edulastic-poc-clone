@@ -4102,6 +4102,9 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
     if (!_test._id && page !== 'itemList') {
       yield put(createTestAction({ ..._test, ...newPayload }))
     }
+    if (page === 'itemList') {
+      newPayload.cart = true
+    }
     // for weird reason there is another store to show if a testItem should be shown
     // as selected or not in item banks page. Adding test items to there.
     yield put(setTestItemsAction(itemIds))

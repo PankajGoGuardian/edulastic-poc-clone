@@ -530,6 +530,15 @@ export const getSelectedItemSelector = createSelector(
   }
 )
 
+export const getAuthoringTestItemsSelector = createSelector(
+  getTestEntitySelector,
+  (_test) => {
+    const testItems =
+      _test.itemGroups.flatMap((itemGroup) => itemGroup.items || []) || []
+    return testItems.map((item) => item._id)
+  }
+)
+
 export const getItemsSubjectAndGradeSelector = createSelector(
   stateTestItemsSelector,
   (state) => state.itemsSubjectAndGrade

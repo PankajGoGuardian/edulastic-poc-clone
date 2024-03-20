@@ -2,6 +2,9 @@ import styled from 'styled-components'
 import { black, greyThemeDark4, themeColor } from '@edulastic/colors'
 import { Slider } from 'antd'
 
+// a min of 8px of separation in the text that is displated for mastery slider
+export const SLIDER_READING_MIN_SEPARATION = 8
+
 export const FiltersContainer = styled.div`
   width: 100%;
 `
@@ -11,6 +14,10 @@ export const ClassNameContainer = styled.div`
   line-height: 28px;
   font-weight: 400;
   color: ${greyThemeDark4};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 `
 
 export const TestNameContainer = styled.div`
@@ -20,7 +27,6 @@ export const TestNameContainer = styled.div`
   color: ${greyThemeDark4};
   padding-top: 14px;
   width: max-content;
-
   @media (min-width: 1400px) {
     padding-top: 20px;
   }
@@ -63,6 +69,7 @@ export const HeaderInformationContainer = styled.div`
   flex-direction: column;
   flex-wrap: nowrap;
   margin-left: 16px;
+  width: calc(100% - 200px);
 `
 
 export const FilterContentContainer = styled.div`
@@ -126,6 +133,9 @@ export const StyledSlider = styled(Slider)`
     height: 6px;
     background: ${themeColor};
   }
+  .ant-slider-dot {
+    display: none;
+  }
   &:hover {
     & .ant-slider-track {
       background: ${themeColor};
@@ -151,7 +161,7 @@ export const StandardDescContainer = styled.div`
   font-weight: 600;
   font-size: 12px;
   line-height: 24px;
-  width: 180px;
+  width: 170px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -161,7 +171,8 @@ export const StandardStudentCountContainer = styled.div`
   font-weight: 600;
   font-size: 11px;
   line-height: 24px;
-  width: 70px;
+  width: 80px;
+  white-space: nowrap;
   text-overflow: ellipsis;
 `
 

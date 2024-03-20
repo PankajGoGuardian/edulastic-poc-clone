@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { debounce } from 'lodash'
 import { IconInfoCircle } from '@edulastic/icons'
 import {
@@ -6,6 +6,7 @@ import {
   StyledSlider,
   SliderMarkContainer,
   MasteryRangeContainer,
+  SLIDER_READING_MIN_SEPARATION,
 } from './style'
 import { CustomTableTooltip } from '../../../Reports/common/components/customTableTooltip'
 import { TooltipContainer } from '../StudentList/style'
@@ -19,14 +20,42 @@ const MasteryRangeFilter = ({ masteryRange, setMasteryRange }) => {
     debounce(setMasteryRange, 500)(newMasteryRange)
   }, [])
 
-  const marks = {
-    [currentMasteryRange[0]]: (
-      <SliderMarkContainer>{currentMasteryRange[0]}%</SliderMarkContainer>
-    ),
-    [currentMasteryRange[1]]: (
-      <SliderMarkContainer>{currentMasteryRange[1]}%</SliderMarkContainer>
-    ),
-  }
+  const marks = useMemo(() => {
+    const separation = currentMasteryRange[1] - currentMasteryRange[0]
+
+    if (separation >= SLIDER_READING_MIN_SEPARATION) {
+      return {
+        [currentMasteryRange[0]]: (
+          <SliderMarkContainer>{currentMasteryRange[0]}%</SliderMarkContainer>
+        ),
+        [currentMasteryRange[1]]: (
+          <SliderMarkContainer>{currentMasteryRange[1]}%</SliderMarkContainer>
+        ),
+      }
+    }
+
+    const averageValue = (currentMasteryRange[1] + currentMasteryRange[0]) / 2
+
+    let lowerTickPosition = averageValue - SLIDER_READING_MIN_SEPARATION / 2
+    let upperTickPosition = averageValue + SLIDER_READING_MIN_SEPARATION / 2
+
+    if (lowerTickPosition < 0) {
+      upperTickPosition -= lowerTickPosition
+      lowerTickPosition = 0
+    } else if (upperTickPosition > 100) {
+      lowerTickPosition -= upperTickPosition - 100
+      upperTickPosition = 100
+    }
+
+    return {
+      [lowerTickPosition]: (
+        <SliderMarkContainer>{currentMasteryRange[0]}%</SliderMarkContainer>
+      ),
+      [upperTickPosition]: (
+        <SliderMarkContainer>{currentMasteryRange[1]}%</SliderMarkContainer>
+      ),
+    }
+  }, [currentMasteryRange])
 
   return (
     <MasteryRangeContainer>

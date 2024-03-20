@@ -23,6 +23,7 @@ export const RightSectionContainer = styled.div`
   max-height: calc(100vh - 64px);
   overflow: auto;
   flex-grow: 6;
+  max-width: 60%;
   padding-right: 52px;
 `
 
@@ -34,6 +35,7 @@ export const LeftSectionContainer = styled.div`
   gap: 75px;
   height: max-content;
   flex-grow: 4;
+  max-width: 40%;
   padding-left: 52px;
 `
 

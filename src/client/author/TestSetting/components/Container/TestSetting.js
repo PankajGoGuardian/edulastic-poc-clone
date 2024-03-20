@@ -408,6 +408,14 @@ class TestSetting extends Component {
                   <StyledCol data-cy="editAccommodation">
                     <InputLabel>
                       ALLOW TEACHERS TO CONFIGURE ACCOMMODATIONS{' '}
+                      <Tooltip
+                        title={i18translate('editTeacherAccommodation.info')}
+                      >
+                        <IconInfo
+                          color={lightGrey9}
+                          style={{ marginLeft: '10px', cursor: 'pointer' }}
+                        />
+                      </Tooltip>
                     </InputLabel>
                     <StyledRadioGrp
                       defaultValue={testSetting.editTeacherAccommodation}
@@ -421,16 +429,18 @@ class TestSetting extends Component {
                           <RadioBtn value={option.value}>
                             {option.title}
                           </RadioBtn>
-                          <Tooltip title={i18translate(option.helperText)}>
-                            <IconInfo
-                              color={lightGrey9}
-                              style={{
-                                marginLeft: '-12px',
-                                marginRight: '10px',
-                                cursor: 'pointer',
-                              }}
-                            />
-                          </Tooltip>
+                          <EduIf condition={option.helperText}>
+                            <Tooltip title={i18translate(option.helperText)}>
+                              <IconInfo
+                                color={lightGrey9}
+                                style={{
+                                  marginLeft: '-12px',
+                                  marginRight: '10px',
+                                  cursor: 'pointer',
+                                }}
+                              />
+                            </Tooltip>
+                          </EduIf>
                         </OptionContainer>
                       ))}
                     </StyledRadioGrp>

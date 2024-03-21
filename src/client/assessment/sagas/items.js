@@ -430,7 +430,6 @@ export function* saveUserResponse({ payload }) {
         isPlainObject(fileData?.scratchpad) &&
         _updatedScratpadKeys.includes(testItemId)
       ) {
-        console.log('Came here1')
         const listOfFilenameAndQuestionIdDict = yield all(
           Object.entries(fileData.scratchpad).map(([qid, scratchpadData]) =>
             call(getFileNameAndQidMap, qid, scratchpadData, defaultUploadFolder)

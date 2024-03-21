@@ -4,7 +4,7 @@ import {
   TUTORME_TO_EDULASTIC_GRADES,
   TUTORME_TO_EDULASTIC_SUBJECTS,
 } from '../ClassBoard/utils'
-import { TUTOR_ME_LEARN_MORE_URL } from './constants'
+import { TUTOR_ME_URL } from './constants'
 import { createSessionRequest } from './service'
 
 export const createInterventionObject = ({
@@ -166,5 +166,5 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
 }
 
 export const openTutorMeBusinessPage = () => {
-  return window.open(TUTOR_ME_LEARN_MORE_URL, '_blank', 'noreferrer')
+  return window.open(TUTOR_ME_URL, '_blank', 'noreferrer')
 }

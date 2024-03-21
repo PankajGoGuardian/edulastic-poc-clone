@@ -1547,8 +1547,9 @@ class ClassBoard extends Component {
       : null
 
     const isAssignTutoringActive =
-      !isTutorMeEnabled ||
-      (selectedStudentsKeys.length === 1 && !isTutorMeSessionRequestActive)
+      isTutorMeEnabled &&
+      selectedStudentsKeys.length <= 1 &&
+      !isTutorMeSessionRequestActive
     const LegendsWithStudentFilter = ({ showLegend = false }) => (
       <StudentSelect
         dataCy="dropDownSelect"
@@ -1933,7 +1934,9 @@ class ClassBoard extends Component {
                     </InfoMessage>
                   </EduIf>
                   <div style={{ display: 'flex' }}>
-                    <EduIf condition={isTutorMeVisibleToDistrict}>
+                    <EduIf
+                      condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}
+                    >
                       <Tooltip
                         placement="top"
                         title={assignTutoringTooltipTitle}

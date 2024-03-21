@@ -152,9 +152,8 @@ export function* watcherSaga() {
 export const getIsTutorMeVisibleToDistrictSelector = createSelector(
   getUserOrgId,
   (districtId) => {
-    const isTutorMeVisibleToDistrict = !process.env.REACT_APP_ASSIGN_TUTOR_DISABLED_DISTRICTS?.split(
-      ','
-    ).includes(districtId)
-    return isTutorMeVisibleToDistrict
+    const ASSIGN_TUTOR_DISABLED_DISTRICTS =
+      process.env.REACT_APP_ASSIGN_TUTOR_DISABLED_DISTRICTS || []
+    return !ASSIGN_TUTOR_DISABLED_DISTRICTS.includes(districtId)
   }
 )

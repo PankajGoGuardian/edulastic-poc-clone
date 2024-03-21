@@ -159,7 +159,7 @@ export const isValidVideoUrl = (url: string = '') => {
 
 export const isInputElement = (targetElement) => {
   if (
-    targetElement?.tagName === 'INPUT' ||
+    ['INPUT', 'TEXTAREA'].includes(targetElement?.tagName) ||
     targetElement?.contentEditable === 'true'
   ) {
     return true

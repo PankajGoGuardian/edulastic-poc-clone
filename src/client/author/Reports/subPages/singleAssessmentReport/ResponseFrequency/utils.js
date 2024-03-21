@@ -41,7 +41,7 @@ export function getTableData(metricInfo, isCsvDownloading) {
 
   const result = flatMap(Object.keys(groupedMetricInfo), (key) => {
     const data = groupedMetricInfo[key]
-    if (!data[0].multipartItem) return { ...data[0] }
+    if (!data[0].multipartItem) return [...data]
 
     const parentRowInfo = maxBy(data, 'maxScore')
     const combinedStandards = [

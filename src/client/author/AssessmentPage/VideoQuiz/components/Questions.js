@@ -461,6 +461,11 @@ class Questions extends React.Component {
   }
 
   handleQuestionItemClick = (question) => {
+    const { testMode, userRole, viewMode } = this.props
+
+    const isAuthorReview =
+      userRole !== STUDENT && !testMode && viewMode === 'review'
+
     const {
       handleUpdateSeektime,
       isSnapQuizVideoPlayer,
@@ -469,7 +474,7 @@ class Questions extends React.Component {
     } = this.props
     const { questionDisplayTimestamp = null } = question
     if (
-      (editMode || reportMode) &&
+      (editMode || reportMode || isAuthorReview) &&
       !isSnapQuizVideoPlayer &&
       questionDisplayTimestamp &&
       typeof handleUpdateSeektime === 'function'

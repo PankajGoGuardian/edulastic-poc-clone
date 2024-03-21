@@ -124,9 +124,6 @@ module.exports = override(
       type: 'javascript/auto',
     })
 
-    console.log(config.module, '\n\n')
-    console.log(config.module.rules)
-
     if (isProduction) {
       config.plugins.unshift(
         new webpack.HashedModuleIdsPlugin() // so that file hashes don't change unexpectedly

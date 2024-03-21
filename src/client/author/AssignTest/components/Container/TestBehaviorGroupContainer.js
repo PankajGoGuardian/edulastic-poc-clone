@@ -208,7 +208,7 @@ const TestBehaviorGroupContainer = ({
             userRole={userRole}
             testType={testType}
             onAssignmentTypeChange={changeField('testType')}
-            disabled={freezeSettings}
+            disabled={freezeSettings || testType === TEST_TYPE_SURVEY}
           />
         </StyledRow>
       </SettingContainer>

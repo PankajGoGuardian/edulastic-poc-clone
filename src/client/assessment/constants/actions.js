@@ -106,6 +106,7 @@ export const FILE_UPLOAD_ERROR = '[test] upload file error'
 
 // scratchPad
 export const SAVE_USER_WORK = '[userWork] save userWork'
+export const RESET_UPDATE_KEY = '[userWork] reset update key'
 export const LOAD_SCRATCH_PAD = '[userWork] load scratchPad data'
 export const LOAD_SCRATCH_PAD_SAVED =
   '[userWork] load scratchPad data maintaining state'

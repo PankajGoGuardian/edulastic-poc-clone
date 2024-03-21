@@ -5,6 +5,7 @@ import {
   LOAD_SCRATCH_PAD,
   CLEAR_USER_WORK,
   LOAD_SCRATCH_PAD_SAVED,
+  RESET_UPDATE_KEY,
 } from '../constants/actions'
 
 export const REQUEST_SCRATCH_PAD_SUCCESS = '[scratchpad] load success'
@@ -12,11 +13,21 @@ export const REQUEST_SCRATCH_PAD_SUCCESS = '[scratchpad] load success'
 const initialState = {}
 
 const userWork = (state = initialState, { type, payload }) => {
+  const scratchPadKeys = Object.keys(payload || {}).filter(
+    (key) => payload?.[key]?.scratchpad
+  )
+
   switch (type) {
+    case RESET_UPDATE_KEY:
+      return {
+        ...state,
+        ...payload,
+      }
     case SAVE_USER_WORK:
       return {
         ...state,
         ...payload,
+        updatedKeys: scratchPadKeys,
       }
     case LOAD_SCRATCH_PAD:
       return {
@@ -54,6 +65,7 @@ export default filterActions(
     LOAD_SCRATCH_PAD_SAVED,
     SAVE_USER_WORK,
     REQUEST_SCRATCH_PAD_SUCCESS,
+    RESET_UPDATE_KEY,
     ...Object.values(ActionTypes),
   ]
 )

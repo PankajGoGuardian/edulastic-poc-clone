@@ -49,6 +49,7 @@ import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/Assignment
 import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
 import { getTestItemQuestions } from '../../student/sharedDucks/TestItem'
 import { finishTestAcitivityAction } from '../actions/test'
+import { resetUpdateKeyAction } from '../actions/userWork'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -349,6 +350,10 @@ export function* saveUserResponse({ payload }) {
       }
     })
 
+    const _updatedScratpadKeys = yield select(
+      ({ userWork }) => userWork.present?.updatedKeys || []
+    )
+
     const _userWork = yield select(
       ({ userWork }) => userWork.present[testItemId] || {}
     )
@@ -421,7 +426,11 @@ export function* saveUserResponse({ payload }) {
         : _userWork
 
       // multiple scratchpad in item
-      if (isPlainObject(fileData?.scratchpad)) {
+      if (
+        isPlainObject(fileData?.scratchpad) &&
+        _updatedScratpadKeys.includes(testItemId)
+      ) {
+        console.log('Came here1')
         const listOfFilenameAndQuestionIdDict = yield all(
           Object.entries(fileData.scratchpad).map(([qid, scratchpadData]) =>
             call(getFileNameAndQidMap, qid, scratchpadData, defaultUploadFolder)
@@ -439,7 +448,11 @@ export function* saveUserResponse({ payload }) {
             return call(attachmentApi.updateAttachment, { update, filter })
           })
         )
-      } else if (fileData?.scratchpad) {
+        yield put(resetUpdateKeyAction({ updatedKeys: [] }))
+      } else if (
+        fileData?.scratchpad &&
+        _updatedScratpadKeys.includes(testItemId)
+      ) {
         const scratchpadUri = yield call(
           uploadToS3,
           fileData.scratchpad,
@@ -452,6 +465,7 @@ export function* saveUserResponse({ payload }) {
           scratchpadUri,
         })
         yield call(attachmentApi.updateAttachment, { update, filter })
+        yield put(resetUpdateKeyAction({ updatedKeys: [] }))
       }
     }
 

@@ -77,9 +77,9 @@
       "password": "Password",
       "superAdmin": "Super Admin",
       "insightsOnly": {
-        "title": "Insights Only",
+        "title": "Insights-Only",
         "text": "This user can only access reports / Insights features.",
-        "actionTitle": "Update Role to Insights Only"
+        "actionTitle": "Update Role to Insights-Only"
       },
       "role": "Role",
       "permission": "Permission",
@@ -143,9 +143,9 @@
       "powertools": "Enable Power Tools",
       "superAdmin": "Super Admin",
       "insightsOnly": {
-        "title": "Insights Only",
+        "title": "Insights-Only",
         "text": "This user can only access reports / Insights features.",
-        "actionTitle": "Update Role to Insights Only"
+        "actionTitle": "Update Role to Insights-Only"
       },
       "permission": "Permission",
       "permissions": "Permissions",

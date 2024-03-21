@@ -33,7 +33,7 @@ export const daPermissionsMap = {
   [DATA_OPS]: 'Data Operations',
   [DATA_OPS_ONLY]: 'Data Operations Only',
   [DATA_WAREHOUSE_REPORTS]: 'Data Studio Reports',
-  [INSIGHTS_ONLY]: 'Insights Only',
+  [INSIGHTS_ONLY]: 'Insights-Only',
 }
 
 export const canEnableInsightOnly = (existingPermissions) => {

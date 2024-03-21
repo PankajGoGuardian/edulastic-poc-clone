@@ -118,6 +118,15 @@ module.exports = override(
     // override with our config
     config.module.rules = setIn(config.module.rules, [1, 'oneOf'], rules)
 
+    config.module.rules.push({
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+    })
+
+    console.log(config.module, '\n\n')
+    console.log(config.module.rules)
+
     if (isProduction) {
       config.plugins.unshift(
         new webpack.HashedModuleIdsPlugin() // so that file hashes don't change unexpectedly

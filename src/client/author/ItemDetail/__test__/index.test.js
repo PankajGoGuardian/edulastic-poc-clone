@@ -1,11 +1,9 @@
 import React from 'react'
-import { Provider } from 'react-redux'
-import { ConnectedRouter } from 'connected-react-router'
 import { shallow, render } from 'enzyme'
 
-import configureStore from '../../../../../configureStore'
+import configureStore from '../../../configureStore'
 
-import ItemDetail from '../ItemDetail'
+import ItemDetail from '..'
 
 const { store } = configureStore()
 

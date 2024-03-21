@@ -85,10 +85,12 @@ const RootComp = () => (
   <I18nextProvider i18n={i18n}>
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <Helmet>
-          <link rel="canonical" href="https://assessment.peardeck.com/" />
-        </Helmet>
-        <App />
+        <>
+          <Helmet>
+            <link rel="canonical" href="https://assessment.peardeck.com/" />
+          </Helmet>
+          <App />
+        </>
       </ConnectedRouter>
     </Provider>
   </I18nextProvider>

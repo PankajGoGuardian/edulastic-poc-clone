@@ -12,7 +12,7 @@ import {
 import StudentGroupBtn from '../../common/components/StudentGroupBtn'
 
 const INFO_TOOLTIP_MESSAGE =
-  'Note: Metrics are based on student enrolment in the displayed school, class, or teacher. Data may include tests taken by these students that were not assigned to the displayed class or teacher.'
+  'Note: Metrics are based on student enrollment in the displayed school, class, or teacher. Data may include tests taken by these students that were not assigned to the displayed class or teacher.'
 
 const TableFilters = ({
   isDistrictGroupAdmin,

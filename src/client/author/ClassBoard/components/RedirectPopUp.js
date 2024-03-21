@@ -251,7 +251,21 @@ const RedirectPopUp = ({
         </Row>
 
         <Row>
-          <FieldLabel> Students </FieldLabel>
+          <FieldLabel>
+            {' '}
+            Students{' '}
+            {type === 'specificStudents' && (
+              <span
+                style={{
+                  fontSize: '15px',
+                  verticalAlign: 'middle',
+                  color: 'red',
+                }}
+              >
+                *
+              </span>
+            )}
+          </FieldLabel>
           <SelectInputStyled
             showSearch
             optionFilterProp="data"
@@ -308,7 +322,18 @@ const RedirectPopUp = ({
           ) : (
             isPremiumUser && (
               <Col span={12}>
-                <FieldLabel>Questions delivery</FieldLabel>
+                <FieldLabel>
+                  Questions delivery{' '}
+                  <span
+                    style={{
+                      fontSize: '15px',
+                      verticalAlign: 'middle',
+                      color: 'red',
+                    }}
+                  >
+                    *
+                  </span>
+                </FieldLabel>
                 <SelectInputStyled
                   data-cy="questionDelivery"
                   onChange={(val) => setQDeliveryState(val)}

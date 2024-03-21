@@ -361,7 +361,7 @@ class ExpressGrader extends Component {
                     isPresentationMode={isPresentationMode}
                     groupId={classId}
                     windowWidth={windowWidth}
-                    scoreMode={OnlyScoreMode}
+                    scoreMode={scoreMode}
                     updateRecord={this.updateRecord}
                   />
                 )}

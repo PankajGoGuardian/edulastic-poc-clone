@@ -71,6 +71,7 @@ export const getAssignedClassesByIdSelector = createSelector(
       TESTLET,
       HOMEWORK,
       QUIZ,
+      SURVEY,
     } = testTypesConstants.TEST_TYPES_VALUES_MAP
     const assignedClassesByTestType = {
       [COMMON_ASSESSMENT]: {},
@@ -80,6 +81,7 @@ export const getAssignedClassesByIdSelector = createSelector(
       [TESTLET]: {},
       [HOMEWORK]: {},
       [QUIZ]: {},
+      [SURVEY]: {},
     }
     for (const [key, value] of Object.entries(assignmentsByTestType)) {
       if (

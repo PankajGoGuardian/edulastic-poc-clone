@@ -20,6 +20,7 @@ import * as Sentry from '@sentry/browser'
 import { segmentApi } from '@edulastic/api'
 import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 import { testContentVisibility } from '@edulastic/constants/const/test'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
@@ -284,10 +285,14 @@ class AssignTest extends React.Component {
             },
           }
         : {}
+      const defaultTestType = isAdmin
+        ? testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
+        : ASSESSMENT
       this.updateAssignmentNew({
-        testType: isAdmin
-          ? testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
-          : ASSESSMENT,
+        testType:
+          testSettings.testType === TEST_TYPE_SURVEY
+            ? testSettings.testType
+            : defaultTestType,
         openPolicy: isAdmin
           ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
           : assignmentSettings.openPolicy,
@@ -337,7 +342,7 @@ class AssignTest extends React.Component {
 
   componentDidUpdate(prevProps) {
     const {
-      testSettings: { playerSkinType, settingId },
+      testSettings: { playerSkinType, settingId, testType },
       testSettingsList = [],
       userFeatures: { premium },
       setCurrentTestSettingsId,
@@ -346,13 +351,21 @@ class AssignTest extends React.Component {
       testSettings: {
         playerSkinType: prevPlayerSkinType,
         settingId: prevSettingId,
+        testType: prevTestType,
       },
       testSettingsList: prevTestSettingsList,
     } = prevProps
+    const updateAssignmentSettingObj = {}
     // the initial playerSkinType in reducer is edulastic,
     // but after fetching the test it can be other type like testlet
     // So need to update the assignmentSettings here
     if (playerSkinType !== prevPlayerSkinType) {
+      updateAssignmentSettingObj.playerSkinType = playerSkinType
+    }
+    if (testType === TEST_TYPE_SURVEY && testType !== prevTestType) {
+      updateAssignmentSettingObj.testType = testType
+    }
+    if (Object.keys(updateAssignmentSettingObj).length) {
       this.updateAssignmentNew({ playerSkinType })
     }
     const isSettingsListFetchedNow =

@@ -2136,7 +2136,7 @@ const setTime = (userRole) => {
 
 const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   const testType = entity?.testType
-  const { PRACTICE, COMMON } = testTypesConstants.TEST_TYPES
+  const { PRACTICE, COMMON, SURVEY } = testTypesConstants.TEST_TYPES
   const {
     ASSESSMENT,
     PRACTICE: _PRACTICE,
@@ -2202,7 +2202,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   }
 
   if (isAdmin) {
-    settings.testType = PRACTICE.includes(testType)
+    settings.testType = [...PRACTICE, ...SURVEY].includes(testType)
       ? testType
       : COMMON.includes(testType)
       ? testType

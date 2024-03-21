@@ -255,7 +255,7 @@ class Container extends PureComponent {
     history.push({
       pathname: url,
       state: { ...history.location.state, showCancelButton },
-      ...getSearchParams(),
+      ...getSearchParams('testType'),
     })
   }
 

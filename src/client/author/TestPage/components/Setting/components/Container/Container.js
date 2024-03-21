@@ -1058,7 +1058,7 @@ class Setting extends Component {
           'accommodationsSettings.textToSpeech.description'
         ),
         id: textToSpeech.id,
-        isEnabled: isAccommodationEditAllowed,
+        isEnabled: features?.textToSpeech && isAccommodationEditAllowed,
       },
     ]
 
@@ -2156,7 +2156,7 @@ class Setting extends Component {
                             </Col>
                             <Col span={18}>
                               <StyledRadioGroup
-                                disabled={disabled}
+                                disabled={disabled || !premium}
                                 onChange={(e) => {
                                   // const value = last !== undefined ? last : first
                                   this.updateTestData(o.key)(e.target.value)

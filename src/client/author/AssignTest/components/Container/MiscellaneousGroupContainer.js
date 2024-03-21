@@ -146,7 +146,7 @@ const MiscellaneousGroupContainer = ({
       value: showTextToSpeech,
       description: translate('accommodationsSettings.textToSpeech.description'),
       id: textToSpeech.id,
-      isEnabled: isAccommodationEditAllowed,
+      isEnabled: featuresAvailable?.textToSpeech && isAccommodationEditAllowed,
     },
   ]
 
@@ -300,7 +300,7 @@ const MiscellaneousGroupContainer = ({
                           width={tootltipWidth}
                           title={accommodations[key]}
                           content={description}
-                          premium
+                          premium={premium}
                           placement="rightTop"
                         />
                         <StyledRow
@@ -316,7 +316,7 @@ const MiscellaneousGroupContainer = ({
                           <Col span={16}>
                             <StyledRadioGroup
                               isAssignment
-                              disabled={freezeSettings}
+                              disabled={freezeSettings || !premium}
                               onChange={(e) =>
                                 overRideSettings(key, e.target.value)
                               }

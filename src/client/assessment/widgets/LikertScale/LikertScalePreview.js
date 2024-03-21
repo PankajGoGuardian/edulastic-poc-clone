@@ -17,7 +17,6 @@ const LikertScalePreview = ({
   item = {},
   saveAnswer,
   userAnswer,
-  inLCB,
   isStudentReport,
   isLCBView,
 }) => {
@@ -57,7 +56,7 @@ const LikertScalePreview = ({
               view={view}
               saveAnswer={saveAnswer}
               userAnswer={userAnswer}
-              disableOptions={inLCB || isStudentReport || isLCBView}
+              disableOptions={isStudentReport || isLCBView}
             />
           </FlexContainer>
         </>
@@ -73,7 +72,6 @@ LikertScalePreview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.string,
-  inLCB: PropTypes.bool,
   isStudentReport: PropTypes.bool,
   isLCBView: PropTypes.bool,
 }
@@ -81,7 +79,6 @@ LikertScalePreview.propTypes = {
 LikertScalePreview.defaultProps = {
   userAnswer: '',
   showQuestionNumber: false,
-  inLCB: false,
   isStudentReport: false,
   isLCBView: false,
 }

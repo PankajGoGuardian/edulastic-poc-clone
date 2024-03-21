@@ -301,6 +301,9 @@ export const validateQuestionsForGoogleForm = (
     .every((question) => {
       const validationValue = get(question, 'validation.validResponse.value')
       if (question.type === CLOZE_DROP_DOWN) {
+        if (isEmpty(validationValue)) {
+          return false
+        }
         return validationValue.every((value) => !isEmpty(value.value))
       }
       return !isEmpty(validationValue)

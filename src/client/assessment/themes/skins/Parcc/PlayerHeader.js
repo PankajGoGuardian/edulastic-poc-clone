@@ -51,6 +51,8 @@ import useLineReader from '../../../../common/components/LineReader/components/u
 import LineReader from '../../../../common/components/LineReader'
 import { getUserAccommodations } from '../../../../student/Login/ducks'
 import { isImmersiveReaderEnabled } from '../../../utils/helpers'
+import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
+import { isPremiumUserSelector } from '../../../../author/src/selectors/user'
 
 const {
   playerSkin: { parcc },
@@ -114,6 +116,8 @@ const PlayerHeader = ({
   isLineReaderVisible,
   showSubmitText,
   accommodations,
+  isTestPreviewModalVisible,
+  isPremiumUser,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -337,10 +341,13 @@ const PlayerHeader = ({
               </FlexContainer>
               <FlexContainer>
                 <EduIf
-                  condition={isImmersiveReaderEnabled(
-                    showImmersiveReader,
-                    accommodations
-                  )}
+                  condition={
+                    isImmersiveReaderEnabled(
+                      showImmersiveReader,
+                      accommodations
+                    ) ||
+                    (isTestPreviewModalVisible && isPremiumUser)
+                  }
                 >
                   <ImmersiveReader
                     ImmersiveReaderButton={ImmersiveReaderButton}
@@ -387,6 +394,8 @@ const enhance = compose(
       testType: state.test?.settings?.testType,
       isLineReaderVisible: lineReaderVisible(state),
       accommodations: getUserAccommodations(state),
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

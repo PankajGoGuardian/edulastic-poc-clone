@@ -26,7 +26,10 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { themeColor } from '@edulastic/colors'
 import { STUDENT } from '@edulastic/constants/const/roleType'
-import { getUserNameSelector } from '../../../author/src/selectors/user'
+import {
+  getUserNameSelector,
+  isPremiumUserSelector,
+} from '../../../author/src/selectors/user'
 import {
   toggleScratchpadVisbilityAction,
   adjustScratchpadDimensionsAction,
@@ -51,7 +54,10 @@ import {
 } from '../../../student/Login/ducks'
 import { isImmersiveReaderEnabled } from '../../utils/helpers'
 import { isVideoEndedSelector } from '../../../author/AssessmentPage/ducks/selectors'
-import { vqPreventQuestionSkippingSelector } from '../../selectors/test'
+import {
+  getIsPreviewModalVisibleSelector,
+  vqPreventQuestionSkippingSelector,
+} from '../../selectors/test'
 
 export function useUtaPauseAllowed(utaId) {
   if (!utaId) {
@@ -103,6 +109,8 @@ const SaveAndExit = ({
   vqPreventSkipping,
   isVideoEnded,
   userRole,
+  isTestPreviewModalVisible,
+  isPremiumUser,
 }) => {
   const utaPauseAllowed = useUtaPauseAllowed(utaId)
 
@@ -218,10 +226,10 @@ const SaveAndExit = ({
         </>
       )}
       <EduIf
-        condition={isImmersiveReaderEnabled(
-          showImmersiveReader,
-          accommodations
-        )}
+        condition={
+          isImmersiveReaderEnabled(showImmersiveReader, accommodations) ||
+          (isTestPreviewModalVisible && isPremiumUser)
+        }
       >
         <EduThen>
           <ImmersiveReader
@@ -362,6 +370,8 @@ export default compose(
       isVideoEnded: isVideoEndedSelector(state),
       userRole: getUserRole(state),
       vqPreventSkipping: vqPreventQuestionSkippingSelector(state),
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       adjustScratchpad: adjustScratchpadDimensionsAction,

@@ -51,10 +51,14 @@ import TimedTestTimer from '../../common/TimedTestTimer'
 import QuestionSelectDropdown from '../../common/QuestionSelectDropdown'
 import { isPearDomain } from '../../../../../utils/pear'
 import { AssessPeardeckLogoCompact } from '../../../../admin/Common/StyledComponents'
-import { getUserNameSelector } from '../../../../author/src/selectors/user'
+import {
+  getUserNameSelector,
+  isPremiumUserSelector,
+} from '../../../../author/src/selectors/user'
 import { StyledTextForStudent } from '../../common/styledCompoenents'
 import { getUserAccommodations } from '../../../../student/Login/ducks'
 import { isImmersiveReaderEnabled } from '../../../utils/helpers'
+import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
 
 const {
   playerSkin: { drc },
@@ -109,6 +113,8 @@ const PlayerHeader = ({
   immersiveReaderTitle = '',
   userName,
   accommodations,
+  isTestPreviewModalVisible,
+  isPremiumUser,
 }) => {
   const {
     enableScratchpad,
@@ -294,10 +300,13 @@ const PlayerHeader = ({
               </Container>
               <RightContent>
                 <EduIf
-                  condition={isImmersiveReaderEnabled(
-                    showImmersiveReader,
-                    accommodations
-                  )}
+                  condition={
+                    isImmersiveReaderEnabled(
+                      showImmersiveReader,
+                      accommodations
+                    ) ||
+                    (isTestPreviewModalVisible && isPremiumUser)
+                  }
                 >
                   <ImmersiveReader
                     ImmersiveReaderButton={ImmersiveReaderButton}
@@ -343,6 +352,8 @@ const enhance = compose(
       zoomLevel: state.ui.zoomLevel,
       userName: getUserNameSelector(state),
       accommodations: getUserAccommodations(state),
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

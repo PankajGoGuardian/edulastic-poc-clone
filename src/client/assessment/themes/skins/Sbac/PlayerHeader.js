@@ -48,6 +48,7 @@ import { themes } from '../../../../theme'
 import {
   getUserNameSelector,
   getUserRole,
+  isPremiumUserSelector,
 } from '../../../../author/src/selectors/user'
 import QuestionList from './QuestionList'
 import ToolBar from './ToolBar'
@@ -120,6 +121,8 @@ const PlayerHeader = ({
   showSubmitText,
   userName,
   accommodations,
+  isTestPreviewModalVisible,
+  isPremiumUser,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -198,10 +201,10 @@ const PlayerHeader = ({
               </Tooltip>
             </FlexContainer>
             <EduIf
-              condition={isImmersiveReaderEnabled(
-                showImmersiveReader,
-                accommodations
-              )}
+              condition={
+                isImmersiveReaderEnabled(showImmersiveReader, accommodations) ||
+                (isTestPreviewModalVisible && isPremiumUser)
+              }
             >
               <ImmersiveReader
                 ImmersiveReaderButton={ImmersiveReaderButton}
@@ -438,6 +441,7 @@ const enhance = compose(
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       utaPreferredLanguage: getCurrentLanguage(state),
       userName: getUserNameSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       setZoomLevel: setZoomLevelAction,

@@ -44,10 +44,14 @@ import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import TimedTestTimer from '../../common/TimedTestTimer'
 import { useUtaPauseAllowed } from '../../common/SaveAndExit'
 import { isPearDomain } from '../../../../../utils/pear'
-import { getUserNameSelector } from '../../../../author/src/selectors/user'
+import {
+  getUserNameSelector,
+  isPremiumUserSelector,
+} from '../../../../author/src/selectors/user'
 import { StyledTextForStudent } from '../../common/styledCompoenents'
 import { getUserAccommodations } from '../../../../student/Login/ducks'
 import { isImmersiveReaderEnabled } from '../../../utils/helpers'
+import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
 
 const {
   playerSkin: { quester },
@@ -97,6 +101,8 @@ const PlayerHeader = ({
   showSubmitText,
   userName,
   accommodations,
+  isTestPreviewModalVisible,
+  isPremiumUser,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -189,10 +195,10 @@ const PlayerHeader = ({
               </Tooltip>
             </FlexContainer>
             <EduIf
-              condition={isImmersiveReaderEnabled(
-                showImmersiveReader,
-                accommodations
-              )}
+              condition={
+                isImmersiveReaderEnabled(showImmersiveReader, accommodations) ||
+                (isTestPreviewModalVisible && isPremiumUser)
+              }
             >
               <ImmersiveReader
                 ImmersiveReaderButton={ImmersiveReaderButton}
@@ -408,6 +414,8 @@ const enhance = compose(
       userName: getUserNameSelector(state),
       showImmersiveReader: state.test?.settings?.showImmersiveReader,
       accommodations: getUserAccommodations(state),
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

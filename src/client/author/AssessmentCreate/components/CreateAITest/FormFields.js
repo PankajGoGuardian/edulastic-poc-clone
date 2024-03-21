@@ -174,7 +174,7 @@ const FormFields = ({
         <Col xs={24}>
           <StyledFilterLabel>I Want To</StyledFilterLabel>
           <TextAreaInputStyled
-            data-cy="aiDescription"
+            data-cy="aiTestPromptDescription"
             placeholder="Eg: Generate items focused on rational numbers where students need to use rational root test and also generate hints."
             maxLength={256}
             onChange={(e) => handleFieldDataChange(PREFERENCE, e.target.value)}

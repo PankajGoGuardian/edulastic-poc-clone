@@ -32,3 +32,7 @@ export const StyledList = styled.ul`
   font-weight: 600;
   padding: 16px 32px;
 `
+
+export const ErrorMessageWrapper = styled.div`
+  padding: 8px 0px;
+`

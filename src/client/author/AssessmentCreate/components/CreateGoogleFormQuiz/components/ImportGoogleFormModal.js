@@ -11,6 +11,7 @@ import {
   StyledCancelButton,
   StyledList,
   StyledProgress,
+  ErrorMessageWrapper,
 } from './styled'
 import { formatIndexWithAnd } from '../utils'
 
@@ -22,7 +23,7 @@ const getTitle = (status) => {
       return 'Imported Successfully'
     case 'FAILED':
     default:
-      return 'Something went wrong'
+      return 'Import Failed'
   }
 }
 const ImportGoogleFormModal = ({
@@ -31,6 +32,7 @@ const ImportGoogleFormModal = ({
   onCancel,
   formName,
   data,
+  errorMessage,
   history,
 }) => {
   const {
@@ -63,14 +65,14 @@ const ImportGoogleFormModal = ({
     >
       <>
         <HeadingWrapper strong>{getTitle(status)}</HeadingWrapper>
-        <EduIf condition={status === 'SUCCESS'}>
+        <EduIf condition={status !== 'INITIATED'}>
           <Divider type="horizontal" />
         </EduIf>
         <Row type="flex" gutter={6}>
-          <FormIconWrapper>
+          <FormIconWrapper span={2}>
             <IconGoogleForm />
           </FormIconWrapper>
-          <Col>
+          <Col span={22}>
             <FormNameWrapper>{formName}</FormNameWrapper>
             <EduIf condition={status === 'SUCCESS'}>
               <StyledList>
@@ -96,6 +98,13 @@ const ImportGoogleFormModal = ({
                   </li>
                 )}
               </StyledList>
+            </EduIf>
+            <EduIf condition={status === 'FAILED'}>
+              <ErrorMessageWrapper>
+                <Typography.Text strong style={{ color: '#EB9442' }}>
+                  {errorMessage}
+                </Typography.Text>
+              </ErrorMessageWrapper>
             </EduIf>
           </Col>
         </Row>

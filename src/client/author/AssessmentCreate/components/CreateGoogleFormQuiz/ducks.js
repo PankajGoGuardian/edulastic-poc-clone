@@ -1,5 +1,4 @@
 import { testImportApi } from '@edulastic/api'
-import { notification } from '@edulastic/common'
 import { all, call, put, takeEvery } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 
@@ -32,6 +31,7 @@ export const getImportGoogleFormTestSelector = createSelector(
 const initialState = {
   apiStatus: false,
   result: {},
+  errorMessage: '',
 }
 
 // reducer
@@ -49,23 +49,33 @@ export const reducer = (state = initialState, { type, payload }) => {
 
 // sagas
 function* importGoogleFormTestSaga({ payload }) {
-  const failedMessage =
+  const generalErrorMessage =
     'Apologies for the inconvenience. We encountered an issue while importing test from Google Form. Please try again'
 
   try {
     yield put(
-      setImportGoogleFormTestStateAction({ apiStatus: 'INITIATED', result: [] })
+      setImportGoogleFormTestStateAction({
+        apiStatus: 'INITIATED',
+        result: [],
+        errorMessage: '',
+      })
     )
     const { result } = yield call(testImportApi.importGoogleFormTest, payload)
     yield put(
-      setImportGoogleFormTestStateAction({ apiStatus: 'SUCCESS', result })
+      setImportGoogleFormTestStateAction({
+        apiStatus: 'SUCCESS',
+        result,
+        errorMessage: '',
+      })
     )
   } catch (err) {
     yield put(
-      setImportGoogleFormTestStateAction({ apiStatus: 'FAILED', result: [] })
+      setImportGoogleFormTestStateAction({
+        apiStatus: 'FAILED',
+        result: [],
+        errorMessage: err?.message || generalErrorMessage,
+      })
     )
-    const errorMessage = failedMessage
-    notification({ msg: errorMessage })
   }
 }
 

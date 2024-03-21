@@ -224,20 +224,21 @@ const passageCheck = (i) => {
   const defaultHeading = PassageDefaultTemplate.heading
   const defaultContent = PassageDefaultTemplate.content
 
-  if (i.languageFeatures) {
+  if (i?.languageFeatures) {
     const languageCode = Object.keys(i.languageFeatures).shift()
-    item = i.languageFeatures[languageCode]
+    item = i?.languageFeatures[languageCode]
   }
 
   if (
-    (!isRichTextFieldEmpty(i.heading) && i.heading !== defaultHeading) ||
-    (!isRichTextFieldEmpty(i.content) && i.content !== defaultContent)
+    (!isRichTextFieldEmpty(i?.heading) && i?.heading !== defaultHeading) ||
+    (!isRichTextFieldEmpty(i?.content) && i?.content !== defaultContent)
   ) {
     itemsToValidate.push(i)
   }
   if (
-    (!isRichTextFieldEmpty(item.heading) && item.heading !== defaultHeading) ||
-    (!isRichTextFieldEmpty(item.content) && item.content !== defaultContent)
+    (!isRichTextFieldEmpty(item?.heading) &&
+      item?.heading !== defaultHeading) ||
+    (!isRichTextFieldEmpty(item?.content) && item?.content !== defaultContent)
   ) {
     itemsToValidate.push(item)
   }
@@ -248,17 +249,17 @@ const passageCheck = (i) => {
 
   let message
   itemsToValidate.forEach((x) => {
-    if (isRichTextFieldEmpty(x.heading)) {
+    if (isRichTextFieldEmpty(x?.heading)) {
       message = 'Heading cannot be empty.'
       return
     }
-    if (isRichTextFieldEmpty(x.contentsTitle)) {
+    if (isRichTextFieldEmpty(x?.contentsTitle)) {
       console.log('title error')
       message = 'Title cannot be empty.'
       return
     }
 
-    if (isRichTextFieldEmpty(x.content) && !x.paginated_content) {
+    if (isRichTextFieldEmpty(x?.content) && !x?.paginated_content) {
       message = 'Passage cannot be empty.'
       return
     }

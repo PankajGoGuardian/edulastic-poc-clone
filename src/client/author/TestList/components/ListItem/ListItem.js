@@ -31,6 +31,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 import {
   getAuthorCollectionMap,
@@ -137,6 +138,9 @@ class ListItem extends Component {
         state: {
           editTestFlow: true,
         },
+        ...(item.testType === TEST_TYPE_SURVEY
+          ? { search: `testType=${TEST_TYPE_SURVEY}` }
+          : {}),
       })
     }
   }

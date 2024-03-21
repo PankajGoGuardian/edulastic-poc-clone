@@ -13,6 +13,7 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import classIcon from '../../assets/manage-class.svg'
 import viewIcon from '../../assets/view.svg'
 import completionReportIcon from '../../assets/completion-report.svg'
@@ -246,7 +247,12 @@ const ActionMenu = ({
         </Menu.Item>
         <Menu.Item data-cy="view-details" key="view-details">
           <Link
-            to={`/author/tests/tab/review/id/${currentTestId}`}
+            to={{
+              pathname: `/author/tests/tab/review/id/${currentTestId}`,
+              ...(assignmentTest.testType === TEST_TYPE_SURVEY
+                ? { search: `testType=${TEST_TYPE_SURVEY}` }
+                : {}),
+            }}
             rel="noopener noreferrer"
           >
             <img alt="icon" src={infomationIcon} />

@@ -364,9 +364,12 @@ class Container extends Component {
     const isShowAnswerVisible =
       question &&
       !constantsQuestionType.manuallyGradableQn.includes(question.type) &&
-      !isSurveyTest
+      !isSurveyTest &&
+      question.type !== constantsQuestionType.LIKERT_SCALE
     const isShowCheckButton =
-      (isShowAnswerVisible || checkAnswerButton) && !isSurveyTest
+      (isShowAnswerVisible || checkAnswerButton) &&
+      !isSurveyTest &&
+      question.type !== constantsQuestionType.LIKERT_SCALE
 
     return (
       <ButtonAction

@@ -29,6 +29,7 @@ import { greyThemeDark3 } from '@edulastic/colors'
 import {
   TEST_TYPES_VALUES_MAP,
   TEST_TYPE_LABELS,
+  TEST_TYPE_SURVEY,
 } from '@edulastic/constants/const/testTypes'
 
 import arrowUpIcon from '../../assets/arrow-up.svg'
@@ -73,6 +74,7 @@ import {
   getUserRole,
   getGroupList,
   isPremiumUserSelector,
+  getDataWarehouseReports,
 } from '../../../src/selectors/user'
 import { getAssignmentTestsSelector } from '../../../src/selectors/assignments'
 import { canEditTest, assignmentStatus } from '../../utils'
@@ -83,6 +85,7 @@ import {
 } from '../../../../student/Login/ducks'
 import {
   ASSESSMENT_SUMMARY_LINK_PREFIX,
+  SURVEY_RESPONSE_SUMMARY_LINK_PREFIX,
   shortTestIdKeyLength,
 } from '../../constants'
 import PremiumPopover from '../../../../features/components/PremiumPopover'
@@ -185,6 +188,7 @@ const TableList = ({
   isDemoPlayground = false,
   isProxiedByEAAccount = false,
   isPremiumUser,
+  showDataWarehouseReport,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
   const [details, setdetails] = useState(true)
@@ -628,13 +632,19 @@ const TableList = ({
       render: (_, row) => {
         const { showViewSummary, currentAssignment } = row
         const { testId, termId, testType } = currentAssignment
+        const isDSUserAndSurveyTest =
+          testType === TEST_TYPE_SURVEY && showDataWarehouseReport
+        const reportLink = isDSUserAndSurveyTest
+          ? SURVEY_RESPONSE_SUMMARY_LINK_PREFIX
+          : ASSESSMENT_SUMMARY_LINK_PREFIX
         return (
           <AnalyzeLink
             testId={testId}
             termId={termId}
             testType={testType}
             showAnalyseLink={showViewSummary}
-            linkPrefix={ASSESSMENT_SUMMARY_LINK_PREFIX}
+            linkPrefix={reportLink}
+            isDSUserAndSurveyTest={isDSUserAndSurveyTest}
           />
         )
       },
@@ -867,6 +877,7 @@ const enhance = compose(
       isDemoPlayground: isDemoPlaygroundUser(state),
       isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
       isPremiumUser: isPremiumUserSelector(state),
+      showDataWarehouseReport: getDataWarehouseReports(state),
     }),
     {
       setItemsToFolder: setItemsMoveFolderAction,

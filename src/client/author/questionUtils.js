@@ -33,6 +33,7 @@ const {
   PASSAGE,
   EDITING_TASK,
   MATH,
+  LIKERT_SCALE,
 } = questionType
 
 const { methods } = math
@@ -188,6 +189,18 @@ const multipleChoiceOptionsCheck = ({
   )
 }
 
+/**
+ * default options check
+ * @param {Object} item
+ */
+const likertScaleOptionsCheck = ({ options = [] }) => {
+  // there should be atleast 1 option.
+  if (options.length === 0) return true
+
+  // item should have a label, and label should not be empty
+  return options.some((opt) => isRichTextFieldEmpty(opt.label))
+}
+
 const videoCheck = (item) => {
   // Updating item with languageFeature first language item if english content not available
   if (!item.sourceURL && item.languageFeatures) {
@@ -300,6 +313,8 @@ const hasEmptyOptions = (item) => {
       return multipleChoiceOptionsCheck(item)
     case EDITING_TASK:
       return editingTaskOptionsCheck(item)
+    case LIKERT_SCALE:
+      return likertScaleOptionsCheck(item)
     default:
       return false
   }

@@ -14,7 +14,13 @@ import { Col } from '../../../styled/WidgetOptions/Col'
 import { Label } from '../../../styled/WidgetOptions/Label'
 import Question from '../../../components/Question'
 import Options from './Options'
-import { MAX_OPTIONS_LIMIT, AGREEMENT, allScaleTypes, ASC } from '../constants'
+import {
+  MAX_OPTIONS_LIMIT,
+  AGREEMENT,
+  allScaleTypes,
+  ASC,
+  DEFAULT_SCALE_COLORS,
+} from '../constants'
 
 const ScaleOptions = ({
   t,
@@ -135,6 +141,7 @@ const ScaleOptions = ({
             value: uuid(),
             label: '',
             score: newOptionScore,
+            bgColor: DEFAULT_SCALE_COLORS[4],
           })
           draft.validation.validResponse.score = newOptionScore
         } else {
@@ -142,6 +149,7 @@ const ScaleOptions = ({
             value: uuid(),
             label: '',
             score: 0,
+            bgColor: DEFAULT_SCALE_COLORS[4],
           })
         }
         draft.options.sort(

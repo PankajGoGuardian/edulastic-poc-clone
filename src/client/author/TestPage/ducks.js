@@ -2401,6 +2401,7 @@ export function* receiveTestByIdSaga({ payload }) {
             showCancelButton: payload.editAssigned,
             editAssigned: payload.editAssigned,
           },
+          ...getSearchParams('testType'),
         })
       )
     }
@@ -3976,15 +3977,29 @@ function* duplicateTestSaga({ payload }) {
         })
       )
     }
+    const searchObj =
+      data?.testType === TEST_TYPE_SURVEY
+        ? { search: `testType=${TEST_TYPE_SURVEY}` }
+        : {}
     if (redirectToNewTest) {
       // cloning from test review page or test library (non-regrade flow)
-      yield put(push(`/author/tests/${data._id}${searchParam}`))
+      yield put(
+        push({
+          pathname: `/author/tests/${data._id}${searchParam}`,
+          ...searchObj,
+        })
+      )
       yield put(setEditEnableAction(true))
       yield put(setTestsLoadingAction(false))
       yield put(receiveTestByIdAction(data._id, true))
       return
     }
-    yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`))
+    yield put(
+      push({
+        pathname: `/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`,
+        ...searchObj,
+      })
+    )
     yield put(setTestsLoadingAction(false))
     yield put(receiveTestByIdAction(data._id, true))
     notification({ msg: 'You are currently editing a cloned test' })

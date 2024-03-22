@@ -112,7 +112,7 @@ const StandardsMasteryReportFilters = ({
     ? getArrayOfAllTestTypes()
     : getArrayOfNonPremiumTestTypes()
   ).filter(({ key }) =>
-    isSelReport ? TEST_TYPE_SURVEY === key : !TEST_TYPE_SURVEY === key
+    isSelReport ? TEST_TYPE_SURVEY === key : TEST_TYPE_SURVEY !== key
   )
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.CLASS_FILTERS.key

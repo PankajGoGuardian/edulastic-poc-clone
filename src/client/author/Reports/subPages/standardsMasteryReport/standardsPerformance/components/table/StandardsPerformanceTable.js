@@ -176,7 +176,11 @@ const getColumns = (
   return columns
 }
 
-const onCsvConvert = (data) => downloadCSV(`Mastery By Domain.csv`, data)
+const onCsvConvert = (data, rawData, isSurveyTest) =>
+  downloadCSV(
+    isSurveyTest ? `Survey Insights.csv` : `Mastery By Domain.csv`,
+    data
+  )
 
 const StandardsPerformanceTable = ({
   t,
@@ -192,6 +196,7 @@ const StandardsPerformanceTable = ({
   selectedTermId,
   isSharedReport,
   displayTextForMastery,
+  isSurveyTest,
 }) => {
   // augment analyseByKey to tableData records for conditional sorting
   const augmentedTableData = useMemo(
@@ -287,6 +292,7 @@ const StandardsPerformanceTable = ({
             isCsvDownloading={isCsvDownloading}
             tableToRender={StyledTable}
             scroll={{ x: '100%' }}
+            isSurveyTest={isSurveyTest}
           />
         </Col>
       </Row>

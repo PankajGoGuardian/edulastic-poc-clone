@@ -18,6 +18,7 @@ const CsvTable = ({
   getColumnHeaders,
   columns,
   pagination = defaultPagination,
+  isSurveyTest = false,
   ...restProps
 }) => {
   const Component = tableToRender
@@ -57,7 +58,7 @@ const CsvTable = ({
         childrenRef.current,
         getColumnHeaders
       )
-      onCsvConvert(csvText, csvRawData)
+      onCsvConvert(csvText, csvRawData, isSurveyTest)
     }
   }, [isCsvDownloading])
 

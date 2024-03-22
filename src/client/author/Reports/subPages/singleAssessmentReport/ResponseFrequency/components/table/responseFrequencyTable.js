@@ -241,6 +241,7 @@ const ResponseFrequencyTable = ({
         defaultExpandAllRows
         expandRowByClick
         indentSize={10}
+        isSurveyTest={testTypesAllowed === TEST_TYPE_SURVEY}
       />
     </StyledCard>
   )

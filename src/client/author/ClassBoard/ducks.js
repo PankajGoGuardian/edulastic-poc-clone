@@ -40,6 +40,10 @@ import { isNullOrUndefined } from 'util'
 import * as Sentry from '@sentry/browser'
 import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
+  DISTRICT_ADMIN,
+  SCHOOL_ADMIN,
+} from '@edulastic/constants/const/roleType'
+import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
   updateOpenAssignmentsAction,
@@ -1479,14 +1483,14 @@ export const getTestDataSelector = createSelector(
 )
 
 export const getIsOverrideFreezeSelector = createSelector(
-  getAdditionalDataSelector,
   getTestDataSelector,
-  getUserIdSelector,
-  (additionalData, testData, userId) => {
+  getUserRole,
+  (testData, role) => {
+    const allowedRoles = [SCHOOL_ADMIN, DISTRICT_ADMIN]
     if (!testData.freezeSettings) {
       return false
     }
-    if (additionalData?.testAuthors?.some((author) => author._id === userId)) {
+    if (allowedRoles.includes(role)) {
       return false
     }
     return true

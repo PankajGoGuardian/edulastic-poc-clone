@@ -28,6 +28,7 @@ import qs from 'qs'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 
 import { LIKERT_SCALE } from '@edulastic/constants/const/questionType'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import { ItemsPagination, Selected, StyledVerticalDivider } from './styled'
 import {
   getCurriculumsListSelector,
@@ -166,7 +167,6 @@ class AddItems extends PureComponent {
       sort: initSort,
       userId,
       districtId,
-      isSurveyTest,
     } = this.props
     const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
     let search = {}
@@ -210,12 +210,15 @@ class AddItems extends PureComponent {
         grades: uniq([...selectedGrades, ...grades]),
         curriculumId: parseInt(curriculumId, 10) || '',
       }
-      if (isSurveyTest) {
+      if (query.testType === TEST_TYPE_SURVEY) {
         search.questionType = LIKERT_SCALE
       } else if (search.questionType === LIKERT_SCALE) {
         search.questionType = ''
       }
       this.updateFilterState(search, sort)
+    }
+    if (query.testType === TEST_TYPE_SURVEY) {
+      search.questionType = LIKERT_SCALE
     }
     if (!curriculums.length) getCurriculums()
     getAllTags({ type: 'testitem' })

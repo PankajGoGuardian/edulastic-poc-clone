@@ -10,6 +10,7 @@ import {
 import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
 
 import { uniqBy, get } from 'lodash'
+import { LIKERT_SCALE } from '@edulastic/constants/const/questionTitle'
 import {
   curriculumsByIdSelector,
   standardsSelector,
@@ -135,16 +136,20 @@ const HeaderFilter = ({
       text = allDepthOfKnowledgeMap[tagTitle]?.text
     }
     const widthOfTag = getWidthOfTag(text)
+    const isClosable = type !== 'questionType' || text !== LIKERT_SCALE
     if (widthOfTag <= containerWidthObj.remainingWidth) {
       containerWidthObj.remainingWidth -= widthOfTag
       bodyArr.push(
-        <Tag closable onClose={(e) => handleCloseTag(e, type, d)}>
+        <Tag closable={isClosable} onClose={(e) => handleCloseTag(e, type, d)}>
           {text}
         </Tag>
       )
     } else {
       popOverArray.push(
-        <StyledPopupTag closable onClose={(e) => handleCloseTag(e, type, d)}>
+        <StyledPopupTag
+          closable={isClosable}
+          onClose={(e) => handleCloseTag(e, type, d)}
+        >
           {text}
         </StyledPopupTag>
       )

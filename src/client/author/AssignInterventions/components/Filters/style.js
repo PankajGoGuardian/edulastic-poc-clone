@@ -26,10 +26,19 @@ export const TestNameContainer = styled.div`
   line-height: 18px;
   color: ${greyThemeDark4};
   padding-top: 14px;
-  width: max-content;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
   @media (min-width: 1400px) {
     padding-top: 20px;
   }
+`
+
+export const TestNameTextContainer = styled.div`
+  max-width: calc(100% - 50px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 
 export const StudentInfoContainer = styled.div`

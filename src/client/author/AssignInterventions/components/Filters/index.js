@@ -13,6 +13,7 @@ import {
   FilterHeadingContainer,
   EllipseSeparator,
   StudentInfoElement,
+  TestNameTextContainer,
 } from './style'
 import MasteryRangeFilter from './MasteryRangeFilter'
 import StandardsFilter from './StandardsFilter'
@@ -34,7 +35,9 @@ const Filters = ({
         <HeaderInformationContainer>
           <ClassNameContainer>{additionalData.className}</ClassNameContainer>
           <TestNameContainer>
-            {classResponse?.title}
+            <TestNameTextContainer>
+              {classResponse?.title}
+            </TestNameTextContainer>
             <TestTypeIcon testType={additionalData.testType} />
           </TestNameContainer>
           <StudentInfoContainer>

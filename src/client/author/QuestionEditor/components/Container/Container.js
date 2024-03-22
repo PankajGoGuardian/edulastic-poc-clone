@@ -68,7 +68,6 @@ import { getCurrentLanguage } from '../../../../common/components/LanguageSelect
 import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
 import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 import { EDIT } from '../../../../assessment/constants/constantsForQuestions'
-import { isSurveyTestSelector } from '../../../TestPage/ducks'
 import { getSearchParams } from '../../../src/utils/util'
 
 const { useLanguageFeatureQn } = constantsQuestionType
@@ -348,13 +347,7 @@ class Container extends Component {
   }
 
   renderButtons = () => {
-    const {
-      view,
-      question,
-      preview,
-      itemFromState = {},
-      isSurveyTest,
-    } = this.props
+    const { view, question, preview, itemFromState = {} } = this.props
     const { showHints } = this.state
     const { checkAnswerButton = false, checkAttempts = 1 } =
       question.validation || {}
@@ -364,9 +357,10 @@ class Container extends Component {
     const isShowAnswerVisible =
       question &&
       !constantsQuestionType.manuallyGradableQn.includes(question.type) &&
-      !isSurveyTest
+      question.type !== constantsQuestionType.LIKERT_SCALE
     const isShowCheckButton =
-      (isShowAnswerVisible || checkAnswerButton) && !isSurveyTest
+      (isShowAnswerVisible || checkAnswerButton) &&
+      question.type !== constantsQuestionType.LIKERT_SCALE
 
     return (
       <ButtonAction
@@ -713,7 +707,6 @@ const enhance = compose(
       previewMode: getPreviewSelector(state),
       currentLanguage: getCurrentLanguage(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
-      isSurveyTest: isSurveyTestSelector(state),
     }),
     {
       changeView: changeViewAction,

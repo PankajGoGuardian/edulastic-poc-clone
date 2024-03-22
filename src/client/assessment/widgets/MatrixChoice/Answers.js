@@ -29,11 +29,11 @@ class Answers extends Component {
         const rowIds = draft?.responseIds[rowIndex]
 
         if (!isAlt) {
-          value = draft.validation.validResponse.value
+          value = draft.validation.validResponse.value || {}
         }
 
         if (isAlt) {
-          value = draft.validation.altResponses[correctTab - 1].value
+          value = draft.validation.altResponses[correctTab - 1].value || {}
         }
         const selectedId = rowIds[columnIndex]
         value[selectedId] = checked

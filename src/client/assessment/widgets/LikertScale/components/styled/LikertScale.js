@@ -6,8 +6,27 @@ export const LikertScaleContainer = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
   flex-basis: auto;
-  padding-top: 0.6em;
+  padding-top: 1.2em;
   margin-top: 50px;
+  max-width: 100%;
+  overflow-x: auto;
+  padding-bottom: 4px;
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #fff;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `
 
 export const LikertOption = styled.label`

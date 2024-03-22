@@ -15,7 +15,7 @@ import {
   MULTIPLE_SELECTION,
   SHORT_TEXT,
   TRUE_OR_FALSE,
-  CHOICE_MATRIX_STANDARD,
+  CHOICE_MATRIX,
   CLOZE_DROP_DOWN,
 } from '@edulastic/constants/const/questionType'
 import { Partners } from './static/partnerData'
@@ -295,7 +295,7 @@ export const validateQuestionsForGoogleForm = (
         MULTIPLE_SELECTION,
         CLOZE_DROP_DOWN,
         SHORT_TEXT,
-        CHOICE_MATRIX_STANDARD,
+        CHOICE_MATRIX,
       ].includes(question.type)
     )
     .every((question) => {

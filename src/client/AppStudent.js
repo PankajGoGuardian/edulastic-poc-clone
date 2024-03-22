@@ -11,12 +11,12 @@ import { compose } from 'redux'
 import Spin from 'antd/es/spin'
 import Joyride from 'react-joyride'
 // Do not move this import PrivateRoute after isMobileDevice, ie, causing a break in student app in local
-import PrivateRoute from './common/components/privateRoute'
 import OfflineNotifier from '@edulastic/common/src/components/OfflineNotifier'
 import { isMobileDevice } from '@edulastic/common/src/helpers'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import * as firebase from 'firebase/app'
 import { WithResources } from '@edulastic/common'
+import PrivateRoute from './common/components/privateRoute'
 import { TestAttemptReview } from './student/TestAttemptReview'
 import { SectionsStartPage } from './student/SectionsStart'
 import SebQuitConfirm from './student/SebQuitConfirm'
@@ -49,6 +49,7 @@ const {
   ASSESSMENT,
   PRACTICE,
   TESTLET,
+  SURVEY,
 } = testTypesConstants.TEST_TYPES_VALUES_MAP
 // route wise splitting
 const AssessmentPlayer = lazy(() =>
@@ -212,6 +213,10 @@ class App extends Component {
                 />
                 <Route
                   path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
+                  render={() => <AssessmentPlayer defaultAP />}
+                />
+                <Route
+                  path={`/student/${SURVEY}/:id/class/:groupId/uta/:utaId`}
                   render={() => <AssessmentPlayer defaultAP />}
                 />
                 <Route

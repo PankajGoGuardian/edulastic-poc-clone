@@ -17,6 +17,9 @@ import {
   TRUE_OR_FALSE,
   CHOICE_MATRIX,
   CLOZE_DROP_DOWN,
+  ESSAY_RICH_TEXT,
+  TEXT,
+  UPLOAD_FILE,
 } from '@edulastic/constants/const/questionType'
 import { Partners } from './static/partnerData'
 import { smallestZoomLevel } from './static/zoom'
@@ -287,6 +290,24 @@ export const validateQuestionsForGoogleForm = (
     return false
   }
 
+  const haveStimulus = questions
+    .filter((question) =>
+      [
+        CHOICE_MATRIX,
+        CLOZE_DROP_DOWN,
+        ESSAY_RICH_TEXT,
+        TEXT,
+        MULTIPLE_CHOICE,
+        SHORT_TEXT,
+        TRUE_OR_FALSE,
+        MULTIPLE_SELECTION,
+        UPLOAD_FILE,
+      ].includes(question.type)
+    )
+    .every((question) => {
+      return !isEmpty(question.stimulus)
+    })
+
   const correctAnswerPicked = questions
     .filter((question) =>
       [
@@ -309,9 +330,9 @@ export const validateQuestionsForGoogleForm = (
       return !isEmpty(validationValue)
     })
 
-  if (!correctAnswerPicked) {
+  if (!correctAnswerPicked || !haveStimulus) {
     if (showNotification) {
-      notification({ type: 'warn', messageKey: 'correctAnswer' })
+      notification({ type: 'warn', messageKey: 'missingContentOrAnswer' })
     }
     return false
   }

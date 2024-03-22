@@ -26,7 +26,12 @@ const SortableItem = SortableElement((props) => {
         <StyledInfoIconWrapper>
           <Popover
             placement="bottomLeft"
-            content="Add Correct Answer for item."
+            content={
+              <>
+                Item is missing content or answer. <br />
+                Please add them by editing this item.
+              </>
+            }
           >
             <IconWarnCircle />
           </Popover>

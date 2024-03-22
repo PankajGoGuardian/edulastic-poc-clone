@@ -350,7 +350,7 @@ export function* saveUserResponse({ payload }) {
       }
     })
 
-    const _updatedScratpadKeys = yield select(
+    const _updatedScratchpadKeys = yield select(
       ({ userWork }) => userWork.present?.updatedKeys || []
     )
 
@@ -428,7 +428,7 @@ export function* saveUserResponse({ payload }) {
       // multiple scratchpad in item
       if (
         isPlainObject(fileData?.scratchpad) &&
-        _updatedScratpadKeys.includes(testItemId)
+        _updatedScratchpadKeys.includes(testItemId)
       ) {
         const listOfFilenameAndQuestionIdDict = yield all(
           Object.entries(fileData.scratchpad).map(([qid, scratchpadData]) =>
@@ -450,7 +450,7 @@ export function* saveUserResponse({ payload }) {
         yield put(resetUpdateKeyAction({ updatedKeys: [] }))
       } else if (
         fileData?.scratchpad &&
-        _updatedScratpadKeys.includes(testItemId)
+        _updatedScratchpadKeys.includes(testItemId)
       ) {
         const scratchpadUri = yield call(
           uploadToS3,

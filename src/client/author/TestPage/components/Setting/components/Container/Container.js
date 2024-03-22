@@ -849,6 +849,7 @@ class Setting extends Component {
       hasSections,
       canSchoolAdminUseDistrictCommon,
       districtTestSettings,
+      isSurveyTest,
     } = this.props
     const {
       isDocBased,
@@ -915,6 +916,9 @@ class Setting extends Component {
       canSchoolAdminUseDistrictCommon,
     })
     const testTypes = includeCommonOnTestType(availableTestTypes, testType)
+    if (!isSurveyTest) {
+      delete testTypes[TEST_TYPE_SURVEY]
+    }
     let isSettingPresent = false
     if (
       currentSettingsId &&

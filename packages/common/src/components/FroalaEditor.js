@@ -67,6 +67,9 @@ customPlugin(FroalaEditor)
 // adds image.beforeUpload and image.inserted event handler
 imageUploadPlugin(FroalaEditor)
 
+//remove word paste plugin
+delete FroalaEditor.PLUGINS.wordPaste
+
 const CustomEditor = ({
   value,
   onChange,

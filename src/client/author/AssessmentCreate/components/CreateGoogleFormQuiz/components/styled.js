@@ -30,9 +30,20 @@ export const StyledCancelButton = styled(Button)`
 `
 export const StyledList = styled.ul`
   font-weight: 600;
-  padding: 16px 32px;
+  padding: 16px 24px;
+
+  li {
+    margin: 8px;
+  }
 `
 
-export const ErrorMessageWrapper = styled.div`
+export const StyledListItem = styled.li`
+  &::marker {
+    color: ${({ color }) => color || 'unset'};
+  }
+`
+
+export const MessageWrapper = styled.div`
   padding: 8px 0px;
+  font-weight: 600px;
 `

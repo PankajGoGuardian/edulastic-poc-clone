@@ -175,9 +175,6 @@ import {
 } from '../../../utils/videoQuiz'
 import { getUserAccommodations } from '../../../../student/Login/ducks'
 import { checkInvalidTestTitle } from '../../../utils/tests'
-import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
-import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
-import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -1935,8 +1932,6 @@ class Container extends PureComponent {
       history,
       isRedirectToVQAddOn,
       isTestTypeWithDefaultTestTitle,
-      isPreviewModalVisible,
-      setIsTestPreviewVisible,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -1962,7 +1957,6 @@ class Container extends PureComponent {
       isDocBased,
       versionId,
       derivedFromPremiumBankId = false,
-      videoUrl,
     } = test
     const hasCollectionAccess = allowContentEditCheck(
       test.collections,
@@ -2109,18 +2103,6 @@ class Container extends PureComponent {
             history={history}
             isClosable={false}
             stayOnSamePage={false}
-          />
-        </EduIf>
-
-        <EduIf condition={!!videoUrl?.length}>
-          <TestPreviewModal
-            isModalVisible={isPreviewModalVisible}
-            testId={testId}
-            closeTestPreviewModal={() => setIsTestPreviewVisible(false)}
-            resetOnClose={() => {
-              setIsTestPreviewVisible(false)
-            }}
-            unmountOnClose
           />
         </EduIf>
 
@@ -2306,7 +2288,6 @@ const enhance = compose(
       isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
       accommodations: getUserAccommodations(state),
       isVideoQuiz: isVideoQuizSelector(state),
-      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       createTest: createTestAction,
@@ -2343,7 +2324,6 @@ const enhance = compose(
       fetchTestSettingsList: fetchTestSettingsListAction,
       setTestSettingsList: setTestSettingsListAction,
       setCurrentGroupIndexInStore: setCurrentGroupIndexAction,
-      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

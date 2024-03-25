@@ -44,6 +44,7 @@ import {
   Tooltip,
   Divider,
   Icon,
+  Spin,
 } from 'antd'
 import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
@@ -2430,55 +2431,60 @@ class ClassBoard extends Component {
             {selectedTab === 'questionView' &&
               !isEmpty(testActivity) &&
               !isEmpty(classResponse) &&
-              !isLoading &&
               (selectedQuestion || selectedQuestion === 0) && (
-                <>
-                  <QuestionContainer
-                    isQuestionView
-                    classResponse={classResponse}
-                    testActivity={testActivity}
-                    qIndex={selectedQuestion}
-                    itemId={itemId}
-                    question={{ id: selectedQid }}
-                    isPresentationMode={isPresentationMode}
-                  >
-                    <GenSelect
-                      dataCy="dropDownSelect"
-                      classid="DI"
-                      classname={
-                        firstQuestionEntities.map((x, index) => ({
-                          value: index,
-                          name: `Question ${x?.barLabel?.slice(1)}`,
-                        })) // filtering after map to get the correct index value
-                      }
-                      selected={selectedQuestion}
-                      justifyContent="flex-end"
-                      handleChange={(value) => {
-                        const {
-                          assignmentId: _assignmentId,
-                          classId: _classId,
-                        } = match.params
+                <EduIf condition={isLoading}>
+                  <EduThen>
+                    <Spin />
+                  </EduThen>
+                  <EduElse>
+                    <QuestionContainer
+                      isQuestionView
+                      classResponse={classResponse}
+                      testActivity={testActivity}
+                      qIndex={selectedQuestion}
+                      itemId={itemId}
+                      question={{ id: selectedQid }}
+                      isPresentationMode={isPresentationMode}
+                    >
+                      <GenSelect
+                        dataCy="dropDownSelect"
+                        classid="DI"
+                        classname={
+                          firstQuestionEntities.map((x, index) => ({
+                            value: index,
+                            name: `Question ${x?.barLabel?.slice(1)}`,
+                          })) // filtering after map to get the correct index value
+                        }
+                        selected={selectedQuestion}
+                        justifyContent="flex-end"
+                        handleChange={(value) => {
+                          const {
+                            assignmentId: _assignmentId,
+                            classId: _classId,
+                          } = match.params
 
-                        const { _id: qid, testItemId } = firstQuestionEntities[
-                          value
-                        ]
-                        history.push(
-                          `/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${
-                            isCliUser ? '?cliUser=true' : ''
-                          }`
-                        )
-                        this.setState({
-                          selectedQuestion: value,
-                          selectedQid: qid,
-                          itemId: testItemId,
-                        })
-                      }}
-                    />
-                    {toggleBackTopIcon && (
-                      <BackTop toggleBackTopIcon={toggleBackTopIcon} />
-                    )}
-                  </QuestionContainer>
-                </>
+                          const {
+                            _id: qid,
+                            testItemId,
+                          } = firstQuestionEntities[value]
+                          history.push(
+                            `/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${
+                              isCliUser ? '?cliUser=true' : ''
+                            }`
+                          )
+                          this.setState({
+                            selectedQuestion: value,
+                            selectedQid: qid,
+                            itemId: testItemId,
+                          })
+                        }}
+                      />
+                      {toggleBackTopIcon && (
+                        <BackTop toggleBackTopIcon={toggleBackTopIcon} />
+                      )}
+                    </QuestionContainer>
+                  </EduElse>
+                </EduIf>
               )}
           </LCBScrollContext.Provider>
         </MainContentWrapper>

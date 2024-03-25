@@ -249,10 +249,14 @@ class Container extends PureComponent {
     //   url += `?page=${pageNumber}`
     // }
 
+    // this flag is used for VQ Library menu highlight
+    const haveVQLibSource =
+      new URLSearchParams(window.location.search).get('source') === 'vq-library'
+
     history.push({
       pathname: url,
       state: { ...history.location.state, showCancelButton },
-      ...getSearchParams('testType'),
+      ...getSearchParams(haveVQLibSource ? 'source' : 'testType'),
     })
   }
 

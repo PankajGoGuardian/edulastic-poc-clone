@@ -51,23 +51,25 @@ const CartButton = ({
       <Tooltip
         title={
           displayDeselect
-            ? 'Combine upto 150 items from test and item library and create a test'
+            ? 'Combine items from test and item library and create new test.'
             : ''
         }
       >
-        <EduButton
-          isBlue
-          isGhost
-          onClick={onClick}
-          data-cy="New Test"
-          disabled={!numberOfSelectedItems}
-        >
-          <span>{buttonText}</span>
-          <ItemsAmount threeDigit={numberOfSelectedItems > 99}>
-            {numberOfSelectedItems}
-          </ItemsAmount>
-          items
-        </EduButton>
+        <span>
+          <EduButton
+            isBlue
+            isGhost
+            onClick={onClick}
+            data-cy="New Test"
+            disabled={!numberOfSelectedItems}
+          >
+            <span>{buttonText}</span>
+            <ItemsAmount threeDigit={numberOfSelectedItems > 99}>
+              {numberOfSelectedItems}
+            </ItemsAmount>
+            items
+          </EduButton>
+        </span>
       </Tooltip>
     </Container>
   )

@@ -327,6 +327,18 @@ export const validateQuestionsForGoogleForm = (
         }
         return validationValue.every((value) => !isEmpty(value.value))
       }
+      if (question.type === CHOICE_MATRIX) {
+        if (isEmpty(validationValue)) {
+          return false
+        }
+        const responseIds = get(question, 'responseIds', [])
+        const validResponseUUIDs = Object.keys(validationValue)
+        return responseIds.every((rowResponseIds) =>
+          rowResponseIds.some((responseId) =>
+            validResponseUUIDs.includes(responseId)
+          )
+        )
+      }
       return !isEmpty(validationValue)
     })
 

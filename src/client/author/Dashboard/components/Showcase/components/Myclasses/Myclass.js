@@ -52,6 +52,7 @@ import {
   getManualEnrollmentAllowedSelector,
   getUserOrgId,
   getUserFeatures,
+  isGcpsDistrictSelector,
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
 import ClassBanner from './components/ClassBanner'
@@ -98,6 +99,7 @@ const MyClasses = ({
   displayText,
   manualEnrollmentAllowed = true,
   userFeatures = false,
+  isGcpsDistrict,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -729,6 +731,8 @@ const MyClasses = ({
 
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 
+  const showReadyMadeTestSection = !isCliUser && !isGcpsDistrict
+
   const onVideoQuizClick = () => {
     segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
       source: 'Dashboard',
@@ -787,7 +791,7 @@ const MyClasses = ({
           isDemoPlaygroundUser={isDemoPlayground}
         />
       )}
-      {!isCliUser && (
+      <EduIf condition={showReadyMadeTestSection}>
         <FeaturedContentBundle
           featuredBundles={filteredBundles}
           handleFeatureClick={handleFeatureClick}
@@ -798,7 +802,7 @@ const MyClasses = ({
           isCpm={isCpm}
           boughtItemBankIds={boughtItemBankIds}
         />
-      )}
+      </EduIf>
       <Launch />
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}
@@ -901,6 +905,7 @@ export default compose(
       displayText: trialPeriodTextSelector(state),
       manualEnrollmentAllowed: getManualEnrollmentAllowedSelector(state),
       userFeatures: getUserFeatures(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

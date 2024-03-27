@@ -341,10 +341,14 @@ const processCurlyBraces = (nodes) => {
   return nodes
 }
 
-const parseTemplate = (tmpl) => {
+const parseTemplate = (tmpl, shouldAppendResponseBox) => {
   let temp = ` ${tmpl}`.slice(1)
   if (!window.$) {
     return ''
+  }
+
+  if (shouldAppendResponseBox) {
+    temp = `<div>${temp} <textdropdown id="0" contenteditable="false"></textdropdown></div>`
   }
   const parsedHTML = $('<div />').html(temp)
   // Clean v1 math content for jsx parser

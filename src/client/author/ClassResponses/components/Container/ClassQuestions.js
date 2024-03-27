@@ -179,9 +179,7 @@ const transformTestItems = (props) => {
 
           if (
             filter === 'attempted' &&
-            !(
-              firstQAct.score >= 0 || firstQAct.score <= firstQAct.maxScore
-            )
+            !(firstQAct.score >= 0 || firstQAct.score <= firstQAct.maxScore)
           ) {
             return false
           }
@@ -336,6 +334,7 @@ const Preview = ({
   isExpandedView = false,
   saveScratchPadData,
   aiEvaluationStatus,
+  isVideoQuiz = false,
 }) => {
   const rows = getRows(item, false)
   const questions = get(item, ['data', 'questions'], [])
@@ -426,6 +425,7 @@ const Preview = ({
         premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         isExpandedView={isExpandedView}
         aiEvaluationStatus={aiEvaluationStatus}
+        isVideoQuiz={isVideoQuiz}
       />
     </StyledFlexContainer>
   )
@@ -840,6 +840,7 @@ class ClassQuestions extends Component {
               isExpandedView={isExpandedView}
               saveScratchPadData={this.saveScratchPadData}
               aiEvaluationStatus={aiEvaluationStatus}
+              isVideoQuiz={isVideoQuiz}
             />
           )
         })}

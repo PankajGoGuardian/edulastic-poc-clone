@@ -42,13 +42,27 @@ class ClozeDropDownDisplay extends Component {
     parsedTemplate: '',
   }
 
-  static getDerivedStateFromProps({ stimulus }) {
-    return { parsedTemplate: helpers.parseTemplate(stimulus) }
+  static getDerivedStateFromProps({
+    stimulus,
+    isVideoQuiz,
+    isLCBView,
+    isExpressGrader,
+  }) {
+    const shouldAppendResponseBox =
+      (isLCBView || isExpressGrader) && isVideoQuiz
+
+    return {
+      parsedTemplate: helpers.parseTemplate(stimulus, shouldAppendResponseBox),
+    }
   }
 
   componentDidMount() {
-    const { stimulus } = this.props
-    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) })
+    const { stimulus, isVideoQuiz, isLCBView, isExpressGrader } = this.props
+    const shouldAppendResponseBox =
+      (isLCBView || isExpressGrader) && isVideoQuiz
+    this.setState({
+      parsedTemplate: helpers.parseTemplate(stimulus, shouldAppendResponseBox),
+    })
   }
 
   selectChange = (value, index, id) => {

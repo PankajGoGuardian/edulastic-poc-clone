@@ -436,6 +436,7 @@ class Container extends PureComponent {
       setEditEnable,
       setTestSettingsList,
       isDynamicTest,
+      getItemsSubjectAndGrade,
     } = this.props
     // reset test data when it's a saved test or dynamic test in creation
     if (match.params.id || isDynamicTest) {
@@ -445,6 +446,10 @@ class Container extends PureComponent {
     setEditEnable(false)
     resetPageState()
     setTestSettingsList([])
+    getItemsSubjectAndGrade({
+      subjects: [],
+      grades: [],
+    })
   }
 
   componentDidUpdate(prevProps) {

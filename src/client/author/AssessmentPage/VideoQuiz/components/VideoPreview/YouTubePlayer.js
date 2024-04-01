@@ -28,6 +28,7 @@ const YouTubePlayer = React.forwardRef(
       config,
       onEnded,
       onReady,
+      onPlayerApiChange,
       handleKeyboardSeek,
       isVideoQuizAndAIEnabled,
     },
@@ -69,6 +70,7 @@ const YouTubePlayer = React.forwardRef(
         events: {
           onStateChange,
           onReady,
+          onApiChange: onPlayerApiChange,
         },
         playerVars,
         embedConfig,

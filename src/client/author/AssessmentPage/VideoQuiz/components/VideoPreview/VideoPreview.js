@@ -1,4 +1,4 @@
-import { DragDrop, notification } from '@edulastic/common'
+import { DragDrop, EduButton, EduIf, notification } from '@edulastic/common'
 import { Col } from 'antd'
 import { Rnd } from 'react-rnd'
 import { round, isEmpty, isEqual } from 'lodash'
@@ -45,6 +45,7 @@ import {
 } from '../../../../src/selectors/user'
 import {
   currentTestActivityIdSelector,
+  vqEnableClosedCaptionSelector,
   vqPreventQuestionSkippingSelector,
 } from '../../../../../assessment/selectors/test'
 import {
@@ -95,6 +96,7 @@ const VideoPreview = ({
   userRole,
   showAuthorReviewTabVideoPlayer,
   isAuthorReviewOrEdit,
+  vqEnableClosedCaption,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -115,6 +117,7 @@ const VideoPreview = ({
   const [muted, setMuted] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [isReady, setIsReady] = useState(0)
+  const [isCCEnabled, setIsCCEnabled] = useState(false)
 
   const handleSetIsSeekBarFocused = (isFocused) => {
     isSeekBarFocusedRef.current = isFocused
@@ -122,6 +125,31 @@ const VideoPreview = ({
 
   const onReady = () => {
     setIsReady(true)
+  }
+
+  const onPlayerApiChange = () => {
+    console.log({
+      captions: videoRef?.current?.getOptions('captions', 'tracklist'),
+      cc: videoRef?.current?.getOptions('cc'),
+    }) // get available tracklist english
+
+    if (!isCCEnabled && !!videoRef?.current) {
+      console.log('+++++++on api change++++')
+      videoRef?.current?.setOption('captions', 'track', {})
+    }
+  }
+
+  const handleOnClickCC = () => {
+    setIsCCEnabled((prevState) => {
+      if (prevState && !!videoRef?.current) {
+        videoRef?.current?.setOption('captions', 'track', {})
+        return false
+      }
+      videoRef?.current?.setOption('captions', 'track', {
+        languageCode: 'en',
+      })
+      return true
+    })
   }
 
   const onPlay = () => {
@@ -512,6 +540,7 @@ const VideoPreview = ({
           {showAuthorReviewTabVideoPlayer && (
             <CombinedPlayer
               onReady={onReady}
+              onPlayerApiChange={onPlayerApiChange}
               url={videoUrl}
               playing={playing}
               controls={false}
@@ -528,6 +557,7 @@ const VideoPreview = ({
                     controls: 0,
                     playsinline: 1,
                     api_key: appConfig.edYouTubePlayerKey,
+                    cc_load_policy: 1,
                   },
                   // 0: Off, 1: Moderate, 2: Strict Content filter
                   embedConfig: { contentFilter: 0 },
@@ -675,6 +705,19 @@ const VideoPreview = ({
             vqPreventSkipping={vqPreventSkipping && !isAuthorReviewOrEdit}
           />
         </Col>
+        {console.log({ userRole })}
+        <EduIf
+          condition={
+            (userRole === STUDENT && vqEnableClosedCaption) ||
+            userRole !== STUDENT
+          }
+        >
+          <Col style={{ flex: '0 0 auto' }}>
+            <EduButton onClick={handleOnClickCC} isGhost={!isCCEnabled}>
+              cc
+            </EduButton>
+          </Col>
+        </EduIf>
         <Col style={{ flex: '0 0 auto' }}>
           <MuteUnmute
             volume={muted ? 0 : volumne}
@@ -709,6 +752,7 @@ export default connect(
     previewMode: getPreviewSelector(state),
     isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
     vqPreventSkipping: vqPreventQuestionSkippingSelector(state),
+    vqEnableClosedCaption: vqEnableClosedCaptionSelector(state),
     vqEnableYouTubeEd: state.studentAssignment.vqEnableYouTubeEd,
     test: getTestEntitySelector(state),
     currentTestActivityId: currentTestActivityIdSelector(state),

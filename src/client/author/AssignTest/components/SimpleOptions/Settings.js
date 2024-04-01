@@ -276,6 +276,7 @@ const Settings = ({
     calcTypes = tempTestSettings.calcTypes,
     answerOnPaper = tempTestSettings.answerOnPaper,
     vqPreventSkipping = tempTestSettings.vqPreventSkipping,
+    vqEnableClosedCaption = tempTestSettings.vqEnableClosedCaption,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
     passwordPolicy = tempTestSettings.passwordPolicy,
     assignmentPassword = tempTestSettings.assignmentPassword,
@@ -1093,6 +1094,34 @@ const Settings = ({
           </SettingContainer>
         </EduIf>
         {/* Prevent vq skipping */}
+
+        {/* Enable vq cc */}
+        <EduIf condition={isVideoQuiz}>
+          <SettingContainer>
+            <DetailsTooltip
+              title="Turn on CCs"
+              content=" Enable CCs (if available) for YouTube videos"
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15p">
+              <Col span={12}>
+                <Label>Turn on CCs</Label>
+              </Col>
+              <Col span={12}>
+                <AlignSwitchRight
+                  data-cy="vqEnableClosedCaption"
+                  disabled={freezeSettings || !premium}
+                  size="small"
+                  checked={vqEnableClosedCaption}
+                  onChange={(value) =>
+                    overRideSettings('vqEnableClosedCaption', value)
+                  }
+                />
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+        </EduIf>
+        {/* Enable vq cc */}
 
         {/* Multi language */}
         {showMultiLangSelection && (

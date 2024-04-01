@@ -13,7 +13,14 @@ import DragHandle from './DragHandle'
 import { getTestSelector } from '../../../../../ducks'
 
 const SortableItem = SortableElement((props) => {
-  const { item, isEditable, expand, groupMinimized, test } = props
+  const {
+    item,
+    isEditable,
+    expand,
+    groupMinimized,
+    test,
+    handleAreaMouseEnter,
+  } = props
 
   const isGoogleFormTest = test?.importData?.googleForm
   const isValid = isGoogleFormTest
@@ -21,7 +28,11 @@ const SortableItem = SortableElement((props) => {
     : true
 
   return (
-    <DragCrad data-cy="drag-card" noPadding={groupMinimized}>
+    <DragCrad
+      data-cy="drag-card"
+      noPadding={groupMinimized}
+      onMouseEnter={() => handleAreaMouseEnter(item.groupId)}
+    >
       <EduIf condition={!isValid}>
         <StyledInfoIconWrapper>
           <Popover

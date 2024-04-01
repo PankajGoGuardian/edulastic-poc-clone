@@ -103,6 +103,10 @@ const ReviewSection = ({
   setShowAutoSelectScoreChangeModal,
   isDynamicTest,
   refreshGroupItems,
+  setIsDragging,
+  setTargetSection,
+  isDragging,
+  collection,
   ...rest
 }) => {
   const [removalObj, setRemovalPassageItems] = useState()
@@ -125,6 +129,13 @@ const ReviewSection = ({
 
   const handleClosePassageConfirm = () => {
     setRemovalPassageItems(null)
+  }
+  const handleAreaMouseEnter = (area, e) => {
+    if (isDragging === true) {
+      setTargetSection(area)
+    } else {
+      setTargetSection(area)
+    }
   }
 
   const renderItem = (item, index, group) => {
@@ -160,6 +171,7 @@ const ReviewSection = ({
           lockToContainerEdges
           lockOffset={['10%', '10%']}
           setShowAutoSelectScoreChangeModal={openScoreEditPopup}
+          handleAreaMouseEnter={handleAreaMouseEnter}
         />
       )
     }
@@ -175,6 +187,7 @@ const ReviewSection = ({
         item={item}
         isPublishers={isPublishers}
         setShowAutoSelectScoreChangeModal={openScoreEditPopup}
+        handleAreaMouseEnter={handleAreaMouseEnter}
       />
     )
   }

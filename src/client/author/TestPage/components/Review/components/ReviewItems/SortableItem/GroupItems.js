@@ -24,6 +24,7 @@ const GroupItems = SortableContainer((props) => {
     groupId,
     showGroupsPanel,
     setShowAutoSelectScoreChangeModal,
+    handleAreaMouseEnter,
   } = props
   const [localItems, setLocalItems] = useState([])
   const [minimize, setMinimize] = useState(true)
@@ -77,6 +78,7 @@ const GroupItems = SortableContainer((props) => {
                 setShowAutoSelectScoreChangeModal={
                   setShowAutoSelectScoreChangeModal
                 }
+                handleAreaMouseEnter={handleAreaMouseEnter}
               />
             )
           })}

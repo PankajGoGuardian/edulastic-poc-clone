@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Spin } from 'antd'
 import produce from 'immer'
 import { flatten, isArray, omit } from 'lodash'
@@ -42,7 +42,8 @@ const ReviewItems = ({
 }) => {
   const container = getContainer()
   if (!container) return null
-
+  const [isDragging, setIsDragging] = useState(false)
+  const [targetSection, setTargetSection] = useState(null)
   const handleCheckboxChange = (itemId, checked) => {
     if (checked) {
       setSelected([...selected, itemId])
@@ -66,8 +67,16 @@ const ReviewItems = ({
 
     return reIndexItems(items)
   }, [items])
-
-  const moveSingleItems = ({ oldIndex, newIndex }) => {
+  console.log(itemsWithIndex, '--itemsWithIndex')
+  const moveSingleItems = ({ oldIndex, newIndex, collection }) => {
+    console.log(
+      collection,
+      '---collection',
+      oldIndex,
+      newIndex,
+      '===targetSection',
+      targetSection
+    )
     const updatedItems = flatten(
       produce(itemsWithIndex, (draft) => {
         const [removed] = draft.splice(oldIndex, 1)
@@ -75,6 +84,7 @@ const ReviewItems = ({
       })
     ).map((x) => omit(x, ['indx', 'selected']))
     onCompleteMoveItem(updatedItems)
+    setIsDragging(false)
   }
 
   const moveGroupItems = (groupIndex) => ({ oldIndex, newIndex }) => {
@@ -87,12 +97,15 @@ const ReviewItems = ({
     onCompleteMoveItem(updatedItems)
   }
 
+  const handleDragStart = () => {
+    setIsDragging(true)
+  }
   return (
     <StyledSpinnerContainer>
       <Spin spinning={isFetchingAutoselectItems}>
         <SortableList
           items={itemsWithIndex}
-          useDragHandle
+          // useDragHandle
           passagesKeyed={passagesKeyed}
           onChangePoints={onChangePoints}
           blur={blur}
@@ -103,6 +116,10 @@ const ReviewItems = ({
           owner={owner}
           onSortEnd={moveSingleItems}
           onSortGroup={moveGroupItems}
+          onSortStart={handleDragStart}
+          setIsDragging={setIsDragging}
+          setTargetSection={setTargetSection}
+          isDragging={isDragging}
           lockToContainerEdges
           lockOffset={['10%', '10%']}
           onSelect={handleCheckboxChange}

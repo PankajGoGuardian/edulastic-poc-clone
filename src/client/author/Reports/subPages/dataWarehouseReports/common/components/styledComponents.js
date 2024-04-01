@@ -232,6 +232,7 @@ export const CustomStyledCell = styled.div`
   aspect-ratio: 8 / 3;
   color: black;
   font-size: ${(p) => p.$fontSize || '13px'};
+  margin: ${(p) => p.$margin || '0px'};
   font-weight: 800;
   box-shadow: ${(p) => (p.$showBoxShadow ? '0px 10px 11px #0000000f' : '')};
   background-color: ${(p) => p.$backgroundColor};

@@ -308,6 +308,10 @@ export const getUrlDistricts = (districts, districtIds) => {
 export const getIsMultiSchoolYearDataPresent = (testTermIds) =>
   convertItemToArray(testTermIds).length > 1
 
+export const getIsDifferentSchoolYearDataPresent = (filters) =>
+  !getIsMultiSchoolYearDataPresent(filters.testTermIds) &&
+  filters.testTermIds !== filters.termId
+
 export const getTestUniqId = (test) =>
   [test.testId || test.testName, test.termId].join(TEST_UNIQ_ID_SEPARATOR)
 

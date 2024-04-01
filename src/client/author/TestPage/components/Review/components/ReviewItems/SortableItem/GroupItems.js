@@ -117,7 +117,7 @@ const PlusButton = styled(EduButton)`
   position: absolute;
   left: -9px;
   transform: translateY(-50%);
-
+  padding: 0;
   svg {
     width: 10px;
     height: 10px;

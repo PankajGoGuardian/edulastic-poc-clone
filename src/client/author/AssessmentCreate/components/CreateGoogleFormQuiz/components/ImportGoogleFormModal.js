@@ -141,6 +141,15 @@ const ImportGoogleFormModal = ({
           />
         </EduIf>
 
+        <EduIf
+          condition={status === 'SUCCESS' && !!unsupportedItemIndexes?.length}
+        >
+          <Typography.Paragraph style={{ color: '#474747', fontSize: '12px' }}>
+            Note : Linear scale question type is not supported. Please use
+            alternative question types for compatible imports.
+          </Typography.Paragraph>
+        </EduIf>
+
         <Row type="flex" justify="center" align="middle">
           <Col>
             <EduIf condition={status === 'SUCCESS'}>

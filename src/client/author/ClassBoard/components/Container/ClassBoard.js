@@ -1961,26 +1961,28 @@ class ClassBoard extends Component {
                         </div>
                       </Tooltip>
                     </EduIf>
-                    <Tooltip
-                      placement="top"
-                      title={
-                        standardTaggingIsPresent
-                          ? testSubmittedByAtleastOneStudent
-                            ? undefined
-                            : 'No student has submitted the test yet. Test score is necessary to assign interventions.'
-                          : 'The test does not have any item tagged to standard. Standard tagging is necessary to assign interventions.'
-                      }
-                    >
-                      <div>
-                        <AssignTutoring
-                          active={enableAssignInterventionsRedirect}
-                          data-cy="assignTutoring"
-                          onClick={handleAssignInterventionsClick}
-                        >
-                          ASSIGN INTERVENTIONS
-                        </AssignTutoring>
-                      </div>
-                    </Tooltip>
+                    <EduIf condition={process.env.NODE_ENV === 'development'}>
+                      <Tooltip
+                        placement="top"
+                        title={
+                          standardTaggingIsPresent
+                            ? testSubmittedByAtleastOneStudent
+                              ? undefined
+                              : 'No student has submitted the test yet. Test score is necessary to assign interventions.'
+                            : 'The test does not have any item tagged to standard. Standard tagging is necessary to assign interventions.'
+                        }
+                      >
+                        <div>
+                          <AssignTutoring
+                            active={enableAssignInterventionsRedirect}
+                            data-cy="assignTutoring"
+                            onClick={handleAssignInterventionsClick}
+                          >
+                            ASSIGN INTERVENTIONS
+                          </AssignTutoring>
+                        </div>
+                      </Tooltip>
+                    </EduIf>
 
                     <ClassBoardFeats>
                       <RedirectButton

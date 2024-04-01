@@ -162,6 +162,7 @@ const AttendanceChart = ({
         }}
         style={{
           visibility: hasPreviousPage ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <StyledChartNavButton
@@ -176,6 +177,7 @@ const AttendanceChart = ({
         }}
         style={{
           visibility: hasNextPage ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <CustomXAxisTickTooltipContainer

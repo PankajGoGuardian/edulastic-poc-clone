@@ -101,6 +101,7 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
           style={{
             marginLeft: '10px',
             visibility: hasPreviousPage ? 'visible' : 'hidden',
+            padding: 0,
           }}
         />
         <StyledChartNavButton
@@ -116,6 +117,7 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
           style={{
             marginRight: '10px',
             visibility: hasNextPage ? 'visible' : 'hidden',
+            padding: 0,
           }}
         />
         <StyledResponsiveContainer

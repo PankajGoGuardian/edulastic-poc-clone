@@ -32,6 +32,7 @@ const IAP_EOY = 'IAP_EOY'
 const IAP_Window = 'IAP_Window'
 const MCAS_Historical = 'MCAS_Historical'
 const ACCESS_v2 = 'ACCESS_v2'
+const IAM = 'IAM'
 
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
 const EXTERNAL_TEST_TYPES = {
@@ -167,4 +168,5 @@ module.exports = {
   IAP_Window,
   MCAS_Historical,
   ACCESS_v2,
+  IAM,
 }

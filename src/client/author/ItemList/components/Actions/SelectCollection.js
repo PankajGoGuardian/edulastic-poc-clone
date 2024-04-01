@@ -13,7 +13,7 @@ import {
 } from '../../../ContentBuckets/ducks'
 import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
 import { getSelectedTestsSelector } from '../../../TestList/ducks'
-import { getTestEntitySelector } from '../../../TestPage/ducks'
+import { getCartTestSelector } from '../../../TestPage/ducks'
 import {
   getPlaylistsSelector,
   getSelectedPlaylistSelector,
@@ -115,7 +115,7 @@ export default connect(
     selectedTests: getSelectedTestsSelector(state),
     selectedPlaylists: getSelectedPlaylistSelector(state),
     playlists: getPlaylistsSelector(state),
-    test: getTestEntitySelector(state),
+    test: getCartTestSelector(state),
   }),
   {
     setAddCollectionModalVisible: setAddCollectionModalVisibleAction,

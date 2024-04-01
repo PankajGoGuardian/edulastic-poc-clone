@@ -8,8 +8,7 @@ import { sortBy, maxBy, uniqBy, isEmpty, keyBy } from 'lodash'
 import produce from 'immer'
 import { SortableElement, SortableContainer } from 'react-sortable-hoc'
 
-import { EduButton, EduElse, EduIf, EduThen, helpers } from '@edulastic/common'
-import { IconEye } from '@edulastic/icons'
+import { EduElse, EduIf, EduThen, helpers } from '@edulastic/common'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 
@@ -538,8 +537,6 @@ class Questions extends React.Component {
       questionsContainerRef,
       isVideoQuizAndAIEnabled,
       userRole,
-      isPreviewModalVisible,
-      handleShowTestPreviewModal,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -579,16 +576,6 @@ class Questions extends React.Component {
             review={review}
             ref={questionsContainerRef}
           >
-            {isAuthorReview && !isPreviewModalVisible && (
-              <EduButton
-                isGhost
-                width="90%"
-                justifyContent="center"
-                onClick={handleShowTestPreviewModal}
-              >
-                <IconEye /> VIEW AS STUDENT
-              </EduButton>
-            )}
             <EduIf
               condition={!this.questionList?.length && viewMode === 'edit'}
             >

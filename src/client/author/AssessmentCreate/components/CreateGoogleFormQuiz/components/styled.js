@@ -30,7 +30,7 @@ export const StyledCancelButton = styled(Button)`
 `
 export const StyledList = styled.ul`
   font-weight: 600;
-  padding: 16px 24px;
+  padding: 16px 24px 6px 24px;
 
   li {
     margin: 8px;

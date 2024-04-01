@@ -1398,6 +1398,7 @@ class PreviewModal extends React.Component {
                   data-cy="clear-btn"
                   onClick={this.clearView}
                   disabled={!!premiumCollectionWithoutAccess}
+                  style={{ padding: 0 }}
                 >
                   <IconClear width="15" height="15" color={themeColor} />
                 </EduButton>
@@ -1450,7 +1451,11 @@ class PreviewModal extends React.Component {
                         item.unsavedItem
                       }
                       onClick={this.editTestItem}
-                      style={isDynamicTest ? { pointerEvents: 'none' } : {}} // For Dynamic & Sections test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
+                      style={
+                        isDynamicTest
+                          ? { pointerEvents: 'none', padding: 0 }
+                          : { padding: 0 }
+                      } // For Dynamic & Sections test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
                     >
                       <IconPencilEdit color={themeColor} title="Edit item" />
                     </EduButton>
@@ -1486,7 +1491,11 @@ class PreviewModal extends React.Component {
                       item.unsavedItem
                     }
                     onClick={this.handleDuplicateTestItem}
-                    style={isDynamicTest ? { pointerEvents: 'none' } : {}} // For Dynamic & Sections test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
+                    style={
+                      isDynamicTest
+                        ? { pointerEvents: 'none', padding: 0 }
+                        : { padding: 0 }
+                    } // For Dynamic & Sections test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
                   >
                     <IconCopy color={themeColor} />
                   </EduButton>
@@ -1510,6 +1519,7 @@ class PreviewModal extends React.Component {
                         : deleting) || !!premiumCollectionWithoutAccess
                     }
                     data-cy="deleteItem"
+                    style={{ padding: 0 }}
                   >
                     <IconTrash title="Delete item" />
                     {/* <span>delete</span> */}
@@ -1559,6 +1569,7 @@ class PreviewModal extends React.Component {
               height="28px"
               onClick={this.toggleFullModal}
               title={fullModal ? 'Collapse' : 'Expand'}
+              style={{ padding: 0 }}
             >
               {fullModal ? <IconCollapse /> : <IconExpand />}
             </EduButton>
@@ -1571,7 +1582,7 @@ class PreviewModal extends React.Component {
               onClick={this.closeModal}
               title="Close"
               noHover
-              style={{ border: 'none', boxShadow: 'none' }}
+              style={{ border: 'none', boxShadow: 'none', padding: 0 }}
             >
               <IconClose width={10} height={10} color={`${title} !important`} />
             </EduButton>

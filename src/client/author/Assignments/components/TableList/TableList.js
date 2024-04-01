@@ -691,6 +691,7 @@ const TableList = ({
                   data-cy="assignmentActions"
                   isBlue
                   isGhost
+                  style={{ padding: 0 }}
                 >
                   ACTIONS
                 </EduButton>
@@ -750,6 +751,7 @@ const TableList = ({
                 maxWidth="75px"
                 isGhost
                 data-cy="actions"
+                style={{ padding: 0 }}
               >
                 ACTIONS
               </EduButton>

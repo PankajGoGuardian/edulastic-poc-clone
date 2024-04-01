@@ -200,11 +200,7 @@ export const Magnifier = ({
     if (enable) {
       const zoomWrapper = document.querySelector('.zoomed-container-wrapper')
 
-      if (
-        unzoomRef.current &&
-        !zoomWrapper?.innerHTML?.length &&
-        !ZoomedContent
-      ) {
+      if (unzoomRef.current && !ZoomedContent) {
         setTimeout(() => {
           zoomWrapper.textContent = ''
           unzoomRef.current.childNodes.forEach((node) => {

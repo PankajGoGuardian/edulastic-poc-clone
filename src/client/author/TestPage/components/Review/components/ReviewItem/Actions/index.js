@@ -16,6 +16,7 @@ export default ({
       title="Expand"
       data-cy={`expand-${expanded}`}
       onClick={onCollapseExpandRow}
+      IconBtn
     >
       {expanded ? (
         <IconCollapse width={15} height={15} />
@@ -23,7 +24,13 @@ export default ({
         <IconExpand width={15} height={15} />
       )}
     </ActionButton>
-    <ActionButton isGhost title="Preview" data-cy="preview" onClick={onPreview}>
+    <ActionButton
+      isGhost
+      title="Preview"
+      data-cy="preview"
+      onClick={onPreview}
+      IconBtn
+    >
       <IconEye width={18} height={18} />
     </ActionButton>
     {isEditable && (
@@ -33,6 +40,7 @@ export default ({
         data-cy="delete"
         onClick={onDelete}
         onMouseDown={(e) => e && e.preventDefault()}
+        IconBtn
       >
         <IconTrash width={15} height={15} />
       </ActionButton>

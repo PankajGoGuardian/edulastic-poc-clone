@@ -279,11 +279,11 @@ const MiscellaneousGroupContainer = ({
 
       <div>
         <Block smallSize id="accommodations">
-          {!!accommodationsData.filter((a) => a.isEnabled).length && (
-            <>
-              <Title>Accommodations Settings</Title>
-              <p>{translate('accommodationsSettings.description')}</p>
-              {!isDocBased && (
+          {!isDocBased &&
+            !!accommodationsData.filter((a) => a.isEnabled).length && (
+              <>
+                <Title>Accommodations Settings</Title>
+                <p>{translate('accommodationsSettings.description')}</p>
                 <RadioWrapper
                   disabled={freezeSettings}
                   style={{ marginTop: '10px', marginBottom: 0 }}
@@ -338,9 +338,8 @@ const MiscellaneousGroupContainer = ({
                       </SettingContainer>
                     ))}
                 </RadioWrapper>
-              )}
-            </>
-          )}
+              </>
+            )}
         </Block>
         <Block smallSize id="accessibility">
           {!!accessibilityData.length && (

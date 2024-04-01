@@ -1142,7 +1142,7 @@ class Setting extends Component {
       const hasAccommodationsData = accommodationsData.filter(
         (a) => a.isEnabled
       ).length
-      if (!hasAccommodationsData) {
+      if (isDocBased || !hasAccommodationsData) {
         return settingCategories.filter(
           (settingCategory) => settingCategory.id !== 'accommodations'
         )
@@ -2111,7 +2111,10 @@ class Setting extends Component {
                 </>
               )}
               <EduIf
-                condition={accommodationsData.filter((a) => a.isEnabled).length}
+                condition={
+                  !isDocBased &&
+                  accommodationsData.filter((a) => a.isEnabled).length
+                }
               >
                 <SettingsCategoryBlock id="accommodations">
                   <span>

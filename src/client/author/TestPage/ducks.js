@@ -83,6 +83,7 @@ import {
   loadQuestionsAction,
   getQuestionsArraySelector,
   UPDATE_QUESTION,
+  ADD_QUESTION,
 } from '../sharedDucks/questions'
 import { evaluateItem } from '../src/utils/evalution'
 import createShowAnswerData from '../src/utils/showAnswer'
@@ -1626,6 +1627,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       }
     case SET_LOADING_TEST_PAGE:
       return { ...state, loading: payload }
+    case ADD_QUESTION:
     case UPDATE_QUESTION:
       return produce(state, (_state) => {
         if (_state.entity.isDocBased) {

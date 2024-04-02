@@ -2,6 +2,7 @@ import { smallDesktopWidth } from '@edulastic/colors'
 import { round, sum, values, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { getHasRandomQuestionselector } from '../../ClassBoard/ducks'
@@ -148,6 +149,8 @@ class TableDisplay extends Component {
     const {
       additionalData: { assignmentMastery = [] } = {},
       reportStandards: standards,
+      isTestStandardsEmpty,
+      t,
       hasRandomQuestions,
       testActivities,
       qids,
@@ -244,13 +247,18 @@ class TableDisplay extends Component {
     const isMobile = this.isMobile()
 
     if (isEmpty(standards)) {
-      return (
-        <NoDataNotification
-          heading="Report requires test items to be tagged to standards."
-          description="Please add standards to the test items and regrade the test to view
-          standard-wise performance."
-        />
+      let heading = t('common.noMatchingStandardsHeading')
+      let description = (
+        <>
+          Please visit <Link to="/author/profile">My Profile</Link>{' '}
+          {t('common.noMatchingStandardsDescription')}
+        </>
       )
+      if (isTestStandardsEmpty) {
+        heading = t('common.noStandardsHeading')
+        description = t('common.noStandardsDescription')
+      }
+      return <NoDataNotification heading={heading} description={description} />
     }
 
     return (

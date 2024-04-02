@@ -105,7 +105,8 @@ class StandardsBasedReport extends Component {
       },
       labels,
       testQIds,
-      testStandardsLength,
+      noStandardsQuestionsLength,
+      totalQuestions,
       showDataWarehouseReport,
       t,
     } = this.props
@@ -162,6 +163,10 @@ class StandardsBasedReport extends Component {
               additionalData={additionalData}
               reportStandards={reportStandards}
               qids={testQIds}
+              isTestStandardsEmpty={
+                noStandardsQuestionsLength === totalQuestions
+              }
+              t={t}
             />
           </DivWrapper>
         </MainContentWrapper>
@@ -179,6 +184,9 @@ const enhance = compose(
       testQIds: getQIdsSelector(state),
       labels: getQLabelsSelector(state),
       reportStandards: state.classResponse?.data?.reportStandards || [],
+      noStandardsQuestionsLength:
+        state.classResponse?.data?.summary?.noStandards?.totalQuestions || 0,
+      totalQuestions: state.classResponse?.data?.summary?.totalQuestions || 0,
       isFreeAdmin: isFreeAdminSelector(state),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),

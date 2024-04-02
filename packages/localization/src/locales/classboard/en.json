@@ -22,6 +22,10 @@
     "bubbleSheetGenerateAssignmentDoneMessage": "Generate sheet disabled as Assignment is closed. Please contact support to reopen.",
     "uqaArchiveMessage": "Question level data for this assignment has been archived. Please contact support@edulastic.com for assistance.",
     "selectStudentAttemptTooltipMessage": "Select attempt for scoring.",
-    "disableStudentAttemptTooltipMessage": "Please ask the student to submit the latest attempt to unlock attempt selection."
+    "disableStudentAttemptTooltipMessage": "Please ask the student to submit the latest attempt to unlock attempt selection.",
+    "noMatchingStandardsHeading": "Test standards do not match your Standard Set. Details below.",
+    "noMatchingStandardsDescription": "and add the relevant standard set for this test to your Interested Standards.",
+    "noStandardsHeading": "Report requires test items to be tagged to standards.",
+    "noStandardsDescription": "Please add standards to the test items and regrade the test to view standard-wise performance."
   }
 }

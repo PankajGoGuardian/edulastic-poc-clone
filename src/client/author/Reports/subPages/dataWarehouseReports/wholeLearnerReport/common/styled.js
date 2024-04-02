@@ -86,6 +86,7 @@ export const LimitationTextWrapper = styled.div`
 export const ExclamationIcon = styled.i`
   color: #000;
   font-size: 18px;
+  margin-right: 5px;
 `
 
 export const DemographicsWrapper = styled.div`

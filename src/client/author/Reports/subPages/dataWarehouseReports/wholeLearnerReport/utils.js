@@ -608,6 +608,7 @@ export const getAssessmentChartData = (
             }
           : null
       }
+      if (!barsDataForInternal.length) return null
       return {
         ...d,
         [barsDataForInternal[0].key]: d.averageScore,

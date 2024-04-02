@@ -22,6 +22,7 @@ const Summary = ({
   studentClassData,
   settings,
   isMultiSchoolYear,
+  isDifferentSchoolYear,
 }) => {
   const query = useMemo(() => {
     const payload = {
@@ -74,6 +75,7 @@ const Summary = ({
                 <RiskSummary
                   data={riskData}
                   isMultiSchoolYear={isMultiSchoolYear}
+                  isDifferentSchoolYear={isDifferentSchoolYear}
                 />
               </EduThen>
               <EduElse>

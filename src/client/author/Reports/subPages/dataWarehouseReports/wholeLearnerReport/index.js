@@ -57,6 +57,7 @@ import {
   RISK_LEGEND_PAYLOAD,
   enhanceQueryWithTermIds,
   getIsMultiSchoolYearDataPresent,
+  getIsDifferentSchoolYearDataPresent,
 } from '../common/utils'
 import WLRDetails from './components/WLRDetails'
 import { getUserOrgData, getUserRole } from '../../../../src/selectors/user'
@@ -150,6 +151,10 @@ const WholeLearnerReport = ({
 
   const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(
     sharedReportFilters?.testTermIds || filters.testTermIds
+  )
+
+  const isDifferentSchoolYear = getIsDifferentSchoolYearDataPresent(
+    sharedReportFilters || filters
   )
 
   const { testTypes, externalScoreType } = useMemo(() => {
@@ -547,6 +552,7 @@ const WholeLearnerReport = ({
                       studentClassData={studentClassData}
                       settings={settings}
                       isMultiSchoolYear={isMultiSchoolYear}
+                      isDifferentSchoolYear={isDifferentSchoolYear}
                     />
                     <WLRDetails
                       isPrinting={isPrinting}

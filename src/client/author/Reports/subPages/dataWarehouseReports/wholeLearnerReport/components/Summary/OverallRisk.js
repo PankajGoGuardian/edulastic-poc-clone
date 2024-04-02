@@ -2,13 +2,16 @@ import React from 'react'
 import { Empty } from 'antd'
 import { isEmpty } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
-import { EduIf, EduElse, EduThen } from '@edulastic/common'
+import { EduIf, EduElse, EduThen, FlexContainer } from '@edulastic/common'
+import { themeColor } from '@edulastic/colors'
+import { IconInfo } from '@edulastic/icons'
 import {
   CustomStyledCell,
   StyledEmptyContainer,
 } from '../../../common/components/styledComponents'
 import { Label } from '../../common/styled'
 import { RISK_LABEL_SUFFIX } from '../../../common/utils'
+import { CustomWhiteBackgroundTooltip } from '../../../../../common/components/customTableTooltip'
 
 const { RISK_BAND } = reportUtils.common
 const labelText = `OVERALL RISK${RISK_LABEL_SUFFIX.toUpperCase()}`
@@ -25,9 +28,18 @@ const OverallRisk = ({ overallRisk }) => {
       </Label>
       <EduIf condition={!isEmpty(overallRisk)}>
         <EduThen>
-          <CustomStyledCell $backgroundColor={RISK_BAND[bandLabel].color}>
-            {label}
-          </CustomStyledCell>
+          <FlexContainer justifyContent="flex-start" alignItems="center">
+            <CustomStyledCell
+              $backgroundColor={RISK_BAND[bandLabel].color}
+              $margin="0 8px 0 0"
+            >
+              {label}
+            </CustomStyledCell>
+            <CustomWhiteBackgroundTooltip
+              data="Please note that test filters are not currently applied to risk calculation on this report."
+              str={<IconInfo fill={themeColor} style={{ marginTop: '3px' }} />}
+            />
+          </FlexContainer>
         </EduThen>
         <EduElse>
           <StyledEmptyContainer

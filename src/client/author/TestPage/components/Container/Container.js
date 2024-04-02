@@ -132,6 +132,7 @@ import VideoQuizWorksheet from '../../../AssessmentPage/VideoQuiz/VideoQuizWorks
 import {
   getQuestionsSelector,
   getQuestionsArraySelector,
+  getAuthorQuestionStatus,
 } from '../../../sharedDucks/questions'
 import {
   validateQuestionsForDocBased,
@@ -707,6 +708,7 @@ class Container extends PureComponent {
       hasSections,
       currentTab,
       isTestTypeWithDefaultTestTitle,
+      authorQuestionStatus: newQuestionsAdded,
     } = this.props
     const { groupNotEdited } = this.state
     const { authors, itemGroups = [], _id } = test
@@ -762,6 +764,7 @@ class Container extends PureComponent {
     }
 
     const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
+    const isDocBasedAndNewQuestionsAdded = test?.isDocBased && newQuestionsAdded
 
     if (_hasUnsavedAiItems && checkAiItems && currentTab === 'review') {
       this.setState((state) => ({
@@ -786,7 +789,7 @@ class Container extends PureComponent {
           test.testCategory !== testCategoryTypes.DYNAMIC_TEST) &&
         (totalTestItems > 0 || isAutoSelectGroup) &&
         !(totalTestItems === 1 && !_id && creating && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
-        updated &&
+        (updated || isDocBasedAndNewQuestionsAdded) &&
         (!firstFlow || _hasUnsavedAiItems)
       ) {
         this.handleSave()
@@ -1519,6 +1522,11 @@ class Container extends PureComponent {
       ) {
         newTest.isInEditAndRegrade = true
       }
+      // for VQ or docbased test call handleDocBasedSave method so that testItem is also updated along with the test
+      if (test.isDocBased) {
+        this.handleDocBasedSave()
+        return
+      }
       updateTest(test._id, { ...newTest, currentTab, nextLocation, nextAction })
     } else {
       createTest({ ...newTest, currentTab, nextLocation, nextAction })
@@ -1556,6 +1564,7 @@ class Container extends PureComponent {
       hasSections,
     } = test
     const {
+      questions: assessmentQuestions,
       userFeatures,
       isOrganizationDistrictUser,
       isTestTypeWithDefaultTestTitle,
@@ -1671,15 +1680,29 @@ class Container extends PureComponent {
       }
     }
 
-    if (!itemGroupWithQuestionsCount) {
-      notification({ messageKey: `noQuestions` })
-      return false
+    // For docbased/VQ for questions validation validateQuestionsForDocBased should be used
+    if (test.isDocBased) {
+      if (
+        !validateQuestionsForDocBased(
+          assessmentQuestions,
+          false,
+          !!test.videoUrl
+        )
+      ) {
+        return false
+      }
+    } else {
+      if (!itemGroupWithQuestionsCount) {
+        notification({ messageKey: `noQuestions` })
+        return false
+      }
+
+      if (testHasInvalidItem) {
+        notification({ messageKey: `testHasInvalidItem` })
+        return false
+      }
     }
 
-    if (testHasInvalidItem) {
-      notification({ messageKey: `testHasInvalidItem` })
-      return false
-    }
     return true
   }
 
@@ -2292,6 +2315,7 @@ const enhance = compose(
       isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
       accommodations: getUserAccommodations(state),
       isVideoQuiz: isVideoQuizSelector(state),
+      authorQuestionStatus: getAuthorQuestionStatus(state),
     }),
     {
       createTest: createTestAction,

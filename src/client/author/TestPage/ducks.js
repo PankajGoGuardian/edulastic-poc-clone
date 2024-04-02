@@ -859,6 +859,12 @@ export const getSelectedTestItemsSelector = createSelector(
     _test.itemGroups.flatMap((itemGroup) => itemGroup.items || []) || []
 )
 
+export const getCartTestItemsSelector = createSelector(
+  getCartTestSelector,
+  (_test) =>
+    _test.itemGroups.flatMap((itemGroup) => itemGroup.items || []) || []
+)
+
 export const getItemGroupsSelector = createSelector(
   getTestEntitySelector,
   (_test) => _test.itemGroups || []
@@ -904,6 +910,11 @@ export const getDisableAnswerOnPaperSelector = createSelector(
 
 export const getCurentTestPassagesSelector = createSelector(
   getTestEntitySelector,
+  (_test) => _test.passages || []
+)
+
+export const getCartTestPassagesSelector = createSelector(
+  getCartTestSelector,
   (_test) => _test.passages || []
 )
 
@@ -4040,12 +4051,19 @@ function* duplicateTestSaga({ payload }) {
  */
 function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
   try {
+    const cart = page === 'itemList'
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
-    const _test = yield select(getTestSelector)
-    const hasSections = yield select(hasSectionsSelector)
-    const isDynamicTest = yield select(isDynamicTestSelector)
+    const _test = yield select(cart ? getCartTestSelector : getTestSelector)
+    const hasSections = yield select(
+      cart ? isCartTestHasSectionsSelector : hasSectionsSelector
+    )
+    const isDynamicTest = yield select(
+      cart ? isCartTestDynamicSelector : isDynamicTestSelector
+    )
     const { passageId } = passageItems?.[0] || {}
-    const currentPassages = yield select(getCurentTestPassagesSelector)
+    const currentPassages = yield select(
+      cart ? getCartTestPassagesSelector : getCurentTestPassagesSelector
+    )
     const currentPassageIds = currentPassages.map((i) => i._id)
     // new payload to update the tests' store's entity.
     const newPayload = {}
@@ -4054,7 +4072,9 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
       const passage = yield call(passageApi.getById, passageId)
       newPayload.passages = [...currentPassages, passage]
     }
-    const testItems = yield select(getSelectedTestItemsSelector)
+    const testItems = yield select(
+      cart ? getCartTestItemsSelector : getSelectedTestItemsSelector
+    )
     newPayload.itemGroups = _test.itemGroups
     if (remove) {
       const passageItemIds = passageItems.map((x) => x._id)
@@ -4117,9 +4137,7 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
     if (!_test._id && page !== 'itemList') {
       yield put(createTestAction({ ..._test, ...newPayload }))
     }
-    if (page === 'itemList') {
-      newPayload.cart = true
-    }
+    newPayload.cart = cart
     // for weird reason there is another store to show if a testItem should be shown
     // as selected or not in item banks page. Adding test items to there.
     yield put(setTestItemsAction(itemIds))

@@ -102,6 +102,7 @@ function AttendanceSummaryGraph({
           marginTop: -30,
           marginLeft: 0,
           visibility: hasPreviousPage ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <StyledChartNavButton
@@ -118,6 +119,7 @@ function AttendanceSummaryGraph({
           marginTop: -30,
           marginRight: 0,
           visibility: hasNextPage ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <CustomXAxisTickTooltipContainer

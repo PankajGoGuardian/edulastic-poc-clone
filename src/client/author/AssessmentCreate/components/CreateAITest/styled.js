@@ -79,7 +79,7 @@ export const StyledRequired = styled.span`
 
 export const AiEduButton = styled(EduButton)`
   font-weight: ${({ fontWeight }) => fontWeight};
-  margin-left: 0px !important;
+  margin-left: ${({ marginLeft }) => marginLeft || '0px'} !important;
 
   &.ant-btn.ant-btn-primary {
     border: none;
@@ -90,6 +90,9 @@ export const AiEduButton = styled(EduButton)`
     width: '100%';
     margin: ${({ margin }) => margin && '0 5px'};
     border: 'none';
+  }
+  svg {
+    margin: ${({ IconBtn }) => IconBtn && 0};
   }
   &:hover {
     &.ant-btn.ant-btn-primary {

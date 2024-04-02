@@ -175,6 +175,7 @@ export const AddRemoveBtn = styled(ButtonStyle)`
     border-color: ${({ isAddOrRemove }) =>
       isAddOrRemove ? themeColor : red} !important;
     background: white !important;
+    padding: 0;
     margin-top: 15px;
     &:not(.disabled):hover {
       border-color: ${({ isAddOrRemove }) =>

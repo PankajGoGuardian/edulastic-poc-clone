@@ -543,6 +543,10 @@ export const StyledChartNavButton = styled(EduButton)`
   .ant-btn > .anticon {
     line-height: 0.8;
   }
+
+  i {
+    margin: 0;
+  }
 `
 
 export const StyledAxisTickText = styled(Text)`

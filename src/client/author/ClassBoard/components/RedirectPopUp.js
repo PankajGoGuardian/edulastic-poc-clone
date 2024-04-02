@@ -83,7 +83,9 @@ const RedirectPopUp = ({
   const [loading, setLoading] = useState(false)
   const [type, setType] = useState('specificStudents')
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents)
-  const [qDeliveryState, setQDeliveryState] = useState('')
+  const [qDeliveryState, setQDeliveryState] = useState(
+    isPremiumUser ? '' : redirectPolicy.QuestionDelivery.ALL
+  )
   const [showPrevAttempt, setshowPrevAttempt] = useState(
     'STUDENT_RESPONSE_AND_FEEDBACK'
   )

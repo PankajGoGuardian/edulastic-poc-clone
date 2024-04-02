@@ -287,6 +287,7 @@ class DisneyCardContainer extends Component {
             activeUtaId: selectedAttemptId,
             archiveUtaId: student.testActivityId,
             activeAttemptQuestionIds,
+            groupId: classId,
           })
           loadTestActivity(assignmentId, classId)
         }

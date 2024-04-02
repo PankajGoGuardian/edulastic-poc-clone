@@ -394,6 +394,7 @@ export const SignedStackedBarChart = ({
         onClick={chartNavLeftClick}
         style={{
           visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <StyledChartNavButton
@@ -405,6 +406,7 @@ export const SignedStackedBarChart = ({
         onClick={chartNavRightClick}
         style={{
           visibility: chartNavRightVisibility ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <CustomXAxisTickTooltipContainer

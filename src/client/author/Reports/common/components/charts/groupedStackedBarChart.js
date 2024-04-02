@@ -260,6 +260,7 @@ export const GroupedStackedBarChart = ({
         className="navigator navigator-left"
         onClick={scrollLeft}
         hidden={!chartNavLeftVisibility}
+        style={{ padding: 0 }}
       />
       <StyledChartNavButton
         type="primary"
@@ -269,6 +270,7 @@ export const GroupedStackedBarChart = ({
         className="navigator navigator-right"
         onClick={scrollRight}
         hidden={!chartNavRightVisibility}
+        style={{ padding: 0 }}
       />
       <CustomXAxisTickTooltipContainer
         data-testid="xAxis-tooltip"

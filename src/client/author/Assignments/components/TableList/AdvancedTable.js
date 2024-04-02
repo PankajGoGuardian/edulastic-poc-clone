@@ -250,6 +250,7 @@ class AdvancedTable extends Component {
                     data-cy="actions"
                     isBlue
                     isGhost
+                    style={{ padding: 0 }}
                   >
                     ACTIONS
                   </EduButton>
@@ -337,6 +338,7 @@ class AdvancedTable extends Component {
                   width="100%"
                   isGhost
                   data-cy="testActions"
+                  style={{ padding: 0 }}
                 >
                   ACTIONS
                 </EduButton>

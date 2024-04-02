@@ -115,6 +115,7 @@ const SimpleBarChartContainer = ({ data, setRange, range }) => {
           visibility: startIndex > 0 ? 'visible' : 'hidden',
           top: '35%',
           left: '0px',
+          padding: 0,
         }}
       />
       <StyledChartNavButton
@@ -127,6 +128,7 @@ const SimpleBarChartContainer = ({ data, setRange, range }) => {
           visibility: startIndex + 50 < data.length ? 'visible' : 'hidden',
           top: '35%',
           right: '0px',
+          padding: 0,
         }}
       />
       <NonSelectableResponsiveContainer width="90%" height={450}>

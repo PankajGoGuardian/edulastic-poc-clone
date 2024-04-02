@@ -1384,6 +1384,8 @@ class PreviewModal extends React.Component {
                   height="28px"
                   onClick={this.onRegenerateTestItem}
                   aiStyle
+                  IconBtn
+                  marginLeft="5px"
                 >
                   <IconMagicWand fill={`${white}`} />
                 </AiEduButton>

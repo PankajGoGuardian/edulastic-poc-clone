@@ -66,7 +66,7 @@ const VideoQuizUsage = ({
           width={18}
           trailColor={trailColor}
         />
-        <VideoQuizUsageText>{`${vqUsageCount}/${Math.max(
+        <VideoQuizUsageText data-cy="vqUsageCount">{`${vqUsageCount}/${Math.max(
           vqUsageCount,
           vqQuotaForDistrict
         )} Free Quizzes Used`}</VideoQuizUsageText>

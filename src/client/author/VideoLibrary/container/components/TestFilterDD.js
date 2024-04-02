@@ -18,6 +18,7 @@ const TestFiltersDD = ({
     <FlexContainer mr="16px" width="250px" flexDirection="column">
       <FilterHeader>{filterHeader}</FilterHeader>
       <SelectInputStyled
+        data-cy={`${filterKey}DropDown`}
         mode={mode}
         showSearch
         value={filterValue}

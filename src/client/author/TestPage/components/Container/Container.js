@@ -1575,6 +1575,7 @@ class Container extends PureComponent {
       hasSections,
     } = test
     const {
+      questions: assessmentQuestions,
       userFeatures,
       isOrganizationDistrictUser,
       isTestTypeWithDefaultTestTitle,
@@ -1690,15 +1691,29 @@ class Container extends PureComponent {
       }
     }
 
-    if (!itemGroupWithQuestionsCount) {
-      notification({ messageKey: `noQuestions` })
-      return false
+    // For docbased/VQ for questions validation validateQuestionsForDocBased should be used
+    if (test.isDocBased) {
+      if (
+        !validateQuestionsForDocBased(
+          assessmentQuestions,
+          false,
+          !!test.videoUrl
+        )
+      ) {
+        return false
+      }
+    } else {
+      if (!itemGroupWithQuestionsCount) {
+        notification({ messageKey: `noQuestions` })
+        return false
+      }
+
+      if (testHasInvalidItem) {
+        notification({ messageKey: `testHasInvalidItem` })
+        return false
+      }
     }
 
-    if (testHasInvalidItem) {
-      notification({ messageKey: `testHasInvalidItem` })
-      return false
-    }
     return true
   }
 

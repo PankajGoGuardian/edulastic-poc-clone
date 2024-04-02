@@ -209,6 +209,7 @@ const SimpleAreaChart = ({
         onClick={chartNavLeftClick}
         style={{
           visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <StyledChartNavButton
@@ -220,6 +221,7 @@ const SimpleAreaChart = ({
         onClick={chartNavRightClick}
         style={{
           visibility: chartNavRightVisibility ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <CustomXAxisTickTooltipContainer

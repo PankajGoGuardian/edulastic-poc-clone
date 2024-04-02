@@ -295,6 +295,7 @@ export const SignedStackedBarChart = ({
             chartNavLeftVisibility || (carousel && pageNo > 1)
               ? 'visible'
               : 'hidden',
+          padding: 0,
         }}
       />
       <StyledChartNavButton
@@ -310,6 +311,7 @@ export const SignedStackedBarChart = ({
             (carousel && totalRows > tablePageSize * pageNo)
               ? 'visible'
               : 'hidden',
+          padding: 0,
         }}
       />
       <CustomXAxisTickTooltipContainer

@@ -7,15 +7,12 @@ import { getUser, getUserOrgId } from '../src/selectors/user'
 import { initTutorMeService } from './service'
 import { setInterventionDataInUtaAction } from '../src/reducers/testActivity'
 import { invokeTutorMeSDKtoAssignTutor } from './helper'
-import { tutorMeSdkConfig } from '../../../app-config'
 
 const reduxNamespaceKey = 'tutorMe'
 const initialState = {
-  tutorMeInitAt: null,
   isSessionRequestActive: false,
   isTutorMeModalOpen: false,
 }
-const { authTimeout } = tutorMeSdkConfig
 
 const slice = createSlice({
   slice: reduxNamespaceKey,
@@ -26,9 +23,6 @@ const slice = createSlice({
     },
     tutorMeRequestSessionComplete: (state) => {
       state.isSessionRequestActive = false
-    },
-    setTutorMeInitAt: (state, { payload }) => {
-      state.tutorMeInitAt = payload
     },
     setIsTutorMeModalOpen: (state, { payload }) => {
       state.isTutorMeModalOpen = payload
@@ -41,15 +35,6 @@ export const { actions, reducer } = slice
 export { reduxNamespaceKey }
 
 const stateSelector = (state) => state.tutorMeReducer
-
-const tutorMeInitAtSelector = createSelector(
-  stateSelector,
-  (state) => state.tutorMeInitAt
-)
-const tutorMeInitExpiredSelector = createSelector(
-  tutorMeInitAtSelector,
-  (tutorMeInitAt) => !tutorMeInitAt || tutorMeInitAt + authTimeout < Date.now()
-)
 
 export const tutorMeServiceInitializingSelector = createSelector(
   stateSelector,
@@ -94,27 +79,21 @@ function* createTutorMeInterventionSaga(payload) {
   }
 }
 
-function* initializeTutorMeServiceSaga() {
+function* initializeTutorMeServiceSaga(student) {
   try {
-    const tutorMeInitExpired = yield select(tutorMeInitExpiredSelector)
-    if (tutorMeInitExpired) {
-      const now = Date.now()
-      const authCredentials = yield call(tutorMeApi.authorizeTutorme)
-      const user = yield select(getUser)
-      yield call(initTutorMeService, authCredentials, user)
-      yield put(actions.setTutorMeInitAt(now))
-    }
+    const authCredentials = yield call(tutorMeApi.authorizeTutorme)
+    const user = yield select(getUser)
+    yield call(initTutorMeService, [student], authCredentials, user)
   } catch (err) {
     captureSentryException(err)
     notification({ msg: 'Authentication failed. Please contact support.' })
-    yield put(actions.setTutorMeInitAt(null))
   }
 }
 
 function* tutorMeRequestSesssionSaga({ payload }) {
   try {
     const [, tutorMeStandards] = yield all([
-      initializeTutorMeServiceSaga(),
+      call(initializeTutorMeServiceSaga, payload.student),
       call(tutorMeApi.getTutorMeStandards, {
         standardIds: payload.standardsMasteryData
           .map(({ standardId }) => standardId)
@@ -122,9 +101,6 @@ function* tutorMeRequestSesssionSaga({ payload }) {
           .join(','),
       }),
     ])
-    if (yield select(tutorMeInitExpiredSelector)) {
-      return
-    }
     yield put(actions.setIsTutorMeModalOpen(true))
     const tutorMeInterventionResponse = yield call(
       invokeTutorMeSDKtoAssignTutor,

@@ -67,12 +67,11 @@ export const firebaseConfig = {
 }
 
 export const tutorMeSdkConfig = {
-  authTimeout: +process.env.REACT_APP_TUTORME_AUTH_TIMEOUT || 60 * 60 * 1000,
   api:
     process.env.REACT_APP_TUTORME_SDK_API ??
     (process.env.NODE_ENV === 'production'
       ? ''
-      : 'https://app.testing.tutorme.com/api/v1/sdk'),
+      : 'https://stg-tutor.peardeck.com/api/v1/sdk'),
 }
 
 const sentryIgnoreErrors = [

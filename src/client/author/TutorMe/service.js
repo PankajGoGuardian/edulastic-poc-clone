@@ -10,13 +10,19 @@ const { api } = tutorMeSdkConfig
 /**
  * @param {{email: string; firstName: string; middleName?: string; lastName?: string}} user
  */
-export async function initTutorMeService(auth, user) {
+export async function initTutorMeService(students, auth, user) {
   await tutorMeService.init(auth.key, {
     requestor: {
       name: formatName(user, { lastNameFirst: false }),
       email: user.email,
     },
     secret: auth.secret,
+    studentIds: students.map((s) => ({
+      firstName: s.firstName,
+      lastName: s.lastName,
+      externalId: s.studentId,
+      email: s.email,
+    })),
     api,
     theme: {
       modal: {

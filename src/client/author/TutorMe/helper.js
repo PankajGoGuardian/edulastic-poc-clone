@@ -98,14 +98,6 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
   ]
 
   const requestPayload = {
-    students: [
-      {
-        firstName: student.firstName,
-        lastName: student.lastName,
-        externalId: student.studentId,
-        email: student.email,
-      },
-    ],
     data: {
       grade: tutorMeStandards.tutorMeGrade,
       subject: tutorMeStandards.tutorMeSubject,

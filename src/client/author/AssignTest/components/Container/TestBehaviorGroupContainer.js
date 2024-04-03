@@ -252,14 +252,14 @@ const TestBehaviorGroupContainer = ({
         <SettingContainer id="vq-enable-cc">
           <DetailsTooltip
             width={tootltipWidth}
-            title="Turn on CCs"
-            content="Enable CCs (if available) for YouTube videos"
+            title="Turn on closed captions"
+            content="Enable closed captions if available for YouTube videos."
             placement="rightTop"
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px">
             <Col span={10}>
-              <Label>Turn on CCs</Label>
+              <Label>Turn on closed captions</Label>
             </Col>
             <Col span={14}>
               <AlignSwitchRight

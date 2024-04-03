@@ -1,4 +1,4 @@
-import { DragDrop, EduButton, EduIf, notification } from '@edulastic/common'
+import { DragDrop, EduIf, notification } from '@edulastic/common'
 import { Col } from 'antd'
 import { Rnd } from 'react-rnd'
 import { round, isEmpty, isEqual } from 'lodash'
@@ -9,6 +9,8 @@ import { withRouter } from 'react-router'
 import { test as testConstants } from '@edulastic/constants'
 import { STUDENT } from '@edulastic/constants/const/roleType'
 import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
+import { themeColor, white } from '@edulastic/colors'
+import { IconClosedCaption } from '@edulastic/icons'
 import { removeUserAnswerAction } from '../../../../../assessment/actions/answers'
 import { getPreviewSelector } from '../../../../src/selectors/view'
 import QuestionItem from '../QuestionItem/QuestionItem'
@@ -25,6 +27,7 @@ import {
   Droppable,
   PDFPreviewWrapper,
   RelativeContainer,
+  StyledCircleButton,
   StyledPlayerContainer,
   StyledTypographyText,
 } from '../../styled-components/VideoPreview'
@@ -146,7 +149,9 @@ const VideoPreview = ({
     return setIsCCAvailable(false)
   }
 
-  const handleOnClickCC = () => {
+  const handleOnClickCC = (event) => {
+    event.preventDefault()
+    if (!isCCAvailable) return
     setIsCCActive((prevState) => {
       if (prevState && !!videoRef?.current) {
         videoRef?.current?.setOption('captions', 'track', {})
@@ -720,13 +725,18 @@ const VideoPreview = ({
           }
         >
           <Col style={{ flex: '0 0 auto' }}>
-            <EduButton
+            <StyledCircleButton
+              role="button"
               onClick={handleOnClickCC}
-              isGhost={isCCActive}
+              reverseContrast={isCCActive}
               disabled={!isCCAvailable}
             >
-              cc
-            </EduButton>
+              <IconClosedCaption
+                width="22px"
+                height="22px"
+                color={!isCCActive ? white : themeColor}
+              />
+            </StyledCircleButton>
           </Col>
         </EduIf>
         <Col style={{ flex: '0 0 auto' }}>

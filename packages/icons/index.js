@@ -361,6 +361,7 @@ export { default as IconComment } from './src/IconComment'
 export { default as IconVideoLibrary } from './src/IconVideoLibrary'
 export { default as IconAssignPearPractice } from './src/IconAssignPearPractice'
 export { default as IconAssignPearDeckTutor } from './src/IconAssignPearDeckTutor'
+export { default as IconClosedCaption } from './src/IconClosedCaption'
 
 // data warehouse reports
 export { default as IconMoreReports } from './src/IconMoreReports'

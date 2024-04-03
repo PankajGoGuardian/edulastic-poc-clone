@@ -1099,8 +1099,8 @@ const Settings = ({
         <EduIf condition={isVideoQuiz}>
           <SettingContainer>
             <DetailsTooltip
-              title="Turn on CCs"
-              content=" Enable CCs (if available) for YouTube videos"
+              title="Turn on closed captions"
+              content="Enable closed captions if available for YouTube videos."
               premium={premium}
             />
             <StyledRow gutter={16} mb="15p">

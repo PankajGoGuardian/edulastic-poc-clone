@@ -1396,7 +1396,7 @@ class Setting extends Component {
                   >
                     <Block id="vq-enable-cc" smallSize={isSmallSize}>
                       <Title>
-                        <span>Turn on CCs</span>
+                        <span>Turn on closed captions</span>
                         <EduSwitchStyled
                           checked={vqEnableClosedCaption}
                           data-cy="vqEnableClosedCaption"
@@ -1408,8 +1408,8 @@ class Setting extends Component {
                       </Title>
                       <Body smallSize={isSmallSize}>
                         <Description>
-                          If <b>ON</b>, Enables CCs (if available) for YouTube
-                          videos
+                          Enable closed captions if available for YouTube
+                          videos.
                         </Description>
                       </Body>
                     </Block>

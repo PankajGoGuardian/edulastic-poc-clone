@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { test as testConstants } from '@edulastic/constants'
 import { STUDENT } from '@edulastic/constants/const/roleType'
+import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
 import { removeUserAnswerAction } from '../../../../../assessment/actions/answers'
 import { getPreviewSelector } from '../../../../src/selectors/view'
 import QuestionItem from '../QuestionItem/QuestionItem'
@@ -117,7 +118,8 @@ const VideoPreview = ({
   const [muted, setMuted] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [isReady, setIsReady] = useState(0)
-  const [isCCEnabled, setIsCCEnabled] = useState(false)
+  const [isCCAvailable, setIsCCAvailable] = useState(false)
+  const [isCCActive, setIsCCActive] = useState(false)
 
   const handleSetIsSeekBarFocused = (isFocused) => {
     isSeekBarFocusedRef.current = isFocused
@@ -128,19 +130,24 @@ const VideoPreview = ({
   }
 
   const onPlayerApiChange = () => {
-    console.log({
-      captions: videoRef?.current?.getOptions('captions', 'tracklist'),
-      cc: videoRef?.current?.getOptions('cc'),
-    }) // get available tracklist english
+    const ytPlayer = videoRef?.current
+    if (!ytPlayer) return
 
-    if (!isCCEnabled && !!videoRef?.current) {
-      console.log('+++++++on api change++++')
-      videoRef?.current?.setOption('captions', 'track', {})
+    const availableCCs = [
+      ...(ytPlayer.getOption?.('captions', 'tracklist') || []),
+      ...(ytPlayer.getOption?.('captions', 'translationLanguages') || []),
+    ]
+
+    ytPlayer.setOption('captions', 'track', {})
+
+    if (availableCCs.some(({ languageCode }) => languageCode === LANGUAGE_EN)) {
+      return setIsCCAvailable(true)
     }
+    return setIsCCAvailable(false)
   }
 
   const handleOnClickCC = () => {
-    setIsCCEnabled((prevState) => {
+    setIsCCActive((prevState) => {
       if (prevState && !!videoRef?.current) {
         videoRef?.current?.setOption('captions', 'track', {})
         return false
@@ -705,7 +712,7 @@ const VideoPreview = ({
             vqPreventSkipping={vqPreventSkipping && !isAuthorReviewOrEdit}
           />
         </Col>
-        {console.log({ userRole })}
+
         <EduIf
           condition={
             (userRole === STUDENT && vqEnableClosedCaption) ||
@@ -713,7 +720,11 @@ const VideoPreview = ({
           }
         >
           <Col style={{ flex: '0 0 auto' }}>
-            <EduButton onClick={handleOnClickCC} isGhost={!isCCEnabled}>
+            <EduButton
+              onClick={handleOnClickCC}
+              isGhost={isCCActive}
+              disabled={!isCCAvailable}
+            >
               cc
             </EduButton>
           </Col>

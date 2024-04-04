@@ -1006,7 +1006,7 @@ const Settings = ({
               content="Students will be able to see the hint associated with an item while attempting the assignment"
               premium={premium}
             />
-            <StyledRow gutter={16} mb="15p">
+            <StyledRow gutter={16} mb="15px">
               <Col span={12}>
                 <Label>SHOW HINTS TO STUDENTS</Label>
               </Col>
@@ -1075,7 +1075,7 @@ const Settings = ({
               content="If ON, Students won't be able to skip ahead in a video."
               premium={premium}
             />
-            <StyledRow gutter={16} mb="15p">
+            <StyledRow gutter={16} mb="15px">
               <Col span={12}>
                 <Label>Prevent Skipping</Label>
               </Col>
@@ -1103,7 +1103,7 @@ const Settings = ({
               content="Enable closed captions if available for YouTube videos."
               premium={premium}
             />
-            <StyledRow gutter={16} mb="15p">
+            <StyledRow gutter={16} mb="15px">
               <Col span={12}>
                 <Label>Turn on closed captions</Label>
               </Col>

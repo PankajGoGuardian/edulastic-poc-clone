@@ -1105,7 +1105,7 @@ const Settings = ({
             />
             <StyledRow gutter={16} mb="15p">
               <Col span={12}>
-                <Label>Turn on CCs</Label>
+                <Label>Turn on closed captions</Label>
               </Col>
               <Col span={12}>
                 <AlignSwitchRight

@@ -158,7 +158,7 @@ class EditableCell extends React.Component {
 
   checkPrice = (rule, value, callback) => {
     const { dataSource, record } = this.props
-    if (!isNaN(value)) {
+    if (!Number.isNaN(value)) {
       const sameRow = dataSource.filter((item) => item.key === record.key)
       const sameDownRow = dataSource.filter(
         (item) => item.key === record.key + 1
@@ -314,24 +314,34 @@ export class PerformanceBandTable extends React.Component {
     if (key == 0 && keyName === 'from') return
     if (key == dataSource.length - 1 && keyName === 'to') return
 
+    const currentFromValue = parseInt(dataSource[key].from)
+    const currentToValue = parseInt(dataSource[key].to)
+
     if (keyName === 'from') {
+      const prevFromValue = parseInt(dataSource[key - 1]?.from)
+      const prevToValue = parseInt(dataSource[key - 1]?.to)
       if (
-        parseInt(dataSource[key].from) + value <=
-          parseInt(dataSource[key].to) ||
-        parseInt(dataSource[key].from) + value >=
-          parseInt(dataSource[key - 1].from) - 1
+        currentFromValue + value <= currentToValue ||
+        currentFromValue + value >= prevFromValue - 1
       ) {
         return
       }
-      dataSource[key].from = parseInt(dataSource[key].from) + value
-      dataSource[key - 1].to = parseInt(dataSource[key - 1].to) + value
+      dataSource[key].from = currentFromValue + value
+      // we are updating older bands to new logic when user edits the band instead of a patch.
+      // ref: https://goguardian.atlassian.net/browse/EV-42019?focusedCommentId=437923
+      if (currentFromValue === prevToValue) {
+        dataSource[key - 1].to = prevToValue + value + 1
+      } else {
+        dataSource[key - 1].to = prevToValue + value
+      }
     }
 
     if (keyName === 'to') {
+      const nextFromValue = parseInt(dataSource[key + 1]?.from)
+      const nextToValue = parseInt(dataSource[key + 1]?.to)
       if (
-        parseInt(dataSource[key].to) + value >=
-          parseInt(dataSource[key].from) ||
-        parseInt(dataSource[key].to) + value <= parseInt(dataSource[key + 1].to)
+        currentToValue + value >= currentFromValue ||
+        currentToValue + value <= nextToValue
       ) {
         console.warn('return early', {
           value,
@@ -341,8 +351,14 @@ export class PerformanceBandTable extends React.Component {
         })
         return
       }
-      dataSource[key].to = parseInt(dataSource[key].to) + value
-      dataSource[key + 1].from = parseInt(dataSource[key + 1].from) + value
+      dataSource[key].to = currentToValue + value
+      // we are updating older bands to new logic when user edits the band instead of a patch.
+      // ref: https://goguardian.atlassian.net/browse/EV-42019?focusedCommentId=437923
+      if (currentToValue === nextFromValue) {
+        dataSource[key + 1].from = nextFromValue + value - 1
+      } else {
+        dataSource[key + 1].from = nextFromValue + value
+      }
     }
 
     this.setState({ isChangeState: true })

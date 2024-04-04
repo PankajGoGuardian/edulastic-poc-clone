@@ -69,6 +69,7 @@ import LanguageSelectorTab from '../../../../common/components/LanguageSelectorT
 import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 import { EDIT } from '../../../../assessment/constants/constantsForQuestions'
 import { getSearchParams } from '../../../src/utils/util'
+import { Button } from 'antd'
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -580,7 +581,24 @@ class Container extends Component {
         )}
         <HeaderContainer isInModal={isInModal}>
           <ItemHeader
-            title={question.title}
+            title={
+              <>
+                {question.title}
+                <Button
+                  onClick={() => {
+                    history.push({
+                      pathname:
+                        'author/tests/660d452616bc6b00082591d4/createItem/new/pickup-questiontype',
+                      state: {
+                        changeQType: true,
+                      },
+                    })
+                  }}
+                >
+                  CHange
+                </Button>
+              </>
+            }
             reference={itemId}
             isInModal={isInModal}
             hideSideMenu={isMultipartItem}

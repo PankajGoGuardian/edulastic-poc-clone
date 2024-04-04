@@ -72,6 +72,7 @@ import {
   setTestDataAction,
 } from '../../../TestPage/ducks'
 import { getSearchParams } from '../../../src/utils/util'
+import { getCards } from '../QuestionType/constants'
 
 class Container extends Component {
   state = {
@@ -79,7 +80,13 @@ class Container extends Component {
   }
 
   componentDidMount() {
-    const { isSurveyTest, setCategory, setData, selectedCategory } = this.props
+    const {
+      isSurveyTest,
+      setCategory,
+      setData,
+      selectedCategory,
+      history,
+    } = this.props
     if (
       window.location.search.includes(`testType=${TEST_TYPE_SURVEY}`) ||
       isSurveyTest
@@ -91,6 +98,26 @@ class Container extends Component {
       setCategory('likert-scale')
     } else if (selectedCategory === 'likert-scale') {
       setCategory('multiple-choice')
+    }
+    if (history?.location?.state?.changeQType) {
+      console.log('Came')
+      this.onQChange()
+    }
+  }
+
+  onQChange = () => {
+    const allQuestionTypes = getCards(() => {}, false, true)
+    const selectedQuestionTypes = allQuestionTypes.find(
+      ({ data: { type } }) => {
+        return type === questionType.MULTIPLE_CHOICE
+      }
+    )
+
+    if (selectedQuestionTypes) {
+      this.selectQuestionType({
+        ...selectedQuestionTypes.data,
+        stimulus: `<p>THis i sample</p>`,
+      })
     }
   }
 
@@ -159,6 +186,8 @@ class Container extends Component {
       ...data,
     }
 
+    // existing
+    //
     setQuestion(question)
     // add question to the questions store.
     // selecting a question (having default values) type should not update the author question
@@ -351,7 +380,12 @@ class Container extends Component {
           }}
         />
         <Header
-          title={t('header:common.selectQuestionWidget')}
+          title={
+            <>
+              {t('header:common.selectQuestionWidget')}
+              <button onClick={this.onQChange}>Change Q Type</button>
+            </>
+          }
           link={this.link}
           noEllipsis
           addQuestionToPassage={addQuestionToPassage}

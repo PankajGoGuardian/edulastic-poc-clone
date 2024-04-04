@@ -1,5 +1,5 @@
 import { DragDrop, EduIf, notification } from '@edulastic/common'
-import { Col } from 'antd'
+import { Col, Tooltip } from 'antd'
 import { Rnd } from 'react-rnd'
 import { round, isEmpty, isEqual } from 'lodash'
 import PropTypes from 'prop-types'
@@ -123,6 +123,7 @@ const VideoPreview = ({
   const [isReady, setIsReady] = useState(0)
   const [isCCAvailable, setIsCCAvailable] = useState(false)
   const [isCCActive, setIsCCActive] = useState(false)
+  const [isYTApiUpdated, setIsYTApiUpdated] = useState(false)
 
   const handleSetIsSeekBarFocused = (isFocused) => {
     isSeekBarFocusedRef.current = isFocused
@@ -134,6 +135,7 @@ const VideoPreview = ({
 
   const onPlayerApiChange = () => {
     const ytPlayer = videoRef?.current
+    setIsYTApiUpdated(true)
     if (!ytPlayer) return
 
     const availableCCs = [
@@ -725,18 +727,24 @@ const VideoPreview = ({
           }
         >
           <Col style={{ flex: '0 0 auto' }}>
-            <StyledCircleButton
-              role="button"
-              onClick={handleOnClickCC}
-              reverseContrast={isCCActive}
-              disabled={!isCCAvailable}
+            <Tooltip
+              title={
+                isYTApiUpdated && !isCCAvailable ? 'Language not supported' : ''
+              }
             >
-              <IconClosedCaption
-                width="22px"
-                height="22px"
-                color={!isCCActive ? white : themeColor}
-              />
-            </StyledCircleButton>
+              <StyledCircleButton
+                role="button"
+                onClick={handleOnClickCC}
+                reverseContrast={isCCActive}
+                disabled={!isCCAvailable}
+              >
+                <IconClosedCaption
+                  width="22px"
+                  height="22px"
+                  color={!isCCActive ? white : themeColor}
+                />
+              </StyledCircleButton>
+            </Tooltip>
           </Col>
         </EduIf>
         <Col style={{ flex: '0 0 auto' }}>

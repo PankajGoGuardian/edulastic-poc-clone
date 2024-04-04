@@ -63,6 +63,11 @@ const { DRAFT } = statusConstants
 
 const { DragPreview } = DragDrop
 
+// Caption statuses
+const INITIATE = ''
+const UNAVAILABLE = 'un-available'
+const READY = 'ready'
+
 const VideoPreview = ({
   annotations,
   onDropAnnotation,
@@ -122,9 +127,8 @@ const VideoPreview = ({
   const [muted, setMuted] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [isReady, setIsReady] = useState(0)
-  const [isCCAvailable, setIsCCAvailable] = useState(false)
   const [isCCActive, setIsCCActive] = useState(false)
-  const [isYTApiUpdated, setIsYTApiUpdated] = useState(false)
+  const [captionStatus, setCaptionStatus] = useState(INITIATE)
 
   const handleSetIsSeekBarFocused = (isFocused) => {
     isSeekBarFocusedRef.current = isFocused
@@ -136,7 +140,6 @@ const VideoPreview = ({
 
   const onApiChange = () => {
     const ytPlayer = videoRef?.current
-    setIsYTApiUpdated(true)
     if (!ytPlayer) return
 
     const availableCCs = [
@@ -147,14 +150,14 @@ const VideoPreview = ({
     ytPlayer.setOption('captions', 'track', {})
 
     if (availableCCs.some(({ languageCode }) => languageCode === LANGUAGE_EN)) {
-      return setIsCCAvailable(true)
+      return setCaptionStatus(READY)
     }
-    return setIsCCAvailable(false)
+    return setCaptionStatus(UNAVAILABLE)
   }
 
   const handleOnClickCC = (event) => {
     event.preventDefault()
-    if (!isCCAvailable) return
+    if (captionStatus !== READY) return
     setIsCCActive((prevState) => {
       if (prevState && !!videoRef?.current) {
         videoRef?.current?.setOption('captions', 'track', {})
@@ -738,14 +741,14 @@ const VideoPreview = ({
           <Col style={{ flex: '0 0 auto' }}>
             <Tooltip
               title={
-                isYTApiUpdated && !isCCAvailable ? 'Language not supported' : ''
+                captionStatus === UNAVAILABLE ? 'Language not supported' : ''
               }
             >
               <StyledCircleButton
                 role="button"
                 onClick={handleOnClickCC}
                 reverseContrast={isCCActive}
-                disabled={!isCCAvailable}
+                disabled={captionStatus !== READY}
               >
                 <IconClosedCaption
                   width="22px"

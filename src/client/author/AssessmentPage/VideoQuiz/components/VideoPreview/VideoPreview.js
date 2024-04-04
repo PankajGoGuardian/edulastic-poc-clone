@@ -101,6 +101,7 @@ const VideoPreview = ({
   showAuthorReviewTabVideoPlayer,
   isAuthorReviewOrEdit,
   vqEnableClosedCaption,
+  isPreviewModalVisible,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -525,6 +526,14 @@ const VideoPreview = ({
     }
   }
 
+  const isStudent = userRole === STUDENT
+
+  const showCCButton =
+    (isStudent && vqEnableClosedCaption) ||
+    (!isStudent &&
+      ((isPreviewModalVisible && vqEnableClosedCaption) ||
+        !isPreviewModalVisible))
+
   useEffect(() => {
     window?.addEventListener('blur', handleOnPause)
     window?.addEventListener('visibilitychange', handleOnPause)
@@ -720,12 +729,7 @@ const VideoPreview = ({
           />
         </Col>
 
-        <EduIf
-          condition={
-            (userRole === STUDENT && vqEnableClosedCaption) ||
-            userRole !== STUDENT
-          }
-        >
+        <EduIf condition={showCCButton}>
           <Col style={{ flex: '0 0 auto' }}>
             <Tooltip
               title={

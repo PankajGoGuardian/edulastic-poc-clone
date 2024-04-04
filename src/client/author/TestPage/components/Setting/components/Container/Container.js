@@ -1384,16 +1384,9 @@ class Setting extends Component {
                         </Description>
                       </Body>
                     </Block>
-                  </EduIf>
-                  {/* VQ prevent skipping */}
+                    {/* VQ prevent skipping */}
 
-                  {/* VQ enable cc */}
-
-                  <EduIf
-                    condition={
-                      entity.testCategory === testCategoryTypes.VIDEO_BASED
-                    }
-                  >
+                    {/* VQ enable cc */}
                     <Block id="vq-enable-cc" smallSize={isSmallSize}>
                       <Title>
                         <span>Turn on closed captions</span>

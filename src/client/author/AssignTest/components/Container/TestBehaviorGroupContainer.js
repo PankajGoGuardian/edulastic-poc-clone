@@ -243,12 +243,10 @@ const TestBehaviorGroupContainer = ({
             </Col>
           </StyledRow>
         </SettingContainer>
-      </EduIf>
-      {/* Prevent Skipping */}
-      {/* Enable vq CC start */}
-      <EduIf
-        condition={testSettings.testCategory === testCategoryTypes.VIDEO_BASED}
-      >
+
+        {/* Prevent Skipping */}
+        {/* Enable vq CC start */}
+
         <SettingContainer id="vq-enable-cc">
           <DetailsTooltip
             width={tootltipWidth}

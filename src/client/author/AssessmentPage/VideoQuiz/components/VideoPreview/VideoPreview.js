@@ -134,7 +134,7 @@ const VideoPreview = ({
     setIsReady(true)
   }
 
-  const onPlayerApiChange = () => {
+  const onApiChange = () => {
     const ytPlayer = videoRef?.current
     setIsYTApiUpdated(true)
     if (!ytPlayer) return
@@ -528,6 +528,11 @@ const VideoPreview = ({
 
   const isStudent = userRole === STUDENT
 
+  /**
+   * Student's we are checking if vqEnableClosedCaption is enabled or not
+   * Teacher preview we always show Closed Caption button
+   * Teacher's Student view we check vqEnableClosedCaption is enabled or not
+   */
   const showCCButton =
     (isStudent && vqEnableClosedCaption) ||
     (!isStudent &&
@@ -563,7 +568,7 @@ const VideoPreview = ({
           {showAuthorReviewTabVideoPlayer && (
             <CombinedPlayer
               onReady={onReady}
-              onPlayerApiChange={onPlayerApiChange}
+              onApiChange={onApiChange}
               url={videoUrl}
               playing={playing}
               controls={false}

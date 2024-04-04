@@ -1092,11 +1092,9 @@ const Settings = ({
               </Col>
             </StyledRow>
           </SettingContainer>
-        </EduIf>
-        {/* Prevent vq skipping */}
+          {/* Prevent vq skipping */}
 
-        {/* Enable vq cc */}
-        <EduIf condition={isVideoQuiz}>
+          {/* Enable vq cc */}
           <SettingContainer>
             <DetailsTooltip
               title="Turn on closed captions"

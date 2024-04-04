@@ -160,7 +160,7 @@ const VideoPreview = ({
         return false
       }
       videoRef?.current?.setOption('captions', 'track', {
-        languageCode: 'en',
+        languageCode: LANGUAGE_EN,
       })
       return true
     })

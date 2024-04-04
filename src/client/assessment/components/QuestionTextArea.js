@@ -24,6 +24,8 @@ const QuestionTextArea = ({
   buttons,
   allowQuickInsert,
   sanitizeClipboardHtml,
+  onFocus,
+  onBlur,
 }) => (
   <FroalaEditor
     fallback={<Progress />}
@@ -36,6 +38,8 @@ const QuestionTextArea = ({
     additionalToolbarOptions={additionalToolbarOptions}
     data-cy="compose-question-quill-component"
     border={border}
+    onFocus={onFocus}
+    onBlur={onBlur}
     readOnly={readOnly}
     imageDefaultWidth={imageDefaultWidth}
     fontSize={fontSize}

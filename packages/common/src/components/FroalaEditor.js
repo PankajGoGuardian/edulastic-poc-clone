@@ -92,6 +92,8 @@ const CustomEditor = ({
   isSpeechToTextEnabled,
   setIsSTTActive,
   onSTTError,
+  onFocus,
+  onBlur,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null)
@@ -460,6 +462,7 @@ const CustomEditor = ({
           if (this.hasFocus && typeof this.handleStickyToolbar === 'function') {
             this.handleStickyToolbar(this, toolbarContainerRef.current)
           }
+          onFocus?.()
         },
         blur: function () {
           if (initOnClick) {
@@ -471,6 +474,7 @@ const CustomEditor = ({
           if (isSpeechToTextEnabled) {
             onStartSTT({ isBlurEvent: true })
           }
+          onBlur?.()
         },
         'file.beforeUpload': function (files = []) {
           const file = files[0]

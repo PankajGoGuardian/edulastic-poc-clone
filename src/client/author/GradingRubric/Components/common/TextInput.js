@@ -19,6 +19,8 @@ const TextInput = ({
   value: currentValue,
   currentRubricData,
   updateRubricData,
+  onFocus,
+  onBlur,
 }) => {
   const fieldMapping = {
     textarea: 'desc',
@@ -79,7 +81,9 @@ const TextInput = ({
           onChange={(value) => handleChange(value)}
           readOnly={false}
           toolbarSize="SM"
-          buttons={['bold', 'italic', 'underline', 'formatUL']}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          // buttons={['bold', 'italic', 'underline', 'formatUL']}
         />
       )
     if (!isEditable)

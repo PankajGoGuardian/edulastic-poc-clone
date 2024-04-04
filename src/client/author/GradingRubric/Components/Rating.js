@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { Icon } from 'antd'
 import produce from 'immer'
@@ -15,6 +15,9 @@ const Rating = ({
   isEditable,
   className,
 }) => {
+  const ratingRef = useRef(null)
+  const [isFocused, setIsFocused] = useState(false)
+  const [isExpand, setIsExpand] = useState(false)
   const allRatings = currentRubricData.criteria.find((c) => c.id === parentId)
     .ratings
   const handleDelete = () => {
@@ -30,9 +33,48 @@ const Rating = ({
     updateRubricData(updatedRubricData)
   }
 
+  const onExpand = () => {
+    if (isFocused) {
+      setIsExpand(true)
+    }
+  }
+
+  const onCollapse = () => {
+    ratingRef?.current?.click()
+    ratingRef?.current?.focus()
+    setIsExpand(false)
+  }
+
+  useEffect(() => {
+    if (!isExpand) {
+      ratingRef?.current?.click()
+      ratingRef?.current?.focus()
+    }
+  }, [isExpand])
+
+  const onFocus = () => {
+    setIsFocused(true)
+    setIsExpand(true)
+  }
+  const onBlur = () => {
+    setIsFocused(false)
+  }
+
   return (
-    <RatingContaner className={className} data-cy="ratingContainer">
+    <RatingContaner
+      className={className}
+      data-cy="ratingContainer"
+      onMouseLeave={onCollapse}
+      style={{
+        ...(isExpand
+          ? { width: '800px', position: 'absolute', left: '0px', zIndex: 999 }
+          : {}),
+      }}
+    >
       <div>
+        <button style={{ position: 'absolute' }} ref={ratingRef}>
+          Dummy
+        </button>
         <span data-cy="ratingName">
           <TextInput
             id={id}
@@ -64,7 +106,7 @@ const Rating = ({
           />
         </span>
       </div>
-      <div data-cy="ratingDescription">
+      <div data-cy="ratingDescription" onMouseEnter={onExpand}>
         <TextInput
           id={id}
           parentId={parentId}
@@ -72,6 +114,8 @@ const Rating = ({
           textType="textarea"
           componentFor="Rating"
           value={data.desc}
+          onFocus={onFocus}
+          onBlur={onBlur}
         />
       </div>
     </RatingContaner>

@@ -1286,6 +1286,7 @@ class PreviewModal extends React.Component {
                   isGhost
                   height="28px"
                   data-cy="viewTTSText"
+                  disabled={isDisableEdit}
                   onClick={this.onClickCustomizeTTS}
                 >
                   Customize TTS

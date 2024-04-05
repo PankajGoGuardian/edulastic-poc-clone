@@ -25,6 +25,7 @@ export const FEED_TYPES_WITH_TEST_DATE_INPUT = [
   testTypes.IREAD3,
   testTypes.IXL,
   testTypes.On_Course_Grades,
+  testTypes.Interim_Data,
 ]
 export const AdministrationLevelOptions = [
   {

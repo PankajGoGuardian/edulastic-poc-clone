@@ -101,6 +101,7 @@ class AddStudentModal extends React.Component {
       districtTestSettings,
       userRole,
       isPremium,
+      enableSpeechToText,
     } = this.props
 
     const { keys, isUpdate } = this.state
@@ -172,7 +173,7 @@ class AddStudentModal extends React.Component {
             <IconAccessibility style={{ fill: themeColor }} />
             <label>Configure Accommodations</label>
           </div>
-          <small>Set TTS, STT, IR acommodations</small>
+          <small>Set TTS, STT, IR at student level</small>
         </PanelHeader>
       </StyledTooltip>
     )
@@ -222,6 +223,7 @@ class AddStudentModal extends React.Component {
                   isEdit={isEdit}
                   stds={stds}
                   foundUserContactEmails={this.state.foundUserContactEmails}
+                  enableSpeechToText={enableSpeechToText}
                 />
               </Panel>
             </Collapse>
@@ -245,7 +247,7 @@ class AddStudentModal extends React.Component {
                     std={std}
                     isEdit={isEdit}
                     stds={stds}
-                    districtTestSettings={districtTestSettings}
+                    enableSpeechToText={enableSpeechToText}
                     foundUserContactEmails={this.state.foundUserContactEmails}
                   />
                 </Panel>

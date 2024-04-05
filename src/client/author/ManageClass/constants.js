@@ -277,7 +277,7 @@ export const fieldsMapping = {
       fieldName: 'extraTimeOnTest',
       options: [
         {
-          label: '1x',
+          label: 'Not Applicable',
           value: 1,
         },
         {

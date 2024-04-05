@@ -1,6 +1,7 @@
 import {
   extraDesktopWidthMax,
   fadedBlue,
+  lightGrey,
   mediumDesktopExactWidth,
   mobileWidth,
   mobileWidthMax,
@@ -318,4 +319,20 @@ export const StudentStatusDetails = styled.div`
     text-align: center;
     text-transform: uppercase;
   }
+`
+
+export const GradingSkipCountContainer = styled.div`
+  font-weight: 600;
+  background: ${lightGrey};
+  vertical-align: text-top;
+  height: 2rem;
+  width: max-content;
+  padding: 0.5rem;
+  box-sizing: content-box;
+  border-radius: 5px;
+`
+
+export const GradingSkipWarningContainer = styled.div`
+  font-weight: 600;
+  padding: 1rem;
 `

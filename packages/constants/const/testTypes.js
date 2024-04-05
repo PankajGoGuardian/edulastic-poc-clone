@@ -38,7 +38,6 @@ const Interim_Data = 'Interim_Data'
 const IREAD3 = 'IREAD3'
 const IXL = 'IXL'
 const On_Course_Grades = 'On_Course_Grades'
-
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
 const EXTERNAL_TEST_TYPES = {
   [AIR]: 'AIR',

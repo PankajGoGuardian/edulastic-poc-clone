@@ -186,6 +186,8 @@ class Container extends Component {
       ...data,
     }
 
+    // 1. Need to remove the item in case of edit item flow in normal and test flow.
+
     // existing
     //
     setQuestion(question)

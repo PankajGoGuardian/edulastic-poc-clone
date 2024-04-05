@@ -19,6 +19,7 @@ import styled from 'styled-components'
 import { IconClose } from '@edulastic/icons'
 import { desktopWidth } from '@edulastic/colors'
 import { questionType as constantsQuestionType } from '@edulastic/constants'
+import { Button } from 'antd'
 import SourceModal from '../SourceModal/SourceModal'
 import {
   changeViewAction,
@@ -52,8 +53,12 @@ import {
   proceedPublishingItemAction,
   savePassageAction,
   saveAndPublishItemAction,
+  updateItemDetailSuccess,
 } from '../../../ItemDetail/ducks'
-import { changeUpdatedFlagAction } from '../../../sharedDucks/questions'
+import {
+  changeUpdatedFlagAction,
+  updateQuestionAction,
+} from '../../../sharedDucks/questions'
 import {
   checkAnswerAction,
   showAnswerAction,
@@ -69,7 +74,6 @@ import LanguageSelectorTab from '../../../../common/components/LanguageSelectorT
 import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 import { EDIT } from '../../../../assessment/constants/constantsForQuestions'
 import { getSearchParams } from '../../../src/utils/util'
-import { Button } from 'antd'
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -201,6 +205,79 @@ class Container extends Component {
   }
 
   handleSave = debounce(this.handleSaveQuestion, 1000)
+
+  onClickChangeQType = () => {
+    const {
+      updateQuestion,
+      question,
+      itemFromState,
+      updateItemDetail,
+    } = this.props
+    console.log('itemFromState', itemFromState)
+    const newQuestion = {
+      id: question.id,
+      title: 'True or False',
+      type: 'multipleChoice',
+      stimulus: '<p>q2 tf change</p>',
+      uiStyle: {
+        type: 'standard',
+      },
+      options: [
+        {
+          value: 'b40a6c7a-601b-4c01-b257-ea3183c8b34d',
+          label: 'True',
+        },
+        {
+          value: '3ad442ff-9630-44ec-8ad4-e1c05eab03ee',
+          label: 'False',
+        },
+      ],
+      validation: {
+        scoringType: 'exactMatch',
+        validResponse: {
+          score: 1,
+          value: ['b40a6c7a-601b-4c01-b257-ea3183c8b34d'],
+        },
+        altResponses: [],
+      },
+      multipleResponses: false,
+      hints: [
+        {
+          value: 'b40a6c7a-601b-4c01-b257-ea3183c8b34d',
+          label: '',
+        },
+      ],
+      smallSize: true,
+      variable: {
+        variables: {},
+        examples: [],
+        enabled: false,
+      },
+    }
+    updateQuestion(newQuestion)
+    const itemWithUpdatedRows = {
+      ...itemFromState,
+      rows: [
+        {
+          tabs: [],
+          dimension: '100%',
+          widgets: [
+            {
+              widgetType: 'question',
+              type: 'multipleChoice',
+              title: 'True or False',
+              reference: question.id,
+              tabIndex: 0,
+            },
+          ],
+          flowLayout: false,
+          content: '',
+        },
+      ],
+    }
+    // TODO: only update in item detail if its saved
+    updateItemDetail(itemWithUpdatedRows)
+  }
 
   handleSaveAndPublish = () => {
     const { saveAndPublishItem } = this.props
@@ -534,6 +611,8 @@ class Container extends Component {
       allowedToSelectMultiLanguage,
     } = this.props
 
+    console.log('history', history)
+
     if (!question) {
       const backUrl = get(history, 'location.state.backUrl', '')
       if (backUrl.includes('pickup-questiontype')) {
@@ -585,15 +664,20 @@ class Container extends Component {
               <>
                 {question.title}
                 <Button
-                  onClick={() => {
-                    history.push({
-                      pathname:
-                        'author/tests/660d452616bc6b00082591d4/createItem/new/pickup-questiontype',
-                      state: {
-                        changeQType: true,
-                      },
-                    })
-                  }}
+                  // onClick={() => {
+                  //   history.push({
+                  //     pathname: `${history?.location?.pathname?.substring(
+                  //       0,
+                  //       history?.location?.pathname.includes('editItem')
+                  //         ? history?.location?.pathname.indexOf('editItem')
+                  //         : history?.location?.pathname.indexOf('createItem')
+                  //     )}createItem/new/pickup-questiontype`,
+                  //     state: {
+                  //       changeQType: true,
+                  //     },
+                  //   })
+                  // }}
+                  onClick={this.onClickChangeQType}
                 >
                   CHange
                 </Button>
@@ -741,6 +825,8 @@ const enhance = compose(
       savePassage: savePassageAction,
       changeQuestionUpdateFlag: changeUpdatedFlagAction,
       clearAnswers: clearAnswersAction,
+      updateQuestion: updateQuestionAction,
+      updateItemDetail: updateItemDetailSuccess,
     }
   )
 )

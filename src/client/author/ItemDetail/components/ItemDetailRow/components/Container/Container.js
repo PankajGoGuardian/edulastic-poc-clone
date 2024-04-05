@@ -189,6 +189,7 @@ class Container extends Component {
       isPassageWithQuestions,
       containerType,
       showAddItemButton,
+      langaugeTabExist,
     } = this.props
     const { tabIndex } = this.state
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex)
@@ -202,6 +203,7 @@ class Container extends Component {
         value={tabIndex}
         padding="20px 0px 25px"
         hide={hideColumn}
+        langaugeTabExist={langaugeTabExist}
         data-cy="itemdetail-content"
       >
         {showAddPassageTab && (

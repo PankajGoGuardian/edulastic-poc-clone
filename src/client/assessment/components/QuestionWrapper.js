@@ -705,11 +705,7 @@ class QuestionWrapper extends Component {
                     : flowLayout
                 }
               >
-                <StyledFlexContainer
-                  showScroll={isLCBView || isExpressGrader}
-                  flexDirection="column"
-                  maxWidth="100%"
-                >
+                <StyledFlexContainer flexDirection="column" maxWidth="100%">
                   {evaluation === 'pending' && (
                     <Tooltip
                       title={translate('component.pendingEvaluation.tooltip')}

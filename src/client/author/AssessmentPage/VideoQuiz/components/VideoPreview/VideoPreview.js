@@ -64,7 +64,7 @@ const { DRAFT } = statusConstants
 const { DragPreview } = DragDrop
 
 // Caption statuses
-const INITIATE = ''
+const INITIATED = 'initiated'
 const UNAVAILABLE = 'un-available'
 const READY = 'ready'
 
@@ -128,7 +128,7 @@ const VideoPreview = ({
   const [currentTime, setCurrentTime] = useState(0)
   const [isReady, setIsReady] = useState(0)
   const [isCCActive, setIsCCActive] = useState(false)
-  const [captionStatus, setCaptionStatus] = useState(INITIATE)
+  const [captionStatus, setCaptionStatus] = useState(INITIATED)
 
   const handleSetIsSeekBarFocused = (isFocused) => {
     isSeekBarFocusedRef.current = isFocused

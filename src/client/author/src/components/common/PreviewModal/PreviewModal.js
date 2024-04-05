@@ -723,11 +723,15 @@ class PreviewModal extends React.Component {
     const questionId = questions?.[0]?.id
 
     if (questionId) {
+      let language = selectedLanguage
+      if (!questions?.[0]?.languageFeatures?.[selectedLanguage]) {
+        language = LANGUAGE_EN
+      }
       const requestData = {
         itemId,
         questionId,
         updateTTSText,
-        language: selectedLanguage,
+        language,
       }
 
       if (isEmpty(ttsTextResult) || updateTTSText || isLanguageChanged) {
@@ -750,11 +754,15 @@ class PreviewModal extends React.Component {
     const questionId = questions?.[0]?.id
 
     if (questionId) {
+      let language = selectedLanguage
+      if (!questions?.[0]?.languageFeatures?.[selectedLanguage]) {
+        language = LANGUAGE_EN
+      }
       const requestData = {
         itemId,
         questionId,
         data: updatedTTSTextData,
-        language: selectedLanguage,
+        language,
         voiceLanguage,
       }
 

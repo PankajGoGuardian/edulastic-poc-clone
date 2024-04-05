@@ -11,6 +11,7 @@ import { Spin } from 'antd'
 import { ALPHABET } from '@edulastic/common/src/helpers'
 import {
   LANGUAGES_OPTIONS,
+  LANGUAGE_EN,
   VOICE_LANGUAGE_OPTIONS,
 } from '@edulastic/constants/const/languages'
 import connect from 'react-redux/es/connect/connect'
@@ -85,6 +86,8 @@ const SpeakableText = ({
   )
   const audioSrc = questionDataByLanguage?.tts?.titleAudioURL
 
+  const isEnglishLanguageDisable = !question.stimulus
+
   return (
     <>
       <EduIf condition={showLanguageSelector}>
@@ -98,7 +101,15 @@ const SpeakableText = ({
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             {LANGUAGES_OPTIONS.map((language) => (
-              <option value={language.value} key={language.value}>
+              <option
+                disabled={
+                  language.value === LANGUAGE_EN
+                    ? isEnglishLanguageDisable
+                    : !question?.languageFeatures?.[language.value]
+                }
+                value={language.value}
+                key={language.value}
+              >
                 {language.label}
               </option>
             ))}

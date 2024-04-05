@@ -20,11 +20,6 @@ export const FEED_TYPES_WITH_TEST_DATE_INPUT = [
   testTypes.MCAS_Historical,
   testTypes.ACCESS_v2,
   testTypes.IAM,
-  testTypes.Class_Report,
-  testTypes.Interim_Data,
-  testTypes.IREAD3,
-  testTypes.IXL,
-  testTypes.On_Course_Grades,
 ]
 export const AdministrationLevelOptions = [
   {

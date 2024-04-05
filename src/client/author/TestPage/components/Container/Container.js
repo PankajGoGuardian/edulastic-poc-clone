@@ -177,7 +177,6 @@ import {
 import { getUserAccommodations } from '../../../../student/Login/ducks'
 import { checkInvalidTestTitle } from '../../../utils/tests'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
-import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import {
   resetStudentAttemptAction,
   setIsTestPreviewVisibleAction,
@@ -2346,7 +2345,6 @@ const enhance = compose(
       isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
       accommodations: getUserAccommodations(state),
       isVideoQuiz: isVideoQuizSelector(state),
-      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       authorQuestionStatus: getAuthorQuestionStatus(state),
     }),
     {

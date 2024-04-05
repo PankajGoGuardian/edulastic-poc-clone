@@ -1,12 +1,13 @@
 import { takeLatest, all, call, select, put } from 'redux-saga/effects'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { captureSentryException, notification } from '@edulastic/common'
+import { notification } from '@edulastic/common'
 import { reportsApi, tutorMeApi } from '@edulastic/api'
 import { getUser, getUserOrgId } from '../src/selectors/user'
 import { initTutorMeService } from './service'
 import { setInterventionDataInUtaAction } from '../src/reducers/testActivity'
 import { invokeTutorMeSDKtoAssignTutor } from './helper'
+import { PAError, handleError } from '../../common/utils/errors'
 
 const reduxNamespaceKey = 'tutorMe'
 const initialState = {
@@ -71,22 +72,27 @@ function* createTutorMeInterventionSaga(payload) {
     }
     notification({ type: 'success', msg: 'Tutoring Assigned Successfully' })
   } catch (err) {
-    captureSentryException(err)
-    notification({
-      type: 'error',
-      msg: 'Unable to assign tutoring to students',
-    })
+    throw new PAError(err, 'Unable to assign tutoring to students.')
   }
 }
 
 function* initializeTutorMeServiceSaga(student) {
+  let authCredentials
   try {
-    const authCredentials = yield call(tutorMeApi.authorizeTutorme)
-    const user = yield select(getUser)
+    authCredentials = yield call(tutorMeApi.authorizeTutorme)
+  } catch (err) {
+    throw new PAError(err, {
+      // TODO: we mistakenly omitted the `type: 'error'` in initial implementation.
+      // It should be error type with `msg: 'Authentication failed.'` (support message is appended automatically for error type)
+      // Not implementing the TODO to avoid unexpected impact in hotfix.
+      msg: 'Authentication failed. Please contact support.',
+    })
+  }
+  const user = yield select(getUser)
+  try {
     yield call(initTutorMeService, [student], authCredentials, user)
   } catch (err) {
-    captureSentryException(err)
-    notification({ msg: 'Authentication failed. Please contact support.' })
+    throw new PAError(err, 'Unable to assign tutoring to students.')
   }
 }
 
@@ -113,6 +119,8 @@ function* tutorMeRequestSesssionSaga({ payload }) {
     if (tutorMeInterventionResponse) {
       yield* createTutorMeInterventionSaga(tutorMeInterventionResponse)
     }
+  } catch (err) {
+    handleError(err)
   } finally {
     yield put(actions.setIsTutorMeModalOpen(false))
     yield put(actions.tutorMeRequestSessionComplete())

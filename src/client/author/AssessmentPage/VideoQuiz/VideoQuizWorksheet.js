@@ -290,6 +290,9 @@ const VideoQuizWorksheetComponent = ({
   const isAuthorReview =
     userRole !== STUDENT && !testMode && viewMode === 'review'
 
+  const isAuthorReviewOrEdit =
+    userRole !== STUDENT && !testMode && ['review', 'edit'].includes(viewMode)
+
   const showAuthorReviewTabVideoPlayer = isAuthorReview
     ? !isPreviewModalVisible
     : true
@@ -334,6 +337,7 @@ const VideoQuizWorksheetComponent = ({
             handleUpdateSeektime={handleUpdateSeektime}
             clearHighlighted={clearHighlighted}
             showAuthorReviewTabVideoPlayer={showAuthorReviewTabVideoPlayer}
+            isAuthorReviewOrEdit={isAuthorReviewOrEdit}
           />
         </VideoViewerContainer>
         <Questions

@@ -94,6 +94,7 @@ const VideoPreview = ({
   currentTestActivityId,
   userRole,
   showAuthorReviewTabVideoPlayer,
+  isAuthorReviewOrEdit,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -300,7 +301,7 @@ const VideoPreview = ({
       let _currentTime = getCurrentTime(videoRef)
       let updatedCurrentTime = _currentTime
       if (direction === SEEK_DATA.FORWARD) {
-        if (vqPreventSkipping) {
+        if (vqPreventSkipping && !isAuthorReviewOrEdit) {
           notification({ type: 'info', messageKey: 'preventVQForwardSeek' })
           return
         }
@@ -671,7 +672,7 @@ const VideoPreview = ({
             seekTo={seekTo}
             sliderRef={sliderRef}
             handleSetIsSeekBarFocused={handleSetIsSeekBarFocused}
-            vqPreventSkipping={vqPreventSkipping}
+            vqPreventSkipping={vqPreventSkipping && !isAuthorReviewOrEdit}
           />
         </Col>
         <Col style={{ flex: '0 0 auto' }}>

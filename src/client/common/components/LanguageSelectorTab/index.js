@@ -93,7 +93,7 @@ const StyledMenu = styled(Menu)`
   width: ${({ isPassage }) => (isPassage ? '100%' : '96%;')};
   background: transparent;
   .ant-menu-item {
-    z-index: 999;
+    z-index: 1;
   }
   .ant-menu-item:hover {
     color: #1ab394;

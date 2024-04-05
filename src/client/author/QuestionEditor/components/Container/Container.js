@@ -741,7 +741,7 @@ const BreadCrumbBar = styled.div`
     left: 70px;
     right: 0;
     background: #fff;
-    z-index: 999;
+    z-index: 0;
   }
 `
 

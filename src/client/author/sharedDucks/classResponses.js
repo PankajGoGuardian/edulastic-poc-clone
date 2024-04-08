@@ -18,7 +18,7 @@ import {
 import { questionType, roleuser } from '@edulastic/constants'
 import { createAction } from 'redux-starter-kit'
 import { notification } from '@edulastic/common'
-import { get, isEmpty, isPlainObject, isNil, isArray } from 'lodash'
+import { get, isEmpty, isPlainObject, isNil, isArray, groupBy } from 'lodash'
 
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -542,6 +542,21 @@ function* receiveClassQuestionSaga({ payload }) {
         payload
       )
     }
+
+    const sc = yield feedbackResponse.filter(
+      (uqa) =>
+        uqa?.scratchPad?.scratchpad &&
+        uqa.qType === questionType.HIGHLIGHT_IMAGE
+    )
+    const scGrouped = yield groupBy(sc, 'testActivityId')
+    yield all(
+      Object.keys(scGrouped).map((utaId) =>
+        fork(getAttachmentsForItems, {
+          testActivityId: utaId,
+          testItemsIdArray: scGrouped[utaId],
+        })
+      )
+    )
 
     feedbackResponse = feedbackResponse.map((x) => {
       if (x.graded === false) {

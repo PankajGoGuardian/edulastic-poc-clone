@@ -637,7 +637,11 @@ class Item extends Component {
                     isGhost
                     iconBtn
                     onClick={openPreviewModal}
-                    style={{ marginTop: '15px', marginRight: '3px' }}
+                    style={{
+                      marginTop: '15px',
+                      marginRight: '3px',
+                      padding: '0px',
+                    }}
                   >
                     <IconEye />
                   </EduButton>

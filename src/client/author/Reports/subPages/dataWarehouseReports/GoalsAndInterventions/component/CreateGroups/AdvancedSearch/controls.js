@@ -103,6 +103,7 @@ export const AddRule = ({ handleOnClick, rules, path, pendingFields }) => {
         onClick={handleOnClick}
         disabled={isDisabled || noFieldLeft}
         data-cy={dataCyValue}
+        style={{ padding: '0px' }}
       >
         + ADD CRITERION
       </RuleButton>

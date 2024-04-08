@@ -320,6 +320,8 @@ export const changeDataToPreferredLanguage = (
     language === LANGUAGE_EN &&
     !questionData?.stimulus?.length &&
     !questionData?.contentsTitle?.length &&
+    !questionData?.summary?.length &&
+    !questionData?.content?.length &&
     questionData?.languageFeatures
   ) {
     // Extracting the first languageCode from keys of languageFeatures

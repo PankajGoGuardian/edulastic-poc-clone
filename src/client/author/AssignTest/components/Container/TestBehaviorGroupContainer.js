@@ -103,6 +103,7 @@ const TestBehaviorGroupContainer = ({
     showTtsForPassages = testSettings?.showTtsForPassages,
     testContentVisibility = testSettings?.testContentVisibility,
     vqPreventSkipping = testSettings?.vqPreventSkipping,
+    vqEnableClosedCaption = testSettings?.vqEnableClosedCaption,
   } = assignmentSettings
 
   const showRefMaterial = !isDocBased
@@ -242,8 +243,37 @@ const TestBehaviorGroupContainer = ({
             </Col>
           </StyledRow>
         </SettingContainer>
+
+        {/* Prevent Skipping */}
+        {/* Enable vq CC start */}
+
+        <SettingContainer id="vq-enable-cc">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="Turn on closed captions"
+            content="Enable closed captions if available for YouTube videos."
+            placement="rightTop"
+            premium={premium}
+          />
+          <StyledRow gutter={16} mb="15px">
+            <Col span={10}>
+              <Label>Turn on closed captions</Label>
+            </Col>
+            <Col span={14}>
+              <AlignSwitchRight
+                disabled={freezeSettings}
+                size="small"
+                checked={vqEnableClosedCaption}
+                data-cy="vqEnableClosedCaption"
+                onChange={(value) =>
+                  overRideSettings('vqEnableClosedCaption', value)
+                }
+              />
+            </Col>
+          </StyledRow>
+        </SettingContainer>
       </EduIf>
-      {/* Prevent Skipping */}
+      {/* Enable vq CC ends */}
       {/* Release score */}
       <SettingContainer id="release-score-setting">
         <DetailsTooltip

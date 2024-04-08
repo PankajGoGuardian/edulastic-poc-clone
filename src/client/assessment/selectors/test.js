@@ -206,6 +206,11 @@ export const vqPreventQuestionSkippingSelector = createSelector(
   (state) => state.vqPreventSkipping
 )
 
+export const vqEnableClosedCaptionSelector = createSelector(
+  getAssignmentSettingsSelector,
+  (state) => state.vqEnableClosedCaption
+)
+
 export const hasSectionsSelector = createSelector(
   stateSelector,
   (state) => state.hasSections

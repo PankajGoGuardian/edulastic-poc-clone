@@ -192,3 +192,15 @@ export const BigPlayButton = styled.span`
     z-index: 6;
   }
 `
+export const StyledCircleButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  background: ${({ reverseContrast }) =>
+    reverseContrast ? white : themeColor};
+  border-radius: 50%;
+  opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
+  cursor: ${({ disabled }) => (!disabled ? 'pointer' : 'not-allowed')};
+`

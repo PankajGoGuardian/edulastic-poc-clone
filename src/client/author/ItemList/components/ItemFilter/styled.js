@@ -232,8 +232,10 @@ export const Title = styled.span`
 export const Clear = styled.div`
   font-size: 12px;
   font-weight: 600;
-  color: ${themeColor};
-  border: none;
+  color: #3F85E5;
+  border: 1px solid #3F85E5;
+  padding: 2px 10px;
+  border-radius: 3px;
   background: transparent;
   cursor: pointer;
   text-transform: uppercase;

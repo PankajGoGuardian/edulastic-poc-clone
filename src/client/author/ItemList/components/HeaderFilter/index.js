@@ -281,13 +281,16 @@ export default connect((state) => ({
 }))(HeaderFilter)
 
 const TagsStyle = css`
-  color: #686f75;
-  background: #bac3ca;
+  color: #3F85E5;
+  background: #3F85E51A;
   padding: 2px 10px;
-  border: none;
+  border: 1px solid #3F85E5;
   font-weight: bold;
   border-radius: 6px;
   margin-bottom: 5px;
+  .anticon-close {
+    color: #3F85E5;
+  }
 `
 
 const StyledPopupTag = styled(Tag)`

@@ -138,7 +138,13 @@ export const StudentMetaData = styled.div`
   color: ${greyThemeDark1};
   .schools-name,
   .grades-name {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     font-size: 13px;
+    svg {
+      margin-top: 5px;
+    }
   }
   .student-name {
     font-weight: bold;

@@ -62,6 +62,10 @@ import {
   getUserRole,
   getInterestedCurriculumsSelector,
 } from '../../../../src/selectors/user'
+import {
+  GradeTooltipContent,
+  IconInfoWithTooltip,
+} from '../../../common/components/tooltip/IconInfoWithTooltip'
 
 const usefilterRecords = (records, domain, grade, subject, curriculumId) =>
   // Note: record.domainId could be integer or string
@@ -259,6 +263,8 @@ const StudentMasteryProfile = ({
   const onSectionClick = (item) =>
     setSelectedMastery(toggleItem(selectedMastery, item.masteryLabel))
 
+  const { grade, gradesStr } = getGrades(studentClassData)
+
   if (loading) {
     return (
       <SpinLoader
@@ -324,8 +330,15 @@ const StudentMasteryProfile = ({
                   <StyledName>{studentName || anonymousString}</StyledName>
                 </StyledP>
                 <StyledP marginTop="12px">
-                  <StyledText weight="Bold"> Grade: </StyledText>
-                  <StyledText>{getGrades(studentClassData)}</StyledText>
+                  <FlexContainer style={{ gap: '3px' }}>
+                    <StyledText weight="Bold"> Grade: </StyledText>
+                    <StyledText>{grade.label || '-'}</StyledText>
+                    <EduIf condition={!isEmpty(gradesStr)}>
+                      <IconInfoWithTooltip
+                        title={<GradeTooltipContent grades={gradesStr} />}
+                      />
+                    </EduIf>
+                  </FlexContainer>
                 </StyledP>
               </FlexContainer>
             </FlexContainer>
@@ -469,6 +482,9 @@ const StyledP = styled.p`
   margin-top: ${(props) => props.marginTop || '10px'};
   margin-left: 20px;
   margin-right: 20px;
+  svg {
+    margin-top: 2px;
+  }
 `
 
 const StyledText = styled.span`

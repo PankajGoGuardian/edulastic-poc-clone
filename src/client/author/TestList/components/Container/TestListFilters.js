@@ -511,7 +511,7 @@ const ClearAll = styled.span`
   padding: 2px 10px;
   border-radius: 3px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
 `
 

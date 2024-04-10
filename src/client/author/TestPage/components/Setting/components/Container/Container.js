@@ -1375,7 +1375,7 @@ class Setting extends Component {
                         />
                       </Title>
                       <Body smallSize={isSmallSize}>
-                        <Description>
+                        <Description data-cy="preventSkippingDescription">
                           If <b>ON</b>, Students won&apos;t be able to skip
                           ahead in a video.
                         </Description>

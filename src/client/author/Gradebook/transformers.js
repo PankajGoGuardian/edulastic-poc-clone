@@ -25,7 +25,7 @@ export const INITIAL_FILTERS = {
 
 export const PAGE_DETAIL = {
   studentPage: 1,
-  studentPageSize: 50,
+  studentPageSize: 100,
   assignmentPage: 1,
   assignmentPageSize: 10,
 }

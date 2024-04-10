@@ -115,6 +115,7 @@ const CompletionReportTable = ({
     submitted: tableData?.[0]?.totalSubmitted || 0,
     absent: tableData?.[0]?.totalAbsent || 0,
     notStarted: tableData?.[0]?.totalNotStarted || 0,
+    notOpen: tableData?.[0]?.totalNotOpen || 0,
     graded: tableData?.[0]?.totalGraded || 0,
     dimensionName: '',
     dimensionId: '',
@@ -181,6 +182,26 @@ const CompletionReportTable = ({
           index={index}
         >
           {value}
+        </StatusCsvDownload>
+      ),
+    },
+    {
+      title: 'Not open',
+      dataIndex: 'notOpen',
+      key: 'notOpen',
+      sorter: !isAnalyseByPercent,
+      className: 'absent',
+      align: 'center',
+      render: (value, record, index) => (
+        <StatusCsvDownload
+          record={record}
+          handleDownloadCsv={handleDownloadCsv}
+          csvDownloadLoadingState={csvDownloadLoadingState}
+          progressStatus={utastatus.NOT_OPEN}
+          progressName={sortKey.NOT_OPEN}
+          index={index}
+        >
+          {getCellValue(value, record?.assigned)}
         </StatusCsvDownload>
       ),
     },

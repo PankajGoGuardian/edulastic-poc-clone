@@ -67,6 +67,14 @@ export const preLabelHeading = {
 }
 export const barDataForCompletionChart = [
   {
+    key: 'notOpenPercentage',
+    insideLabelKey: 'notOpen',
+    name: 'Not Open',
+    fill: '#80A1BE',
+    position: 'insideTop',
+    stackId: 'completionReport',
+  },
+  {
     key: 'absentPercentage',
     insideLabelKey: 'absent',
     name: 'Absent',
@@ -174,6 +182,7 @@ export const sortKey = {
   NOT_STARTED: 'notStarted',
   ASSIGNED: 'assigned',
   ABSENT: 'absent',
+  NOT_OPEN: 'notOpen',
   IN_PROGRESS: 'inProgress',
   SUBMITTED: 'submitted',
   GRADED: 'graded',
@@ -185,6 +194,7 @@ export const statusMap = {
   [sortKey.IN_PROGRESS]: 'in_progress',
   [sortKey.SUBMITTED]: 'submitted',
   [sortKey.GRADED]: 'graded',
+  [sortKey.NOT_OPEN]: 'not_open',
 }
 
 export const utastatus = {
@@ -193,4 +203,5 @@ export const utastatus = {
   ABSENT: '2',
   NOT_STARTED: '3',
   GRADED: '4',
+  NOT_OPEN: '5',
 }

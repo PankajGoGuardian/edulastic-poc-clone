@@ -32,6 +32,7 @@ export const RightContainer = styled.div`
 
 export const ActionContainer = styled.div`
   display: inline-block;
+  font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;

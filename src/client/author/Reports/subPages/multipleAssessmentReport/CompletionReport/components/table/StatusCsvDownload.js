@@ -1,5 +1,6 @@
 import { Icon } from 'antd'
 import React from 'react'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import { ActionContainer } from './styled'
 
 const StatusCsvDownload = ({
@@ -18,13 +19,20 @@ const StatusCsvDownload = ({
     return <Icon type="loading" spin />
   }
   return (
-    <ActionContainer
-      onClick={() =>
-        handleDownloadCsv(record, progressStatus, progressName, index)
-      }
-    >
-      {children}
-    </ActionContainer>
+    <EduIf condition={/^(0|0%)$/.test(children)}>
+      <EduThen>
+        <span style={{ color: '#555555', fontSize: '14px' }}>{children}</span>
+      </EduThen>
+      <EduElse>
+        <ActionContainer
+          onClick={() =>
+            handleDownloadCsv(record, progressStatus, progressName, index)
+          }
+        >
+          {children}
+        </ActionContainer>
+      </EduElse>
+    </EduIf>
   )
 }
 

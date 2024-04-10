@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import { Tooltip, Row, Col } from 'antd'
+import qs from 'qs'
 import { groupBy, map, uniq } from 'lodash'
 import Actions from './Actions'
 import { InfoCell } from './InfoCell'
@@ -148,3 +149,35 @@ export const getTutoringTableColumns = (isSharedReport) => [
     ),
   },
 ]
+
+export const getStudentProgressProfileReportLink = (data) => {
+  const {
+    studentId,
+    interventionCriteria: { standardMasteryDetails },
+    _id: interventionId,
+    tutorMeSessions,
+    termId,
+  } = data
+
+  const filteredTutorMeSessions = tutorMeSessions.filter(
+    ({ sessionCompleteTime }) => !!sessionCompleteTime
+  )
+  let link = ''
+  if (filteredTutorMeSessions.length) {
+    const domainIds = uniq(map(standardMasteryDetails, 'domainId')).join(',')
+    const standardIds = uniq(map(standardMasteryDetails, 'standardId')).join(
+      ','
+    )
+    const curriculumId = standardMasteryDetails[0].curriculumId
+    const queryStr = qs.stringify({
+      termId,
+      domainId: domainIds,
+      standardId: standardIds,
+      curriculumId,
+      interventionId,
+    })
+    link = `/author/reports/student-progress-profile/student/${studentId}?${queryStr}`
+  }
+
+  return link
+}

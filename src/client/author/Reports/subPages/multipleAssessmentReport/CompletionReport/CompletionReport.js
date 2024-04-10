@@ -24,7 +24,6 @@ import { Container } from './styled'
 import { getUserOrgId, getUserRole } from '../../../../src/selectors/user'
 import { NoDataContainer } from '../../../common/styled'
 import { getCompareByOptions } from '../../dataWarehouseReports/MultipleAssessmentReport/utils'
-import { getNoDataContainerText } from '../PreVsPost/utils'
 
 const TABLE_PAGE_SIZE = 50
 function CompletionReport({
@@ -47,7 +46,6 @@ function CompletionReport({
   role,
   districtId,
   csvDownloadLoadingState,
-  pageTitle,
   ...props
 }) {
   const [selectedTests, setSelectedTests] = useState([])
@@ -89,7 +87,7 @@ function CompletionReport({
       page: pagination.page,
       ...(pagination.page === 1 && { recompute: true }),
     }
-    if (!sharedReport && (q.termId || q.reportId)) {
+    if (q.termId || q.reportId) {
       fetchCompletionReportChartDataRequest(q)
 
       return () => toggleFilter(null, false)
@@ -137,21 +135,11 @@ function CompletionReport({
       q.testIds = selectedTests.join(',')
     }
     const _q = omit(q, ['selectedCompareBy'])
-    if (!isSharedReport && (q.termId || q.reportId) && pageFilters.page) {
+    if ((q.termId || q.reportId) && pageFilters.page) {
       fetchCompletionReportTableDataRequest(_q)
       return () => toggleFilter(null, false)
     }
   }, [pageFilters, statusColumnSortState, testColumnSort, selectedTests])
-
-  const noDataContainerText = getNoDataContainerText(
-    settings,
-    {},
-    isSharedReport,
-    pageTitle
-  )
-  if (isSharedReport) {
-    return <NoDataContainer>{noDataContainerText}</NoDataContainer>
-  }
 
   if (isEmpty(chartData) && !(isChartDataLoading && isTableDataLoading)) {
     return (

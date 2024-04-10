@@ -1,7 +1,7 @@
 import React, { useRef, useMemo, useEffect } from 'react'
 import next from 'immer'
 import { IconEye } from '@edulastic/icons'
-import { greyThemeDark4, themeColor } from '@edulastic/colors'
+import { themeColor } from '@edulastic/colors'
 import {
   tableToDBSortOrderMap,
   downloadCSV,
@@ -52,7 +52,7 @@ const getTableColumns = (isSharedReport, settings, staticColumns) => {
             },
             reportUrl: window.location.pathname,
           })
-      if ([SCHOOL, TEACHER].includes(compareBy.key)) {
+      if ([SCHOOL, TEACHER].includes(compareBy.key) && !isSharedReport) {
         return (
           <LinkCell
             value={{ _id: record.dimensionId, name: record.dimensionName }}
@@ -155,13 +155,7 @@ const CompletionReportTable = ({
         return testName !== 'Overall' && !isSharedReport ? (
           <LinkCell value={{ _id: record.testId, name: testName }} url={path} />
         ) : (
-          <p
-            style={{
-              color: testName === 'Overall' ? greyThemeDark4 : themeColor,
-            }}
-          >
-            {testName}
-          </p>
+          <EllipsisTextWithTooltip toolTipMsg={testName} text={testName} />
         )
       },
     },

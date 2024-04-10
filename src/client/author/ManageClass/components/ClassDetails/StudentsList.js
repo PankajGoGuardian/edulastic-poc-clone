@@ -271,7 +271,11 @@ const AccommodationRender = ({ data }) => {
         res.push({ label, value: data[key]?.toUpperCase() })
       } else if (key === 'extraTimeOnTest') {
         const value = data[key]
-        res.push({ label, value: value > 0 ? `${value}x` : 'UNLIMITED' })
+        let extraTime = 'UNLIMITED'
+        if (value > 0) {
+          extraTime = value === 1 ? 'Not Applicable' : `${value}x`
+        }
+        res.push({ label, value: extraTime })
       } else if (data[key] === 'yes') {
         res.push({ label, value: key.toUpperCase() })
       }

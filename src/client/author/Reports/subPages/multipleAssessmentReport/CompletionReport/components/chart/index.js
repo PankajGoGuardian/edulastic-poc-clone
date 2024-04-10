@@ -3,7 +3,6 @@ import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import {
   referenceLinesForCompletionChart as referenceLines,
   barDataForCompletionChart as barLabelData,
-  xAxisDataKey,
   yDomain,
   yAxisLabel,
   preLabelHeading,
@@ -13,6 +12,7 @@ import { barsLabelFormatter, chartDataFormatter } from './utils'
 import Heading from '../../../../../common/components/Heading'
 import { ChartContainer } from './styled'
 import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
+import { toggleItem } from '../../../../../common/util'
 
 const {
   title,
@@ -27,6 +27,8 @@ const Chart = ({
   pagination,
   setPagination,
   pageSize,
+  selectedTests,
+  setSelectedTests,
 }) => {
   const [hoveredCategory, setHoveredCategory] = useState(null)
 
@@ -55,6 +57,23 @@ const Chart = ({
     return `${value}%`
   }
 
+  const selectedTestsFilter = selectedTests.reduce(
+    (res, ele) => ({
+      ...res,
+      [ele]: true,
+    }),
+    {}
+  )
+
+  const handleToggleSelectedBars = (item) => {
+    const _selectedTests = toggleItem(selectedTests, item)
+    setSelectedTests(_selectedTests)
+  }
+
+  const _onResetClickCB = () => {
+    setSelectedTests([])
+  }
+
   const getTooltipJSX = (payload) => {
     if (payload.length && payload[0].payload && hoveredCategory) {
       const result = payload[0].payload
@@ -77,6 +96,10 @@ const Chart = ({
     }
   }
 
+  const getXTickText = (payload, _data) => {
+    return _data[payload.index]?.testName || '-'
+  }
+
   return (
     <ChartContainer>
       <EduIf condition={formattedChartData.length}>
@@ -94,9 +117,11 @@ const Chart = ({
               barsData={barLabelData}
               data={formattedChartData}
               yDomain={yDomain}
-              xAxisDataKey={xAxisDataKey}
-              onBarClickCB={(bar) => console.log('bar is clicked', bar)}
-              onResetClickCB={(bar) => console.log('Reset bar is clicked', bar)}
+              xAxisDataKey="testId"
+              onBarClickCB={handleToggleSelectedBars}
+              onResetClickCB={_onResetClickCB}
+              filter={selectedTestsFilter}
+              getXTickText={getXTickText}
               onLegendMouseEnter={(payload) =>
                 console.log('Cursor Over Legend', payload)
               }

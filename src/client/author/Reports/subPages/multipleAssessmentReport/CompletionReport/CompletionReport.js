@@ -50,6 +50,7 @@ function CompletionReport({
   pageTitle,
   ...props
 }) {
+  const [selectedTests, setSelectedTests] = useState([])
   const [userRole, sharedReportFilters] = useMemo(
     () => [
       sharedReport?.sharedBy?.role || role,
@@ -132,12 +133,15 @@ function CompletionReport({
       sortOrder: statusColumnSortState.sortOrder,
       recompute: true,
     }
+    if (selectedTests.length) {
+      q.testIds = selectedTests.join(',')
+    }
     const _q = omit(q, ['selectedCompareBy'])
     if (!isSharedReport && (q.termId || q.reportId) && pageFilters.page) {
       fetchCompletionReportTableDataRequest(_q)
       return () => toggleFilter(null, false)
     }
-  }, [pageFilters, statusColumnSortState, testColumnSort])
+  }, [pageFilters, statusColumnSortState, testColumnSort, selectedTests])
 
   const noDataContainerText = getNoDataContainerText(
     settings,
@@ -166,6 +170,8 @@ function CompletionReport({
             pageSize={barChartPageSize}
             pagination={pagination}
             setPagination={setPagination}
+            selectedTests={selectedTests}
+            setSelectedTests={setSelectedTests}
             {...props}
           />
 

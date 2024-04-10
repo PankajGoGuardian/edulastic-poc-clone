@@ -74,6 +74,17 @@ const GradebookFilters = ({
           </StyledSpan>
         </Col>
         <FilterDropdown
+          label="Class"
+          mode="multiple"
+          el={classRef}
+          onChange={(selected) =>
+            updateFilters({ ...filters, classIds: selected })
+          }
+          value={filters.classIds}
+          options={data.classes}
+          dataCy="filter-class"
+        />
+        <FilterDropdown
           label="Assessment"
           mode="multiple"
           el={assignmentRef}
@@ -92,17 +103,6 @@ const GradebookFilters = ({
           value={filters.status}
           options={data.statusList}
           dataCy="filter-status"
-        />
-        <FilterDropdown
-          label="Class"
-          mode="multiple"
-          el={classRef}
-          onChange={(selected) =>
-            updateFilters({ ...filters, classIds: selected })
-          }
-          value={filters.classIds}
-          options={data.classes}
-          dataCy="filter-class"
         />
         <FilterDropdown
           label="Class Grade"

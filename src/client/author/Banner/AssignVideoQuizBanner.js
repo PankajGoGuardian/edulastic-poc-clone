@@ -1,6 +1,6 @@
 import { segmentApi } from '@edulastic/api'
 import { EduIf } from '@edulastic/common'
-import { IconAssignVideoQuiz } from '@edulastic/icons'
+import { IconAssignVideoQuiz, IconAssignVideoQuizSmall } from '@edulastic/icons'
 import { Tooltip } from 'antd'
 import React from 'react'
 
@@ -21,6 +21,9 @@ function AssignVideoQuizBanner({
     history.push('/author/vqlibrary')
   }
 
+  const ComponentToRender =
+    clickedFrom === 'LCB' ? IconAssignVideoQuizSmall : IconAssignVideoQuiz
+
   return (
     <EduIf condition={showBanner}>
       <Tooltip
@@ -28,10 +31,14 @@ function AssignVideoQuizBanner({
         placement="bottom"
         overlayClassName="vqTooltip"
       >
-        <IconAssignVideoQuiz
+        <ComponentToRender
           data-cy="VQBannerButton"
           onClick={handleBannerClick}
-          style={{ marginTop: '-10px', cursor: 'pointer', ...style }}
+          style={{
+            marginTop: '-8px',
+            cursor: 'pointer',
+            ...style,
+          }}
         />
       </Tooltip>
     </EduIf>

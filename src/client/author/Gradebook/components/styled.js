@@ -293,7 +293,7 @@ export const StyledTable = styled(Table)`
                 }
               `
                   : `
-                td:nth-child(n + 5) {
+                td:nth-child(n + 4) {
                   padding: 5px 0 0 0;
                 }
               `}

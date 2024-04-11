@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import moment from 'moment'
 
 // components
 import { Tooltip } from 'antd'
@@ -53,14 +52,6 @@ const GradebookTable = ({
         (a.className || '-')
           .toLowerCase()
           .localeCompare((b.className || '-').toLowerCase()),
-    },
-    {
-      title: 'Last Activity Date',
-      dataIndex: 'laDate',
-      width: colWidth + 20,
-      render: (data) =>
-        data ? moment(data).format('MMM Do, YYYY h:mm A') : '-',
-      sorter: (a, b) => (a.laDate || 0) - (b.laDate || 0),
     },
     ...assessments.map((ass) => ({
       title: ass.name,

@@ -127,11 +127,10 @@ const ActionMenu = ({
     }
   }
 
-  const createDuplicateAssignment = (cloneItems) => {
+  const createDuplicateAssignment = () => {
     duplicateAssignment({
       _id: currentTestId,
       title: assignmentDetails.title,
-      cloneItems,
     })
       .then((testItem) => {
         const duplicateTestId = testItem._id

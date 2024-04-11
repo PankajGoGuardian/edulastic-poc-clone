@@ -20,6 +20,7 @@ import {
 } from '@edulastic/common'
 import {
   IconAddStudents,
+  IconAssignVideoQuizSmall,
   IconDownload,
   IconInfo,
   IconMarkAsAbsent,
@@ -1952,6 +1953,7 @@ class ClassBoard extends Component {
                       clickedFrom="LCB"
                       user={user}
                       history={history}
+                      component={IconAssignVideoQuizSmall}
                     />
                     <EduIf
                       condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}

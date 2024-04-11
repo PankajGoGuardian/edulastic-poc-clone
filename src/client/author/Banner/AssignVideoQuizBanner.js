@@ -1,6 +1,5 @@
 import { segmentApi } from '@edulastic/api'
 import { EduIf } from '@edulastic/common'
-import { IconAssignVideoQuiz, IconAssignVideoQuizSmall } from '@edulastic/icons'
 import { Tooltip } from 'antd'
 import React from 'react'
 
@@ -10,6 +9,7 @@ function AssignVideoQuizBanner({
   user,
   history,
   style = {},
+  component,
 }) {
   const handleBannerClick = () => {
     segmentApi.genericEventTrack('VQBannerButton', {
@@ -21,8 +21,7 @@ function AssignVideoQuizBanner({
     history.push('/author/vqlibrary')
   }
 
-  const ComponentToRender =
-    clickedFrom === 'LCB' ? IconAssignVideoQuizSmall : IconAssignVideoQuiz
+  const ComponentToRender = component
 
   return (
     <EduIf condition={showBanner}>

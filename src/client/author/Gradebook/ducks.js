@@ -29,7 +29,7 @@ const slice = createSlice({
     loadingFilters: false,
     performanceData: {},
     loadingPerformanceData: false,
-    showFilter: false,
+    showFilter: true,
     selectedFilters: {},
     pageDetail: { ...PAGE_DETAIL },
   },

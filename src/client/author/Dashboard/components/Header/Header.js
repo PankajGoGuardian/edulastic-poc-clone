@@ -38,6 +38,7 @@ import {
   getInterestedSubjectsSelector,
   currentDistrictInstitutionIds,
   getManualEnrollmentAllowedSelector,
+  isGcpsDistrictSelector,
 } from '../../../src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
@@ -54,6 +55,7 @@ import {
 import CanvasClassSelectModal from '../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
 import ClassSelectModal from '../../../ManageClass/components/ClassListContainer/ClassSelectModal'
 import { getFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
+import AssignVideoQuizBanner from '../../../Banner/AssignVideoQuizBanner'
 
 const getContent = ({
   setvisible,
@@ -152,6 +154,8 @@ const HeaderSection = ({
   setShowClassCreationModal,
   setCreateClassTypeDetails,
   manualEnrollmentAllowed = true,
+  isGcpsDistrict,
+  history,
 }) => {
   const { subEndDate, subType } = subscription || {}
 
@@ -171,7 +175,7 @@ const HeaderSection = ({
   }
 
   const isPremiumUser = user.user?.features?.premium
-
+  const isVideoQuizAndAIEnabled = user.user?.features?.isVideoQuizAndAIEnabled
   /**
    *  a user is paid premium user if
    *  - subType exists and
@@ -233,9 +237,21 @@ const HeaderSection = ({
   const isManualEnrollmentAllowed =
     user?.user?.role === roleuser.TEACHER ? manualEnrollmentAllowed : true
   const showCreateClass = atleastOneClassPresent && isManualEnrollmentAllowed
+  const showVideoQuizBanner = [
+    !isVideoQuizAndAIEnabled,
+    !isGcpsDistrict,
+    isPremiumUser,
+  ].every((o) => !!o)
+
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
+        <AssignVideoQuizBanner
+          showBanner={showVideoQuizBanner}
+          history={history}
+          clickedFrom="Dashboard"
+          user={user.user}
+        />
         {atleastOneClassPresent && (
           <>
             <Tooltip title="Manage Class">
@@ -393,6 +409,7 @@ const enhance = compose(
       isPremiumTrialUsed:
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
       manualEnrollmentAllowed: getManualEnrollmentAllowedSelector(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
     }),
     {
       openLaunchHangout: launchHangoutOpen,

@@ -194,7 +194,7 @@ const menuItems = [
     path: 'author/tests',
   },
   {
-    label: 'VideoQuiz',
+    label: 'Video Quiz',
     icon: IconVideoLibrary,
     allowedPathPattern: [/author\/vqlibrary/],
     path: 'author/vqlibrary',
@@ -236,7 +236,7 @@ const menuItems = [
   },
 ]
 
-const libraryItems = ['library', 'Item Bank', 'Test', 'Playlist', 'VideoQuiz']
+const libraryItems = ['library', 'Item Bank', 'Test', 'Playlist', 'Video Quiz']
 
 // Only "My Playlist" and assignment screens are visible in mobile
 const allowedPathInMobile = ['assignments', 'playlists/playlist']
@@ -989,7 +989,7 @@ class SideMenu extends Component {
                      * Show vq library
                      */
                     if (
-                      menu.label === 'VideoQuiz' &&
+                      menu.label === 'Video Quiz' &&
                       (!premium || isGcpsDistrict)
                     ) {
                       return null

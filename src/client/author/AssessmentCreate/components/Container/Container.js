@@ -50,7 +50,7 @@ const testBreadcrumbs = [
 ]
 
 const snapquizVideoBreadcrumb = {
-  title: 'VideoQuiz',
+  title: 'Video Quiz',
   to: '',
 }
 

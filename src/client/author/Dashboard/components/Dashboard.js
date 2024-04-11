@@ -4,13 +4,13 @@ import { connect } from 'react-redux'
 import HeaderSection from './Header/Header'
 import MainContent from './Showcase/showcase'
 
-const Dashboard = ({ userId }) => {
+const Dashboard = ({ userId, history }) => {
   if (!userId) {
     return <Spin />
   }
   return (
     <Layout>
-      <HeaderSection />
+      <HeaderSection history={history} />
       <MainContent />
     </Layout>
   )

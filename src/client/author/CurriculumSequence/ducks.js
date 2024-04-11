@@ -1365,7 +1365,6 @@ function* editPlaylistTestSaga({ payload }) {
             title: test?.title || '',
             redirectToNewTest: false,
             // By default we keep reference to all the items in test in cloned test.
-            cloneItems: false,
             isInEditAndRegrade: true,
             currentTab: tab,
             playlistId,

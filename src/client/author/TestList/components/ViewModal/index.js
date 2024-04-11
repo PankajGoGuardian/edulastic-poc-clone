@@ -1,7 +1,6 @@
 import React from 'react'
-import loadable from '@loadable/component'
 import { darkGrey, white, greyThemeDark2 } from '@edulastic/colors'
-import { EduButton, EduIf, LikeIconStyled, Progress } from '@edulastic/common'
+import { EduButton, EduIf, LikeIconStyled } from '@edulastic/common'
 import {
   roleuser,
   collections as collectionsConstant,
@@ -93,8 +92,6 @@ import AuthorCompleteSignupButton from '../../../../common/components/AuthorComp
 import ShareModal from '../../../src/components/common/ShareModal'
 import CombineTestButton from '../Item/CombineTestButton'
 
-const CloneOptions = loadable(() => import('./CloneOptions'))
-
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
 const { statusConstants } = testConstants
 class ViewModal extends React.Component {
@@ -128,7 +125,6 @@ class ViewModal extends React.Component {
 
   state = {
     editedCollections: null,
-    showCloneOptions: false,
     summary: null,
     summaryLoading: false,
     showShareModal: false,
@@ -146,11 +142,7 @@ class ViewModal extends React.Component {
 
   handleModalClose = () => {
     const { close } = this.props
-    this.setState({ showCloneOptions: false }, close)
-  }
-
-  hideCloneOptions = () => {
-    this.setState({ showCloneOptions: false })
+    close()
   }
 
   componentDidMount() {
@@ -227,7 +219,7 @@ class ViewModal extends React.Component {
     if (this.state.summary) {
       summary = this.state.summary
     }
-    const { editedCollections, showCloneOptions, showShareModal } = this.state
+    const { editedCollections, showShareModal } = this.state
 
     const modalStyles = {
       modal: {
@@ -356,257 +348,242 @@ class ViewModal extends React.Component {
           </ModalColumn>
 
           <ModalColumn justify="center" ref={this.modalRef}>
-            {showCloneOptions ? (
-              <CloneOptions
-                fallback={<Progress />}
-                hideOptions={this.hideCloneOptions}
-                onDuplicate={onDuplicate}
-                status={status}
-              />
-            ) : (
-              <>
-                {!publicAccess && (
-                  <ButtonContainer>
+            {!publicAccess && (
+              <ButtonContainer>
+                <EduButton
+                  isGhost
+                  height="40px"
+                  width="100%"
+                  style={{ justifyContent: 'center' }}
+                  data-cy="details-button"
+                  onClick={() => {
+                    onEdit()
+                  }}
+                >
+                  <IconDescription />
+                  <span>DETAILS</span>
+                </EduButton>
+                <EduIf
+                  condition={
+                    allowDuplicate &&
+                    !derivedFromPremiumBankId &&
+                    !isEdulasticCurator &&
+                    !isCurator
+                  }
+                >
+                  <EduButton
+                    isGhost
+                    height="40px"
+                    width="100%"
+                    style={{ justifyContent: 'center' }}
+                    data-cy="duplicate-button"
+                    disabled={isDemoPlaygroundUser}
+                    title={
+                      isDemoPlaygroundUser
+                        ? 'This feature is not available in demo account.'
+                        : ''
+                    }
+                    onClick={onDuplicate}
+                  >
+                    <IconCopy />
+                    <span>CLONE</span>
+                  </EduButton>
+                </EduIf>
+
+                {status === 'inreview' && hasCollectionAccess ? (
+                  <FeaturesSwitch
+                    inputFeatures="isCurator"
+                    actionOnInaccessible="hidden"
+                  >
                     <EduButton
                       isGhost
                       height="40px"
                       width="100%"
                       style={{ justifyContent: 'center' }}
-                      data-cy="details-button"
+                      data-cy="reject-button"
                       onClick={() => {
-                        onEdit()
+                        onReject()
                       }}
                     >
-                      <IconDescription />
-                      <span>DETAILS</span>
+                      <Icon type="stop" />
+                      <span>REJECT</span>
                     </EduButton>
-                    <EduIf
-                      condition={
-                        allowDuplicate &&
-                        !derivedFromPremiumBankId &&
-                        !isEdulasticCurator &&
-                        !isCurator
-                      }
-                    >
-                      <EduButton
-                        isGhost
-                        height="40px"
-                        width="100%"
-                        style={{ justifyContent: 'center' }}
-                        data-cy="duplicate-button"
-                        disabled={isDemoPlaygroundUser}
-                        title={
-                          isDemoPlaygroundUser
-                            ? 'This feature is not available in demo account.'
-                            : ''
-                        }
-                        onClick={() => {
-                          this.setState({ showCloneOptions: true })
-                        }}
-                      >
-                        <IconCopy />
-                        <span>CLONE</span>
-                      </EduButton>
-                    </EduIf>
-
-                    {status === 'inreview' && hasCollectionAccess ? (
-                      <FeaturesSwitch
-                        inputFeatures="isCurator"
-                        actionOnInaccessible="hidden"
-                      >
-                        <EduButton
-                          isGhost
-                          height="40px"
-                          width="100%"
-                          style={{ justifyContent: 'center' }}
-                          data-cy="reject-button"
-                          onClick={() => {
-                            onReject()
-                          }}
-                        >
-                          <Icon type="stop" />
-                          <span>REJECT</span>
-                        </EduButton>
-                      </FeaturesSwitch>
-                    ) : null}
-                    {hasCollectionAccess &&
-                    (status === 'inreview' || status === 'rejected') ? (
-                      <FeaturesSwitch
-                        inputFeatures="isCurator"
-                        actionOnInaccessible="hidden"
-                      >
-                        <EduButton
-                          isGhost
-                          height="40px"
-                          data-cy="approve-button"
-                          onClick={() => {
-                            onApprove(
-                              editedCollections !== null
-                                ? editedCollections
-                                : _collections
-                            )
-                          }}
-                        >
-                          <Icon type="check" />
-                          <span>Approve</span>
-                        </EduButton>
-                      </FeaturesSwitch>
-                    ) : null}
-                  </ButtonContainer>
-                )}
-                <ButtonContainer>
-                  {!publicAccess ? (
-                    <EduIf
-                      condition={
-                        allowDuplicate &&
-                        !derivedFromPremiumBankId &&
-                        !isEdulasticCurator &&
-                        isCurator
-                      }
-                    >
-                      <EduButton
-                        isGhost
-                        height="40px"
-                        width="100%"
-                        style={{ justifyContent: 'center' }}
-                        data-cy="duplicate-button"
-                        disabled={isDemoPlaygroundUser}
-                        title={
-                          isDemoPlaygroundUser
-                            ? 'This feature is not available in demo account.'
-                            : ''
-                        }
-                        onClick={() => {
-                          this.setState({ showCloneOptions: true })
-                        }}
-                      >
-                        <IconCopy />
-                        <span>CLONE</span>
-                      </EduButton>
-                    </EduIf>
-                  ) : null}
-                  <CombineTestButton
-                    testId={item._id}
-                    test={{
-                      itemGroups: item.itemGroups,
-                      testCategory: item.testCategory,
-                    }}
-                  />
-                  {!publicAccess && isDeleteAllowed ? (
+                  </FeaturesSwitch>
+                ) : null}
+                {hasCollectionAccess &&
+                (status === 'inreview' || status === 'rejected') ? (
+                  <FeaturesSwitch
+                    inputFeatures="isCurator"
+                    actionOnInaccessible="hidden"
+                  >
                     <EduButton
                       isGhost
                       height="40px"
-                      width="100%"
-                      style={{ justifyContent: 'center' }}
-                      data-cy="delete-button"
-                      onClick={() => onDelete()}
+                      data-cy="approve-button"
+                      onClick={() => {
+                        onApprove(
+                          editedCollections !== null
+                            ? editedCollections
+                            : _collections
+                        )
+                      }}
                     >
-                      <IconTrashAlt />
-                      <span>DELETE</span>
+                      <Icon type="check" />
+                      <span>Approve</span>
                     </EduButton>
-                  ) : null}
-                </ButtonContainer>
-                <ButtonContainer
-                  className={publicAccess ? 'public-access-btn-wrapper' : ''}
+                  </FeaturesSwitch>
+                ) : null}
+              </ButtonContainer>
+            )}
+            <ButtonContainer>
+              {!publicAccess ? (
+                <EduIf
+                  condition={
+                    allowDuplicate &&
+                    !derivedFromPremiumBankId &&
+                    !isEdulasticCurator &&
+                    isCurator
+                  }
                 >
+                  <EduButton
+                    isGhost
+                    height="40px"
+                    width="100%"
+                    style={{ justifyContent: 'center' }}
+                    data-cy="duplicate-button"
+                    disabled={isDemoPlaygroundUser}
+                    title={
+                      isDemoPlaygroundUser
+                        ? 'This feature is not available in demo account.'
+                        : ''
+                    }
+                    onClick={onDuplicate}
+                  >
+                    <IconCopy />
+                    <span>CLONE</span>
+                  </EduButton>
+                </EduIf>
+              ) : null}
+              <CombineTestButton
+                testId={item._id}
+                test={{
+                  itemGroups: item.itemGroups,
+                  testCategory: item.testCategory,
+                }}
+              />
+              {!publicAccess && isDeleteAllowed ? (
+                <EduButton
+                  isGhost
+                  height="40px"
+                  width="100%"
+                  style={{ justifyContent: 'center' }}
+                  data-cy="delete-button"
+                  onClick={() => onDelete()}
+                >
+                  <IconTrashAlt />
+                  <span>DELETE</span>
+                </EduButton>
+              ) : null}
+            </ButtonContainer>
+            <ButtonContainer
+              className={publicAccess ? 'public-access-btn-wrapper' : ''}
+            >
+              <EduButton
+                height="40px"
+                width="100%"
+                isGhost
+                justifyContent="center"
+                data-cy="preview-button"
+                onClick={previewLink}
+              >
+                {!publicAccess && <IconEye />}
+                Preview
+              </EduButton>
+              {publicAccess && (
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <EduButton
+                      height="40px"
+                      width="100%"
+                      justifyContent="center"
+                      data-cy="edit/assign-button"
+                      onClick={handleClick}
+                    >
+                      <span>ASSIGN</span>
+                    </EduButton>
+                  )}
+                  onClick={assign}
+                />
+              )}
+              {permission !== 'VIEW' &&
+                !isEdulasticCurator &&
+                !publicAccess &&
+                status !== 'published' &&
+                hasCollectionAccess && (
                   <EduButton
                     height="40px"
                     width="100%"
-                    isGhost
                     justifyContent="center"
-                    data-cy="preview-button"
-                    onClick={previewLink}
+                    data-cy="edit/assign-button"
+                    onClick={onEdit}
                   >
-                    {!publicAccess && <IconEye />}
-                    Preview
+                    <IconPencilEdit height={14} />
+                    <span>EDIT</span>
                   </EduButton>
-                  {publicAccess && (
-                    <AuthorCompleteSignupButton
-                      renderButton={(handleClick) => (
-                        <EduButton
-                          height="40px"
-                          width="100%"
-                          justifyContent="center"
-                          data-cy="edit/assign-button"
-                          onClick={handleClick}
-                        >
-                          <span>ASSIGN</span>
-                        </EduButton>
-                      )}
-                      onClick={assign}
-                    />
-                  )}
-                  {permission !== 'VIEW' &&
-                    !isEdulasticCurator &&
-                    !publicAccess &&
-                    status !== 'published' &&
-                    hasCollectionAccess && (
+                )}
+              {status === 'published' &&
+                !isEdulasticCurator &&
+                !publicAccess &&
+                !isPublisherUser && (
+                  <AuthorCompleteSignupButton
+                    renderButton={(handleClick) => (
                       <EduButton
                         height="40px"
                         width="100%"
                         justifyContent="center"
                         data-cy="edit/assign-button"
-                        onClick={onEdit}
+                        onClick={handleClick}
                       >
-                        <IconPencilEdit height={14} />
-                        <span>EDIT</span>
+                        <IconAssignment />
+                        <span>ASSIGN</span>
                       </EduButton>
                     )}
-                  {status === 'published' &&
-                    !isEdulasticCurator &&
-                    !publicAccess &&
-                    !isPublisherUser && (
-                      <AuthorCompleteSignupButton
-                        renderButton={(handleClick) => (
-                          <EduButton
-                            height="40px"
-                            width="100%"
-                            justifyContent="center"
-                            data-cy="edit/assign-button"
-                            onClick={handleClick}
-                          >
-                            <IconAssignment />
-                            <span>ASSIGN</span>
-                          </EduButton>
-                        )}
-                        onClick={assign}
-                      />
-                    )}
-                </ButtonContainer>
-                {status === 'inreview' || status === 'rejected' ? (
-                  <FeaturesSwitch
-                    inputFeatures="isCurator"
-                    actionOnInaccessible="hidden"
+                    onClick={assign}
+                  />
+                )}
+            </ButtonContainer>
+            {status === 'inreview' || status === 'rejected' ? (
+              <FeaturesSwitch
+                inputFeatures="isCurator"
+                actionOnInaccessible="hidden"
+              >
+                <ButtonContainer>
+                  <StyledSelect
+                    mode="multiple"
+                    size="medium"
+                    style={{ width: '100%' }}
+                    value={
+                      editedCollections !== null
+                        ? editedCollections.map((o) => o._id)
+                        : _collections.map((o) => o._id)
+                    }
+                    filterOption={(input, option) =>
+                      option.props.title
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                    getPopupContainer={() => this.modalRef.current}
+                    onChange={this.onCollectionsChange}
                   >
-                    <ButtonContainer>
-                      <StyledSelect
-                        mode="multiple"
-                        size="medium"
-                        style={{ width: '100%' }}
-                        value={
-                          editedCollections !== null
-                            ? editedCollections.map((o) => o._id)
-                            : _collections.map((o) => o._id)
-                        }
-                        filterOption={(input, option) =>
-                          option.props.title
-                            .toLowerCase()
-                            .includes(input.toLowerCase())
-                        }
-                        getPopupContainer={() => this.modalRef.current}
-                        onChange={this.onCollectionsChange}
-                      >
-                        {collections.map(({ _id, name }) => (
-                          <Select.Option key={_id} value={_id} title={name}>
-                            {name}
-                          </Select.Option>
-                        ))}
-                      </StyledSelect>
-                    </ButtonContainer>
-                  </FeaturesSwitch>
-                ) : null}
-              </>
-            )}
+                    {collections.map(({ _id, name }) => (
+                      <Select.Option key={_id} value={_id} title={name}>
+                        {name}
+                      </Select.Option>
+                    ))}
+                  </StyledSelect>
+                </ButtonContainer>
+              </FeaturesSwitch>
+            ) : null}
           </ModalColumn>
           <ModalColumn>
             <div>

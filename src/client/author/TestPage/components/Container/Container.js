@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import loadable from '@loadable/component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -20,7 +19,6 @@ import uuidv4 from 'uuid/v4'
 import {
   withWindowSizes,
   notification,
-  Progress,
   CustomPrompt,
   EduIf,
   EduThen,
@@ -183,8 +181,6 @@ import {
   setIsTestPreviewVisibleAction,
 } from '../../../../assessment/actions/test'
 
-const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
-
 const { getDefaultImage } = testsApi
 const {
   statusConstants,
@@ -215,7 +211,6 @@ class Container extends PureComponent {
       showCancelButton: false,
       testLoaded: false,
       disableAlert: false,
-      showCloneModal: false,
       isSettingsChecked: false,
       showCompeleteSignUp: false,
       currentGroupIndex: null,
@@ -1887,20 +1882,14 @@ class Container extends PureComponent {
     }
   }
 
-  showCloneModal = () => {
-    this.setState({ showCloneModal: true })
-  }
-
-  handleDuplicateTest = (cloneItems) => {
+  handleDuplicateTest = () => {
     const { test, duplicateTest, history } = this.props
     duplicateTest({
       _id: test._id,
       title: test.title,
       redirectToNewTest: true,
-      cloneItems,
       searchParam: history?.location?.search,
     })
-    this.setState({ showCloneModal: false })
   }
 
   renderModal = () => {
@@ -1934,10 +1923,6 @@ class Container extends PureComponent {
 
   setDisableAlert = (payload) => {
     this.setState({ disableAlert: payload })
-  }
-
-  handleCloneModalVisibility = (visibility) => {
-    this.setState({ showCloneModal: visibility })
   }
 
   handleResumeActivity = () => {
@@ -1992,7 +1977,6 @@ class Container extends PureComponent {
     const {
       showShareModal,
       isShowFilter,
-      showCloneModal,
       showCompeleteSignUp,
       showConfirmationOnTabChange,
       showTestNameChangeModal,
@@ -2201,7 +2185,7 @@ class Container extends PureComponent {
           isShowFilter={isShowFilter}
           isTestLoading={isTestLoading}
           showDuplicateButton={showDuplicateButton}
-          handleDuplicateTest={this.showCloneModal}
+          handleDuplicateTest={this.handleDuplicateTest}
           showCancelButton={showCancelButton}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           validateTest={this.validateTest}
@@ -2222,12 +2206,6 @@ class Container extends PureComponent {
         ) : (
           this.renderContent()
         )}
-        <ItemCloneModal
-          fallback={<Progress />}
-          handleDuplicateTest={this.handleDuplicateTest}
-          visible={showCloneModal}
-          toggleVisibility={this.handleCloneModalVisibility}
-        />
       </>
     )
   }

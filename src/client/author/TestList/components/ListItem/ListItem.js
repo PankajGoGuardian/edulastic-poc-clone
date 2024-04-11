@@ -145,7 +145,7 @@ class ListItem extends Component {
     }
   }
 
-  duplicate = (cloneOption) => {
+  duplicate = () => {
     const { item, duplicateTest } = this.props
     const { _id, title } = item || {}
     if (_id && title) {
@@ -153,7 +153,6 @@ class ListItem extends Component {
         _id,
         title,
         redirectToNewTest: true,
-        cloneItems: cloneOption,
       })
     }
   }

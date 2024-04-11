@@ -184,6 +184,8 @@ import {
   getUser,
   isPremiumUserSelector,
   getDataWarehouseReports,
+  getUserFeatures,
+  isGcpsDistrictSelector,
 } from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
@@ -206,6 +208,7 @@ import TutorMeNoLicensePopup from '../../../TutorMe/components/TutorMeNoLicenseP
 import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/constants/form'
 import AnalyzeLink from '../../../Assignments/components/AnalyzeLink/AnalyzeLink'
 import SelectFilter from './SelectFilter'
+import AssignVideoQuizBanner from '../../../Banner/AssignVideoQuizBanner'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -1376,6 +1379,9 @@ class ClassBoard extends Component {
       isTutorMeModalLoading,
       isSurveyTest,
       isDataWarehouseReports,
+      userFeatures,
+      isGcpsDistrict,
+      user,
     } = this.props
     const {
       selectedTab,
@@ -1598,6 +1604,12 @@ class ClassBoard extends Component {
         `/author/classboard/interventions/${assignmentId}/${classId}`
       )
     }
+
+    const showVideoQuizBanner = [
+      !userFeatures?.isVideoQuizAndAIEnabled,
+      !isGcpsDistrict,
+      userFeatures?.premium,
+    ].every((o) => !!o)
 
     return (
       <div>
@@ -1961,6 +1973,17 @@ class ClassBoard extends Component {
                         </div>
                       </Tooltip>
                     </EduIf>
+                    <AssignVideoQuizBanner
+                      showBanner={showVideoQuizBanner}
+                      clickedFrom="LCB"
+                      user={user}
+                      history={history}
+                      style={{
+                        height: '33px',
+                        marginTop: '-9px',
+                        marginRight: '-31px',
+                      }}
+                    />
                     <EduIf condition={process.env.NODE_ENV === 'development'}>
                       <Tooltip
                         placement="top"
@@ -2578,6 +2601,8 @@ const enhance = compose(
       isTutorMeModalLoading: isTutorMeModalLoadingSelector(state),
       isSurveyTest: isSurveyTestTypeClassBoard(state),
       isDataWarehouseReports: getDataWarehouseReports(state),
+      userFeatures: getUserFeatures(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

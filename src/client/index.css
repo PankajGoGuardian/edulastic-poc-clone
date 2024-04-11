@@ -2176,7 +2176,6 @@ span.token.active-word {
   font-size: 14px;
 }
 
-
 .ant-modal-wrap {
   overflow-y: auto;
 }
@@ -2641,6 +2640,20 @@ div[class*='_pendo'] button {
 .createModuleTooltip > .ant-tooltip-content > .ant-tooltip-arrow::before {
   background-color: white;
   color: #2f4151;
+}
+
+.vqTooltip > .ant-tooltip-content > .ant-tooltip-inner {
+  background-color: white;
+  color: #2f4151;
+  width: 330px;
+  transform: translateX(-55px);
+  text-align: left;
+}
+
+.vqTooltip > .ant-tooltip-content > .ant-tooltip-arrow::before {
+  background-color: white;
+  color: #2f4151;
+  transform: translateX(-55px);
 }
 
 .ant-scrolling-effect .subscription-header {

@@ -145,7 +145,6 @@ const duplicateAssignment = ({
   _id,
   title,
   isInEditAndRegrade = false,
-  cloneItems = false,
   playlistId,
   updatePlaylist = false,
   updateContentVersionId = false,
@@ -158,7 +157,6 @@ const duplicateAssignment = ({
           ? title
           : `${title}-${moment().format('MM/DD/YYYY HH:mm')}`,
         isInEditAndRegrade,
-        cloneItems,
         playlistId,
         updatePlaylist,
         updateContentVersionId,

@@ -496,6 +496,7 @@ module.exports = {
     // It is required to change the test settings state in redux.
     'preventSectionNavigation',
     'vqPreventSkipping',
+    'vqEnableClosedCaption',
   ],
   settingsNotApplicableToDocBased: [
     'shuffleQuestions',

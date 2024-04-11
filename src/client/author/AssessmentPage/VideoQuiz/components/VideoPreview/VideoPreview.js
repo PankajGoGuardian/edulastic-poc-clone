@@ -1,5 +1,5 @@
-import { DragDrop, notification } from '@edulastic/common'
-import { Col } from 'antd'
+import { DragDrop, EduIf, notification } from '@edulastic/common'
+import { Col, Tooltip } from 'antd'
 import { Rnd } from 'react-rnd'
 import { round, isEmpty, isEqual } from 'lodash'
 import PropTypes from 'prop-types'
@@ -8,6 +8,9 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { test as testConstants } from '@edulastic/constants'
 import { STUDENT } from '@edulastic/constants/const/roleType'
+import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
+
+import { IconClosedCaption } from '@edulastic/icons'
 import { removeUserAnswerAction } from '../../../../../assessment/actions/answers'
 import { getPreviewSelector } from '../../../../src/selectors/view'
 import QuestionItem from '../QuestionItem/QuestionItem'
@@ -24,10 +27,12 @@ import {
   Droppable,
   PDFPreviewWrapper,
   RelativeContainer,
+  StyledCircleButton,
   StyledPlayerContainer,
   StyledTypographyText,
 } from '../../styled-components/VideoPreview'
 import {
+  extractVideoId,
   formateSecondsToMMSS,
   getCurrentTime,
   getMarks,
@@ -45,6 +50,7 @@ import {
 } from '../../../../src/selectors/user'
 import {
   currentTestActivityIdSelector,
+  vqEnableClosedCaptionSelector,
   vqPreventQuestionSkippingSelector,
 } from '../../../../../assessment/selectors/test'
 import {
@@ -57,6 +63,11 @@ const { statusConstants } = testConstants
 const { DRAFT } = statusConstants
 
 const { DragPreview } = DragDrop
+
+// Caption statuses
+const INITIATED = 'initiated'
+const UNAVAILABLE = 'un-available'
+const READY = 'ready'
 
 const VideoPreview = ({
   annotations,
@@ -95,6 +106,8 @@ const VideoPreview = ({
   userRole,
   showAuthorReviewTabVideoPlayer,
   isAuthorReviewOrEdit,
+  vqEnableClosedCaption,
+  isPreviewModalVisible,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -115,6 +128,14 @@ const VideoPreview = ({
   const [muted, setMuted] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [isReady, setIsReady] = useState(0)
+  const [isCCActive, setIsCCActive] = useState(false)
+
+  // CCs are unavailable for non youtube video
+  const initialCaptionStatus = !extractVideoId(videoUrl)
+    ? UNAVAILABLE
+    : INITIATED
+
+  const [captionStatus, setCaptionStatus] = useState(initialCaptionStatus)
 
   const handleSetIsSeekBarFocused = (isFocused) => {
     isSeekBarFocusedRef.current = isFocused
@@ -122,6 +143,39 @@ const VideoPreview = ({
 
   const onReady = () => {
     setIsReady(true)
+  }
+
+  /**
+   * The YouTube Player API's onApiChange event is isolated from the React application's state
+   */
+  const onApiChange = () => {
+    const ytPlayer = videoRef?.current
+    if (!ytPlayer) return
+
+    const availableCCs = [
+      ...(ytPlayer.getOption?.('captions', 'tracklist') || []),
+      ...(ytPlayer.getOption?.('captions', 'translationLanguages') || []),
+    ]
+
+    ytPlayer.setOption('captions', 'track', {})
+
+    if (availableCCs.some(({ languageCode }) => languageCode === LANGUAGE_EN)) {
+      return setCaptionStatus(READY)
+    }
+    return setCaptionStatus(UNAVAILABLE)
+  }
+
+  const handleOnClickCC = () => {
+    setIsCCActive((prevState) => {
+      if (prevState && !!videoRef?.current) {
+        videoRef?.current?.setOption('captions', 'track', {})
+        return false
+      }
+      videoRef?.current?.setOption('captions', 'track', {
+        languageCode: LANGUAGE_EN,
+      })
+      return true
+    })
   }
 
   const onPlay = () => {
@@ -483,6 +537,19 @@ const VideoPreview = ({
     }
   }
 
+  const isStudent = userRole === STUDENT
+
+  /**
+   * Student's we are checking if vqEnableClosedCaption is enabled or not
+   * Teacher preview we always show Closed Caption button
+   * Teacher's Student view we check vqEnableClosedCaption is enabled or not
+   */
+  const showCCButton =
+    (isStudent && vqEnableClosedCaption) ||
+    (!isStudent &&
+      ((isPreviewModalVisible && vqEnableClosedCaption) ||
+        !isPreviewModalVisible))
+
   useEffect(() => {
     window?.addEventListener('blur', handleOnPause)
     window?.addEventListener('visibilitychange', handleOnPause)
@@ -512,6 +579,7 @@ const VideoPreview = ({
           {showAuthorReviewTabVideoPlayer && (
             <CombinedPlayer
               onReady={onReady}
+              onApiChange={onApiChange}
               url={videoUrl}
               playing={playing}
               controls={false}
@@ -528,6 +596,7 @@ const VideoPreview = ({
                     controls: 0,
                     playsinline: 1,
                     api_key: appConfig.edYouTubePlayerKey,
+                    cc_load_policy: 1,
                   },
                   // 0: Off, 1: Moderate, 2: Strict Content filter
                   embedConfig: { contentFilter: 0 },
@@ -675,6 +744,28 @@ const VideoPreview = ({
             vqPreventSkipping={vqPreventSkipping && !isAuthorReviewOrEdit}
           />
         </Col>
+
+        <EduIf condition={showCCButton}>
+          <Col style={{ flex: '0 0 auto' }}>
+            <Tooltip
+              title={
+                captionStatus === UNAVAILABLE
+                  ? 'Subtitles/closed captions unavailable'
+                  : ''
+              }
+            >
+              <span>
+                <StyledCircleButton
+                  onClick={handleOnClickCC}
+                  isGhost={isCCActive}
+                  disabled={captionStatus !== READY}
+                >
+                  <IconClosedCaption />
+                </StyledCircleButton>
+              </span>
+            </Tooltip>
+          </Col>
+        </EduIf>
         <Col style={{ flex: '0 0 auto' }}>
           <MuteUnmute
             volume={muted ? 0 : volumne}
@@ -709,6 +800,7 @@ export default connect(
     previewMode: getPreviewSelector(state),
     isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
     vqPreventSkipping: vqPreventQuestionSkippingSelector(state),
+    vqEnableClosedCaption: vqEnableClosedCaptionSelector(state),
     vqEnableYouTubeEd: state.studentAssignment.vqEnableYouTubeEd,
     test: getTestEntitySelector(state),
     currentTestActivityId: currentTestActivityIdSelector(state),

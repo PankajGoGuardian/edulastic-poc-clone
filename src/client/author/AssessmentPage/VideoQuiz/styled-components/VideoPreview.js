@@ -4,7 +4,7 @@ import {
   themeColor,
   white,
 } from '@edulastic/colors'
-import { DragDrop } from '@edulastic/common'
+import { DragDrop, EduButton } from '@edulastic/common'
 import ReactPlayer from 'react-player'
 import styled from 'styled-components'
 // import { Player } from 'video-react'
@@ -190,5 +190,26 @@ export const BigPlayButton = styled.span`
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     z-index: 6;
+  }
+`
+export const StyledCircleButton = styled(EduButton)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  &:hover,
+  &:focus,
+  &:active {
+    &.ant-btn.ant-btn-primary {
+      background-color: ${({ isGhost }) => (isGhost ? white : themeColor)};
+      box-shadow: none !important;
+    }
+    svg {
+      fill: ${({ isGhost }) => (isGhost ? themeColor : white)};
+    }
   }
 `

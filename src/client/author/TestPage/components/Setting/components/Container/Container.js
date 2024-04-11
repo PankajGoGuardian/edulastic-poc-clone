@@ -902,6 +902,7 @@ class Setting extends Component {
       showTtsForPassages = true,
       allowAutoEssayEvaluation = false,
       vqPreventSkipping,
+      vqEnableClosedCaption,
       showSpeechToText,
     } = entity
 
@@ -1357,6 +1358,8 @@ class Setting extends Component {
                       </Body>
                     </Row>
                   </Block>
+                  {/* VQ prevent skipping */}
+
                   <EduIf
                     condition={
                       entity.testCategory === testCategoryTypes.VIDEO_BASED
@@ -1381,7 +1384,30 @@ class Setting extends Component {
                         </Description>
                       </Body>
                     </Block>
+                    {/* VQ prevent skipping */}
+
+                    {/* VQ enable cc */}
+                    <Block id="vq-enable-cc" smallSize={isSmallSize}>
+                      <Title>
+                        <span>Turn on closed captions</span>
+                        <EduSwitchStyled
+                          checked={vqEnableClosedCaption}
+                          data-cy="vqEnableClosedCaption"
+                          onChange={(v) =>
+                            this.updateTestData('vqEnableClosedCaption')(v)
+                          }
+                          disabled={disabled}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Description>
+                          Enable closed captions if available for YouTube
+                          videos.
+                        </Description>
+                      </Body>
+                    </Block>
                   </EduIf>
+
                   {COMMON.includes(testType) && (
                     <Block id="allow-redirect" smallSize={isSmallSize}>
                       <SettingContainer>

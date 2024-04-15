@@ -85,7 +85,7 @@ const Chart = ({
       }
       dataToDisplay[progressStatus] = `${
         result[hoveredCategory.insideLabelKey]
-      } (${result[hoveredCategory.key]}%)`
+      } (${result[hoveredCategory.percent]}%)`
       return (
         <div>
           {Object.keys(dataToDisplay).map((key) => {
@@ -137,7 +137,7 @@ const Chart = ({
               hideCartesianGrid
               hasBarInsideLabels
               barsLabelFormatter={barsLabelFormatter}
-              ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
+              ticks={[0, 100]}
               tick
               yTickLine={{ stroke: 'black' }}
               margin={{ top: 0, right: 60, left: 60, bottom: 50 }}

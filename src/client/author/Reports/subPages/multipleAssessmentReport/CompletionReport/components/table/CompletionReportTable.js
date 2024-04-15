@@ -301,6 +301,10 @@ const CompletionReportTable = ({
       key: 'performance',
       align: 'center',
       render: (text, record) => {
+        const linkProps = {
+          target: '_blank',
+          rel: 'opener',
+        }
         const reportPath =
           record.testName === 'Overall'
             ? 'performance-over-time'
@@ -314,7 +318,7 @@ const CompletionReportTable = ({
               settings?.requestFilters,
               compareBy
             )}`}
-            target="_blank"
+            {...linkProps}
           >
             <IconEye color={themeColor} width={18} height={18} />
           </Link>

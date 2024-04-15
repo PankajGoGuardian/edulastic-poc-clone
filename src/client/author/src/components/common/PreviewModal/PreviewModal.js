@@ -475,7 +475,7 @@ class PreviewModal extends React.Component {
     // clearing it before navigation.
 
     clearItemStore()
-    if (isDisableEdit && regradeFlow && isTest && allowDuplicate) {
+    if (isDisableEdit && isTest && allowDuplicate) {
       let passageItems = passage && passage.testItems
       const passageId = passage && passage._id
       if (passageItems && passageId) {
@@ -1181,7 +1181,7 @@ class PreviewModal extends React.Component {
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||
       (hasCollectionAccess && userFeatures.isCurator) ||
-      (isTestInRegrade && allowDuplicate && isEditable) ||
+      (allowDuplicate && isEditable) ||
       isCollectionContentEditable
     )
     const isDisableDuplicate = !(

@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 import { call, put, all, takeLatest } from 'redux-saga/effects'
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
+import { capitalize } from 'lodash'
 import { downloadCSV } from '../../../common/util'
 
 const initialState = {
@@ -123,7 +124,10 @@ function* getCsvDataSaga({ payload }) {
     delete payload.progressName
     delete payload.index
     const result = yield call(reportsApi.getCsvData, payload)
-    downloadCSV(`${testName} ${progressName}.csv`, result?.data?.result || '')
+    downloadCSV(
+      `${testName}_${capitalize(progressName)}.csv`,
+      result?.data?.result || ''
+    )
   } catch (error) {
     notification({ msg: 'Failed to download the data' })
   } finally {

@@ -85,7 +85,7 @@ const Chart = ({
       }
       dataToDisplay[progressStatus] = `${
         result[hoveredCategory.insideLabelKey]
-      } (${result[hoveredCategory.percent]}%)`
+      } (${Math.round(result[hoveredCategory.percent])}%)`
       return (
         <div>
           {Object.keys(dataToDisplay).map((key) => {

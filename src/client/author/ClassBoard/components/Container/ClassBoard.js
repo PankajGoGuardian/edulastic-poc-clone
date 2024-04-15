@@ -1943,9 +1943,11 @@ class ClassBoard extends Component {
                     </EduIf>
                   </LeftContainer>
                   <EduIf condition={attemptWindow}>
-                    <InfoMessage color={lightGreen4}>
-                      <IconInfo fill={green} height={10} /> {attemptWindow}
-                    </InfoMessage>
+                    <div>
+                      <InfoMessage color={lightGreen4}>
+                        <IconInfo fill={green} height={10} /> {attemptWindow}
+                      </InfoMessage>
+                    </div>
                   </EduIf>
                   <div style={{ display: 'flex' }}>
                     <AssignVideoQuizBanner

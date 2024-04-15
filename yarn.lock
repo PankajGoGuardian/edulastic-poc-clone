@@ -2332,7 +2332,7 @@
   resolved "https://registry.yarnpkg.com/@gilbarbara/deep-equal/-/deep-equal-0.1.1.tgz#91c8f291da6bf7e21cdbfb585fb072d59963acf3"
   integrity sha512-SjSBspHXlclODLtSoPIQwBhfeBjncC05NlNoFELJ6xZQkyYDJsVCcs7+f+etHR2cYPbHLjnh1C06lQlCbMEWEA==
 
-"@goguardian/tutorme-sdk@^2.1.2":
+"@goguardian/tutorme-sdk@^2.0.8":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/@goguardian/tutorme-sdk/-/tutorme-sdk-2.1.2.tgz#89afebd171ef21a76c8d78b879945dec0e2b88f1"
   integrity sha512-Ok7KKN7KbYpHR3CLyfJfSKjEtfMKXhZAjB3P5itH0XEr+PfpgVNxo75KKfGQ+MqfAHZlbl/JIpacjhYZ6fLMhw==

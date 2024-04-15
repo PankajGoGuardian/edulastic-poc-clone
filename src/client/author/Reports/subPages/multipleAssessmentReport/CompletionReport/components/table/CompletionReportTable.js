@@ -30,6 +30,7 @@ import { convertTableToCSV } from '../../../../../common/util'
 import { getCompletionReportPathForAssignment } from '../../../../../../Assignments/components/ActionMenu/ActionMenu'
 import StatusCsvDownload from './StatusCsvDownload'
 import EllipsisTextWithTooltip from '../../../common/components/EllipsisTextWithTooltip'
+import TableLoader from './TableLoader'
 
 const getTableColumns = (isSharedReport, settings, staticColumns) => {
   const compareBy = settings.selectedCompareBy
@@ -106,6 +107,8 @@ const CompletionReportTable = ({
     return `${totalValue || 0}${isAnalyseByPercent ? '%' : ''}`
   }
 
+  const getShowStatusCellHyperLink = (value) => !/^(0|0%)$/.test(value)
+
   const overAllData = {
     testId: 'overall_tid',
     testName: 'Overall',
@@ -174,6 +177,7 @@ const CompletionReportTable = ({
           progressStatus={utastatus.ASSIGNED}
           progressName={sortKey.ASSIGNED}
           index={index}
+          showStatusCellHyperLink={getShowStatusCellHyperLink(value)}
         >
           {value}
         </StatusCsvDownload>
@@ -206,18 +210,22 @@ const CompletionReportTable = ({
       sorter: !isAnalyseByPercent,
       className: 'absent',
       align: 'center',
-      render: (value, record, index) => (
-        <StatusCsvDownload
-          record={record}
-          handleDownloadCsv={handleDownloadCsv}
-          csvDownloadLoadingState={csvDownloadLoadingState}
-          progressStatus={utastatus.ABSENT}
-          progressName={sortKey.ABSENT}
-          index={index}
-        >
-          {getCellValue(value, record?.assigned)}
-        </StatusCsvDownload>
-      ),
+      render: (value, record, index) => {
+        const cellValue = getCellValue(value, record?.assigned)
+        return (
+          <StatusCsvDownload
+            record={record}
+            handleDownloadCsv={handleDownloadCsv}
+            csvDownloadLoadingState={csvDownloadLoadingState}
+            progressStatus={utastatus.ABSENT}
+            progressName={sortKey.ABSENT}
+            index={index}
+            showStatusCellHyperLink={getShowStatusCellHyperLink(cellValue)}
+          >
+            {cellValue}
+          </StatusCsvDownload>
+        )
+      },
     },
     {
       title: 'Not started',
@@ -226,18 +234,22 @@ const CompletionReportTable = ({
       className: 'absent',
       sorter: !isAnalyseByPercent,
       align: 'center',
-      render: (value, record, index) => (
-        <StatusCsvDownload
-          record={record}
-          handleDownloadCsv={handleDownloadCsv}
-          csvDownloadLoadingState={csvDownloadLoadingState}
-          progressStatus={utastatus.NOT_STARTED}
-          progressName={sortKey.NOT_STARTED}
-          index={index}
-        >
-          {getCellValue(value, record?.assigned)}
-        </StatusCsvDownload>
-      ),
+      render: (value, record, index) => {
+        const cellValue = getCellValue(value, record?.assigned)
+        return (
+          <StatusCsvDownload
+            record={record}
+            handleDownloadCsv={handleDownloadCsv}
+            csvDownloadLoadingState={csvDownloadLoadingState}
+            progressStatus={utastatus.NOT_STARTED}
+            progressName={sortKey.NOT_STARTED}
+            index={index}
+            showStatusCellHyperLink={getShowStatusCellHyperLink(cellValue)}
+          >
+            {cellValue}
+          </StatusCsvDownload>
+        )
+      },
     },
     {
       title: 'In progress',
@@ -245,18 +257,22 @@ const CompletionReportTable = ({
       key: 'inProgress',
       sorter: !isAnalyseByPercent,
       align: 'center',
-      render: (value, record, index) => (
-        <StatusCsvDownload
-          record={record}
-          handleDownloadCsv={handleDownloadCsv}
-          csvDownloadLoadingState={csvDownloadLoadingState}
-          progressStatus={utastatus.IN_PROGRESS}
-          progressName={sortKey.IN_PROGRESS}
-          index={index}
-        >
-          {getCellValue(value, record?.assigned)}
-        </StatusCsvDownload>
-      ),
+      render: (value, record, index) => {
+        const cellValue = getCellValue(value, record?.assigned)
+        return (
+          <StatusCsvDownload
+            record={record}
+            handleDownloadCsv={handleDownloadCsv}
+            csvDownloadLoadingState={csvDownloadLoadingState}
+            progressStatus={utastatus.IN_PROGRESS}
+            progressName={sortKey.IN_PROGRESS}
+            index={index}
+            showStatusCellHyperLink={getShowStatusCellHyperLink(cellValue)}
+          >
+            {cellValue}
+          </StatusCsvDownload>
+        )
+      },
     },
     {
       title: 'Submitted',
@@ -264,18 +280,22 @@ const CompletionReportTable = ({
       key: 'submitted',
       sorter: !isAnalyseByPercent,
       align: 'center',
-      render: (value, record, index) => (
-        <StatusCsvDownload
-          record={record}
-          handleDownloadCsv={handleDownloadCsv}
-          csvDownloadLoadingState={csvDownloadLoadingState}
-          progressStatus={utastatus.SUBMITTED}
-          progressName={sortKey.SUBMITTED}
-          index={index}
-        >
-          {getCellValue(value, record?.assigned)}
-        </StatusCsvDownload>
-      ),
+      render: (value, record, index) => {
+        const cellValue = getCellValue(value, record?.assigned)
+        return (
+          <StatusCsvDownload
+            record={record}
+            handleDownloadCsv={handleDownloadCsv}
+            csvDownloadLoadingState={csvDownloadLoadingState}
+            progressStatus={utastatus.SUBMITTED}
+            progressName={sortKey.SUBMITTED}
+            index={index}
+            showStatusCellHyperLink={getShowStatusCellHyperLink(cellValue)}
+          >
+            {cellValue}
+          </StatusCsvDownload>
+        )
+      },
     },
     {
       title: 'GRADED',
@@ -283,18 +303,22 @@ const CompletionReportTable = ({
       key: 'graded',
       sorter: !isAnalyseByPercent,
       align: 'center',
-      render: (value, record, index) => (
-        <StatusCsvDownload
-          record={record}
-          handleDownloadCsv={handleDownloadCsv}
-          csvDownloadLoadingState={csvDownloadLoadingState}
-          progressStatus={utastatus.GRADED}
-          progressName={sortKey.GRADED}
-          index={index}
-        >
-          {getCellValue(value, record?.assigned)}
-        </StatusCsvDownload>
-      ),
+      render: (value, record, index) => {
+        const cellValue = getCellValue(value, record?.assigned)
+        return (
+          <StatusCsvDownload
+            record={record}
+            handleDownloadCsv={handleDownloadCsv}
+            csvDownloadLoadingState={csvDownloadLoadingState}
+            progressStatus={utastatus.GRADED}
+            progressName={sortKey.GRADED}
+            index={index}
+            showStatusCellHyperLink={getShowStatusCellHyperLink(cellValue)}
+          >
+            {cellValue}
+          </StatusCsvDownload>
+        )
+      },
     },
     {
       title: 'VIEW PERFORMANCE',
@@ -390,6 +414,7 @@ const CompletionReportTable = ({
   }
 
   const totalPageSize = parseInt(dataSource?.[1]?.totalRows, 10) || 0
+
   return (
     <TableContainer ref={childrenRef}>
       <TableHeader
@@ -404,7 +429,10 @@ const CompletionReportTable = ({
         analyseBy={analyseBy}
       />
       <StyledTable
-        loading={isTableDataLoading}
+        loading={{
+          indicator: <TableLoader />,
+          spinning: isTableDataLoading,
+        }}
         onChange={handleTableChange}
         columns={columns}
         dataSource={dataSource}

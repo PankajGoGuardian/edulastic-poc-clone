@@ -20,6 +20,7 @@ import {
 } from '@edulastic/common'
 import {
   IconAddStudents,
+  IconAssignVideoQuizSmall,
   IconDownload,
   IconInfo,
   IconMarkAsAbsent,
@@ -1942,11 +1943,20 @@ class ClassBoard extends Component {
                     </EduIf>
                   </LeftContainer>
                   <EduIf condition={attemptWindow}>
-                    <InfoMessage color={lightGreen4}>
-                      <IconInfo fill={green} height={10} /> {attemptWindow}
-                    </InfoMessage>
+                    <div>
+                      <InfoMessage color={lightGreen4}>
+                        <IconInfo fill={green} height={10} /> {attemptWindow}
+                      </InfoMessage>
+                    </div>
                   </EduIf>
                   <div style={{ display: 'flex' }}>
+                    <AssignVideoQuizBanner
+                      showBanner={showVideoQuizBanner}
+                      clickedFrom="LCB"
+                      user={user}
+                      history={history}
+                      component={IconAssignVideoQuizSmall}
+                    />
                     <EduIf
                       condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}
                     >
@@ -1954,7 +1964,7 @@ class ClassBoard extends Component {
                         placement="top"
                         title={assignTutoringTooltipTitle}
                       >
-                        <div>
+                        <div style={{ minWidth: 'fit-content' }}>
                           <AssignTutoring
                             active={isAssignTutoringActive}
                             data-cy="assignTutoring"

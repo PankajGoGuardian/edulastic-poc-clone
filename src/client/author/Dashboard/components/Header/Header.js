@@ -9,6 +9,7 @@ import { Popover, Tooltip } from 'antd'
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
 import { EduButton, EduIf, FlexContainer, MainHeader } from '@edulastic/common'
 import {
+  IconAssignVideoQuiz,
   IconClockDashboard,
   IconHangouts,
   IconManage,
@@ -251,6 +252,7 @@ const HeaderSection = ({
           history={history}
           clickedFrom="Dashboard"
           user={user.user}
+          component={IconAssignVideoQuiz}
         />
         {atleastOneClassPresent && (
           <>

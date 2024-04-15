@@ -8,7 +8,7 @@ import copyItem from '../../assets/copy-item.svg'
 function DuplicateTest({ duplicateTest }) {
   const [isModalVisible, toggleModalVisibility] = useState(false)
 
-  function handleOnClick() {
+  const handleOnClick = () => {
     toggleModalVisibility(true)
   }
 
@@ -21,7 +21,7 @@ function DuplicateTest({ duplicateTest }) {
       >
         <img alt="icon" src={copyItem} />
         <SpaceElement />
-        Duplicate
+        Clone
       </StyledLink>
       <CloneModal
         visible={isModalVisible}

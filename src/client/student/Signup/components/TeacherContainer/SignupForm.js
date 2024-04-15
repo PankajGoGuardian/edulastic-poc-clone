@@ -15,6 +15,7 @@ import { Col, Form, Input, message } from 'antd'
 import { isEmpty, trim } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
+import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { Link, Redirect } from 'react-router-dom'
 import { compose } from 'redux'
@@ -285,6 +286,12 @@ class Signup extends React.Component {
           <Redirect exact to="/" />
         ) : null}
         <RegistrationWrapper image={image}>
+          <Helmet>
+            <link
+              rel="canonical"
+              href="https://assessment.peardeck.com/signup"
+            />
+          </Helmet>
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
               <EduIf condition={isPearDomain}>

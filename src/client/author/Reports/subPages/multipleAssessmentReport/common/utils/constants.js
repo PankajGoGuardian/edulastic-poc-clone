@@ -67,7 +67,17 @@ export const preLabelHeading = {
 }
 export const barDataForCompletionChart = [
   {
-    key: 'absentPercentage',
+    key: 'notOpenContribution',
+    percent: 'notOpenPercentage',
+    insideLabelKey: 'notOpen',
+    name: 'Not Open',
+    fill: '#80A1BE',
+    position: 'insideTop',
+    stackId: 'completionReport',
+  },
+  {
+    key: 'absentContribution',
+    percent: 'absentPercentage',
     insideLabelKey: 'absent',
     name: 'Absent',
     fill: '#E8E8E8',
@@ -75,7 +85,8 @@ export const barDataForCompletionChart = [
     stackId: 'completionReport',
   },
   {
-    key: 'notStartedPercentage',
+    key: 'notStartedContribution',
+    percent: 'notStartedPercentage',
     insideLabelKey: 'notStarted',
     position: 'insideTop',
     name: 'Not Started',
@@ -83,7 +94,8 @@ export const barDataForCompletionChart = [
     fill: '#F35F5F',
   },
   {
-    key: 'inProgressPercentage',
+    key: 'inProgressContribution',
+    percent: 'inProgressPercentage',
     insideLabelKey: 'inProgress',
     position: 'insideTop',
     name: 'In Progress',
@@ -91,7 +103,8 @@ export const barDataForCompletionChart = [
     fill: '#FDCC3B',
   },
   {
-    key: 'submittedPercentage',
+    key: 'submittedContribution',
+    percent: 'submittedPercentage',
     insideLabelKey: 'submitted',
     position: 'insideTop',
     name: 'Submitted',
@@ -99,7 +112,8 @@ export const barDataForCompletionChart = [
     fill: '#3896BE',
   },
   {
-    key: 'gradedPercentage',
+    key: 'gradedContribution',
+    percent: 'gradedPercentage',
     insideLabelKey: 'graded',
     position: 'insideTop',
     name: 'Graded',
@@ -111,51 +125,6 @@ export const barDataForCompletionChart = [
 export const referenceLinesForCompletionChart = [
   {
     ref: 0,
-    dx: -10,
-    stroke: '#D3D3D3',
-  },
-  {
-    ref: 10,
-    dx: -10,
-    stroke: '#D3D3D3',
-  },
-  {
-    ref: 20,
-    dx: -10,
-    stroke: '#D3D3D3',
-  },
-  {
-    ref: 30,
-    dx: -10,
-    stroke: '#D3D3D3',
-  },
-  {
-    ref: 40,
-    dx: -10,
-    stroke: '#D3D3D3',
-  },
-  {
-    ref: 50,
-    dx: -10,
-    stroke: '#D3D3D3',
-  },
-  {
-    ref: 60,
-    dx: -10,
-    stroke: '#D3D3D3',
-  },
-  {
-    ref: 70,
-    dx: -10,
-    stroke: '#D3D3D3',
-  },
-  {
-    ref: 80,
-    dx: -10,
-    stroke: '#D3D3D3',
-  },
-  {
-    ref: 90,
     dx: -10,
     stroke: '#D3D3D3',
   },
@@ -174,6 +143,7 @@ export const sortKey = {
   NOT_STARTED: 'notStarted',
   ASSIGNED: 'assigned',
   ABSENT: 'absent',
+  NOT_OPEN: 'notOpen',
   IN_PROGRESS: 'inProgress',
   SUBMITTED: 'submitted',
   GRADED: 'graded',
@@ -185,6 +155,7 @@ export const statusMap = {
   [sortKey.IN_PROGRESS]: 'in_progress',
   [sortKey.SUBMITTED]: 'submitted',
   [sortKey.GRADED]: 'graded',
+  [sortKey.NOT_OPEN]: 'not_open',
 }
 
 export const utastatus = {
@@ -193,4 +164,5 @@ export const utastatus = {
   ABSENT: '2',
   NOT_STARTED: '3',
   GRADED: '4',
+  NOT_OPEN: '5',
 }

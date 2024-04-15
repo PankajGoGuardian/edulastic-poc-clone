@@ -9,6 +9,7 @@ import {
   ScrollContext,
   PointBlockContext,
   notification,
+  EduIf,
 } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
@@ -23,6 +24,7 @@ import {
   IconClockCircularOutline,
 } from '@edulastic/icons'
 import { testItemsApi, testsApi } from '@edulastic/api'
+import { useLanguageFeatureQn } from '@edulastic/constants/const/questionType'
 import { EDIT } from '../../constants/constantsForQuestions'
 import {
   setEditingItemIdAction,
@@ -55,6 +57,7 @@ import {
   getCollectionsSelector,
   getWritableCollectionsSelector,
   getCurrentTerm,
+  allowedToSelectMultiLanguageInTest,
 } from '../../../author/src/selectors/user'
 
 import {
@@ -66,6 +69,9 @@ import Hints from '../Hints/index'
 import RegradeProgressModal from '../../../author/Regrade/RegradeProgressModal'
 import { getRegradeFirebaseDocIdSelector } from '../../../author/TestPage/ducks'
 import RegradeListenerLcb from '../../../author/Regrade/RegradeListenerLcb'
+import LanguageSelectorTab from '../../../common/components/LanguageSelectorTab'
+import { getCurrentLanguage } from '../../../common/components/LanguageSelectorTab/duck'
+import { changeDataToPreferredLanguage } from '../../utils/question'
 
 export const ShowUserWork = ({ onClick, loading }) => (
   <EduButton
@@ -142,6 +148,8 @@ const QuestionBottomAction = ({
   reloadLcbDataInStudentView,
   hideCorrectAnswer,
   isGradedExternally,
+  allowedToSelectMultiLanguage,
+  currentLanguage,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -491,6 +499,14 @@ const QuestionBottomAction = ({
             onCancel={onCloseQuestionModal}
             maskClosable={false}
           >
+            <EduIf
+              condition={
+                allowedToSelectMultiLanguage &&
+                useLanguageFeatureQn.includes(item.type)
+              }
+            >
+              <LanguageSelectorTab isEditView={false} isLCB />
+            </EduIf>
             <ScrollContext.Provider
               value={{
                 getScrollElement: () =>
@@ -502,7 +518,11 @@ const QuestionBottomAction = ({
                   <QuestionComp
                     {...questionProps}
                     t={t}
-                    item={questionData}
+                    item={changeDataToPreferredLanguage(
+                      questionData,
+                      currentLanguage,
+                      EDIT
+                    )}
                     view={EDIT}
                     disableResponse={false}
                   />
@@ -607,6 +627,8 @@ const enhance = compose(
         `[studentReport][testActivity][releaseScore]`,
         null
       ),
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      currentLanguage: getCurrentLanguage(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

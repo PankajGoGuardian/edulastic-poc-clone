@@ -25,7 +25,7 @@ export const INITIAL_FILTERS = {
 
 export const PAGE_DETAIL = {
   studentPage: 1,
-  studentPageSize: 50,
+  studentPageSize: 100,
   assignmentPage: 1,
   assignmentPageSize: 10,
 }
@@ -179,6 +179,7 @@ const getCuratedTestActivity = (taGroup) => {
       redirect,
       isAssigned,
       isEnrolled,
+      _id: testActivityId,
     } = ta
     const laDate = endDate || startDate || 0
     if (status === testActivityStatus.START) {
@@ -194,6 +195,9 @@ const getCuratedTestActivity = (taGroup) => {
         status: 'NOT STARTED',
         percentScore: ' ',
         redirect,
+        testActivityId,
+        isEnrolled,
+        isAssigned,
       }
     }
     if (status === testActivityStatus.SUBMITTED) {
@@ -204,6 +208,9 @@ const getCuratedTestActivity = (taGroup) => {
         score,
         maxScore,
         redirect,
+        testActivityId,
+        isEnrolled,
+        isAssigned,
       }
     }
     if (status === testActivityStatus.ABSENT) {
@@ -214,6 +221,9 @@ const getCuratedTestActivity = (taGroup) => {
         score,
         maxScore,
         redirect,
+        testActivityId,
+        isEnrolled,
+        isAssigned,
       }
     }
     return null

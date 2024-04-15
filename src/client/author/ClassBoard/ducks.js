@@ -43,6 +43,7 @@ import {
   DISTRICT_ADMIN,
   SCHOOL_ADMIN,
 } from '@edulastic/constants/const/roleType'
+import { gradingStatus } from '@edulastic/constants/const/testActivity'
 import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
@@ -1613,6 +1614,16 @@ export const notStartedStudentsSelector = createSelector(
         x.isAssigned &&
         x.isEnrolled
     )
+)
+
+export const notGradedStudentsCountSelector = createSelector(
+  getTestActivitySelector,
+  (state) =>
+    state.filter(
+      (x) =>
+        x.UTASTATUS === testActivityStatus.SUBMITTED &&
+        x.graded === gradingStatus.IN_GRADING
+    ).length
 )
 
 export const inProgressStudentsSelector = createSelector(

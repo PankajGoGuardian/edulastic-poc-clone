@@ -5,6 +5,7 @@ import { debounce } from 'lodash'
 // components & constants
 import { roleuser, assignmentStatusOptions } from '@edulastic/constants'
 import { IconClose } from '@edulastic/icons'
+import { reportNavType } from '@edulastic/constants/const/report'
 import MultiSelectSearch from '../widgets/MultiSelectSearch'
 // ducks
 import {
@@ -19,7 +20,7 @@ import {
 } from '../../../ducks'
 import { shortTestIdKeyLength } from '../../../../Assignments/constants'
 
-const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
+const { IN_PROGRESS, IN_GRADING, DONE, NOT_OPEN } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = {
   text: '',
   selectedText: '',
@@ -44,6 +45,7 @@ const AssessmentAutoComplete = ({
   institutionIds,
   loc,
 }) => {
+  const isCompletionReport = loc === reportNavType.COMPLETION_REPORT
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
 
@@ -58,13 +60,17 @@ const AssessmentAutoComplete = ({
   // build search query
   const query = useMemo(() => {
     const { role } = userDetails
+    const defaultStatus = [IN_PROGRESS, IN_GRADING, DONE]
+    const statuses = isCompletionReport
+      ? [...defaultStatus, NOT_OPEN]
+      : defaultStatus
     const q = {
       limit: 35,
       page: 1,
       search: {
         searchString:
           searchTerms.selectedText === searchTerms.text ? '' : searchTerms.text,
-        statuses: [IN_PROGRESS, IN_GRADING, DONE],
+        statuses,
         districtId,
       },
       aggregate: true,
@@ -150,7 +156,7 @@ const AssessmentAutoComplete = ({
     })
   }, [testList])
 
-  const suffixIcon = loc === 'completion-report' && (
+  const suffixIcon = isCompletionReport && (
     <IconClose height={10} width={10} cursor="pointer" onClick={onClear} />
   )
 

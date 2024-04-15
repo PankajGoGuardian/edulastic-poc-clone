@@ -1,4 +1,10 @@
-import { CustomModalStyled, EduElse, EduIf, EduThen } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  EduElse,
+  EduIf,
+  EduThen,
+  FlexContainer,
+} from '@edulastic/common'
 import React, { useMemo } from 'react'
 import { groupBy } from 'lodash'
 import { connect } from 'react-redux'
@@ -17,6 +23,7 @@ import {
   TitleCopy,
 } from './styled'
 import { TUTOR_ME_APP_URL } from '../constants'
+import ViewProgressLink from './ViewProgressLink'
 
 const History = ({ intervention }) => {
   const {
@@ -72,7 +79,7 @@ const TutorDetails = ({
       visible={open}
       onCancel={closePopup}
       borderRadius="20px"
-      modalWidth="450px"
+      modalWidth="650px"
       padding="20px 30px"
       bodyPadding="8px 0"
       footer={null}
@@ -94,11 +101,17 @@ const TutorDetails = ({
               {fiveLatestInterventions.map((intervention) => (
                 <CustomRow>
                   <History intervention={intervention} />
-                  <TitleCopy
-                    copyable={{
-                      text: intervention.tutoringLink ?? TUTOR_ME_APP_URL,
-                    }}
-                  />
+                  <FlexContainer
+                    justifyContent="flex-start"
+                    alignItems="flex-start"
+                  >
+                    <TitleCopy
+                      copyable={{
+                        text: intervention.tutoringLink ?? TUTOR_ME_APP_URL,
+                      }}
+                    />
+                    <ViewProgressLink data={intervention} />
+                  </FlexContainer>
                 </CustomRow>
               ))}
             </RowsWrap>

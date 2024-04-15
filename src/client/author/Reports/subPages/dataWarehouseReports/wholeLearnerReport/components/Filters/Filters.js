@@ -9,7 +9,10 @@ import { FieldLabel, notification } from '@edulastic/common'
 import { withNamespaces } from 'react-i18next'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { reportNavType } from '@edulastic/constants/const/report'
+import {
+  reportNavType,
+  reportGroupType,
+} from '@edulastic/constants/const/report'
 
 import { TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import {
@@ -183,7 +186,7 @@ const WholeLearnerReportFilters = ({
     }
     if (reportId) {
       Object.assign(q, { reportId })
-    } else if (urlStudentId && (search.termId || search.subActiveKey)) {
+    } else if (search.termId || search.subActiveKey) {
       Object.assign(q, {
         termId: search.termId || defaultTermId,
         studentId: urlStudentId,
@@ -193,7 +196,6 @@ const WholeLearnerReportFilters = ({
   }, [])
 
   useFiltersFromUrl({
-    location,
     termOptions,
     search,
     staticDropDownData,
@@ -203,12 +205,8 @@ const WholeLearnerReportFilters = ({
     setFilters,
     filterTagsData,
     setFilterTagsData,
-    setShowApply,
-    toggleFilter,
-    setFirstLoad,
     setStudent,
     urlStudentId,
-    _onGoClick,
   })
 
   if (filtersData !== prevFiltersData && !isEmpty(filtersData)) {
@@ -229,8 +227,7 @@ const WholeLearnerReportFilters = ({
         selectedFilterTagsData: { ...filterTagsData },
       })
       setShowApply(false)
-      setFirstLoad(false)
-    } else if (firstLoad && !reportId && filters.termId && urlStudentId) {
+    } else if (firstLoad && !reportId && filters.termId) {
       const defaultTestTypes = getDefaultTestTypesForUser(
         requiredTestTypes,
         userRole
@@ -254,23 +251,27 @@ const WholeLearnerReportFilters = ({
       setFilters({ ..._filters })
       setFilterTagsData({ ..._filterTagsData })
 
-      _onGoClick({
-        filters: { ..._filters },
-        selectedStudent: _student,
-        selectedFilterTagsData: { ..._filterTagsData },
-      })
-      // TODO: add mapping and support to enable this feature
-      fetchUpdateTagsData({
-        schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-        courseIds: reject(_filters.courseIds?.split(','), isEmpty),
-        classIds: reject(_filters.classIds?.split(','), isEmpty),
-        options: {
-          termId: _filters.termId,
-        },
-      })
-
-      setFirstLoad(false)
+      if (location.state?.source === reportGroupType.DATA_WAREHOUSE_REPORT) {
+        setShowApply(true)
+        toggleFilter(null, true)
+      } else {
+        _onGoClick({
+          filters: { ..._filters },
+          selectedStudent: _student,
+          selectedFilterTagsData: { ..._filterTagsData },
+        })
+        // TODO: add mapping and support to enable this feature
+        fetchUpdateTagsData({
+          schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+          courseIds: reject(_filters.courseIds?.split(','), isEmpty),
+          classIds: reject(_filters.classIds?.split(','), isEmpty),
+          options: {
+            termId: _filters.termId,
+          },
+        })
+      }
     }
+    setFirstLoad(false)
     setPrevFiltersData(filtersData)
   }
 
@@ -796,6 +797,7 @@ const WholeLearnerReportFilters = ({
               data={performanceBandsList}
               prefix="Performance Band"
               showPrefixOnSelected={false}
+              placeholder="Performance Band"
             />
           </StyledDropDownContainer>
           {filters.showApply && (

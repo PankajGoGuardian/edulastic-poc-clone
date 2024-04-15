@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 // components
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Table, Col } from 'antd'
+import { Table, Col, Spin } from 'antd'
 import { Button } from '@edulastic/common'
 import { IconGraphRightArrow as Arrow } from '@edulastic/icons'
 
@@ -76,6 +76,18 @@ export const LeftArrow = styled(Arrow)`
   position: fixed;
   top: 50%;
   cursor: pointer;
+  background: ${themeColor};
+  stroke: ${white};
+  fill: ${white};
+  padding: 7px;
+  border-radius: 29px;
+  width: 29px;
+  height: 29px;
+  z-index: 1;
+  :hover {
+    stroke: ${white};
+    fill: ${white};
+  }
 `
 
 export const RightArrow = styled(Arrow)`
@@ -84,9 +96,21 @@ export const RightArrow = styled(Arrow)`
   right: 15px;
   top: 50%;
   cursor: pointer;
+  background: ${themeColor};
+  stroke: ${white};
+  fill: ${white};
+  padding: 7px;
+  border-radius: 29px;
+  width: 29px;
+  height: 29px;
+  :hover {
+    stroke: ${white};
+    fill: ${white};
+  }
 `
 
 export const TableContainer = styled.div`
+  position: relative;
   max-height: 100%;
   width: ${(props) => (props.showFilter ? 'calc(100% - 240px)' : '100%')};
   padding-left: ${(props) => (props.showFilter ? '40px' : '20px')};
@@ -293,7 +317,7 @@ export const StyledTable = styled(Table)`
                 }
               `
                   : `
-                td:nth-child(n + 5) {
+                td:nth-child(n + 4) {
                   padding: 5px 0 0 0;
                 }
               `}
@@ -399,4 +423,13 @@ export const GroupItemLabel = styled.span`
   max-width: 80%;
   text-transform: uppercase;
   color: ${greyThemeDark1};
+`
+
+export const TableInnerSpin = styled(Spin)`
+  &.ant-spin {
+    position: absolute;
+    z-index: 2;
+    left: 60%;
+    top: 45%;
+  }
 `

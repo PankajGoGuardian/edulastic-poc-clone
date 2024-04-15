@@ -493,108 +493,116 @@ const WholeLearnerReport = ({
       </SubHeader>
       <div>
         <EduIf condition={firstLoad}>
-          <Spin size="large" />
-        </EduIf>
-        <EduIf condition={isReportLoading}>
           <EduThen>
-            <SpinLoader
-              tip="Please wait while we gather the required information..."
-              position="fixed"
-            />
+            <Spin size="large" />
           </EduThen>
           <EduElse>
-            <EduIf condition={error && error.dataSizeExceeded}>
+            <EduIf condition={isReportLoading}>
               <EduThen>
-                <DataSizeExceeded />
+                <SpinLoader
+                  tip="Please wait while we gather the required information..."
+                  position="fixed"
+                />
               </EduThen>
               <EduElse>
-                <EduIf
-                  condition={isDataEmpty || !settings.selectedStudent?.key}
-                >
+                <EduIf condition={error && error.dataSizeExceeded}>
                   <EduThen>
-                    <NoDataContainer>{noDataText}</NoDataContainer>
+                    <DataSizeExceeded />
                   </EduThen>
                   <EduElse>
-                    <SectionLabel
-                      $margin="30px 0px 10px 0px"
-                      showHelp
-                      url={helpLinks[reportNavType.WHOLE_LEARNER_REPORT]}
-                      style={{ fontSize: '20px' }}
+                    <EduIf
+                      condition={isDataEmpty || !settings.selectedStudent?.key}
                     >
-                      Whole Learner
-                    </SectionLabel>
-                    <SectionDescription $margin="0px 0px 10px 0px">
-                      Get a complete understanding of a learner&apos;s academic
-                      and behavioral profiles and take necessary actions for the
-                      learner&apos;s growth.
-                    </SectionDescription>
-                    <FlexContainer
-                      justifyContent="right"
-                      marginBottom="20px"
-                      mr="10px"
-                    >
-                      <Legend
-                        payload={RISK_LEGEND_PAYLOAD}
-                        title={
-                          <StyledText fontSize="14px">
-                            PRIORITY (SCORE RANGE)
-                          </StyledText>
-                        }
-                        legendStyles={{
-                          fontSize: '14px',
-                          fontWeight: 600,
-                          gap: '10px',
-                        }}
-                      />
-                    </FlexContainer>
-                    <Summary
-                      studentInformation={settings.selectedStudentInformation}
-                      studentClassData={studentClassData}
-                      settings={settings}
-                      isMultiSchoolYear={isMultiSchoolYear}
-                      isDifferentSchoolYear={isDifferentSchoolYear}
-                    />
-                    <WLRDetails
-                      isPrinting={isPrinting}
-                      isAttendanceChartVisible={isAttendanceChartVisible}
-                      attendanceChartData={attendanceChartData}
-                      showInterventions={showInterventions}
-                      attendanceInterventions={attendanceInterventions}
-                      tableData={tableData}
-                      isSharedReport={isSharedReport}
-                      downloadCSV={downloadCSV}
-                      isCsvDownloading={isCsvDownloading}
-                      studentMasteryProfile={studentMasteryProfile}
-                      SPRFFilterData={SPRFFilterData}
-                      settings={settings}
-                      chartData={chartData}
-                      selectedPerformanceBand={selectedPerformanceBand}
-                      academicInterventions={academicInterventions}
-                      history={history}
-                      location={location}
-                      filtersData={filtersData}
-                      testTypes={testTypes}
-                      externalScoreType={externalScoreType}
-                      filters={filters}
-                      setFilters={setFilters}
-                      filterTagsData={filterTagsData}
-                      setFilterTagsData={setFilterTagsData}
-                      setSettings={setSettings}
-                      toggleAttendanceChart={toggleAttendanceChart}
-                      interventionsData={interventionsData}
-                      toggleInterventionInfo={toggleInterventionInfo}
-                      fetchStudentsMasteryDataRequest={
-                        fetchStudentsMasteryDataRequest
-                      }
-                      isMultiSchoolYear={isMultiSchoolYear}
-                      selectedMasteryScale={selectedMasteryScale}
-                      setSelectedMasteryScale={setSelectedMasteryScale}
-                      loadingMasteryData={loadingMasteryData}
-                      tutorMeInterventionsData={tutorMeInterventionsData}
-                      tutorMeInterventionsLoading={tutorMeInterventionsLoading}
-                      tutorMeInterventionsError={tutorMeInterventionsError}
-                      sharedReportFilters={sharedReportFilters}
-                    />
+                      <EduThen>
+                        <NoDataContainer>{noDataText}</NoDataContainer>
+                      </EduThen>
+                      <EduElse>
+                        <SectionLabel
+                          $margin="30px 0px 10px 0px"
+                          showHelp
+                          url={helpLinks[reportNavType.WHOLE_LEARNER_REPORT]}
+                          style={{ fontSize: '20px' }}
+                        >
+                          Whole Learner
+                        </SectionLabel>
+                        <SectionDescription $margin="0px 0px 10px 0px">
+                          Get a complete understanding of a learner&apos;s
+                          academic and behavioral profiles and take necessary
+                          actions for the learner&apos;s growth.
+                        </SectionDescription>
+                        <FlexContainer
+                          justifyContent="right"
+                          marginBottom="20px"
+                          mr="10px"
+                        >
+                          <Legend
+                            payload={RISK_LEGEND_PAYLOAD}
+                            title={
+                              <StyledText fontSize="14px">
+                                PRIORITY (SCORE RANGE)
+                              </StyledText>
+                            }
+                            legendStyles={{
+                              fontSize: '14px',
+                              fontWeight: 600,
+                              gap: '10px',
+                            }}
+                          />
+                        </FlexContainer>
+                        <Summary
+                          studentInformation={
+                            settings.selectedStudentInformation
+                          }
+                          studentClassData={studentClassData}
+                          settings={settings}
+                          isMultiSchoolYear={isMultiSchoolYear}
+                          isDifferentSchoolYear={isDifferentSchoolYear}
+                        />
+                        <WLRDetails
+                          isPrinting={isPrinting}
+                          isAttendanceChartVisible={isAttendanceChartVisible}
+                          attendanceChartData={attendanceChartData}
+                          showInterventions={showInterventions}
+                          attendanceInterventions={attendanceInterventions}
+                          tableData={tableData}
+                          isSharedReport={isSharedReport}
+                          downloadCSV={downloadCSV}
+                          isCsvDownloading={isCsvDownloading}
+                          studentMasteryProfile={studentMasteryProfile}
+                          SPRFFilterData={SPRFFilterData}
+                          settings={settings}
+                          chartData={chartData}
+                          selectedPerformanceBand={selectedPerformanceBand}
+                          academicInterventions={academicInterventions}
+                          history={history}
+                          location={location}
+                          filtersData={filtersData}
+                          testTypes={testTypes}
+                          externalScoreType={externalScoreType}
+                          filters={filters}
+                          setFilters={setFilters}
+                          filterTagsData={filterTagsData}
+                          setFilterTagsData={setFilterTagsData}
+                          setSettings={setSettings}
+                          toggleAttendanceChart={toggleAttendanceChart}
+                          interventionsData={interventionsData}
+                          toggleInterventionInfo={toggleInterventionInfo}
+                          fetchStudentsMasteryDataRequest={
+                            fetchStudentsMasteryDataRequest
+                          }
+                          isMultiSchoolYear={isMultiSchoolYear}
+                          selectedMasteryScale={selectedMasteryScale}
+                          setSelectedMasteryScale={setSelectedMasteryScale}
+                          loadingMasteryData={loadingMasteryData}
+                          tutorMeInterventionsData={tutorMeInterventionsData}
+                          tutorMeInterventionsLoading={
+                            tutorMeInterventionsLoading
+                          }
+                          tutorMeInterventionsError={tutorMeInterventionsError}
+                          sharedReportFilters={sharedReportFilters}
+                        />
+                      </EduElse>
+                    </EduIf>
                   </EduElse>
                 </EduIf>
               </EduElse>

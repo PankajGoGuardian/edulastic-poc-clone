@@ -62,6 +62,7 @@ import {
   getAdditionalDataSelector,
   getAssignedBySelector,
   getTestDataSelector,
+  notGradedStudentsCountSelector,
 } from '../../../ClassBoard/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import {
@@ -119,6 +120,7 @@ import { allowedSettingPageToDisplay } from './utils/transformers'
 import { slice } from '../../../LCBAssignmentSettings/ducks'
 import PremiumPopover from '../../../../features/components/PremiumPopover'
 import { shortTestIdKeyLength } from '../../../Assignments/constants'
+import MarkAsDoneConfirmationModal from './MarkAsDoneConfirmationModal'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -147,6 +149,7 @@ class ClassHeader extends Component {
       actionsVisible: false,
       premiumPopup: null,
       copied: false,
+      isGradingSkipModalVisible: false,
     }
     this.inputRef = React.createRef()
   }
@@ -214,14 +217,28 @@ class ClassHeader extends Component {
     toggleReleaseGradePopUp(false)
   }
 
-  handleMarkAsDone = () => {
+  handleMarkAsDone = (preventMarkingNotGradedStudentsAsSkipped = true) => {
     const {
       setMarkAsDone,
       match,
-      additionalData: { testId },
+      additionalData: { testId, answerOnPaper },
+      notGradedStudentsCount,
     } = this.props
+    if (
+      preventMarkingNotGradedStudentsAsSkipped &&
+      answerOnPaper &&
+      notGradedStudentsCount > 0
+    ) {
+      this.setState({ isGradingSkipModalVisible: true })
+      return
+    }
+    this.setState({ isGradingSkipModalVisible: false })
     const { classId, assignmentId } = match.params
     setMarkAsDone(assignmentId, classId, testId)
+  }
+
+  closeGradingSkipCountModal = () => {
+    this.setState({ isGradingSkipModalVisible: false })
   }
 
   handleOpenAssignment = () => {
@@ -487,6 +504,7 @@ class ClassHeader extends Component {
       userRole,
       assignedBy,
       testData,
+      notGradedStudentsCount,
     } = this.props
     const {
       visible,
@@ -496,6 +514,7 @@ class ClassHeader extends Component {
       actionsVisible,
       premiumPopup,
       copied,
+      isGradingSkipModalVisible,
     } = this.state
     const forceActionsVisible = !!premiumPopup
     const {
@@ -709,7 +728,9 @@ class ClassHeader extends Component {
             key="key1"
             onClick={this.handleMarkAsDone}
             disabled={
-              !enableMarkAsDone || assignmentStatus.toLowerCase() === 'done'
+              !enableMarkAsDone ||
+              assignmentStatus.toLowerCase() === 'done' ||
+              isActivityLoading
             }
           >
             Mark as Done
@@ -1136,6 +1157,12 @@ class ClassHeader extends Component {
                   <FontAwesomeIcon icon={faEllipsisV} />
                 </EduButton>
               </Dropdown>
+              <MarkAsDoneConfirmationModal
+                visible={isGradingSkipModalVisible}
+                notGradedStudentsCount={notGradedStudentsCount}
+                onCancel={this.closeGradingSkipCountModal}
+                onMarkAsDone={() => this.handleMarkAsDone(false)}
+              />
               <StyledDiv>
                 <StyledPopconfirm
                   visible={visible}
@@ -1277,6 +1304,7 @@ const enhance = compose(
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       notStartedStudents: notStartedStudentsSelector(state),
       inProgressStudents: inProgressStudentsSelector(state),
+      notGradedStudentsCount: notGradedStudentsCountSelector(state),
       isItemsVisible: isItemVisibiltySelector(state),
       classesList: classListSelector(state),
       passwordPolicy: getPasswordPolicySelector(state),

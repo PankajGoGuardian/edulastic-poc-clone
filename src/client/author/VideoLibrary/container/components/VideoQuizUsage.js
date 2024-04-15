@@ -66,11 +66,14 @@ const VideoQuizUsage = ({
           width={18}
           trailColor={trailColor}
         />
-        <VideoQuizUsageText>{`${vqUsageCount}/${Math.max(
+        <VideoQuizUsageText data-cy="vqUsageCount">{`${vqUsageCount}/${Math.max(
           vqUsageCount,
           vqQuotaForDistrict
         )} Free Quizzes Used`}</VideoQuizUsageText>
-        <InfoIconWrapper onClick={() => setIsModalOpen(true)}>
+        <InfoIconWrapper
+          onClick={() => setIsModalOpen(true)}
+          data-cy="vqInfoIcon"
+        >
           <IconInfoCircle />
         </InfoIconWrapper>
         <CustomModalStyled
@@ -87,7 +90,11 @@ const VideoQuizUsage = ({
             </UpgradeAiSuitText>
             <FlexContainer justifyContent="flex-start">
               <IconVQTextCheck margin="3px 0 0 0" />
-              <UpgradeAiSuitText paddingBottom="16px" ml="5px">
+              <UpgradeAiSuitText
+                paddingBottom="16px"
+                ml="5px"
+                data-cy="vqQuotaForDistrict"
+              >
                 {vqQuotaForDistrict} Free Video Quizzes Included
               </UpgradeAiSuitText>
             </FlexContainer>
@@ -99,7 +106,7 @@ const VideoQuizUsage = ({
                 height="58px"
                 flexDirection="column"
               >
-                <UpgradeAiSuitTitle>
+                <UpgradeAiSuitTitle data-cy="upgradeAiSuitTitle">
                   Upgrade to Premium Suite
                   <DollarSymbolWrapper>
                     <IconStar />
@@ -108,12 +115,18 @@ const VideoQuizUsage = ({
                 {VQ_UPGRADE_MESSAGE_LIST.map((message, index) => (
                   <FlexContainer justifyContent="flex-start" key={index}>
                     <IconVQTextCheck margin="3px 0 0 0" />
-                    <UpgradeAiSuitText ml="5px">{message}</UpgradeAiSuitText>
+                    <UpgradeAiSuitText ml="5px" data-cy="upgradeAiSuitText">
+                      {message}
+                    </UpgradeAiSuitText>
                   </FlexContainer>
                 ))}
               </FlexContainer>
               <FlexContainer alignItems="center">
-                <UpgradeAiSuitButton isGhost onClick={goToAddOnsPage}>
+                <UpgradeAiSuitButton
+                  isGhost
+                  onClick={goToAddOnsPage}
+                  data-cy="videoQuizUpgradeButton"
+                >
                   Upgrade
                 </UpgradeAiSuitButton>
               </FlexContainer>

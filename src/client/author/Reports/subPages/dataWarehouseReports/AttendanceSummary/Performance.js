@@ -73,7 +73,7 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
               performanceBandProfileId: search.profileId,
             })
             url = new URL(
-              `${window.location.origin}${DW_WLR_REPORT_URL}${record.dimension._id}?${search}`
+              `${window.location.origin}${DW_WLR_REPORT_URL}${record.dimension._id}${search}`
             )
           } else {
             const filterField = compareByKeysToFilterKeys[compareBy]

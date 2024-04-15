@@ -176,6 +176,12 @@ import {
 } from '../../../utils/videoQuiz'
 import { getUserAccommodations } from '../../../../student/Login/ducks'
 import { checkInvalidTestTitle } from '../../../utils/tests'
+import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
+import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import {
+  resetStudentAttemptAction,
+  setIsTestPreviewVisibleAction,
+} from '../../../../assessment/actions/test'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -436,6 +442,7 @@ class Container extends PureComponent {
       setEditEnable,
       setTestSettingsList,
       isDynamicTest,
+      getItemsSubjectAndGrade,
     } = this.props
     // reset test data when it's a saved test or dynamic test in creation
     if (match.params.id || isDynamicTest) {
@@ -445,6 +452,10 @@ class Container extends PureComponent {
     setEditEnable(false)
     resetPageState()
     setTestSettingsList([])
+    getItemsSubjectAndGrade({
+      subjects: [],
+      grades: [],
+    })
   }
 
   componentDidUpdate(prevProps) {
@@ -1524,7 +1535,11 @@ class Container extends PureComponent {
       }
       // for VQ or docbased test call handleDocBasedSave method so that testItem is also updated along with the test
       if (test.isDocBased) {
-        this.handleDocBasedSave()
+        this.handleDocBasedSave({
+          currentTab,
+          nextLocation,
+          nextAction,
+        })
         return
       }
       updateTest(test._id, { ...newTest, currentTab, nextLocation, nextAction })
@@ -1533,7 +1548,11 @@ class Container extends PureComponent {
     }
   }
 
-  handleDocBasedSave = async () => {
+  handleDocBasedSave = async ({
+    currentTab,
+    nextLocation,
+    nextAction,
+  } = {}) => {
     const {
       questions: assessmentQuestions,
       test,
@@ -1548,7 +1567,11 @@ class Container extends PureComponent {
     ) {
       return
     }
-    updateDocBasedTest(test._id, test, true)
+    updateDocBasedTest(
+      test._id,
+      { ...test, currentTab, nextLocation, nextAction },
+      true
+    )
   }
 
   validateTest = (test, toBeResumedTestAction = null) => {
@@ -1959,6 +1982,9 @@ class Container extends PureComponent {
       history,
       isRedirectToVQAddOn,
       isTestTypeWithDefaultTestTitle,
+      isPreviewModalVisible,
+      setIsTestPreviewVisible,
+      resetStudentAttempt,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -1984,6 +2010,7 @@ class Container extends PureComponent {
       isDocBased,
       versionId,
       derivedFromPremiumBankId = false,
+      videoUrl,
     } = test
     const hasCollectionAccess = allowContentEditCheck(
       test.collections,
@@ -2130,6 +2157,22 @@ class Container extends PureComponent {
             history={history}
             isClosable={false}
             stayOnSamePage={false}
+          />
+        </EduIf>
+
+        <EduIf condition={!!videoUrl?.length}>
+          <TestPreviewModal
+            isModalVisible={isPreviewModalVisible}
+            testId={testId}
+            closeTestPreviewModal={() => {
+              resetStudentAttempt()
+              setIsTestPreviewVisible(false)
+            }}
+            resetOnClose={() => {
+              resetStudentAttempt()
+              setIsTestPreviewVisible(false)
+            }}
+            unmountOnClose
           />
         </EduIf>
 
@@ -2315,6 +2358,7 @@ const enhance = compose(
       isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
       accommodations: getUserAccommodations(state),
       isVideoQuiz: isVideoQuizSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       authorQuestionStatus: getAuthorQuestionStatus(state),
     }),
     {
@@ -2352,6 +2396,8 @@ const enhance = compose(
       fetchTestSettingsList: fetchTestSettingsListAction,
       setTestSettingsList: setTestSettingsListAction,
       setCurrentGroupIndexInStore: setCurrentGroupIndexAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      resetStudentAttempt: resetStudentAttemptAction,
     }
   )
 )

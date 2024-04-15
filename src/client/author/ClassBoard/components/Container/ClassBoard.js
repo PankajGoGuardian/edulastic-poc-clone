@@ -1983,6 +1983,17 @@ class ClassBoard extends Component {
                         </div>
                       </Tooltip>
                     </EduIf>
+                    <AssignVideoQuizBanner
+                      showBanner={showVideoQuizBanner}
+                      clickedFrom="LCB"
+                      user={user}
+                      history={history}
+                      style={{
+                        height: '33px',
+                        marginTop: '-9px',
+                        marginRight: '-31px',
+                      }}
+                    />
                     <EduIf condition={process.env.NODE_ENV === 'development'}>
                       <Tooltip
                         placement="top"

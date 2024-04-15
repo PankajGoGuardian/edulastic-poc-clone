@@ -1,7 +1,7 @@
 import React, { useRef, useMemo, useEffect } from 'react'
 import next from 'immer'
 import { IconEye } from '@edulastic/icons'
-import { greyThemeDark4, themeColor } from '@edulastic/colors'
+import { themeColor } from '@edulastic/colors'
 import {
   tableToDBSortOrderMap,
   downloadCSV,
@@ -52,7 +52,7 @@ const getTableColumns = (isSharedReport, settings, staticColumns) => {
             },
             reportUrl: window.location.pathname,
           })
-      if ([SCHOOL, TEACHER].includes(compareBy.key)) {
+      if ([SCHOOL, TEACHER].includes(compareBy.key) && !isSharedReport) {
         return (
           <LinkCell
             value={{ _id: record.dimensionId, name: record.dimensionName }}
@@ -115,6 +115,7 @@ const CompletionReportTable = ({
     submitted: tableData?.[0]?.totalSubmitted || 0,
     absent: tableData?.[0]?.totalAbsent || 0,
     notStarted: tableData?.[0]?.totalNotStarted || 0,
+    notOpen: tableData?.[0]?.totalNotOpen || 0,
     graded: tableData?.[0]?.totalGraded || 0,
     dimensionName: '',
     dimensionId: '',
@@ -154,13 +155,7 @@ const CompletionReportTable = ({
         return testName !== 'Overall' && !isSharedReport ? (
           <LinkCell value={{ _id: record.testId, name: testName }} url={path} />
         ) : (
-          <p
-            style={{
-              color: testName === 'Overall' ? greyThemeDark4 : themeColor,
-            }}
-          >
-            {testName}
-          </p>
+          <EllipsisTextWithTooltip toolTipMsg={testName} text={testName} />
         )
       },
     },
@@ -181,6 +176,26 @@ const CompletionReportTable = ({
           index={index}
         >
           {value}
+        </StatusCsvDownload>
+      ),
+    },
+    {
+      title: 'Not open',
+      dataIndex: 'notOpen',
+      key: 'notOpen',
+      sorter: !isAnalyseByPercent,
+      className: 'absent',
+      align: 'center',
+      render: (value, record, index) => (
+        <StatusCsvDownload
+          record={record}
+          handleDownloadCsv={handleDownloadCsv}
+          csvDownloadLoadingState={csvDownloadLoadingState}
+          progressStatus={utastatus.NOT_OPEN}
+          progressName={sortKey.NOT_OPEN}
+          index={index}
+        >
+          {getCellValue(value, record?.assigned)}
         </StatusCsvDownload>
       ),
     },
@@ -286,6 +301,10 @@ const CompletionReportTable = ({
       key: 'performance',
       align: 'center',
       render: (text, record) => {
+        const linkProps = {
+          target: '_blank',
+          rel: 'opener',
+        }
         const reportPath =
           record.testName === 'Overall'
             ? 'performance-over-time'
@@ -299,7 +318,7 @@ const CompletionReportTable = ({
               settings?.requestFilters,
               compareBy
             )}`}
-            target="_blank"
+            {...linkProps}
           >
             <IconEye color={themeColor} width={18} height={18} />
           </Link>

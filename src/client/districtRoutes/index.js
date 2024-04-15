@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { lazy } from '@loadable/component'
 import { connect } from 'react-redux'
+import Helmet from 'react-helmet'
 import { compose } from 'redux'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { get } from 'lodash'
@@ -52,6 +53,9 @@ const DistrictRoutes = ({
 
   return (
     <>
+      <Helmet>
+        <meta name="robots" content="noindex" />
+      </Helmet>
       {districtUrlLoading || schoologyAssignmentRedirectUrl ? (
         'Loading Please Wait...'
       ) : (

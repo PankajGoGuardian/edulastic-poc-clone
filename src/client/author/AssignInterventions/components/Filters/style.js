@@ -53,6 +53,7 @@ export const StudentInfoContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
+  max-width: 330px;
 
   @media (min-width: 1400px) {
     padding-top: 11px;
@@ -62,7 +63,7 @@ export const StudentInfoContainer = styled.div`
 export const StudentInfoElement = styled.div`
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipses;
+  text-overflow: ellipsis;
   text-transform: capitalize;
 `
 

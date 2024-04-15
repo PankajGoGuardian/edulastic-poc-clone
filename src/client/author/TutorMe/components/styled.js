@@ -8,6 +8,7 @@ import {
   black,
   greyThemeDark1,
 } from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
 
 const { Paragraph } = Typography
 
@@ -129,4 +130,14 @@ export const TutorMeNoLicensePopupDescription = styled.div`
   margin-bottom: 10px;
   font-size: 11px;
   color: ${greyThemeDark1};
+`
+
+export const ViewProgressLinkContainer = styled(FlexContainer)`
+  line-height: 35px;
+  font-size: 12px;
+  margin-left: 10px;
+  svg {
+    margin-top: 9px;
+    margin-right: 3px;
+  }
 `

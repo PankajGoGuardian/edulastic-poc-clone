@@ -2208,6 +2208,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     showSpeechToText: entity.showSpeechToText,
     showTextToSpeech: entity.showTextToSpeech,
     vqPreventSkipping: entity.vqPreventSkipping,
+    vqEnableClosedCaption: entity.vqEnableClosedCaption,
   }
 
   if (entity.safeBrowser) {

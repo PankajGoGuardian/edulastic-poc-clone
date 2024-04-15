@@ -817,7 +817,7 @@ class Container extends Component {
     )
   }
 
-  renderEdit = () => {
+  renderEdit = ({ langaugeTabExist }) => {
     const { collapseDirection } = this.state
     const {
       rows,
@@ -869,6 +869,7 @@ class Container extends Component {
                 useTabsLeft={useTabsLeft}
                 onShowSettings={this.handleShowSettings}
                 containerType="passage"
+                langaugeTabExist={langaugeTabExist}
               />
             )}
             {rows.map((row, i) => (
@@ -1285,7 +1286,11 @@ class Container extends Component {
                 isEditView={view === EDIT && showQuestionManageModal}
               />
             )}
-            {view === 'edit' && this.renderEdit()}
+            {view === 'edit' &&
+              this.renderEdit({
+                langaugeTabExist:
+                  allowedToSelectMultiLanguage && showLanguageSelector,
+              })}
             {view === 'preview' && this.renderPreview()}
             {view === 'auditTrail' && this.renderAuditTrailLogs()}
           </ContentWrapper>

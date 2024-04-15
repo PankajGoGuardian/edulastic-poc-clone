@@ -36,7 +36,7 @@ const Footer = ({ selectedStudents, studentListWithStandards }) => {
         </EduButton>
         <CustomTableTooltip
           title={
-            selectedStudents.length != 1 ? (
+            selectedStudents.length > 1 ? (
               <TooltipContainer isLight>
                 <div>Tutoring can be assigned</div>
                 <div>to one student at a time</div>

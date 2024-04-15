@@ -16,6 +16,7 @@ import {
   uniq,
   isEmpty,
   get,
+  sortBy,
 } from 'lodash'
 import qs from 'qs'
 import next from 'immer'
@@ -756,13 +757,35 @@ export const getPerformanceBandsListByTestType = (
   return performanceBandsList
 }
 
-export const getGrades = (studInfo = []) =>
-  uniq(studInfo.flatMap((s = {}) => (s.grades ? s.grades.split(',') : [])))
-    .map((grade) => gradesMap[grade])
+// function to get latest grade (displayed in Student Details section) and remaining grades (displayed in tooltip)
+export const getGrades = (studInfo = []) => {
+  const uniqGrades = uniq(studInfo.flatMap((s) => s?.grades?.split(',') || []))
+  const [latestGrade, ...remainingGrades] = sortBy(
+    uniqGrades,
+    (grade) => gradesMap[grade].sortKey
+  )
+  const remainingGradesStr = remainingGrades
+    .map((grade) => gradesMap[grade].label)
     .join(', ')
+  return {
+    grade: {
+      key: latestGrade,
+      label: gradesMap[latestGrade]?.label,
+    },
+    gradesStr: remainingGradesStr,
+  }
+}
 
-export const getSchools = (studInfo = []) =>
-  uniq(studInfo.flatMap((s = {}) => s.schoolName || [])).join(', ')
+// function to get latest school (displayed in Student Details section) and remaining schools (displayed in tooltip)
+export const getSchools = (studInfo = [], latestGrade) => {
+  const latestSchool =
+    studInfo.find((s) => s.grades?.includes(latestGrade))?.schoolName || ''
+  const remainingSchools = studInfo
+    .filter((s) => s.schoolName !== latestSchool)
+    .map((s) => s.schoolName)
+  const schoolsStr = uniq(remainingSchools).join(', ')
+  return { schoolName: latestSchool, schoolsStr }
+}
 
 /**
  * Function to get error message

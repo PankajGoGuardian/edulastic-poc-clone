@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import moment from 'moment'
 
 // components
 import { Tooltip } from 'antd'
@@ -11,6 +10,7 @@ import { StyledTable, StyledTableCell } from '../styled'
 // constants
 import { STATUS_LIST } from '../../transformers'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 
 const GradebookTable = ({
   dataSource,
@@ -54,14 +54,6 @@ const GradebookTable = ({
           .toLowerCase()
           .localeCompare((b.className || '-').toLowerCase()),
     },
-    {
-      title: 'Last Activity Date',
-      dataIndex: 'laDate',
-      width: colWidth + 20,
-      render: (data) =>
-        data ? moment(data).format('MMM Do, YYYY h:mm A') : '-',
-      sorter: (a, b) => (a.laDate || 0) - (b.laDate || 0),
-    },
     ...assessments.map((ass) => ({
       title: ass.name,
       key: ass.id,
@@ -71,24 +63,51 @@ const GradebookTable = ({
         const { classId, assessments: assMap } = row
         // assignmentId might not be equal to assessmentId (ass.id)
         // due to grouping of assignments by report key & name (check "../transformers")
-        const { assignmentId, status, percentScore } = assMap[ass.id] || {}
+        const {
+          assignmentId,
+          status,
+          percentScore,
+          testActivityId,
+          isEnrolled,
+          isAssigned,
+        } = assMap[ass.id] || {}
         const color = STATUS_LIST.find((s) => s.id === status)?.color
         return assignmentId && classId && status !== 'UN ASSIGNED' ? (
-          <Link to={`/author/classBoard/${assignmentId}/${classId}`}>
-            <StyledTableCell color={color} data-cy="percentScore">
-              {percentScore || '-'}
-            </StyledTableCell>
-          </Link>
+          <EduIf condition={isEnrolled && isAssigned}>
+            <EduThen>
+              <Link
+                to={`/author/classBoard/${assignmentId}/${classId}/test-activity/${testActivityId}`}
+              >
+                <StyledTableCell color={color} data-cy="percentScore">
+                  {percentScore || '-'}
+                </StyledTableCell>
+              </Link>
+            </EduThen>
+            <EduElse>
+              <StyledTableCell color={color} data-cy="percentScore">
+                {percentScore || '-'}
+              </StyledTableCell>
+            </EduElse>
+          </EduIf>
         ) : (
           <StyledTableCell>
             {percentScore || '-'}
           </StyledTableCell>
         )
       },
-      sorter: (a, b) =>
-        (a.assessments[ass.id]?.percentScore || '-').localeCompare(
-          b.assessments[ass.id]?.percentScore || '-'
-        ),
+      sorter: (a, b) => {
+        const percentScoreAStr = a.assessments[ass.id]?.percentScore;
+        const percentScoreBStr = b.assessments[ass.id]?.percentScore;
+
+        // handle the case where no value is provided
+        if(!percentScoreAStr)return (percentScoreBStr ? -1 : 0);
+        if(!percentScoreBStr)return 1;
+
+        const percentScoreA = parseFloat(percentScoreAStr.substring(0, percentScoreAStr.length - 1) || '0');
+        const percentScoreB = parseFloat(percentScoreBStr.substring(0, percentScoreBStr.length - 1) || '0');
+
+        return percentScoreA - percentScoreB;
+      }
     })),
   ]
 

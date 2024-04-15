@@ -7,7 +7,9 @@ export const Content = styled(Paper)`
   left: 0;
   right: 0;
   width: 100%;
-  max-height: calc(100vh - 170px);
+  max-height: calc(
+    100vh - ${({ langaugeTabExist }) => (langaugeTabExist ? '210px' : '170px')}
+  );
   padding: ${(props) => (props.padding ? props.padding : '0px')};
   overflow: auto;
   position: relative;

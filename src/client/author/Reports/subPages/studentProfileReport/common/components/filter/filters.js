@@ -618,6 +618,7 @@ const StudentProfileReportFilters = ({
                 }
                 data={performanceBandsList}
                 prefix="Performance Band"
+                placeholder="Performance Band"
                 showPrefixOnSelected={false}
               />
             </StyledDropDownContainer>
@@ -641,6 +642,7 @@ const StudentProfileReportFilters = ({
                 }
                 data={standardProficiencyList}
                 prefix="Standard Proficiency"
+                placeholder="Standard Proficiency"
                 showPrefixOnSelected={false}
               />
             </StyledDropDownContainer>

@@ -902,6 +902,7 @@ class Setting extends Component {
       showTtsForPassages = true,
       allowAutoEssayEvaluation = false,
       vqPreventSkipping,
+      vqEnableClosedCaption,
       showSpeechToText,
     } = entity
 
@@ -1142,7 +1143,7 @@ class Setting extends Component {
       const hasAccommodationsData = accommodationsData.filter(
         (a) => a.isEnabled
       ).length
-      if (!hasAccommodationsData) {
+      if (isDocBased || !hasAccommodationsData) {
         return settingCategories.filter(
           (settingCategory) => settingCategory.id !== 'accommodations'
         )
@@ -1357,6 +1358,8 @@ class Setting extends Component {
                       </Body>
                     </Row>
                   </Block>
+                  {/* VQ prevent skipping */}
+
                   <EduIf
                     condition={
                       entity.testCategory === testCategoryTypes.VIDEO_BASED
@@ -1375,13 +1378,36 @@ class Setting extends Component {
                         />
                       </Title>
                       <Body smallSize={isSmallSize}>
-                        <Description>
+                        <Description data-cy="preventSkippingDescription">
                           If <b>ON</b>, Students won&apos;t be able to skip
                           ahead in a video.
                         </Description>
                       </Body>
                     </Block>
+                    {/* VQ prevent skipping */}
+
+                    {/* VQ enable cc */}
+                    <Block id="vq-enable-cc" smallSize={isSmallSize}>
+                      <Title>
+                        <span>Turn on closed captions</span>
+                        <EduSwitchStyled
+                          checked={vqEnableClosedCaption}
+                          data-cy="vqEnableClosedCaption"
+                          onChange={(v) =>
+                            this.updateTestData('vqEnableClosedCaption')(v)
+                          }
+                          disabled={disabled}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Description>
+                          Enable closed captions if available for YouTube
+                          videos.
+                        </Description>
+                      </Body>
+                    </Block>
                   </EduIf>
+
                   {COMMON.includes(testType) && (
                     <Block id="allow-redirect" smallSize={isSmallSize}>
                       <SettingContainer>
@@ -2111,7 +2137,10 @@ class Setting extends Component {
                 </>
               )}
               <EduIf
-                condition={accommodationsData.filter((a) => a.isEnabled).length}
+                condition={
+                  !isDocBased &&
+                  accommodationsData.filter((a) => a.isEnabled).length
+                }
               >
                 <SettingsCategoryBlock id="accommodations">
                   <span>

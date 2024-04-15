@@ -74,6 +74,7 @@ const ControlDropDown = ({
   buttonWidth,
   style,
   height = '32px',
+  placeholder = '',
 }) => {
   const [selected, setSelected] = useState(by)
   const [isActive, setActive] = useState(false)
@@ -127,7 +128,8 @@ const ControlDropDown = ({
         trigger={trigger}
       >
         <Button title={title}>
-          {(showPrefixOnSelected ? `${prefix} ` : '') + selected?.title}
+          {(showPrefixOnSelected ? `${prefix} ` : '') + selected?.title ||
+            placeholder}
           <Icon type={isActive ? 'up' : 'down'} />
         </Button>
       </Dropdown>

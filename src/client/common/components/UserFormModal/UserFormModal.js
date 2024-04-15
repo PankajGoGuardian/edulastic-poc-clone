@@ -124,6 +124,7 @@ class UserForm extends React.Component {
       buttonText,
       isStudentEdit,
       isPremium,
+      enableSpeechToText,
     } = this.props
     const dobValue = get(_source, 'dob')
     const contactEmails = get(_source, 'contactEmails')
@@ -174,7 +175,7 @@ class UserForm extends React.Component {
           <IconAccessibility style={{ fill: themeColor }} />
           <label>Configure Accommodations</label>
         </div>
-        <small>Set TTS, STT, IR acommodations</small>
+        <small>Set TTS, STT, IR at student level</small>
       </PanelHeader>
     )
 
@@ -517,6 +518,7 @@ class UserForm extends React.Component {
                   getFieldDecorator={getFieldDecorator}
                   std={_source}
                   foundUserContactEmails={contactEmails}
+                  enableSpeechToText={enableSpeechToText}
                 />
               </Panel>
             )}

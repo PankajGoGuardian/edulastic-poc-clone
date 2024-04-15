@@ -92,7 +92,7 @@ import {
   getSchoologyAssignmentSyncInProgress,
   getToggleReleaseGradeStateSelector,
   getToggleStudentReportCardStateSelector,
-  getShareWithGCInProgress,
+  getShareWithGCProgress,
 } from '../../../src/selectors/assignments'
 import {
   getGroupList,
@@ -485,7 +485,7 @@ class ClassHeader extends Component {
       canvasSyncGrades,
       googleSyncAssignment,
       syncWithGoogleClassroomInProgress,
-      shareWithGCInProgress,
+      shareWithGCProgress,
       isShowStudentReportCardSettingPopup,
       toggleStudentReportCardPopUp,
       userId,
@@ -608,6 +608,12 @@ class ClassHeader extends Component {
         userRole === roleuser.TEACHER &&
         testData?.freezeSettings
 
+    let googleAssignmentSyncTooltipText = 'Post to Google Classroom'
+    if(shareWithGCProgress==='started'){
+      googleAssignmentSyncTooltipText = 'Sharing in progress'
+    }else if(additionalData.googleId || shareWithGCProgress==='done'){
+      googleAssignmentSyncTooltipText = 'Shared to Google Classroom'
+    }
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
@@ -886,19 +892,17 @@ class ClassHeader extends Component {
               })
             }
             disabled={
-              syncWithGoogleClassroomInProgress || shareWithGCInProgress
+              ['done','started'].includes(shareWithGCProgress) || additionalData?.googleId
             }
           >
             <Tooltip
               title={
-                shareWithGCInProgress
-                  ? 'Syncing Assignment with Google Classroom'
-                  : null
+                googleAssignmentSyncTooltipText
               }
               placement="right"
               color={themeLightGrayBgColor}
             >
-              Sync with Google Classroom
+              Share to Google Classroom
             </Tooltip>
           </MenuItems>
         )}
@@ -1318,7 +1322,7 @@ const enhance = compose(
         state
       ),
       syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
-      shareWithGCInProgress: getShareWithGCInProgress(state),
+      shareWithGCProgress: getShareWithGCProgress(state),
       isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(
         state
       ),

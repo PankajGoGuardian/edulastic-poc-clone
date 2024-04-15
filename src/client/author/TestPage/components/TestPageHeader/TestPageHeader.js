@@ -799,7 +799,7 @@ const TestPageHeader = ({
                 title={
                   isDemoPlayground
                     ? 'This feature is not available in demo account.'
-                    : 'Duplicate Test'
+                    : 'Clone Test'
                 }
                 disabled={editEnable || disableButtons || isDemoPlayground}
                 data-cy="duplicate"

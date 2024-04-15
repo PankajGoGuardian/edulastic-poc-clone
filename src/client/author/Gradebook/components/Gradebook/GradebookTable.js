@@ -95,10 +95,19 @@ const GradebookTable = ({
           </StyledTableCell>
         )
       },
-      sorter: (a, b) =>
-        (a.assessments[ass.id]?.percentScore || '-').localeCompare(
-          b.assessments[ass.id]?.percentScore || '-'
-        ),
+      sorter: (a, b) => {
+        const percentScoreAStr = a.assessments[ass.id]?.percentScore;
+        const percentScoreBStr = b.assessments[ass.id]?.percentScore;
+
+        // handle the case where no value is provided
+        if(!percentScoreAStr)return (percentScoreBStr ? -1 : 0);
+        if(!percentScoreBStr)return 1;
+
+        const percentScoreA = parseFloat(percentScoreAStr.substring(0, percentScoreAStr.length - 1) || '0');
+        const percentScoreB = parseFloat(percentScoreBStr.substring(0, percentScoreBStr.length - 1) || '0');
+
+        return percentScoreA - percentScoreB;
+      }
     })),
   ]
 

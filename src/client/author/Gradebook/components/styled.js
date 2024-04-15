@@ -76,6 +76,18 @@ export const LeftArrow = styled(Arrow)`
   position: fixed;
   top: 50%;
   cursor: pointer;
+  background: ${themeColor};
+  stroke: ${white};
+  fill: ${white};
+  padding: 7px;
+  border-radius: 29px;
+  width: 29px;
+  height: 29px;
+  z-index: 1;
+  :hover {
+    stroke: ${white};
+    fill: ${white};
+  }
 `
 
 export const RightArrow = styled(Arrow)`
@@ -84,6 +96,17 @@ export const RightArrow = styled(Arrow)`
   right: 15px;
   top: 50%;
   cursor: pointer;
+  background: ${themeColor};
+  stroke: ${white};
+  fill: ${white};
+  padding: 7px;
+  border-radius: 29px;
+  width: 29px;
+  height: 29px;
+  :hover {
+    stroke: ${white};
+    fill: ${white};
+  }
 `
 
 export const TableContainer = styled.div`

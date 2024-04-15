@@ -57,7 +57,7 @@ export const getCompletionReportPathForAssignment = (
     })
   }
   if (testIds.includes('overall_tid')) {
-    testIds = 'All'
+    testIds = !filterSettings?.testIds ? 'All' : filterSettings?.testIds
   }
   q.testIds = testIds
   if (!isEmpty(compareBy)) {
@@ -65,7 +65,9 @@ export const getCompletionReportPathForAssignment = (
     q.selectedCompareBy = compareBy.key
     if (compareBy.key in compareByKeysToFilterKeys && row.length === 1) {
       q[compareByKeysToFilterKeys[compareBy.key]] =
-        row[0].testName === 'Overall' ? 'All' : row[0].dimensionId
+        row[0].testName === 'Overall'
+          ? filterSettings[compareByKeysToFilterKeys[compareBy.key]] || 'All'
+          : row[0].dimensionId
     }
   }
   return `?${qs.stringify(q)}`
@@ -316,6 +318,14 @@ const ActionMenu = ({
             <img alt="icon" src={completionReportIcon} />
             <SpaceElement />
             View Completion Report
+            <SpaceElement />
+            <EduIf condition={!isPremiumUser}>
+              <Tooltip title="Premium Feature" placement="bottom">
+                <div style={{ lineHeight: '100%' }}>
+                  <IconStar height="10px" />
+                </div>
+              </Tooltip>
+            </EduIf>
           </Link>
         </Menu.Item>
         <Menu.Item

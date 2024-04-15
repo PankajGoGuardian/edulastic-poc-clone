@@ -433,4 +433,5 @@ export const InfoMessage = styled(Tag)`
   align-items: center;
   padding: 4px 4px;
   vertical-align: middle;
+  margin-left: 10px;
 `

@@ -1964,7 +1964,7 @@ class ClassBoard extends Component {
                         placement="top"
                         title={assignTutoringTooltipTitle}
                       >
-                        <div>
+                        <div style={{ minWidth: 'fit-content' }}>
                           <AssignTutoring
                             active={isAssignTutoringActive}
                             data-cy="assignTutoring"
@@ -1994,7 +1994,7 @@ class ClassBoard extends Component {
                             : 'The test does not have any item tagged to standard. Standard tagging is necessary to assign interventions.'
                         }
                       >
-                        <div>
+                        <div style={{ minWidth: 'fit-content' }}>
                           <AssignTutoring
                             active={enableAssignInterventionsRedirect}
                             data-cy="assignTutoring"

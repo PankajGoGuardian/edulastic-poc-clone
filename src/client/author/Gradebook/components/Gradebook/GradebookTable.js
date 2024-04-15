@@ -10,6 +10,7 @@ import { StyledTable, StyledTableCell } from '../styled'
 // constants
 import { STATUS_LIST } from '../../transformers'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 
 const GradebookTable = ({
   dataSource,
@@ -62,14 +63,32 @@ const GradebookTable = ({
         const { classId, assessments: assMap } = row
         // assignmentId might not be equal to assessmentId (ass.id)
         // due to grouping of assignments by report key & name (check "../transformers")
-        const { assignmentId, status, percentScore } = assMap[ass.id] || {}
+        const {
+          assignmentId,
+          status,
+          percentScore,
+          testActivityId,
+          isEnrolled,
+          isAssigned,
+        } = assMap[ass.id] || {}
         const color = STATUS_LIST.find((s) => s.id === status)?.color
         return assignmentId && classId && status !== 'UN ASSIGNED' ? (
-          <Link to={`/author/classBoard/${assignmentId}/${classId}`}>
-            <StyledTableCell color={color} data-cy="percentScore">
-              {percentScore || '-'}
-            </StyledTableCell>
-          </Link>
+          <EduIf condition={isEnrolled && isAssigned}>
+            <EduThen>
+              <Link
+                to={`/author/classBoard/${assignmentId}/${classId}/test-activity/${testActivityId}`}
+              >
+                <StyledTableCell color={color} data-cy="percentScore">
+                  {percentScore || '-'}
+                </StyledTableCell>
+              </Link>
+            </EduThen>
+            <EduElse>
+              <StyledTableCell color={color} data-cy="percentScore">
+                {percentScore || '-'}
+              </StyledTableCell>
+            </EduElse>
+          </EduIf>
         ) : (
           <StyledTableCell>
             {percentScore || '-'}

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 // components
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Table, Col } from 'antd'
+import { Table, Col, Spin } from 'antd'
 import { Button } from '@edulastic/common'
 import { IconGraphRightArrow as Arrow } from '@edulastic/icons'
 
@@ -110,6 +110,7 @@ export const RightArrow = styled(Arrow)`
 `
 
 export const TableContainer = styled.div`
+  position: relative;
   max-height: 100%;
   width: ${(props) => (props.showFilter ? 'calc(100% - 240px)' : '100%')};
   padding-left: ${(props) => (props.showFilter ? '40px' : '20px')};
@@ -422,4 +423,13 @@ export const GroupItemLabel = styled.span`
   max-width: 80%;
   text-transform: uppercase;
   color: ${greyThemeDark1};
+`
+
+export const TableInnerSpin = styled(Spin)`
+  &.ant-spin {
+    position: absolute;
+    z-index: 2;
+    left: 60%;
+    top: 45%;
+  }
 `

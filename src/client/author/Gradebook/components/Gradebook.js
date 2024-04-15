@@ -38,6 +38,7 @@ import {
   ScrollbarContainer,
   LeftArrow,
   RightArrow,
+  TableInnerSpin,
 } from './styled'
 import AddToGroupModal from '../../Reports/common/components/Popups/AddToGroupModal'
 import Breadcrumb from '../../src/components/Breadcrumb'
@@ -83,6 +84,7 @@ const Gradebook = ({
 }) => {
   const [onComponentLoad, setOnComponentLoad] = useState(true)
   const [loading, setLoading] = useState(false)
+  const [fullTableLoad, setFullTableLoad] = useState(true)
   const [selectedRows, setSelectedRows] = useState([])
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [pseudoPageDetail, setPseudoPageDetail] = useState({ ...PAGE_DETAIL })
@@ -108,10 +110,12 @@ const Gradebook = ({
 
   const setInitialFilters = () => setFilters({ ...INITIAL_FILTERS, termId })
 
-  const handlePagination = (paginationData) =>
+  const handlePagination = (paginationData, _fullTableLoad = true) => {
+    setFullTableLoad(_fullTableLoad)
     filters.status || urlHasStudent
       ? setPseudoPageDetail(paginationData)
       : setPageDetail(paginationData)
+  }
 
   const handleAddToGroupClick = () => {
     if (selectedRows.length > 0 || (urlHasStudent && studentId)) {
@@ -156,7 +160,10 @@ const Gradebook = ({
     }
   }, [pageDetail])
 
-  useEffect(() => setLoading(false), [gradebookData])
+  useEffect(() => {
+    setFullTableLoad(true)
+    setLoading(false)
+  }, [gradebookData])
 
   // select unique students for AddToGroupModal
   const { students = [], studentThumbnail } = gradebookData
@@ -362,12 +369,15 @@ const Gradebook = ({
               </FilterButton>
             </EduThen>
           </EduIf>
-          {loading ? (
+          {loading && fullTableLoad ? (
             <TableContainer showFilter={showFilter}>
               <Spin />
             </TableContainer>
           ) : (
             <TableContainer showFilter={showFilter}>
+              <EduIf condition={loading && !fullTableLoad}>
+                <TableInnerSpin />
+              </EduIf>
               <EduIf condition={!showFilter}>
                 <StyledEduButton
                   data-cy="smart-filter"
@@ -400,19 +410,25 @@ const Gradebook = ({
                       <TableHeader>
                         <LeftArrow
                           onClick={() =>
-                            handlePagination({
-                              ...pagination,
-                              assignmentPage: pagination.assignmentPage - 1,
-                            })
+                            handlePagination(
+                              {
+                                ...pagination,
+                                assignmentPage: pagination.assignmentPage - 1,
+                              },
+                              false
+                            )
                           }
                           disabled={pagination.assignmentPage === 1}
                         />
                         <RightArrow
                           onClick={() =>
-                            handlePagination({
-                              ...pagination,
-                              assignmentPage: pagination.assignmentPage + 1,
-                            })
+                            handlePagination(
+                              {
+                                ...pagination,
+                                assignmentPage: pagination.assignmentPage + 1,
+                              },
+                              false
+                            )
                           }
                           disabled={
                             assignmentsCount === 0 ||

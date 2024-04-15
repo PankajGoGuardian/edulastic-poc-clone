@@ -309,36 +309,52 @@ export class PerformanceBandTable extends React.Component {
 
   setChanged = (v) => this.setState({ isChangeState: v })
 
+  // updates performance band to new logic -> to value in higher band = from value in prev lower band
+  updatePerformancebandToNewLogic = () => {
+    const dataSource = [...this.state.dataSource]
+    dataSource.forEach((band, idx) => {
+      if (idx !== dataSource.length - 1) {
+        const currentToValue = band.to
+        const nextFromValue = dataSource[idx + 1].from
+        if (currentToValue === nextFromValue) {
+          band.to = nextFromValue + 1
+        }
+      }
+    })
+    this.props.setPerformanceBandData(dataSource)
+  }
+
   onClickFromTo = (e, key, keyName, value) => {
     const dataSource = [...this.state.dataSource]
     if (key == 0 && keyName === 'from') return
     if (key == dataSource.length - 1 && keyName === 'to') return
 
+    const prevToValue = parseInt(dataSource[key - 1]?.to)
+    const prevFromValue = parseInt(dataSource[key - 1]?.from)
     const currentFromValue = parseInt(dataSource[key].from)
     const currentToValue = parseInt(dataSource[key].to)
+    const nextFromValue = parseInt(dataSource[key + 1]?.from)
+    const nextToValue = parseInt(dataSource[key + 1]?.to)
+
+    // we are updating older bands to new logic when user edits the band instead of a patch.
+    // ref: https://goguardian.atlassian.net/browse/EV-42019?focusedCommentId=437923
+    if (currentFromValue === prevToValue || currentToValue === nextFromValue) {
+      this.updatePerformancebandToNewLogic()
+      return
+    }
 
     if (keyName === 'from') {
-      const prevFromValue = parseInt(dataSource[key - 1]?.from)
-      const prevToValue = parseInt(dataSource[key - 1]?.to)
       if (
         currentFromValue + value <= currentToValue ||
         currentFromValue + value >= prevFromValue - 1
       ) {
         return
       }
+      dataSource[key - 1].to = prevToValue + value
       dataSource[key].from = currentFromValue + value
-      // we are updating older bands to new logic when user edits the band instead of a patch.
-      // ref: https://goguardian.atlassian.net/browse/EV-42019?focusedCommentId=437923
-      if (currentFromValue === prevToValue) {
-        dataSource[key - 1].to = prevToValue + value + 1
-      } else {
-        dataSource[key - 1].to = prevToValue + value
-      }
     }
 
     if (keyName === 'to') {
-      const nextFromValue = parseInt(dataSource[key + 1]?.from)
-      const nextToValue = parseInt(dataSource[key + 1]?.to)
       if (
         currentToValue + value >= currentFromValue ||
         currentToValue + value <= nextToValue
@@ -352,13 +368,7 @@ export class PerformanceBandTable extends React.Component {
         return
       }
       dataSource[key].to = currentToValue + value
-      // we are updating older bands to new logic when user edits the band instead of a patch.
-      // ref: https://goguardian.atlassian.net/browse/EV-42019?focusedCommentId=437923
-      if (currentToValue === nextFromValue) {
-        dataSource[key + 1].from = nextFromValue + value - 1
-      } else {
-        dataSource[key + 1].from = nextFromValue + value
-      }
+      dataSource[key + 1].from = nextFromValue + value
     }
 
     this.setState({ isChangeState: true })

@@ -75,12 +75,12 @@ const TutorDetails = ({
       centered
       title="Tutoring Details"
       titleColor="#000"
-      titleFontWeight={600}
+      titleFontWeight={800}
       visible={open}
       onCancel={closePopup}
       borderRadius="20px"
       modalWidth="650px"
-      padding="20px 30px"
+      padding="30px 30px"
       bodyPadding="8px 0"
       footer={null}
       destroyOnClose

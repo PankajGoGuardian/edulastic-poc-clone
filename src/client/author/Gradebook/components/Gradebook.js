@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { isEmpty, get, capitalize } from 'lodash'
 
 // components
 import { Link } from 'react-router-dom'
-import { Spin, Pagination, Row, Avatar } from 'antd'
+import { Spin, Pagination, Row, Avatar, Tooltip } from 'antd'
 import {
   MainHeader,
   MainContentWrapper,
@@ -21,8 +21,11 @@ import {
   IconFilter,
   IconPlusCircle,
   IconCloseFilter,
+  IconBarChart,
 } from '@edulastic/icons'
 import { themeColorBlue } from '@edulastic/colors'
+import QueryString from 'qs'
+import { segmentApi } from '@edulastic/api'
 import GradebookFilters from './Gradebook/GradebookFilters'
 import GradebookTable from './Gradebook/GradebookTable'
 import GradebookStatusColors from './Gradebook/GradebookStatusColors'
@@ -183,6 +186,36 @@ const Gradebook = ({
     },
   ]
 
+  const advancedGradebookLink = useMemo(() => {
+    const {
+      termId: _termId,
+      testType,
+      assessmentIds = [],
+      subjects = [],
+      grades = [],
+      classIds = [],
+    } = filters
+
+    const linkUrl = `/author/reports/student-progress?${QueryString.stringify({
+      termId: _termId,
+      assessmentTypes: testType,
+      testIds: assessmentIds
+        .map(
+          (assessmentId) =>
+            filtersData.assessments.find(({ _id }) => _id === assessmentId)
+              .testId
+        )
+        .join(','),
+      subjects: subjects.join(','),
+      grades: grades.join(','),
+      courseId: 'All',
+      classIds: classIds.join(','),
+      assignedBy: 'anyone',
+    })}`
+
+    return linkUrl
+  }, [filters])
+
   return (
     <div>
       <AddToGroupModal
@@ -220,6 +253,22 @@ const Gradebook = ({
         }
       >
         <Row type="flex">
+          <Link to={advancedGradebookLink}>
+            <Tooltip title="Access Enhanced Features: Download CSV, View Raw Scores, Performance Bands, Trends, Advanced Filters, and More!">
+              <EduButton
+                isBlue
+                isGhost
+                onClick={() =>
+                  segmentApi.genericEventTrack(
+                    'View_Advanced_Gradebook_buttonClick'
+                  )
+                }
+              >
+                <IconBarChart />
+                ADVANCED GRADEBOOK
+              </EduButton>
+            </Tooltip>
+          </Link>
           <Link to="/author/assignments">
             <EduButton isBlue isGhost>
               VIEW ASSIGNMENTS

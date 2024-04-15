@@ -9,7 +9,7 @@ import {
   SET_ASSIGNMENT_FILTER,
   ADVANCED_ASSIGNMENT_VIEW,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
-  SET_SHARE_WITH_GC_IN_PROGRESS,
+  SET_SHARE_WITH_GC_PROGRESS,
   TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
   SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
@@ -26,8 +26,8 @@ export const googleSyncAssignmentAction = (payload) => ({
   payload,
 })
 
-export const setShareWithGCInProgressAction = (payload) => ({
-  type: SET_SHARE_WITH_GC_IN_PROGRESS,
+export const setShareWithGCProgressAction = (payload) => ({
+  type: SET_SHARE_WITH_GC_PROGRESS,
   payload,
 })
 

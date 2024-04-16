@@ -1,5 +1,5 @@
 import { SpinLoader, EduIf, EduElse, EduThen } from '@edulastic/common'
-import { Col, Row, Pagination } from 'antd'
+import { Col, Row } from 'antd'
 import qs from 'qs'
 import next from 'immer'
 import { isEmpty } from 'lodash'
@@ -48,6 +48,7 @@ import {
   extAttributeIdToName,
 } from './util/transformers'
 import { getAssessmentName } from '../../../common/util'
+import BackendPagination from '../../../common/components/BackendPagination'
 
 const {
   analyseByOptions,
@@ -55,7 +56,7 @@ const {
   getColumns,
 } = reportUtils.peerPerformance
 
-const pageSize = 200
+const PAGE_SIZE = 200
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
 const PeerPerformance = ({
@@ -98,7 +99,10 @@ const PeerPerformance = ({
       : 'school',
   })
   const [chartFilter, setChartFilter] = useState({})
-  const [pageNo, setPageNo] = useState(Number(urlSearch.pageNo) || 1)
+  const [pageFilters, setPageFilters] = useState({
+    page: Number(urlSearch.pageNo) || 1,
+    pageSize: PAGE_SIZE,
+  })
   const [sortKey, setSortKey] = useState(
     urlSearch.sortKey || sortKeyMaps.DIM_SCORE_PERC
   )
@@ -115,7 +119,7 @@ const PeerPerformance = ({
       ...oldState,
       pageNo: value,
     }))
-    setPageNo(value)
+    setPageFilters({ ...pageFilters, page: value })
   }
   const onSetSortKey = (value) => {
     setAdditionalUrlParams((oldState) => ({
@@ -137,13 +141,12 @@ const PeerPerformance = ({
       requestFilters: {
         ...settings.requestFilters,
         ...demographicFilters,
+        ...pageFilters,
         externalAttributes: transformExtAttributeFilters(extDemogaphicFilters),
         compareBy: ddfilter.compareBy,
         analyzeBy: ddfilter.analyseBy,
         sortKey,
         sortOrder: sortOrderMap[sortOrder],
-        page: pageNo,
-        pageSize,
         recompute,
       },
       testId: settings.selectedTest.key,
@@ -156,7 +159,13 @@ const PeerPerformance = ({
     if (settings.selectedTest && settings.selectedTest.key) {
       fetPeerPerformanceData(_firstLoadRef.current)
     }
-  }, [ddfilter.analyseBy, pageNo, extDemogaphicFilters, sortKey, sortOrder])
+  }, [
+    ddfilter.analyseBy,
+    pageFilters.page,
+    extDemogaphicFilters,
+    sortKey,
+    sortOrder,
+  ])
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -295,7 +304,7 @@ const PeerPerformance = ({
   }
 
   const generateCSVRequired = useMemo(
-    () => [(peerPerformance?.totalRows || 0) > pageSize].some(Boolean),
+    () => [(peerPerformance?.totalRows || 0) > PAGE_SIZE].some(Boolean),
     [peerPerformance.totalRows]
   )
 
@@ -343,8 +352,8 @@ const PeerPerformance = ({
   }
   const chartProps = {
     setPageNo: onSetPageNo,
-    pageNo,
-    tablePageSize: pageSize,
+    pageNo: pageFilters.page,
+    tablePageSize: PAGE_SIZE,
     totalRows: peerPerformance.totalRows,
     chartBackNavigation,
     setChartBackNavigation,
@@ -490,15 +499,12 @@ const PeerPerformance = ({
               sortOrder={sortOrder}
               setPageNo={onSetPageNo}
             />
-            <EduIf condition={peerPerformance.totalRows > pageSize}>
-              <Pagination
-                style={{ marginTop: '10px' }}
-                onChange={onSetPageNo}
-                current={pageNo}
-                pageSize={pageSize}
-                total={peerPerformance.totalRows}
-              />
-            </EduIf>
+            <BackendPagination
+              itemsCount={peerPerformance.totalRows}
+              backendPagination={pageFilters}
+              setBackendPagination={setPageFilters}
+              hasMultiplePages={peerPerformance.hasMultiplePages}
+            />
           </StyledCard>
         </TableContainer>
       </EduIf>

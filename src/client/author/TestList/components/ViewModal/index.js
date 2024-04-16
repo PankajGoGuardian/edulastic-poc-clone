@@ -485,13 +485,15 @@ class ViewModal extends React.Component {
                       </EduButton>
                     </EduIf>
                   ) : null}
-                  <CombineTestButton
-                    testId={item._id}
-                    test={{
-                      itemGroups: item.itemGroups,
-                      testCategory: item.testCategory,
-                    }}
-                  />
+                  {!publicAccess && (
+                    <CombineTestButton
+                      testId={item._id}
+                      test={{
+                        itemGroups: item.itemGroups,
+                        testCategory: item.testCategory,
+                      }}
+                    />
+                  )}
                   {!publicAccess && isDeleteAllowed ? (
                     <EduButton
                       isGhost

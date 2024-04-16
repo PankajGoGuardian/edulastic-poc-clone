@@ -24,7 +24,6 @@ import {
   IconTrash,
   IconClear,
 } from '@edulastic/icons'
-import Draggable from '@edulastic/common/src/components/MathInput/Draggable'
 import { withNamespaces } from '@edulastic/localization'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -41,6 +40,7 @@ import {
   QUE_TYPE_BY_TITLE,
   TTS_ENABLED_QUESTION_TYPES,
 } from '@edulastic/constants/const/questionType'
+import produce from 'immer'
 import SelectGroupModal from '../../../../TestPage/components/AddItems/SelectGroupModal'
 import { SMALL_DESKTOP_WIDTH } from '../../../../../assessment/constants/others'
 import { Nav } from '../../../../../assessment/themes/common'
@@ -94,7 +94,7 @@ import {
   passageItemIdsSelector,
 } from './ducks'
 import ReportIssue from './ReportIssue'
-import { ButtonsWrapper, RejectButton } from './styled'
+import { ButtonsWrapper, ModalContentArea, RejectButton, Title } from './styled'
 import { aiTestActions } from '../../../../AssessmentCreate/components/CreateAITest/ducks'
 import { AiEduButton } from '../../../../AssessmentCreate/components/CreateAITest/styled'
 import {
@@ -107,7 +107,8 @@ import {
   getTTSTextResultSelector,
   updateTTSTextAPIStatusSelector,
 } from '../../../selectors/ttsText'
-import SpeakableText from '../SpeakableText'
+import CustomizeTTSModal from './CustomizeTTSModal'
+import { TTS_NAV_NEXT } from './constants'
 
 const {
   ITEM_GROUP_TYPES,
@@ -141,7 +142,17 @@ class PreviewModal extends React.Component {
       isAddingSinglePassageItem: false,
       voiceLanguage: item?.language || ENGLISH,
       modalDraggable: false,
+      currentQuestionIndex: 0,
     }
+  }
+
+  get ttsCustomizableData() {
+    const { item = {} } = this.props
+    return produce(item?.data || {}, (draft) => {
+      draft.questions = (draft?.questions || []).filter(({ type }) =>
+        TTS_ENABLED_QUESTION_TYPES.includes(type)
+      )
+    })
   }
 
   notificationStringConst = {
@@ -206,8 +217,8 @@ class PreviewModal extends React.Component {
       updateCurrentItemFromPassagePagination,
       passage,
       clearPreview,
-      updateTTSAPIStatus,
     } = this.props
+
     const { item: oldItem, archivedItems: newArchivedItems } = prevProps
     if (oldItem?.passageId !== newItem?.passageId && newItem?.passageId) {
       this.loadPassage(newItem.passageId)
@@ -222,13 +233,6 @@ class PreviewModal extends React.Component {
       } else {
         clearPreview()
       }
-    }
-
-    if (
-      prevProps?.updateTTSAPIStatus !== updateTTSAPIStatus &&
-      updateTTSAPIStatus === 'SUCCESS'
-    ) {
-      this.toggleTTSTextModal()
     }
   }
 
@@ -255,6 +259,7 @@ class PreviewModal extends React.Component {
 
   onRegenerateTestItem = () => {
     const { regenerateTestItem, item, groupIndex = 0 } = this.props
+    const { currentQuestionIndex = 0 } = this.state
     const {
       alignment,
       grades,
@@ -263,7 +268,7 @@ class PreviewModal extends React.Component {
       depthOfKnowledge,
       authorDifficulty,
       title: questionTitle,
-    } = item?.data?.questions[0]
+    } = this.ttsCustomizableData[currentQuestionIndex]
 
     const { _id } = item
 
@@ -714,17 +719,21 @@ class PreviewModal extends React.Component {
     isLanguageChanged = false,
   }) => {
     const {
-      item: { _id: itemId, data: { questions = [] } = {} },
+      item: { _id: itemId = {} },
       fetchTTSText,
       ttsTextResult,
     } = this.props
-    const { selectedLanguage } = this.state
-
-    const questionId = questions?.[0]?.id
+    const { selectedLanguage, currentQuestionIndex } = this.state
+    const ttsCustomizableQuestions = this.ttsCustomizableData?.questions
+    const questionId = ttsCustomizableQuestions?.[currentQuestionIndex]?.id
 
     if (questionId) {
       let language = selectedLanguage
-      if (!questions?.[0]?.languageFeatures?.[selectedLanguage]) {
+      if (
+        !ttsCustomizableQuestions?.[currentQuestionIndex]?.languageFeatures?.[
+          selectedLanguage
+        ]
+      ) {
         language = LANGUAGE_EN
       }
       const requestData = {
@@ -746,16 +755,20 @@ class PreviewModal extends React.Component {
 
   updateQuestionTTSText = (updatedTTSTextData) => {
     const {
-      item: { _id: itemId, data: { questions = [] } = {} },
+      item: { _id: itemId },
       updateTTSText,
     } = this.props
-    const { selectedLanguage, voiceLanguage } = this.state
-
-    const questionId = questions?.[0]?.id
+    const { selectedLanguage, voiceLanguage, currentQuestionIndex } = this.state
+    const ttsCustomizableQuestions = this.ttsCustomizableData?.questions
+    const questionId = ttsCustomizableQuestions?.[currentQuestionIndex]?.id
 
     if (questionId) {
       let language = selectedLanguage
-      if (!questions?.[0]?.languageFeatures?.[selectedLanguage]) {
+      if (
+        !ttsCustomizableQuestions?.[currentQuestionIndex]?.languageFeatures?.[
+          selectedLanguage
+        ]
+      ) {
         language = LANGUAGE_EN
       }
       const requestData = {
@@ -1058,6 +1071,32 @@ class PreviewModal extends React.Component {
     this.requestToGetTTSText({ isLanguageChanged: true })
   }
 
+  changeQuestion = (action) => {
+    const questionsCount = (this.ttsCustomizableData?.questions || []).length
+
+    const callBack = () => this.requestToGetTTSText({ isLanguageChanged: true })
+
+    this.setState((prevState) => {
+      const { currentQuestionIndex: prevCurrentQuestionIndex } = prevState
+      if (action === TTS_NAV_NEXT) {
+        const newIndex = prevCurrentQuestionIndex + 1
+        if (newIndex < questionsCount) {
+          return {
+            ...prevState,
+            currentQuestionIndex: newIndex,
+          }
+        }
+      } else {
+        const newIndex = prevCurrentQuestionIndex - 1
+        if (prevCurrentQuestionIndex > 0)
+          return {
+            ...prevState,
+            currentQuestionIndex: newIndex,
+          }
+      }
+    }, callBack)
+  }
+
   // TODO consistency for question and resources for previeew
   render() {
     const {
@@ -1115,6 +1154,7 @@ class PreviewModal extends React.Component {
       selectedLanguage,
       voiceLanguage,
       modalDraggable,
+      currentQuestionIndex = 0,
     } = this.state
     const resources = keyBy(
       get(item, 'data.resources', []),
@@ -1123,6 +1163,7 @@ class PreviewModal extends React.Component {
 
     let allWidgets = { ...questions, ...resources }
     const { authors = [], rows, data = {} } = item || {}
+
     const questionsType =
       data.questions && uniq(data.questions.map((question) => question.type))
     const noAnswerButtonQns = [
@@ -1203,9 +1244,13 @@ class PreviewModal extends React.Component {
             (grp) => !!grp.items.find((i) => i._id === item._id)
           )?.groupName || 'Test'
 
-    const showviewTTSTextBtn =
-      data?.questions?.length === 1 &&
-      questionsType.every((type) => TTS_ENABLED_QUESTION_TYPES.includes(type))
+    const showviewTTSTextBtn = questionsType.some((type) =>
+      TTS_ENABLED_QUESTION_TYPES.includes(type)
+    )
+
+    const handleDraggable = (value) => {
+      this.setState({ modalDraggable: value })
+    }
 
     return (
       <PreviewModalWrapper
@@ -1222,47 +1267,30 @@ class PreviewModal extends React.Component {
         isMobile={isMobile}
       >
         <EduIf condition={showTTSTextModal}>
-          <Draggable
-            usePortal
-            position={{ x: '50%', y: '50%' }}
-            transform="translate(-50%, -50%)"
-            borderRadius="8px"
-            disabled={modalDraggable}
-          >
-            <ModalInner width="768px">
-              <ModalHeader justifyContent="space-between" padding="16px 24px">
-                <Title>Customize TTS</Title>
-                <IconClose onClick={this.toggleTTSTextModal} />
-              </ModalHeader>
-              <ModalContentArea
-                tts
-                style={{ minHeight: 400, paddingBottom: 30 }}
-              >
-                <div
-                  onMouseEnter={() => this.setState({ modalDraggable: true })}
-                  onMouseLeave={() => this.setState({ modalDraggable: false })}
-                >
-                  <SpeakableText
-                    ttsTextAPIStatus={ttsTextAPIStatus}
-                    updateTTSAPIStatus={updateTTSAPIStatus}
-                    ttsTextData={ttsTextResult}
-                    updateQuestionTTSText={this.updateQuestionTTSText}
-                    regenerateTTSText={this.regenerateTTSText}
-                    question={data?.questions?.[0] || {}}
-                    showTTSTextModal={showTTSTextModal}
-                    onLanguageChange={this.onLanguageChange}
-                    selectedLanguage={selectedLanguage}
-                    onChangeVoiceLanguge={this.onChangeVoiceLanguge}
-                    voiceLanguage={voiceLanguage}
-                  />
-                </div>
-              </ModalContentArea>
-            </ModalInner>
-          </Draggable>
+          <CustomizeTTSModal
+            showTTSTextModal={showTTSTextModal}
+            modalDraggable={modalDraggable}
+            data={this.ttsCustomizableData}
+            currentQuestionIndex={currentQuestionIndex}
+            toggleTTSTextModal={this.toggleTTSTextModal}
+            changeQuestion={this.changeQuestion}
+            ttsTextAPIStatus={ttsTextAPIStatus}
+            updateTTSAPIStatus={updateTTSAPIStatus}
+            ttsTextResult={ttsTextResult}
+            voiceLanguage={voiceLanguage}
+            updateQuestionTTSText={this.updateQuestionTTSText}
+            regenerateTTSText={this.regenerateTTSText}
+            onLanguageChange={this.onLanguageChange}
+            onChangeVoiceLanguge={this.onChangeVoiceLanguge}
+            selectedLanguage={selectedLanguage}
+            handleDraggable={handleDraggable}
+          />
         </EduIf>
         {this.navigationButtonVisibile && this.navigationBtns()}
         <HeadingWrapper>
-          <Title>Preview</Title>
+          <Title justifyContent="flex-start" alignItems="center">
+            Preview
+          </Title>
           <FlexContainer justifyContent="flex-end" width="100%">
             <EduIf condition={showSelectGroupModal}>
               <SelectGroupModal
@@ -1802,10 +1830,18 @@ const ArrowStyle = css`
       fill: unset;
     }
   }
+  .help-text {
+    color: #878a91;
+  }
 
   &:hover {
     svg {
       fill: ${white};
+    }
+    .help-text {
+      color: ${white};
+      font-size: 20;
+      font-weight: 600;
     }
   }
 `
@@ -1834,12 +1870,6 @@ const ModalTopAction = styled(FlexContainer)`
   justify-content: flex-end;
 `
 
-const Title = styled.div`
-  font-weight: bold;
-  font-size: 20px;
-  user-select: none;
-`
-
 export const PlusIcon = styled.div`
   position: relative;
   width: 20px;
@@ -1862,12 +1892,6 @@ const QuestionWrapper = styled.div`
   }
 `
 
-const ModalContentArea = styled.div`
-  border-radius: ${({ tts }) => (tts ? '8px' : '0px')};
-  padding: 0px 30px;
-  height: ${({ isMobile }) => (isMobile ? 'calc(100vh - 100px)' : '100%')};
-`
-
 const DisabledButton = styled.div`
   height: 28px;
   width: 28px;
@@ -1888,25 +1912,4 @@ const DisabledButton = styled.div`
 
 const DisabledHelperText = styled.div`
   max-width: 320px;
-`
-
-const ModalInner = styled.div`
-  position: relative;
-  background: ${white};
-  width: ${({ width }) => width};
-  z-index: 1003;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px 2px #ccc;
-
-  & .input__math {
-    margin: 0px 15px;
-    width: calc(100% - 30px);
-  }
-`
-
-const ModalHeader = styled(FlexContainer)`
-  border-radius: 8px;
-  svg {
-    cursor: pointer;
-  }
 `

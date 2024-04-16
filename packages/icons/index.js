@@ -386,7 +386,9 @@ export { default as IconWholeLearnerReportAddOn } from './src/IconWholeLearnerRe
 export { default as IconBehaviourReportAddOn } from './src/IconBehaviourReportAddOn'
 export { default as IconSurveyInsightsAddOn } from './src/IconSurveyInsightsAddOn'
 export { default as IconDSSellPage } from './src/IconDSSellPage'
+export { default as IconGoogleTranslate } from './src/IconGoogleTranslate'
 export { default as IconInfoCircle } from './src/IconInfoCircle'
+
 // Insights Report Icons
 export { default as IconClock } from './src/IconClock'
 export { default as IconUsersGroup } from './src/IconUsersGroup'

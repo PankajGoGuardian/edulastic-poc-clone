@@ -22,7 +22,10 @@ export const StyledTextArea = styled(TextAreaInputStyled)`
 export const StyledSpeakableTextContainer = styled.div`
   .speakable-text-audio-controls {
     padding: 0px 0px 20px 0px !important;
+    margin-left: -20px;
   }
+  width: 100%;
+  margin: ${({ margin }) => margin};
 `
 
 export const VoiceLanguageSelector = styled(SelectInputStyled)`

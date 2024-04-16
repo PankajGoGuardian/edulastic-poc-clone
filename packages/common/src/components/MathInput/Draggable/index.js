@@ -128,7 +128,14 @@ class Draggable extends React.Component {
   }
 
   render() {
-    const { children, usePortal, transform, borderRadius = 0 } = this.props
+    const {
+      children,
+      usePortal,
+      transform,
+      borderRadius = 0,
+      width = '',
+      height = '',
+    } = this.props
     const { position = {} } = this.state
 
     const content = (
@@ -139,6 +146,8 @@ class Draggable extends React.Component {
         left={position.x}
         top={position.y}
         transform={transform}
+        width={width}
+        height={height}
         borderRadius={borderRadius}
         ref={this.containerRef}
       >
@@ -155,12 +164,14 @@ class Draggable extends React.Component {
 export default Draggable
 
 const DraggableContainer = styled.div.attrs(
-  ({ left, top, transform, borderRadius }) => ({
+  ({ left, top, transform, borderRadius, width, height }) => ({
     style: {
       left,
       top,
       transform,
       borderRadius,
+      width,
+      height,
     },
   })
 )`

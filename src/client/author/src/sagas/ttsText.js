@@ -2,6 +2,7 @@ import { testItemsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import {
+  fetchTTSTextAction,
   setTTSTextStateAction,
   setTTSUpdateDataAction,
 } from '../actions/ttsText'
@@ -23,6 +24,7 @@ function* fetchTTSTextSaga({ payload }) {
 }
 
 function* updateTTSTextSaga({ payload }) {
+  const { itemId, questionId, language, updateTTSText = false } = payload
   const failedMessage =
     'Apologies for the inconvenience. We encountered an issue while regenerating tts for this question. Please try again'
 
@@ -47,6 +49,9 @@ function* updateTTSTextSaga({ payload }) {
       type: 'success',
       msg: `TTS regeneration is in progress. Please check after few minutes`,
     })
+    yield put(
+      fetchTTSTextAction({ itemId, questionId, updateTTSText, language })
+    )
   } catch (err) {
     yield put(
       setTTSUpdateDataAction({

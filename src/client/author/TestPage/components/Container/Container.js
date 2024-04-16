@@ -1524,7 +1524,11 @@ class Container extends PureComponent {
       }
       // for VQ or docbased test call handleDocBasedSave method so that testItem is also updated along with the test
       if (test.isDocBased) {
-        this.handleDocBasedSave()
+        this.handleDocBasedSave({
+          currentTab,
+          nextLocation,
+          nextAction,
+        })
         return
       }
       updateTest(test._id, { ...newTest, currentTab, nextLocation, nextAction })
@@ -1533,7 +1537,11 @@ class Container extends PureComponent {
     }
   }
 
-  handleDocBasedSave = async () => {
+  handleDocBasedSave = async ({
+    currentTab,
+    nextLocation,
+    nextAction,
+  } = {}) => {
     const {
       questions: assessmentQuestions,
       test,
@@ -1548,7 +1556,11 @@ class Container extends PureComponent {
     ) {
       return
     }
-    updateDocBasedTest(test._id, test, true)
+    updateDocBasedTest(
+      test._id,
+      { ...test, currentTab, nextLocation, nextAction },
+      true
+    )
   }
 
   validateTest = (test, toBeResumedTestAction = null) => {

@@ -242,13 +242,13 @@ export const AddRatingSection = styled.div`
   }
 `
 
-export const RatingContaner = styled.div`
-  width: 270px;
+export const RatingContainer = styled.div`
+  width: ${({ isFullScreen }) => (isFullScreen ? '100%' : '270px')};
   border-radius: 10px;
   margin: 2px
     ${({ className }) => (className === 'last-rating' ? '0px' : '15px')} 20px
     0px;
-  height: 179px;
+  height: ${({ isFullScreen }) => (isFullScreen ? '100%' : '179px')};
   display: inline-block;
   box-shadow: 0px 2px 5px ${boxShadowColor2};
   background: ${white};
@@ -258,7 +258,8 @@ export const RatingContaner = styled.div`
     display: flex;
     position: relative;
     padding: 26px 14px 10px;
-    justify-content: space-between;
+    justify-content: ${({ isFullScreen }) =>
+      isFullScreen ? 'flex-start' : 'space-between'};
 
     > span {
       display: flex;
@@ -283,27 +284,38 @@ export const RatingContaner = styled.div`
     }
 
     > span:first-child {
-      width: 55%;
+      width: ${({ isFullScreen }) => (isFullScreen ? '250px' : '55%')};
+      margin-right: ${({ isFullScreen }) => isFullScreen && '15px'};
     }
     > span:last-child {
-      width: 43%;
+      width: ${({ isFullScreen }) => (isFullScreen ? '250px' : '43%')};
       .ant-input {
         color: ${themeColorLighter};
       }
     }
   }
-  > div:last-child {
+  > div:nth-child(2) {
     padding: 0px 14px 11px;
     position: relative;
     > div:first-child {
       background: ${backgroundGrey};
       > .fr-box {
-        width: 242px;
-        height: 92px;
+        width: ${({ isFullScreen }) => (isFullScreen ? '100%' : '242px')};
+        height ${({ isFullScreen }) => (isFullScreen ? '500px' : '92px')};
         overflow-y: auto;
         .fr-view {
           padding: 7px;
           white-space: normal;
+          width: 100%;
+
+        }
+        .fr-wrapper {
+          width: 100%;
+          min-height: 100%;
+          display: flex;
+        }
+        .fr-placeholder {
+          font-weight: 600;
         }
       }
     }
@@ -350,6 +362,25 @@ export const DeleteRating = styled.span`
   align-items: center;
   top: 4px;
   right: 2px;
+  z-index: 100;
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    background: ${backgroundGrey};
+  }
+  i {
+    font-size: ${(props) => props.theme.smallLinkFontSize};
+  }
+`
+export const IconExpandWrapper = styled.span`
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  top: 4px;
+  right: 26px;
   z-index: 100;
   cursor: pointer;
   height: 18px;

@@ -19,6 +19,7 @@ const TextInput = ({
   value: currentValue,
   currentRubricData,
   updateRubricData,
+  isFullScreen,
 }) => {
   const fieldMapping = {
     textarea: 'desc',
@@ -70,16 +71,24 @@ const TextInput = ({
     }
 
   if (textType === 'textarea') {
+    const froalaToolbarId = `rubric-rating-description-${
+      isFullScreen ? 'fullScreen' : ''
+    }${id}`
+
+    const foralaEditorTools = isFullScreen
+      ? undefined
+      : ['bold', 'italic', 'underline', 'formatUL']
+
     if (isEditable)
       return (
         <DescriptionTextArea
           value={currentValue}
           placeholder={isEditable ? 'Enter Description' : ''}
-          toolbarId={`rubric-rating-description-${id}`}
+          toolbarId={froalaToolbarId}
           onChange={(value) => handleChange(value)}
           readOnly={false}
           toolbarSize="SM"
-          buttons={['bold', 'italic', 'underline', 'formatUL']}
+          buttons={foralaEditorTools}
         />
       )
     if (!isEditable)

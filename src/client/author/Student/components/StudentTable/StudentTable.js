@@ -98,6 +98,10 @@ import InviteMultipleStudentModal from './InviteMultipleStudentModal/InviteMulti
 import StudentsDetailsModal from './StudentsDetailsModal/StudentsDetailsModal'
 import { StyledMaskButton, StyledStudentTable } from './styled'
 import ResetPwd from '../../../ManageClass/components/ClassDetails/ResetPwd/ResetPwd'
+import {
+  getTestSettings,
+  receiveTestSettingAction,
+} from '../../../TestSetting/ducks'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'Student' }
 
@@ -258,11 +262,14 @@ class StudentTable extends Component {
       loadDistrictPolicy,
       schoolId,
       userOrgId,
+      loadTestSetting,
     } = this.props
     if (role === 'school-admin') {
       loadSchoolPolicy(schoolId)
+      loadTestSetting({ orgType: 'institution', orgId: schoolId })
     } else {
       loadDistrictPolicy({ orgId: userOrgId, orgType: 'district' })
+      loadTestSetting({ orgType: 'district', orgId: userOrgId })
     }
     if (!isEmpty(dataPassedWithRoute)) {
       this.setState(
@@ -791,6 +798,7 @@ class StudentTable extends Component {
       totalUsers,
       pageNo,
       isPremium,
+      districtTestSettings,
       t,
     } = this.props
 
@@ -947,6 +955,7 @@ class StudentTable extends Component {
             buttonText="Yes, Update"
             isStudentEdit
             isPremium={isPremium}
+            enableSpeechToText={districtTestSettings?.enableSpeechToText}
           />
         )}
         {addStudentModalVisible && (
@@ -961,6 +970,7 @@ class StudentTable extends Component {
             showTtsField
             validatedClassDetails={validatedClassDetails}
             resetClassDetails={resetClassDetails}
+            enableSpeechToText={districtTestSettings?.enableSpeechToText}
           />
         )}
         {studentDetailsModalVisible && (
@@ -1047,6 +1057,7 @@ const enhance = compose(
       isProxyUser: isProxyUserSelector(state),
       isSchoolSearching: isSchoolSearchingSelector(state),
       getSchools: getSchoolsSelector(state),
+      districtTestSettings: getTestSettings(state),
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -1079,6 +1090,7 @@ const enhance = compose(
       loadSchoolPolicy: receiveSchoolPolicyAction,
       loadDistrictPolicy: receiveDistrictPolicyAction,
       getSchoolsWithinDistrict: searchSchoolByDistrictRequestAction,
+      loadTestSetting: receiveTestSettingAction,
     }
   )
 )

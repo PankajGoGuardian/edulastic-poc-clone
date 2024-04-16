@@ -23,7 +23,7 @@ const FilterDropdown = ({
     <FieldLabel>{label}</FieldLabel>
     <SelectInputStyled
       data-cy={dataCy}
-      placeholder={allOptionText || `All ${label}`}
+      placeholder={allOptionText}
       mode={mode}
       ref={el}
       onChange={onChange}
@@ -38,7 +38,7 @@ const FilterDropdown = ({
       {options &&
         options.map((data) => (
           <Select.Option key={data.id} value={data.id}>
-            {data.name === 'All' ? allOptionText || `All ${label}` : data.name}
+            {data.name === 'All' ? allOptionText : data.name}
           </Select.Option>
         ))}
     </SelectInputStyled>
@@ -76,7 +76,7 @@ const GradebookFilters = ({
         </Col>
         <FilterDropdown
           label="Class"
-          allOptionText="All Classes"
+          allOptionText="Select Classes"
           mode="multiple"
           el={classRef}
           onChange={(selected) =>

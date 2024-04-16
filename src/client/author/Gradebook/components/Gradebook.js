@@ -15,6 +15,7 @@ import {
   EduIf,
   EduThen,
   EduElse,
+  toggleChatDisplay,
 } from '@edulastic/common'
 import {
   IconInterface,
@@ -39,6 +40,7 @@ import {
   LeftArrow,
   RightArrow,
   TableInnerSpin,
+  StyledNewFeatureIndicator,
 } from './styled'
 import AddToGroupModal from '../../Reports/common/components/Popups/AddToGroupModal'
 import Breadcrumb from '../../src/components/Breadcrumb'
@@ -129,6 +131,11 @@ const Gradebook = ({
     setInitialFilters()
     fetchFiltersData()
     setOnComponentLoad(false)
+    toggleChatDisplay('hide')
+
+    return () => {
+      toggleChatDisplay('show')
+    }
   }, [])
 
   // reset status filter when switching to gradebook student and back
@@ -260,11 +267,19 @@ const Gradebook = ({
         }
       >
         <Row type="flex">
-          <Link to={advancedGradebookLink}>
-            <Tooltip title="Access Enhanced Features: Download CSV, View Raw Scores, Performance Bands, Trends, Advanced Filters, and More!">
+          <Link to="/author/assignments">
+            <EduButton isBlue isGhost>
+              VIEW ASSIGNMENTS
+            </EduButton>
+          </Link>
+          <EduButton isBlue isGhost onClick={handleAddToGroupClick}>
+            <IconPlusCircle />
+            Add to Student Group
+          </EduButton>
+          <Tooltip title="Access Enhanced Features: Download CSV, View Raw Scores, Performance Bands, Trends, Advanced Filters, and More!">
+            <Link to={advancedGradebookLink}>
               <EduButton
                 isBlue
-                isGhost
                 onClick={() =>
                   segmentApi.genericEventTrack(
                     'View_Advanced_Gradebook_buttonClick'
@@ -273,18 +288,10 @@ const Gradebook = ({
               >
                 <IconBarChart />
                 ADVANCED GRADEBOOK
+                <StyledNewFeatureIndicator />
               </EduButton>
-            </Tooltip>
-          </Link>
-          <Link to="/author/assignments">
-            <EduButton isBlue isGhost>
-              VIEW ASSIGNMENTS
-            </EduButton>
-          </Link>
-          <EduButton isBlue onClick={handleAddToGroupClick}>
-            <IconPlusCircle />
-            Add to Student Group
-          </EduButton>
+            </Link>
+          </Tooltip>
         </Row>
       </MainHeader>
 
@@ -347,9 +354,11 @@ const Gradebook = ({
           )}
         </MainContentWrapper>
       ) : (
-        <MainContentWrapper style={{ display: 'inline-flex' }}>
+        <MainContentWrapper
+          style={{ display: 'inline-flex', paddingRight: '5px' }}
+        >
           {showFilter && (
-            <ScrollbarContainer height={windowHeight - 120}>
+            <ScrollbarContainer height={windowHeight - 122}>
               <GradebookFilters
                 data={curatedFiltersData}
                 filters={filters}
@@ -408,68 +417,82 @@ const Gradebook = ({
                   {curatedData?.length > 0 && (
                     <>
                       <TableHeader>
-                        <LeftArrow
-                          onClick={() =>
-                            handlePagination(
-                              {
-                                ...pagination,
-                                assignmentPage: pagination.assignmentPage - 1,
-                              },
-                              false
-                            )
-                          }
-                          disabled={pagination.assignmentPage === 1}
-                        />
-                        <RightArrow
-                          onClick={() =>
-                            handlePagination(
-                              {
-                                ...pagination,
-                                assignmentPage: pagination.assignmentPage + 1,
-                              },
-                              false
-                            )
-                          }
-                          disabled={
-                            assignmentsCount === 0 ||
-                            pagination.assignmentPage ===
-                              Math.ceil(
-                                assignmentsCount / pagination.assignmentPageSize
+                        <Tooltip title="Load previous 10 tests">
+                          <LeftArrow
+                            onClick={() =>
+                              handlePagination(
+                                {
+                                  ...pagination,
+                                  assignmentPage: pagination.assignmentPage - 1,
+                                },
+                                false
                               )
-                          }
-                        />
+                            }
+                            disabled={pagination.assignmentPage === 1}
+                          />
+                        </Tooltip>
+                        <Tooltip title="Load next 10 tests" placement="topLeft">
+                          <RightArrow
+                            onClick={() =>
+                              handlePagination(
+                                {
+                                  ...pagination,
+                                  assignmentPage: pagination.assignmentPage + 1,
+                                },
+                                false
+                              )
+                            }
+                            disabled={
+                              assignmentsCount === 0 ||
+                              pagination.assignmentPage ===
+                                Math.ceil(
+                                  assignmentsCount /
+                                    pagination.assignmentPageSize
+                                )
+                            }
+                          />
+                        </Tooltip>
                       </TableHeader>
                       <TableFooter>
                         <GradebookStatusColors />
                         {/* NOTE: When status filter is set for Gradebook, assignment pagination is dependent on student pagination */}
-                        <Pagination
-                          current={pagination.studentPage}
-                          pageSize={pagination.studentPageSize}
-                          onChange={(studentPage) =>
-                            handlePagination({
-                              ...pagination,
-                              ...(filters.status ? { assignmentPage: 1 } : {}),
-                              studentPage,
-                            })
-                          }
-                          onShowSizeChange={(_, studentPageSize) =>
-                            handlePagination({
-                              ...pagination,
-                              ...(filters.status ? { assignmentPage: 1 } : {}),
-                              studentPage: 1,
-                              studentPageSize,
-                            })
-                          }
-                          total={studentsCount}
-                          showSizeChanger={false}
-                        />
+                        <EduIf
+                          condition={studentsCount > pagination.studentPageSize}
+                        >
+                          <Pagination
+                            current={pagination.studentPage}
+                            pageSize={pagination.studentPageSize}
+                            onChange={(studentPage) =>
+                              handlePagination({
+                                ...pagination,
+                                ...(filters.status
+                                  ? { assignmentPage: 1 }
+                                  : {}),
+                                studentPage,
+                              })
+                            }
+                            onShowSizeChange={(_, studentPageSize) =>
+                              handlePagination({
+                                ...pagination,
+                                ...(filters.status
+                                  ? { assignmentPage: 1 }
+                                  : {}),
+                                studentPage: 1,
+                                studentPageSize,
+                              })
+                            }
+                            total={studentsCount}
+                            showSizeChanger={false}
+                          />
+                        </EduIf>
                       </TableFooter>
                     </>
                   )}
                 </EduThen>
                 <EduElse>
                   <NoDataContainer>
-                    Select class in the filters to see their gradebook
+                    Select a class in the filters to the left to view the
+                    gradebook
                   </NoDataContainer>
                 </EduElse>
               </EduIf>

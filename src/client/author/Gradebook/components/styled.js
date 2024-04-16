@@ -4,7 +4,10 @@ import styled from 'styled-components'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Table, Col, Spin } from 'antd'
 import { Button } from '@edulastic/common'
-import { IconGraphRightArrow as Arrow } from '@edulastic/icons'
+import {
+  IconGraphRightArrow as Arrow,
+  IconNewFeatureIndicator,
+} from '@edulastic/icons'
 
 // constants
 import {
@@ -70,6 +73,8 @@ export const TableHeader = styled.div`
   margin-left: -22px;
 `
 
+const ArrowBoxShadow = `0px 4px 4px 0px rgba(0, 0, 0, 0.12)`
+
 export const LeftArrow = styled(Arrow)`
   display: ${(props) => (props.disabled ? 'none' : 'block')};
   transform: rotate(180deg);
@@ -84,6 +89,8 @@ export const LeftArrow = styled(Arrow)`
   width: 29px;
   height: 29px;
   z-index: 1;
+  box-shadow: ${ArrowBoxShadow};
+  margin-left: 10px;
   :hover {
     stroke: ${white};
     fill: ${white};
@@ -103,6 +110,7 @@ export const RightArrow = styled(Arrow)`
   border-radius: 29px;
   width: 29px;
   height: 29px;
+  box-shadow: ${ArrowBoxShadow};
   :hover {
     stroke: ${white};
     fill: ${white};
@@ -112,6 +120,7 @@ export const RightArrow = styled(Arrow)`
 export const TableContainer = styled.div`
   position: relative;
   max-height: 100%;
+  min-height: calc(100% - 62px);
   width: ${(props) => (props.showFilter ? 'calc(100% - 240px)' : '100%')};
   padding-left: ${(props) => (props.showFilter ? '40px' : '20px')};
   .ant-spin {
@@ -432,4 +441,11 @@ export const TableInnerSpin = styled(Spin)`
     left: 60%;
     top: 45%;
   }
+`
+
+export const StyledNewFeatureIndicator = styled(IconNewFeatureIndicator)`
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translate(50%, -50%);
 `

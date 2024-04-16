@@ -103,8 +103,8 @@ const GradebookTable = ({
         if(!percentScoreAStr)return (percentScoreBStr ? -1 : 0);
         if(!percentScoreBStr)return 1;
 
-        const percentScoreA = parseFloat(percentScoreAStr.substring(0, percentScoreAStr.length - 1) || '0');
-        const percentScoreB = parseFloat(percentScoreBStr.substring(0, percentScoreBStr.length - 1) || '0');
+        const percentScoreA = parseFloat(percentScoreAStr.substring(0, percentScoreAStr.length - 1) || '-1');
+        const percentScoreB = parseFloat(percentScoreBStr.substring(0, percentScoreBStr.length - 1) || '-1');
 
         return percentScoreA - percentScoreB;
       }

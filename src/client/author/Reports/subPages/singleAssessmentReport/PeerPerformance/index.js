@@ -136,7 +136,7 @@ const PeerPerformance = ({
     setSortOrder(value)
   }
 
-  const fetPeerPerformanceData = (recompute) => {
+  const fetPeerPerformanceData = ({ requireExtAttributes }) => {
     const q = {
       requestFilters: {
         ...settings.requestFilters,
@@ -147,7 +147,8 @@ const PeerPerformance = ({
         analyzeBy: ddfilter.analyseBy,
         sortKey,
         sortOrder: sortOrderMap[sortOrder],
-        recompute,
+        requireExtAttributes,
+        requireRowsCount: pageFilters.page == 2,
       },
       testId: settings.selectedTest.key,
     }
@@ -157,7 +158,9 @@ const PeerPerformance = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      fetPeerPerformanceData(_firstLoadRef.current)
+      fetPeerPerformanceData({
+        requireExtAttributes: _firstLoadRef.current,
+      })
     }
   }, [
     ddfilter.analyseBy,
@@ -169,7 +172,9 @@ const PeerPerformance = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      fetPeerPerformanceData(true)
+      fetPeerPerformanceData({
+        requireExtAttributes: true,
+      })
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)

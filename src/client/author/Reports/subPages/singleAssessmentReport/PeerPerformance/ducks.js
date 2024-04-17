@@ -105,7 +105,7 @@ function* getReportsPeerPerformanceRequest({ payload }) {
 
     const peerPerformance = isEmpty(result) ? defaultReport : result
     const oldPeerPerformance = yield select(getReportsPeerPerformance)
-    if (!payload.requestFilters.recompute) {
+    if (!payload.requestFilters.requireExtAttributes) {
       const { extAttributes: oldExtAttributes } = oldPeerPerformance
       const { extAttributes } = peerPerformance
       if (!isEmpty(oldExtAttributes) && isEmpty(extAttributes)) {

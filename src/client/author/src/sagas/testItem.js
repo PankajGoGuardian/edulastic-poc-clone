@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { get as _get, round, cloneDeep } from 'lodash'
+import { get as _get, round, cloneDeep, isEmpty } from 'lodash'
 import { testItemsApi } from '@edulastic/api'
 import { LOCATION_CHANGE, push } from 'connected-react-router'
 import { questionType } from '@edulastic/constants'
@@ -52,17 +52,38 @@ import { setItemLanguage } from '../../ItemDetail/ducks'
 import { getSearchParams } from '../utils/util'
 
 function* createTestItemSaga({
-  payload: { data, testFlow, testId, newPassageItem = false, testName },
+  payload: {
+    data,
+    testFlow,
+    testId,
+    newPassageItem = false,
+    testName,
+    isMultipart = false,
+    questionData = {},
+    isFromQuestionTypeChange = false,
+  },
 }) {
   try {
     // create a empty item and put it in store.
+    let widgets = []
+    if (!isEmpty(questionData)) {
+      widgets = [
+        {
+          widgetType: 'question',
+          type: questionData.type,
+          title: questionData.title,
+          reference: questionData.id,
+          tabIndex: 0,
+        },
+      ]
+    }
     let item = {
       _id: 'new',
       rows: [
         {
           tabs: [],
           dimension: '100%',
-          widgets: [],
+          widgets,
           flowLayout: false,
           content: '',
         },
@@ -78,17 +99,18 @@ function* createTestItemSaga({
       standards: [],
       curriculums: [],
       data: {
-        questions: [],
+        questions: !isEmpty(questionData) ? [questionData] : [],
         resources: [],
       },
       itemLevelScoring: true,
+      ...(isFromQuestionTypeChange ? { itemLevelScore: 1 } : {}),
       analytics: [
         {
           usage: 0,
           likes: 0,
         },
       ],
-      multipartItem: false,
+      multipartItem: isMultipart,
       isPassageWithQuestions: false,
       canAddMultipleItems: false,
     }
@@ -116,16 +138,18 @@ function* createTestItemSaga({
       payload: item,
     })
 
-    if (!testFlow) {
-      yield put(push(`/author/items/${item._id}/item-detail`))
-    } else {
-      yield put(
-        push({
-          pathname: `/author/tests/${testId}/createItem/${item._id}`,
-          state: { fadeSidebar: true, testName },
-          ...getSearchParams(),
-        })
-      )
+    if (!isFromQuestionTypeChange) {
+      if (!testFlow) {
+        yield put(push(`/author/items/${item._id}/item-detail`))
+      } else {
+        yield put(
+          push({
+            pathname: `/author/tests/${testId}/createItem/${item._id}`,
+            state: { fadeSidebar: true, testName },
+            ...getSearchParams(),
+          })
+        )
+      }
     }
   } catch (err) {
     console.error(err)

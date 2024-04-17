@@ -1,5 +1,6 @@
 import { Table, Button, Modal } from 'antd'
 import { white, themeColor, mediumDesktopExactWidth } from '@edulastic/colors'
+import { IconInfoBlack } from '@edulastic/icons'
 import styled from 'styled-components'
 
 export const Container = styled.div`
@@ -76,4 +77,12 @@ export const StyledModal = styled(Modal)`
   .ant-modal-body {
     padding-top: 0px;
   }
+`
+export const StyledIconInfoBlack = styled(IconInfoBlack)`
+  margin-bottom: -4px;
+`
+export const StyledQuestionTypeChangeInfo = styled.div`
+  margin-top: 25px;
+  font-size: 12px;
+  color: black;
 `

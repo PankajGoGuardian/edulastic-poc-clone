@@ -12,7 +12,10 @@ export const createTestItemAction = (
   testFlow = false,
   testId,
   newPassageItem = false,
-  testName
+  testName,
+  isMultipart = false,
+  questionData = {},
+  isFromQuestionTypeChange = false
 ) => ({
   type: CREATE_TEST_ITEM_REQUEST,
   payload: {
@@ -21,6 +24,9 @@ export const createTestItemAction = (
     testId,
     newPassageItem,
     testName,
+    isMultipart,
+    questionData,
+    isFromQuestionTypeChange,
   },
 })
 

@@ -67,7 +67,6 @@ export const usePerformanceByStandardDetailsFetch = ({
   sortOrder,
   page,
   pageSize,
-  recompute,
   viewBy,
   analyzeBy,
   setViewOrAnalzeByState,
@@ -76,6 +75,16 @@ export const usePerformanceByStandardDetailsFetch = ({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [totalRows, setTotalRows] = useState(0)
+
+  useEffect(() => {
+    setTotalRows(0)
+  }, [
+    settings.selectedTest?.key,
+    settings.requestFilters,
+    demographicFilters,
+    compareBy,
+  ])
+
   useEffect(() => {
     const fetchData = async () => {
       if (settings.selectedTest && settings.selectedTest.key) {
@@ -96,7 +105,7 @@ export const usePerformanceByStandardDetailsFetch = ({
               sortOrder: tableToDBSortOrderMap[sortOrder],
               page,
               pageSize,
-              recompute,
+              requireRowsCount: !totalRows && page === 2,
               viewBy,
               analyzeBy,
             },

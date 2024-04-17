@@ -1,8 +1,8 @@
 import { SpinLoader, EduIf, EduThen, EduElse } from '@edulastic/common'
-import { Col, Row, Pagination } from 'antd'
+import { Col, Row } from 'antd'
 import next from 'immer'
 import qs from 'qs'
-import { capitalize, find, indexOf, isEmpty, get } from 'lodash'
+import { capitalize, find, indexOf, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -37,6 +37,7 @@ import {
   usePerformanceByStandardSummaryFetch,
 } from './hooks/useFetch'
 import NoDataNotification from '../../../../../common/components/NoDataNotification'
+import BackendPagination from '../../../common/components/BackendPagination'
 
 const {
   viewByMode,
@@ -47,7 +48,7 @@ const {
   getReportWithFilteredSkills,
 } = reportUtils.performanceByStandards
 
-const pageSize = 200
+const PAGE_SIZE = 200
 
 const findCompareByTitle = (key = '') => {
   if (!key) return ''
@@ -95,18 +96,19 @@ const PerformanceByStandards = ({
   const [curriculumId, setCurriculumId] = useState('')
   const [selectedStandards, setSelectedStandards] = useState([])
   const [selectedDomains, setSelectedDomains] = useState([])
-  const [page, setPage] = useState(Number(urlSearch.page) || 1)
+  const [pageFilters, setPageFilters] = useState({
+    page: Number(urlSearch.page) || 1,
+    pageSize: PAGE_SIZE,
+  })
   const [sortOrder, setSortOrder] = useState(urlSearch.sortOrder || undefined)
   const [sortKey, setSortKey] = useState(
     urlSearch.sortKey || sortKeysMap.overall
   )
-  const [recompute, setRecompute] = useState(true)
 
   const { viewBy, analyzeBy, isViewOrAnalyzeByChanged } = viewOrAnalzeByState
 
   useEffect(() => {
-    setRecompute(true)
-    setPage(1)
+    setPageFilters({ ...pageFilters, page: 1 })
     setAdditionalUrlParams((oldState) => ({
       ...oldState,
       page: 1,
@@ -117,14 +119,12 @@ const PerformanceByStandards = ({
     detailsLoading,
     detailsError,
   ] = usePerformanceByStandardDetailsFetch({
+    ...pageFilters,
     demographicFilters,
     settings,
     compareBy,
     sortKey,
     sortOrder,
-    pageSize,
-    page,
-    recompute,
     viewBy,
     analyzeBy,
     setViewOrAnalzeByState,
@@ -139,7 +139,7 @@ const PerformanceByStandards = ({
     settings,
     toggleFilter,
   })
-  const itemsCount = get(details, 'totalRows', 0)
+  const { totalRows, hasMultiplePages } = details
   const report = useMemo(() => {
     return { ...summary, ...details }
   }, [details, summary])
@@ -172,8 +172,8 @@ const PerformanceByStandards = ({
   )
 
   const generateCSVRequired = useMemo(
-    () => [(itemsCount || 0) > pageSize].some(Boolean),
-    [itemsCount]
+    () => [(totalRows || 0) > PAGE_SIZE].some(Boolean),
+    [totalRows]
   )
 
   const setSelectedData = ({ defaultCurriculumId }) => {
@@ -255,8 +255,7 @@ const PerformanceByStandards = ({
   }, [isCsvDownloading])
 
   const handleViewByChange = (event, selected) => {
-    setRecompute(true)
-    setPage(1)
+    setPageFilters({ ...pageFilters, page: 1 })
     setAdditionalUrlParams((oldState) => ({
       ...oldState,
       viewBy: selected.key,
@@ -273,8 +272,7 @@ const PerformanceByStandards = ({
   }
 
   const handleAnalyzeByChange = (event, selected) => {
-    setRecompute(true)
-    setPage(1)
+    setPageFilters({ ...pageFilters, page: 1 })
     setAdditionalUrlParams((oldState) => ({
       ...oldState,
       analyzeBy: selected.key,
@@ -291,8 +289,7 @@ const PerformanceByStandards = ({
   }
 
   const handleCompareByChange = (event, selected) => {
-    setRecompute(true)
-    setPage(1)
+    setPageFilters({ ...pageFilters, page: 1 })
     setAdditionalUrlParams((oldState) => ({
       ...oldState,
       compareBy: selected.key,
@@ -319,12 +316,11 @@ const PerformanceByStandards = ({
     setSortOrder(value)
   }
   const onSetPage = (value) => {
-    setRecompute(false)
     setAdditionalUrlParams((oldState) => ({
       ...oldState,
       page: value,
     }))
-    setPage(value)
+    setPageFilters({ ...pageFilters, page: 1 })
   }
 
   const selectedCurriculumId = standardsDropdownData.find(
@@ -467,15 +463,12 @@ const PerformanceByStandards = ({
                           setSortOrder={onSetSortOrder}
                           setPageNo={onSetPage}
                         />
-                        <EduIf condition={itemsCount > pageSize}>
-                          <Pagination
-                            style={{ marginTop: '10px' }}
-                            onChange={onSetPage}
-                            current={page}
-                            pageSize={pageSize}
-                            total={itemsCount}
-                          />
-                        </EduIf>
+                        <BackendPagination
+                          itemsCount={totalRows}
+                          backendPagination={pageFilters}
+                          setBackendPagination={setPageFilters}
+                          hasMultiplePages={hasMultiplePages}
+                        />
                       </EduThen>
                       <EduElse>
                         <SpinLoader

@@ -316,7 +316,10 @@ const getSettings = (
     blockSaveAndContinue: assignmentSettings?.blockSaveAndContinue || false,
     restrictNavigationOut: assignmentSettings?.restrictNavigationOut || false,
     restrictNavigationOutAttemptsThreshold:
-      assignmentSettings?.restrictNavigationOutAttemptsThreshold,
+      assignmentSettings?.restrictNavigationOut ===
+      'warn-and-report-after-n-alerts'
+        ? assignmentSettings?.restrictNavigationOutAttemptsThreshold
+        : 0,
     referenceDocAttributes,
     ...(isTestPreview && { keypad: test?.keypad?.value }),
     showHintsToStudents,

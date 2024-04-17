@@ -122,10 +122,7 @@ const SummaryContainer = (props) => {
   useTabNavigationCounterEffect({
     testActivityId: utaId,
     enabled: restrictNavigationOut && currentlyFullScreen,
-    threshold:
-      restrictNavigationOut === 'warn-and-report-after-n-alerts'
-        ? restrictNavigationOutAttemptsThreshold
-        : 0,
+    threshold: restrictNavigationOutAttemptsThreshold,
     history,
     assignmentId: testActivity?.assignmentId,
     classId: groupId,

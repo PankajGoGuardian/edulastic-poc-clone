@@ -738,10 +738,7 @@ const AssessmentContainer = ({
     testActivityId: restProps.utaId,
     enabled:
       restrictNavigationOut && (enteredIntoFullScreen || currentlyFullScreen),
-    threshold:
-      restrictNavigationOut === 'warn-and-report-after-n-alerts'
-        ? restrictNavigationOutAttemptsThreshold
-        : 0,
+    threshold: restrictNavigationOutAttemptsThreshold,
     history,
     assignmentId: assignmentObj?._id,
     classId: groupId,

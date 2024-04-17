@@ -77,8 +77,13 @@ export const AnswerActionsWrapper = styled.div`
   background: #fbfafc;
 `
 
+export const StyledEyeIconWrapper = styled.span`
+  top: 3px;
+  position: relative;
+  margin-right: 4px;
+`
 export const AnswerAction = styled(Button)`
-  width: 136px;
+  width: ${({ width }) => width || '136px'};
   height: 32px;
   background: ${({ active }) => (active ? themeColor : 'transparent')};
   border: 1px solid ${themeColor};

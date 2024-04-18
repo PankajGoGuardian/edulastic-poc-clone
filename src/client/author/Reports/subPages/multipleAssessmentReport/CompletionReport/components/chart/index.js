@@ -152,6 +152,7 @@ const Chart = ({
               xAxisFontWeight={400}
               startFromLast
               yAxisStyle={{ transform: 'translate(-15px)', fill: 'black' }}
+              showTestDateOnTestNameHover={false}
             />
           </EduThen>
           <EduElse>

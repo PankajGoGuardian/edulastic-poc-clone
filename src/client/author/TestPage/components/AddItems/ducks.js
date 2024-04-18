@@ -474,7 +474,7 @@ function* removeItemFromTest({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
+    takeLatest(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
     takeEvery(CLEAR_SELECTED_ITEMS, clearSelectedItemsSaga),
     takeEvery(DELETE_ITEM_SUCCESS, removeItemFromTest),
     takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),

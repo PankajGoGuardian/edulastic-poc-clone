@@ -1,7 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { EduButton, notification } from '@edulastic/common'
+import {
+  EduButton,
+  notification,
+  EduIf,
+  EduElse,
+  EduThen,
+} from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
 import styled from 'styled-components'
 import { themeColor, white } from '@edulastic/colors'
@@ -22,6 +28,8 @@ const CombineTestButton = ({
   addItemsToCartFromTest,
   isAddingTestToCart,
   listView = false,
+  isTestCard = false,
+  width,
 }) => {
   const { testCategory, itemGroups } = test
   /** *****===========*******
@@ -55,6 +63,15 @@ const CombineTestButton = ({
       itemsFromTestWithoutCartItemIds,
     })
   }
+
+  const combinedBtnProps = {
+    onClick: handleCombineTest,
+    listView,
+    disabled: testCategory !== testConstants.testCategoryTypes.DEFAULT,
+  }
+
+  const combinedBtnText = 'Add to new test'
+
   return (
     <Tooltip
       title={
@@ -63,15 +80,20 @@ const CombineTestButton = ({
           : undefined
       }
     >
-      <StyledCombineBtnContainer listView={listView}>
-        <StyledCombineBtn
-          onClick={handleCombineTest}
-          listView={listView}
-          disabled={testCategory !== testConstants.testCategoryTypes.DEFAULT}
-        >
-          Add to new test
-        </StyledCombineBtn>
-      </StyledCombineBtnContainer>
+      <EduIf condition={!isTestCard}>
+        <EduThen>
+          <StyledCombineBtnContainer listView={listView}>
+            <StyledCombineBtn {...combinedBtnProps}>
+              {combinedBtnText}
+            </StyledCombineBtn>
+          </StyledCombineBtnContainer>
+        </EduThen>
+        <EduElse>
+          <EduButton {...combinedBtnProps} width={width}>
+            {combinedBtnText}
+          </EduButton>
+        </EduElse>
+      </EduIf>
     </Tooltip>
   )
 }

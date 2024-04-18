@@ -130,6 +130,7 @@ export const deleteRed = '#FF0080'
 export const deleteRed2 = '#EF3863'
 export const strikeOutHover = '#f7cbcc'
 export const fieldRequiredColor = '#e82a83'
+export const fieldRequiredColor2 = '#ff0100'
 
 export const mainBlueColor = '#00b0ff'
 export const blue = '#1774F0'

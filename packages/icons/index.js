@@ -391,6 +391,7 @@ export { default as IconSurveyInsightsAddOn } from './src/IconSurveyInsightsAddO
 export { default as IconDSSellPage } from './src/IconDSSellPage'
 export { default as IconGoogleTranslate } from './src/IconGoogleTranslate'
 export { default as IconInfoCircle } from './src/IconInfoCircle'
+export { default as IconAddToFolder } from './src/IconAddToFolder'
 
 // Insights Report Icons
 export { default as IconClock } from './src/IconClock'

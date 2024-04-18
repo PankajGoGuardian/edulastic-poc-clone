@@ -818,8 +818,10 @@ export const isVideoQuizSelector = createSelector(
 export const isTestTypeWithDefaultTestTitleSelector = createSelector(
   getTestEntitySelector,
   (test) => {
-    const { VIDEO_BASED, DEFAULT } = testCategoryTypes
-    return [VIDEO_BASED, DEFAULT].includes(test?.testCategory)
+    const { VIDEO_BASED, DEFAULT, DOC_BASED, DYNAMIC_TEST } = testCategoryTypes
+    return [VIDEO_BASED, DEFAULT, DOC_BASED, DYNAMIC_TEST].includes(
+      test?.testCategory
+    )
   }
 )
 
@@ -2711,10 +2713,11 @@ function* createTestSaga({ payload }) {
         // try to keep the user on the same tab after test creation
         // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
         const currentTab =
-          currentTabMatch?.[1] ||
-          (entity.testCategory === testCategoryTypes.DEFAULT
+          currentTabMatch?.[1] || payload.toReview
+            ? 'review'
+            : entity.testCategory === testCategoryTypes.DEFAULT
             ? 'addItems'
-            : 'description')
+            : 'description'
         yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
       }
     }

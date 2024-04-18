@@ -357,6 +357,8 @@ class Item extends Component {
         sharedType,
         isDocBased,
         videoUrl,
+        testCategory,
+        itemGroups,
       },
       orgCollections = [],
       item,
@@ -469,6 +471,8 @@ class Item extends Component {
       isUseThisLoading,
       isTestRecommendation,
       videoUrl,
+      testCategory,
+      itemGroups,
     }
 
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard

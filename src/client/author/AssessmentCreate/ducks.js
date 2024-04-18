@@ -389,11 +389,10 @@ function* createAssessmentSaga({ payload }) {
       yield put(receiveTestByIdAction(assessment._id, true, false))
       if (assessment?.testCategory === testCategoryTypes.VIDEO_BASED) {
         yield put(push(`/author/assessments/${assessment._id}${searchParam}`))
-        yield put(changeViewAction(docBasedAssessment.tabs.WORKSHEET))
       } else {
         yield put(push(`/author/assessments/${assessment._id}`))
-        yield put(changeViewAction(docBasedAssessment.tabs.DESCRIPTION))
       }
+      yield put(changeViewAction(docBasedAssessment.tabs.WORKSHEET))
     }
   } catch (error) {
     console.log(error, 'error')

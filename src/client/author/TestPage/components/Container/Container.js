@@ -345,7 +345,7 @@ class Container extends PureComponent {
       } else if (!_location?.state?.persistStore) {
         // currently creating test do nothing
         location?.state?.isDynamicTest
-          ? this.gotoTab('description')
+          ? this.gotoTab('manageSections')
           : this.gotoTab('addItems')
         clearTestAssignments([])
         setDefaultData()

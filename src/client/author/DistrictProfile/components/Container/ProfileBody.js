@@ -13,6 +13,7 @@ import {
   extraDesktopWidthMax,
   themeColorBlue,
   themeColorHoverBlue,
+  fieldRequiredColor2,
 } from '@edulastic/colors'
 import {
   FieldLabel,
@@ -69,6 +70,7 @@ import {
 } from '../../../src/selectors/user'
 import { validateEmail } from '../../../../common/utils/helpers'
 import { setShowJoinSchoolModalAction } from '../../../Dashboard/ducks'
+import { StyledRequired } from '../../../AssessmentCreate/components/CreateAITest/styled'
 
 const { ORG_TYPE } = roleuser
 
@@ -91,19 +93,9 @@ class ProfileBody extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const {
-      defaultGrades,
-      defaultSubjects,
-      autoShareGCAssignment,
-    } = props.user.orgData
+    const { autoShareGCAssignment } = props.user.orgData
     const { interestedCurriculums } = props
     const derivedStateProps = {}
-    if (state.defaultGrades.length === 0 && defaultGrades.length) {
-      Object.assign(derivedStateProps, { defaultGrades })
-    }
-    if (state.defaultSubjects.length === 0 && defaultSubjects.length) {
-      Object.assign(derivedStateProps, { defaultSubjects })
-    }
     if (state.autoShareGCAssignment === undefined) {
       Object.assign(derivedStateProps, { autoShareGCAssignment })
     }
@@ -114,6 +106,15 @@ class ProfileBody extends React.Component {
       Object.assign(derivedStateProps, { interestedCurriculums })
     }
     return Object.keys(derivedStateProps).length ? derivedStateProps : null
+  }
+
+  componentDidMount() {
+    const { user } = this.props
+    const { defaultGrades: userGrades, defaultSubjects: userSubjects } = get(
+      user,
+      'orgData'
+    )
+    this.setState({ defaultGrades: userGrades, defaultSubjects: userSubjects })
   }
 
   handleSubmit = (e) => {
@@ -637,9 +638,11 @@ class ProfileBody extends React.Component {
     } = get(user, 'orgData')
     let showPowerTools = false
     const showDefaultSettingSave =
-      !isEqual(userGrades, defaultGrades) ||
-      !isEqual(userSubjects, defaultSubjects) ||
-      !isEqual(userAutoShareGCAssignment, autoShareGCAssignment)
+      !!defaultGrades?.length &&
+      !!defaultSubjects?.length &&
+      (!isEqual(userGrades, defaultGrades) ||
+        !isEqual(userSubjects, defaultSubjects) ||
+        !isEqual(userAutoShareGCAssignment, autoShareGCAssignment))
 
     if (
       [
@@ -900,7 +903,10 @@ class ProfileBody extends React.Component {
                       </SaveDefaultSettingsBtn>
                     )}
                   </StyledDiv>
-                  <FieldLabel>{t('common.title.interestedGrade')}</FieldLabel>
+                  <FieldLabel>
+                    {t('common.title.interestedGrade')}
+                    <StyledRequired>*</StyledRequired>
+                  </FieldLabel>
                   <SelectInputStyled
                     data-cy="gradeSelect"
                     mode="multiple"
@@ -911,12 +917,13 @@ class ProfileBody extends React.Component {
                     onChange={(value) => this.onSettingChange(value, 'grade')}
                     optionFilterProp="children"
                     getPopupContainer={(trigger) => trigger.parentNode}
-                    margin="0px 0px 15px"
+                    margin="0px 0px 7px"
                     filterOption={(input, option) =>
                       option.props.children
                         .toLowerCase()
                         .indexOf(input.toLowerCase()) >= 0
                     }
+                    isError={!defaultGrades?.length}
                   >
                     {selectsData.allGrades.map(({ value, text }) => (
                       <Select.Option key={value} value={value}>
@@ -924,12 +931,20 @@ class ProfileBody extends React.Component {
                       </Select.Option>
                     ))}
                   </SelectInputStyled>
-                  <FieldLabel>{t('common.title.interestedSubject')}</FieldLabel>
+                  {!defaultGrades?.length && (
+                    <StyledRequiredFieldInfoText>
+                      Atleast one grade need to be selected to save changes{' '}
+                    </StyledRequiredFieldInfoText>
+                  )}
+                  <FieldLabel>
+                    {t('common.title.interestedSubject')}
+                    <StyledRequired>*</StyledRequired>
+                  </FieldLabel>
                   <SelectInputStyled
                     data-cy="subjectSelect"
                     mode="multiple"
                     size="large"
-                    margin="0px 0px 15px"
+                    margin="0px 0px 7px"
                     placeholder="Please select"
                     value={defaultSubjects}
                     defaultValue={defaultSubjects}
@@ -941,6 +956,7 @@ class ProfileBody extends React.Component {
                         .toLowerCase()
                         .indexOf(input.toLowerCase()) >= 0
                     }
+                    isError={!defaultSubjects?.length}
                   >
                     {selectsData.allSubjects.map(({ value, text }) => (
                       <Select.Option key={value} value={value}>
@@ -948,6 +964,11 @@ class ProfileBody extends React.Component {
                       </Select.Option>
                     ))}
                   </SelectInputStyled>
+                  {!defaultSubjects?.length && (
+                    <StyledRequiredFieldInfoText>
+                      Atleast one subject need to be selected to save changes{' '}
+                    </StyledRequiredFieldInfoText>
+                  )}
                   {user.role === roleuser.TEACHER && googleClassRoomAllowed && (
                     <SwitchWrapper>
                       <FieldLabel>
@@ -1423,4 +1444,9 @@ const SwitchWrapper = styled.div`
   button {
     margin-right: 150px;
   }
+`
+const StyledRequiredFieldInfoText = styled.p`
+  font-size: 10px;
+  color: ${fieldRequiredColor2};
+  margin-bottom: 10px;
 `

@@ -4,6 +4,7 @@ import { Input } from 'antd'
 import produce from 'immer'
 import styled from 'styled-components'
 import { backgroundGrey } from '@edulastic/colors'
+import { MathFormulaDisplay } from '@edulastic/common'
 import {
   getCurrentRubricDataSelector,
   updateRubricDataAction,
@@ -72,7 +73,7 @@ const TextInput = ({
 
   if (textType === 'textarea') {
     const froalaToolbarId = `rubric-rating-description-${
-      isFullScreen ? 'fullScreen' : ''
+      isFullScreen ? 'fullscreen-' : ''
     }${id}`
 
     const foralaEditorTools = isFullScreen
@@ -136,7 +137,7 @@ const StyledInput = styled(Input)`
   }
 `
 
-const TextArea = styled.div`
+const TextArea = styled(MathFormulaDisplay)`
   height: 92px !important;
   background: ${backgroundGrey};
   border-radius: 2px;

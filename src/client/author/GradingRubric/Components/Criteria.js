@@ -58,7 +58,7 @@ const Criteria = ({
         className={index + 1 === arr.length ? 'last-rating' : ''}
         handleOnClickExpand={handleOnClickExpand}
         selectedRatingToExpand={selectedRatingToExpand}
-        criteriaName={data?.name}
+        criteria={data}
       />
     ))
 

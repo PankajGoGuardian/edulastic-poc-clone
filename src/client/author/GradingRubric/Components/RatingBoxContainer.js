@@ -86,7 +86,7 @@ const RatingBox = ({
           />
         </span>
       </div>
-      <div data-cy="ratingDescription">
+      <div data-cy="ratingDescription" className="rating-description">
         <TextInput
           id={id}
           parentId={parentId}

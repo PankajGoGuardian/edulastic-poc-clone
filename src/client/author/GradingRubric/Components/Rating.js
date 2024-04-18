@@ -6,7 +6,7 @@ import produce from 'immer'
 import { FlexContainer } from '@edulastic/common'
 import styled from 'styled-components'
 import { updateRubricDataAction, getCurrentRubricDataSelector } from '../ducks'
-import { Title } from '../../src/components/common'
+import TextInput from './common/TextInput'
 import RatingBox from './RatingBoxContainer'
 
 const Rating = ({
@@ -19,8 +19,9 @@ const Rating = ({
   className,
   handleOnClickExpand = () => {},
   selectedRatingToExpand = '',
-  criteriaName = '',
+  criteria: criteriaDetails = '',
 }) => {
+  const { id: criteriaId, name: criteriaName } = criteriaDetails
   const allRatings = currentRubricData.criteria.find((c) => c.id === parentId)
     .ratings
   const handleDelete = () => {
@@ -82,12 +83,20 @@ const Rating = ({
         maskClosable={false}
       >
         <FlexContainer
-          width="100%"
           justifyContent="space-between"
           alignItems="center"
           padding="16px 32px"
+          data-cy="criteriaName"
+          width="300px"
         >
-          <Title>{criteriaName}</Title>
+          <TextInput
+            id={criteriaId}
+            isEditable={isEditable}
+            textType="text"
+            componentFor="Criteria"
+            value={criteriaName || ''}
+            width="100%"
+          />
         </FlexContainer>
         <StyledRatingCardWrapper
           flexDirection="column"

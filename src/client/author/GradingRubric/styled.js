@@ -294,10 +294,10 @@ export const RatingContainer = styled.div`
       }
     }
   }
-  > div:nth-child(2) {
+  > div.rating-description {
     padding: 0px 14px 11px;
     position: relative;
-    > div:first-child {
+    > div.froala-wrapper {
       background: ${backgroundGrey};
       > .fr-box {
         width: ${({ isFullScreen }) => (isFullScreen ? '100%' : '242px')};

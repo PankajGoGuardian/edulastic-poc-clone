@@ -266,7 +266,6 @@ const MultipleAssessmentReport = ({
       sortKey: sortFilters.sortKey,
       sortOrder: tableToDBSortOrderMap[sortFilters.sortOrder],
       ...pageFilters,
-      requireTotalCount: pageFilters.page === 1,
     }
     if ((q.termId || q.reportId) && pageFilters.page) {
       const query = enhanceQueryWithTermIds(q, { orgData, userRole })
@@ -306,7 +305,11 @@ const MultipleAssessmentReport = ({
     [reportChartData]
   )
 
-  const { rowsCount = 0 } = get(reportTableData, 'data.result', {})
+  const { rowsCount = 0, hasMultiplePages } = get(
+    reportTableData,
+    'data.result',
+    {}
+  )
 
   const tableData = useMemo(
     () =>
@@ -547,6 +550,7 @@ const MultipleAssessmentReport = ({
               isCsvDownloading={isCsvDownloading}
               isPrinting={isPrinting}
               rowsCount={rowsCount}
+              hasMultiplePages={hasMultiplePages}
               sortFilters={sortFilters}
               setSortFilters={setSortFilters}
               pageFilters={pageFilters}

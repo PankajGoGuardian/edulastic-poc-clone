@@ -172,7 +172,7 @@ function* receiveRecentPlayListsSaga() {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_PLAYLIST_REQUEST, receivePlaylistsSaga),
+    yield takeLatest(RECEIVE_PLAYLIST_REQUEST, receivePlaylistsSaga),
     yield takeEvery(RECEIVE_PUBLISHER_REQUEST, receivePublishersSaga),
     yield takeLatest(RECEIVE_LAST_PLAYLIST, receiveLastPlayListSaga),
     yield takeLatest(RECEIVE_RECENT_PLAYLISTS, receiveRecentPlayListsSaga),

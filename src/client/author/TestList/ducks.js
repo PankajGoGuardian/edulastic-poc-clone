@@ -420,7 +420,7 @@ function* addItemsToCartFromTestSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
+    takeLatest(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
     takeEvery(CLEAR_TEST_FILTERS, clearAllTestFiltersSaga),
     takeEvery(DELETE_TEST_REQUEST, deleteTestSaga),
     takeEvery(

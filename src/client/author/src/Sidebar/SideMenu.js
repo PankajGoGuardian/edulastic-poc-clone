@@ -967,6 +967,7 @@ class SideMenu extends Component {
               <MenuWrapper>
                 {locationState?.fadeSidebar && <Overlay />}
                 <Menu
+                  collapsed={isCollapsed}
                   selectedKeys={[defaultSelectedMenu.toString()]}
                   mode="inline"
                   onClick={(item) => this.handleMenu(item)}

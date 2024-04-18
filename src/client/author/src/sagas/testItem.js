@@ -115,7 +115,9 @@ function* createTestItemSaga({
       canAddMultipleItems: false,
     }
 
-    yield put(resetDictAlignmentsAction())
+    if (!isFromQuestionTypeChange) {
+      yield put(resetDictAlignmentsAction())
+    }
 
     // if its a being added from passage, create new
     if (newPassageItem) {

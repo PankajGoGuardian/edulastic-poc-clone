@@ -409,6 +409,13 @@ function* saveAssignment({ payload }) {
       assignmentSettings.allowAutoEssayEvaluation = false
     }
 
+    if (
+      assignmentSettings.restrictNavigationOut !==
+      'warn-and-report-after-n-alerts'
+    ) {
+      assignmentSettings.restrictNavigationOutAttemptsThreshold = 0
+    }
+
     const referenceDocAttributes =
       assignmentSettings.referenceDocAttributes ||
       test.referenceDocAttributes ||

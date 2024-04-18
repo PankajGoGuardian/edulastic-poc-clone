@@ -291,7 +291,7 @@ const MiscellaneousGroupContainer = ({
                   {accommodationsData
                     .filter((accommodation) =>
                       accommodation.key === speechToText.key
-                        ? districtTestSettings.enableSpeechToText
+                        ? districtTestSettings?.enableSpeechToText
                         : true
                     )
                     .map(({ key, value, description, id }) => (

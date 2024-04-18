@@ -11,10 +11,13 @@ import { Table, Button as CustomButton } from '../Common/StyledComponents'
 import { renderSubscriptionType } from '../Common/SubTypeTag'
 import { HeadingSpan, ValueSpan } from '../Common/StyledComponents/upgradePlan'
 import { SUBSCRIPTION_TYPE_CONFIG } from '../Data'
-import { SUBSCRIPTION_TYPES } from '../Common/constants/subscription'
 import {
+  ADDITIONAL_SUBSCRIPTION_TYPES,
+  SUBSCRIPTION_TYPES,
+} from '../Common/constants/subscription'
+import {
+  getAdditionalSubscription,
   getNextAdditionalSubscriptions,
-  getTutorMeSubscription,
   validateForTutorMeAuthTokenCheck,
 } from '../Common/Utils'
 
@@ -121,6 +124,8 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
       tutorMeStartDate: editedTutorMeStartDate,
       tutorMeEndDate: editedTutorMeEndDate,
       tutorMeAuthToken: editedTutorMeAuthToken,
+      dataStudioStartDate: editedDataStudioStartDate,
+      dataStudioEndDate: editedDataStudioEndDate,
     },
     setEditableRowFieldValues,
   }) => {
@@ -155,11 +160,15 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             tutorMeEndDate: rawTutorMeEndDate,
             tutorMeAuthToken,
             tutorMeAuthTokenCheck,
+            dataStudioStartDate: rawDataStudioStartDate,
+            dataStudioEndDate: rawDataStudioEndDate,
           }
         ) => {
           if (!err) {
             const tutorMeStartDate = rawTutorMeStartDate?.valueOf()
             const tutorMeEndDate = rawTutorMeEndDate?.valueOf()
+            const dataStudioStartDate = rawDataStudioStartDate?.valueOf()
+            const dataStudioEndDate = rawDataStudioEndDate?.valueOf()
 
             // ensure tutorMe authentication key has been double checked
             const isValidTutorMeAuth = validateForTutorMeAuthTokenCheck({
@@ -176,6 +185,8 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
               tutorMeEndDate,
               tutorMeAuthToken,
               tutorMeAuthTokenCheck,
+              dataStudioStartDate,
+              dataStudioEndDate,
             })
 
             // bulk update school subscriptions
@@ -249,11 +260,22 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           notification({ msg })
           return
         }
+        // validate all Data Studio fields should be either set or unset using XOR (^)
+        // eslint-disable-next-line no-bitwise
+        if (!editedDataStudioStartDate ^ !editedDataStudioEndDate) {
+          const msg = !editedDataStudioStartDate
+            ? 'Data Studio Start Date required!'
+            : 'Data Studio End Date required!'
+          notification({ msg })
+          return
+        }
         // curate additional subscriptions to sync
         const nextAdditionalSubscriptions = getNextAdditionalSubscriptions({
           tutorMeStartDate: editedTutorMeStartDate,
           tutorMeEndDate: editedTutorMeEndDate,
           tutorMeAuthToken: editedTutorMeAuthToken,
+          dataStudioStartDate: editedDataStudioStartDate,
+          dataStudioEndDate: editedDataStudioEndDate,
         })
         // update single school subscription
         bulkSchoolsSubscribeAction({
@@ -278,7 +300,17 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             startDate: tutorMeStartDate,
             endDate: tutorMeEndDate,
             authToken: tutorMeAuthToken,
-          } = getTutorMeSubscription(subscription)
+          } = getAdditionalSubscription(
+            subscription,
+            ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME
+          )
+          const {
+            startDate: dataStudioStartDate,
+            endDate: dataStudioEndDate,
+          } = getAdditionalSubscription(
+            subscription,
+            ADDITIONAL_SUBSCRIPTION_TYPES.DATA_WAREHOUSE_REPORTS
+          )
           updateCurrentEditableRow({
             schoolId,
             subEndDate,
@@ -289,6 +321,8 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             tutorMeStartDate,
             tutorMeEndDate,
             tutorMeAuthToken,
+            dataStudioStartDate,
+            dataStudioEndDate,
           })
         }
       }
@@ -361,8 +395,9 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           />
         )
       }
-      const { startDate: tutorMeStartDate } = getTutorMeSubscription(
-        subscription
+      const { startDate: tutorMeStartDate } = getAdditionalSubscription(
+        subscription,
+        ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME
       )
       return tutorMeStartDate && moment(tutorMeStartDate).format('YYYY-MM-DD')
     }
@@ -385,7 +420,10 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           />
         )
       }
-      const { endDate: tutorMeEndDate } = getTutorMeSubscription(subscription)
+      const { endDate: tutorMeEndDate } = getAdditionalSubscription(
+        subscription,
+        ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME
+      )
       return tutorMeEndDate && moment(tutorMeEndDate).format('YYYY-MM-DD')
     }
 
@@ -403,10 +441,65 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           />
         )
       }
-      const { authToken: tutorMeAuthToken } = getTutorMeSubscription(
-        subscription
+      const { authToken: tutorMeAuthToken } = getAdditionalSubscription(
+        subscription,
+        ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME
       )
       return tutorMeAuthToken
+    }
+
+    const renderDataStudioStartDate = (subscription, record) => {
+      if (record.schoolId === currentEditableRow) {
+        return (
+          <DatePicker
+            value={
+              editedDataStudioStartDate && moment(editedDataStudioStartDate)
+            }
+            onChange={(nextDataStudioStartDate) =>
+              setEditableRowFieldValues({
+                fieldName: 'dataStudioStartDate',
+                value: nextDataStudioStartDate?.valueOf(),
+              })
+            }
+            disabledDate={(val) =>
+              !!editedDataStudioEndDate &&
+              val > moment(editedDataStudioEndDate).startOf('day')
+            }
+          />
+        )
+      }
+      const { startDate: dataStudioStartDate } = getAdditionalSubscription(
+        subscription,
+        ADDITIONAL_SUBSCRIPTION_TYPES.DATA_WAREHOUSE_REPORTS
+      )
+      return (
+        dataStudioStartDate && moment(dataStudioStartDate).format('YYYY-MM-DD')
+      )
+    }
+
+    const renderDataStudioEndDate = (subscription, record) => {
+      if (record.schoolId === currentEditableRow) {
+        return (
+          <DatePicker
+            value={editedDataStudioEndDate && moment(editedDataStudioEndDate)}
+            onChange={(nextDataStudioEndDate) =>
+              setEditableRowFieldValues({
+                fieldName: 'dataStudioEndDate',
+                value: nextDataStudioEndDate?.valueOf(),
+              })
+            }
+            disabledDate={(val) =>
+              !!editedTutorMeStartDate &&
+              val < moment(editedTutorMeStartDate).startOf('day')
+            }
+          />
+        )
+      }
+      const { endDate: dataStudioEndDate } = getAdditionalSubscription(
+        subscription,
+        ADDITIONAL_SUBSCRIPTION_TYPES.DATA_WAREHOUSE_REPORTS
+      )
+      return dataStudioEndDate && moment(dataStudioEndDate).format('YYYY-MM-DD')
     }
 
     const renderNotes = (note, record) =>
@@ -481,6 +574,12 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             key="districtName"
           />
           <Column
+            title="Plan"
+            dataIndex="subscription"
+            key="plan"
+            render={renderSubscription}
+          />
+          <Column
             title="Start Date"
             dataIndex="subscription.subStartDate"
             key="startDate"
@@ -491,6 +590,18 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             dataIndex="subscription.subEndDate"
             key="endDate"
             render={renderEndDate}
+          />
+          <Column
+            title="Data Studio Start Date"
+            dataIndex="subscription"
+            key="dataStudioStartDate"
+            render={renderDataStudioStartDate}
+          />
+          <Column
+            title="Data Studio End Date"
+            dataIndex="subscription"
+            key="dataStudioEndDate"
+            render={renderDataStudioEndDate}
           />
           <Column
             title="TutorMe Start Date"
@@ -522,12 +633,6 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             key="adminPremium"
             width="100px"
             render={renderUpgradeDA}
-          />
-          <Column
-            title="Plan"
-            dataIndex="subscription"
-            key="plan"
-            render={renderSubscription}
           />
           <Column
             title="Action"
@@ -589,6 +694,7 @@ const BulkSubscribeForm = ({
       getFieldDecorator={getFieldDecorator}
       getFieldValue={getFieldValue}
       showTutorMeFormItems
+      showDataStudioFormItems
     >
       <Form.Item label={<HeadingSpan>CS Manager</HeadingSpan>}>
         {getFieldDecorator('customerSuccessManager')(
@@ -598,7 +704,6 @@ const BulkSubscribeForm = ({
           />
         )}
       </Form.Item>
-
       <Form.Item label={<HeadingSpan>Opportunity Id</HeadingSpan>}>
         {getFieldDecorator('opportunityId')(
           <Input placeholder="Opportunity Id" style={{ width: 300 }} />
@@ -611,7 +716,6 @@ const BulkSubscribeForm = ({
         )}
       </Form.Item>
     </DatesNotesFormItem>
-
     <Form.Item>
       {getFieldDecorator('adminPremium', {
         valuePropName: 'checked',

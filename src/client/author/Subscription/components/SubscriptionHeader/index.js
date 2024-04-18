@@ -24,7 +24,10 @@ import {
   TopBanner,
   UserStatus,
 } from './styled'
-import { SUBSCRIPTION_TYPES } from '../../../../admin/Common/constants/subscription'
+import {
+  DATA_STUDIO_LABEL,
+  SUBSCRIPTION_TYPES,
+} from '../../../../admin/Common/constants/subscription'
 
 function formatDate(subEndDate) {
   if (!subEndDate) return null
@@ -158,24 +161,18 @@ const SubscriptionHeader = ({
 
   const getCurrentPlan = () => {
     const { dataWarehouseReports } = features || {}
-    const {
-      free,
-      enterprise,
-      enterprisePlusDataStudio,
-      dataStudio,
-    } = SUBSCRIPTION_TYPES
-
     if (isSubscribed && subType && licenseExpiryDate && isPremiumUser) {
       if (isPartialPremiumUgradedUser) {
         return dataWarehouseReports
-          ? enterprisePlusDataStudio.label
-          : enterprise.label
+          ? `${SUBSCRIPTION_TYPES.enterprise.label} + ${DATA_STUDIO_LABEL}`
+          : SUBSCRIPTION_TYPES.enterprise.label
       }
       const type = capitalize(subType.replace(/_/g, ' '))
-      return dataWarehouseReports ? `${type} + ${dataStudio.label}` : type
+      return dataWarehouseReports ? `${type} + ${DATA_STUDIO_LABEL}` : type
     }
-
-    return dataWarehouseReports ? dataStudio.label : free.label
+    return dataWarehouseReports
+      ? DATA_STUDIO_LABEL
+      : SUBSCRIPTION_TYPES.free.label
   }
 
   return (

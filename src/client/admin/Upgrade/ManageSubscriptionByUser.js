@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col, Form, Radio, Input, Button } from 'antd'
+import { compact } from 'lodash'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
 import { Table } from '../Common/StyledComponents'
 import {
+  renderDataStudioEndDate,
+  renderDataStudioStartDate,
   renderEndDate,
   renderStartDate,
   renderSubscriptionType,
@@ -16,8 +19,8 @@ import {
 import InvalidEmailIdList from './InvalidEmailIdList'
 import { radioButtonUserData } from '../Data'
 import {
+  checkIsDataStudioEnabled,
   getNextAdditionalSubscriptions,
-  updateDataStudioPermission,
   validateForTutorMeAuthTokenCheck,
 } from '../Common/Utils'
 import {
@@ -123,13 +126,13 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
       render: (institutionIds) => institutionIds.join('\n'),
     },
     {
+      title: 'Role',
+      dataIndex: '_source.role',
+    },
+    {
       title: 'Subscription Type',
       dataIndex: 'subscription',
       render: renderSubscriptionType,
-    },
-    {
-      title: 'Role',
-      dataIndex: '_source.role',
     },
     {
       title: 'Start Date',
@@ -140,6 +143,16 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
       title: 'End Date',
       dataIndex: 'subscription',
       render: renderEndDate,
+    },
+    {
+      title: 'Data Studio Start Date',
+      dataIndex: 'subscription',
+      render: renderDataStudioStartDate,
+    },
+    {
+      title: 'Data Studio End Date',
+      dataIndex: 'subscription',
+      render: renderDataStudioEndDate,
     },
     {
       title: 'TutorMe Start Date',
@@ -200,11 +213,15 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
             tutorMeEndDate: rawTutorMeEndDate,
             tutorMeAuthToken,
             tutorMeAuthTokenCheck,
+            dataStudioStartDate: rawDataStudioStartDate,
+            dataStudioEndDate: rawDataStudioEndDate,
           }
         ) => {
           if (!err) {
             const tutorMeStartDate = rawTutorMeStartDate?.valueOf()
             const tutorMeEndDate = rawTutorMeEndDate?.valueOf()
+            const dataStudioStartDate = rawDataStudioStartDate?.valueOf()
+            const dataStudioEndDate = rawDataStudioEndDate?.valueOf()
 
             // ensure tutorMe authentication key has been double checked
             const isValidTutorMeAuth = validateForTutorMeAuthTokenCheck({
@@ -215,75 +232,44 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
             })
             if (!isValidTutorMeAuth) return
 
-            const isDataStudio =
-              subscriptionAction === radioButtonUserData.DATA_STUDIO
-            const isPremiumPlusDataStudio =
-              subscriptionAction ===
-              radioButtonUserData.PREMIUM_PLUS_DATA_STUDIO
-
-            const userIds = []
-            const subscriptionIds = []
-            const identifiers = validEmailIdsList.map(({ _id }) => _id)
-            validEmailIdsList.forEach(({ subscription, _id }) => {
-              if (subscription && subscription._id) {
-                subscriptionIds.push(subscription._id)
-              } else {
-                userIds.push(_id)
-              }
-            })
-            const revokePremiumCheck =
-              subscriptionAction === radioButtonUserData.FREE || isDataStudio
-
-            const dataStudio = {
-              users: [],
-            }
-
-            const seedDsData = {
-              districtData: [],
-            }
-
-            validEmailIdsList.forEach(({ _source, _id }) => {
-              const {
-                permissions = [],
-                permissionsExpiry = [],
-                districtIds = [],
-              } = _source
-
-              const [districtId] = districtIds ?? []
-              const enableDataStudio = isDataStudio || isPremiumPlusDataStudio
-              const updateData = updateDataStudioPermission({
-                isDataStudio: enableDataStudio,
-                permissions,
-                permissionsExpiry,
-                perStartDate: subStartDate.valueOf(),
-                perEndDate: subEndDate.valueOf(),
-              })
-
-              updateData._id = _id
-
-              dataStudio.users.push(updateData)
-              if (districtId) {
-                const foundSeedDsData = seedDsData.districtData.find(
-                  ({ districtId: _districtId }) => _districtId === districtId
-                )
-                if (!foundSeedDsData) {
-                  seedDsData.districtData.push({
-                    districtId,
-                    status: enableDataStudio,
-                  })
-                }
-              }
-            })
-
             // curate additional subscriptions to sync
             const nextAdditionalSubscriptions = getNextAdditionalSubscriptions({
               tutorMeStartDate,
               tutorMeEndDate,
               tutorMeAuthToken,
               tutorMeAuthTokenCheck,
+              dataStudioStartDate,
+              dataStudioEndDate,
+            })
+            const isDataStudioEnabled = checkIsDataStudioEnabled(
+              nextAdditionalSubscriptions
+            )
+
+            const userIds = []
+            const subscriptionIds = []
+            const identifiers = []
+            const districtIds = []
+
+            validEmailIdsList.forEach(({ subscription, _id, _source }) => {
+              identifiers.push(_id)
+              if (subscription && subscription._id) {
+                subscriptionIds.push(subscription._id)
+              } else {
+                userIds.push(_id)
+              }
+              districtIds.push(...(_source.districtIds || []))
             })
 
+            const seedDsData = {
+              districtData: compact(districtIds).map((districtId) => ({
+                districtId,
+                status: isDataStudioEnabled,
+              })),
+            }
+
             // keep subscription active if either premium or additionalSubscriptions are present
+            const revokePremiumCheck =
+              subscriptionAction === radioButtonUserData.FREE
             const statusObj =
               !revokePremiumCheck || nextAdditionalSubscriptions.length
                 ? {}
@@ -302,7 +288,6 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               userIds,
               subscriptionIds,
               identifiers,
-              dataStudio,
               seedDsData,
               additionalSubscriptions: nextAdditionalSubscriptions,
             })
@@ -314,12 +299,6 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
 
     return (
       <Form onSubmit={handleSubmit}>
-        <DatesNotesFormItem
-          getFieldDecorator={getFieldDecorator}
-          getFieldValue={getFieldValue}
-          showTutorMeFormItems
-        />
-
         <Row>
           <Col span={24}>
             <Form.Item>
@@ -337,6 +316,12 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
             </Form.Item>
           </Col>
         </Row>
+        <DatesNotesFormItem
+          getFieldDecorator={getFieldDecorator}
+          getFieldValue={getFieldValue}
+          showTutorMeFormItems
+          showDataStudioFormItems
+        />
         <Form.Item>
           <Button data-cy="submitButton" type="primary" htmlType="submit">
             Submit

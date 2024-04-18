@@ -355,12 +355,7 @@ const Subscription = (props) => {
         ) : showDataStudioTab ? (
           <DataStudioTab
             features={features}
-            isPremium={isPremium}
-            subType={subType}
-            requestQuote={openRequestQuoteModal}
-            subEndDate={subEndDate}
-            isPremiumUser={isPremiumUser}
-            signUpFlowModalHandler={signUpFlowModalHandler}
+            subscription={subscription}
             user={user}
           />
         ) : (

@@ -1,33 +1,22 @@
 import React from 'react'
 import { Tag, Icon } from 'antd'
 import { greenDark, darkBlue, lightBlue } from '@edulastic/colors'
-import { userPermissions } from '@edulastic/constants'
 import moment from 'moment'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
-import { SUBSCRIPTION_TYPES } from '../constants/subscription'
-import { getTutorMeSubscription } from '../Utils'
+import {
+  ADDITIONAL_SUBSCRIPTION_TYPES,
+  SUBSCRIPTION_TYPES,
+} from '../constants/subscription'
+import { getAdditionalSubscription } from '../Utils'
 
 const dateFormat = 'DD MMM, YYYY'
 
-export function renderSubscriptionType(subscription = {}, record) {
+export function renderSubscriptionType(subscription = {}) {
   const { subType = 'free', updatedSubTypeSuccess } = subscription
-
-  const isDataStudio = (record?._source?.permissions || []).includes(
-    userPermissions.DATA_WAREHOUSE_REPORTS
-  )
-
-  let _subType = subType
-  if (isDataStudio) {
-    if (subType === SUBSCRIPTION_TYPES.free.subType) {
-      _subType = SUBSCRIPTION_TYPES.dataStudio.label
-    } else if (subType === SUBSCRIPTION_TYPES.premium.subType) {
-      _subType = SUBSCRIPTION_TYPES.premiumPlusDataStudio.label
-    }
-  }
 
   return (
     <>
-      <SubTypeTag style={{ marginRight: '5px' }}>{_subType}</SubTypeTag>
+      <SubTypeTag style={{ marginRight: '5px' }}>{subType}</SubTypeTag>
       {typeof updatedSubTypeSuccess === 'undefined' ? null : (
         <Icon
           title={`Update ${updatedSubTypeSuccess ? 'success' : 'failed'}`}
@@ -38,27 +27,7 @@ export function renderSubscriptionType(subscription = {}, record) {
   )
 }
 
-const renderDSExpiryDate = (record, dateKey = 'perStartDate') => {
-  const { _source: { permissionsExpiry = [], permissions = [] } = {} } = record
-  const isDataStudio = permissions.includes(
-    userPermissions.DATA_WAREHOUSE_REPORTS
-  )
-  const isDataStudioExpiry = permissionsExpiry.find(
-    ({ permissionKey }) =>
-      permissionKey === userPermissions.DATA_WAREHOUSE_REPORTS
-  )
-
-  return (
-    <EduIf condition={isDataStudio && isDataStudioExpiry}>
-      <EduThen>
-        {moment(isDataStudioExpiry?.[dateKey]).format(dateFormat)}
-      </EduThen>
-      <EduElse>-</EduElse>
-    </EduIf>
-  )
-}
-
-export const renderStartDate = (subscription = {}, record) => {
+export const renderStartDate = (subscription = {}) => {
   const { subStartDate, subRenewalDate } = subscription
 
   return (
@@ -67,27 +36,30 @@ export const renderStartDate = (subscription = {}, record) => {
         <EduThen>
           {moment(subStartDate || subRenewalDate).format(dateFormat)}
         </EduThen>
-        <EduElse>{renderDSExpiryDate(record, 'perStartDate')}</EduElse>
+        <EduElse>-</EduElse>
       </EduIf>
     </span>
   )
 }
 
-export const renderEndDate = (subscription = {}, record) => {
+export const renderEndDate = (subscription = {}) => {
   const { subEndDate } = subscription
 
   return (
     <span data-cy="userSubscriptionEndDate">
       <EduIf condition={subEndDate}>
         <EduThen>{moment(subEndDate).format(dateFormat)}</EduThen>
-        <EduElse>{renderDSExpiryDate(record, 'perEndDate')}</EduElse>
+        <EduElse>-</EduElse>
       </EduIf>
     </span>
   )
 }
 
 export const renderTutorMeStartDate = (subscription) => {
-  const { startDate: tutorMeStartDate } = getTutorMeSubscription(subscription)
+  const { startDate: tutorMeStartDate } = getAdditionalSubscription(
+    subscription,
+    ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME
+  )
   return (
     <span data-cy="userSubscriptionTutorMeStartDate">
       <EduIf condition={tutorMeStartDate}>
@@ -99,7 +71,10 @@ export const renderTutorMeStartDate = (subscription) => {
 }
 
 export const renderTutorMeEndDate = (subscription) => {
-  const { endDate: tutorMeEndDate } = getTutorMeSubscription(subscription)
+  const { endDate: tutorMeEndDate } = getAdditionalSubscription(
+    subscription,
+    ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME
+  )
   return (
     <span data-cy="userSubscriptionTutorMeEndDate">
       <EduIf condition={tutorMeEndDate}>
@@ -111,7 +86,10 @@ export const renderTutorMeEndDate = (subscription) => {
 }
 
 export const renderTutorMeAuthToken = (subscription) => {
-  const { authToken: tutorMeAuthToken } = getTutorMeSubscription(subscription)
+  const { authToken: tutorMeAuthToken } = getAdditionalSubscription(
+    subscription,
+    ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME
+  )
   return (
     <span data-cy="userSubscriptionTutorMeAuthToken">
       {tutorMeAuthToken || '-'}
@@ -119,15 +97,42 @@ export const renderTutorMeAuthToken = (subscription) => {
   )
 }
 
+export const renderDataStudioStartDate = (subscription) => {
+  const { startDate: dataStudioStartDate } = getAdditionalSubscription(
+    subscription,
+    ADDITIONAL_SUBSCRIPTION_TYPES.DATA_WAREHOUSE_REPORTS
+  )
+  return (
+    <span data-cy="userSubscriptionDataStudioStartDate">
+      <EduIf condition={dataStudioStartDate}>
+        <EduThen>{moment(dataStudioStartDate).format(dateFormat)}</EduThen>
+        <EduElse>-</EduElse>
+      </EduIf>
+    </span>
+  )
+}
+
+export const renderDataStudioEndDate = (subscription) => {
+  const { endDate: dataStudioEndDate } = getAdditionalSubscription(
+    subscription,
+    ADDITIONAL_SUBSCRIPTION_TYPES.DATA_WAREHOUSE_REPORTS
+  )
+  return (
+    <span data-cy="userSubscriptionDataStudioEndDate">
+      <EduIf condition={dataStudioEndDate}>
+        <EduThen>{moment(dataStudioEndDate).format(dateFormat)}</EduThen>
+        <EduElse>-</EduElse>
+      </EduIf>
+    </span>
+  )
+}
+
 export default function SubTypeTag({ children }) {
   const color = {
     [SUBSCRIPTION_TYPES.free.subType]: greenDark,
-    [SUBSCRIPTION_TYPES.dataStudio.label]: greenDark,
     [SUBSCRIPTION_TYPES.enterprise.subType]: darkBlue,
-    [SUBSCRIPTION_TYPES.enterprisePlusDataStudio.label]: darkBlue,
     [SUBSCRIPTION_TYPES.partialPremium.subType]: lightBlue,
     [SUBSCRIPTION_TYPES.premium.subType]: '#FFC400',
-    [SUBSCRIPTION_TYPES.premiumPlusDataStudio.label]: '#FFC400',
   }
   return (
     <Tag

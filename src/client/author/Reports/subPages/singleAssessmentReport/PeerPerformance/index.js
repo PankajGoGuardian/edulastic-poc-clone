@@ -28,7 +28,7 @@ import {
 import { SignedStackedBarChartContainer } from './components/charts/signedStackedBarChartContainer'
 import { SimpleStackedBarChartContainer } from './components/charts/simpleStackedBarChartContainer'
 import { TableContainer, UpperContainer } from './components/styled'
-import { PeerPerformanceTable } from './components/table/peerPerformanceTable'
+import PeerPerformanceTable from './components/table/peerPerformanceTable'
 import ExternalDemographicFilter from './components/ExternalDemographicFilter'
 import {
   getPeerPerformanceRequestAction,

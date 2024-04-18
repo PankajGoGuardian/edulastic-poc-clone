@@ -597,5 +597,8 @@
         }
       }
     }
+  },
+  "districtPolicy": {
+    "ignoreRaceOverEthncitiyTooltipText": "If a student is Hispanic and this setting is selected, their race will not be reported. For instance, if a student is identified as White with Hispanic ethnicity, they will be reported solely as Hispanic and not counted under the White race in reports."
   }
 }

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { createMemoryHistory } from 'history'
 import { Router } from 'react-router-dom'
 import configureMockStore from 'redux-mock-store'
-import { PeerPerformanceTable } from '../table/peerPerformanceTable'
+import PeerPerformanceTable from '../table/peerPerformanceTable'
 import { bandInfo, columns, dataSource, initialState } from './testData'
 
 const history = createMemoryHistory()

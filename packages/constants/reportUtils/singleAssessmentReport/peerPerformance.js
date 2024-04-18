@@ -185,11 +185,10 @@ const makeColumn = (title, dataIndex, width = COLUMN_WIDTH, align, fixed) => ({
 const compareColumn = (title, ...ext) =>
   makeColumn(title, 'dimension.name', COLUMN_WIDTH, 'left', ...ext)
 
-const makeDimensionAverageColumns = (title) => {
-  const _title = typeof title === 'string' ? title : title.title
+const makeDimensionAverageColumns = () => {
   return [
-    makeColumn(`${_title} Average`, 'districtAvg'),
-    makeColumn(`Filtered ${_title} Average`, 'avgScore'),
+    makeColumn(`Average`, 'districtAvg'),
+    makeColumn(`Filtered Average`, 'avgScore'),
   ]
 }
 
@@ -222,7 +221,7 @@ const makeScorePc = (title, ...extColumns) => [
   ...extColumns,
   submitted,
   absent,
-  ...makeDimensionAverageColumns(title),
+  ...makeDimensionAverageColumns(),
 ]
 // helper functions to create rows for "Raw Score" analyzer
 const makeRaw = (title, ...extColumns) => [
@@ -230,7 +229,7 @@ const makeRaw = (title, ...extColumns) => [
   ...extColumns,
   submitted,
   absent,
-  ...makeDimensionAverageColumns(title),
+  ...makeDimensionAverageColumns(),
 ]
 // helper functions to create rows for "Above/Below Standard" analyzer
 const makeAboveBelowStd = (title, ...extColumns) => [

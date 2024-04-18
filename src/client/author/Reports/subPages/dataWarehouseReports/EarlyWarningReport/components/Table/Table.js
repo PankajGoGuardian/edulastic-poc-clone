@@ -72,8 +72,8 @@ const EarlyWarningTable = ({
     [tableFilters[tableFilterTypes.COMPARE_BY]]
   )
 
-  const metrics = data?.result?.metrics
-  const tableData = metrics || []
+  const { metrics: tableData = [], rowsCount = 0, hasNextPage } =
+    data?.result || {}
 
   const tableDataToUse = useMemo(
     () => (isStudentCompareBy ? transformTableData(tableData) : tableData),
@@ -169,15 +169,16 @@ const EarlyWarningTable = ({
                 rowSelection={rowSelection}
                 bordered
                 rowKey={({ dimension }) => dimension._id}
-                // TODO pass pagination based on tableFilters.pageSize
+                pagination={false}
               />
               <BackendPagination
-                itemsCount={data?.result?.totalRows || 0}
+                itemsCount={rowsCount}
                 backendPagination={{
                   page: tableFilters.page,
                   pageSize: tableFilters.pageSize,
                 }}
                 setBackendPagination={setTablePagination}
+                hasNextPage={hasNextPage}
               />
             </EduThen>
             <EduElse>

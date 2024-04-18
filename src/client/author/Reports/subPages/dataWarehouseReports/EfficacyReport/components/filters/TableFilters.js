@@ -14,11 +14,9 @@ const TableFilters = ({
   isSharedReport = false,
 }) => {
   const updateTableFilters = (e, selected, keyName) => {
-    const requireTotalCount = keyName === tableFilterKeys.COMPARE_BY
     setTableFilters({
       ...tableFilters,
       [keyName]: selected,
-      requireTotalCount,
     })
   }
   const showAddToStudentGroupBtn = isAddToStudentGroupEnabled(

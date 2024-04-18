@@ -205,7 +205,6 @@ const EfficacyReport = ({
       setPageFilters({ ...pageFilters, page: 1 })
       setTableFilters({
         ...tableFilters,
-        requireTotalCount: true,
         preBandScore: search.preBandScore || '',
         postBandScore: search.postBandScore || '',
       })
@@ -224,11 +223,9 @@ const EfficacyReport = ({
       compareBy: tableFilters.compareBy.key,
       sortKey: tableFilters.sortKey,
       sortOrder: sortOrdersMap[tableFilters.sortOrder],
-      requireTotalCount: tableFilters.requireTotalCount,
       ...pageFilters,
     }
     if (!isInvalidSharedFilters && pageFilters.page) {
-      setTableFilters({ ...tableFilters, requireTotalCount: false })
       fetchReportTableDataRequest(q)
       return () => toggleFilter(null, false)
     }

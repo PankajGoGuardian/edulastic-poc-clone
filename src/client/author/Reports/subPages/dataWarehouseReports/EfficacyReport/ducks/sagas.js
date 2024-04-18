@@ -1,8 +1,7 @@
 import { notification } from '@edulastic/common'
 import { reportsApi, dataWarehouseApi } from '@edulastic/api'
-import { call, put, all, takeLatest, select } from 'redux-saga/effects'
+import { call, put, all, takeLatest } from 'redux-saga/effects'
 import { actions } from './actionReducers'
-import { selectors } from './selectors'
 import { validatePreAndPostTestIds } from '../../../multipleAssessmentReport/PreVsPost/utils'
 
 function* fetchFiltersDataRequestSaga({ payload }) {
@@ -79,11 +78,6 @@ function* fetchReportTableDataRequestSaga({ payload }) {
       return
     }
     const { result: reportTableData } = reportTableDataResponse
-    // fetch rows count from former report table data
-    if (!payload.requireTotalCount && reportTableData) {
-      const { rowsCount } = yield select(selectors.reportTableData)
-      Object.assign(reportTableData, { rowsCount })
-    }
     yield put(actions.fetchReportTableDataRequestSuccess({ reportTableData }))
   } catch (error) {
     const msg = 'Error fetching Efficacy Report Table data.'

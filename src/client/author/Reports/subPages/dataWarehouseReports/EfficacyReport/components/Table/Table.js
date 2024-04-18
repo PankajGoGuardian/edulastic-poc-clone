@@ -41,6 +41,7 @@ const EfficacyTable = ({
   const [
     tableData = [],
     rowsCount = 0,
+    hasNextPage,
     rowSelection = [],
     checkedStudentsForModal = [],
   ] = useTableMetrics({
@@ -133,6 +134,7 @@ const EfficacyTable = ({
             itemsCount={rowsCount}
             backendPagination={pageFilters}
             setBackendPagination={setPageFilters}
+            hasNextPage={hasNextPage}
           />
         </Col>
       </StyledRow>

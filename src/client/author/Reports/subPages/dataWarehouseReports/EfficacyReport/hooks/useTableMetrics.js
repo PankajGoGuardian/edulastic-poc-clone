@@ -14,6 +14,7 @@ const useTableMetrics = ({
   testInfo,
 }) => {
   return useMemo(() => {
+    const hasNextPage = get(reportTableData, 'hasNextPage', false)
     const rowsCount = get(reportTableData, 'rowsCount', 0)
     const tableMetricInfo = get(reportTableData, 'metricInfo', [])
     if (isEmpty(tableMetricInfo)) return []
@@ -43,7 +44,13 @@ const useTableMetrics = ({
     const checkedStudentsForModal = tableData
       .filter(({ dimension }) => checkedStudents.includes(dimension._id))
       .map(({ dimension }) => dimension)
-    return [tableData, rowsCount, rowSelection, checkedStudentsForModal]
+    return [
+      tableData,
+      rowsCount,
+      hasNextPage,
+      rowSelection,
+      checkedStudentsForModal,
+    ]
   }, [
     reportTableData,
     prePerformanceBand,

@@ -162,6 +162,10 @@ class Contaier extends Component {
       sortDir: 'desc',
       ...sessionSort,
     }
+    const { searchString = [] } = sessionFilters
+    if (searchString?.length > 5) {
+      sessionFilters.searchString = searchString.slice(0, 5)
+    }
     const search = {
       ...initSearch,
       ...sessionFilters,

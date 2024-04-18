@@ -342,6 +342,10 @@ class TestList extends Component {
             _id: parseInt(item._id, 10),
           }))
         : []
+      const { searchString = [] } = searchParams
+      if (searchString?.length > 5) {
+        searchParams.searchString = searchString.slice(0, 5)
+      }
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)))
     }
 

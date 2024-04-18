@@ -60,7 +60,6 @@ export const usePerformanceByStudentsDetailsFetch = ({
   sortOrder,
   page,
   pageSize,
-  recompute,
   selectedProficiency,
   range,
 }) => {
@@ -68,6 +67,16 @@ export const usePerformanceByStudentsDetailsFetch = ({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [totalRows, setTotalRows] = useState(0)
+
+  useEffect(() => {
+    setTotalRows(0)
+  }, [
+    settings.selectedTest?.key,
+    settings.requestFilters,
+    demographicFilters,
+    selectedProficiency?.threshold,
+  ])
+
   useEffect(() => {
     const fetchData = async () => {
       if (settings.selectedTest && settings.selectedTest.key) {
@@ -85,7 +94,7 @@ export const usePerformanceByStudentsDetailsFetch = ({
               sortOrder: sortOrderMap[sortOrder],
               page,
               pageSize,
-              recompute,
+              requireRowsCount: !totalRows && page === 2,
             },
             testId: settings.selectedTest.key,
           }
@@ -116,7 +125,6 @@ export const usePerformanceByStudentsDetailsFetch = ({
     sortOrder,
     sortKey,
     selectedProficiency,
-    recompute,
     range,
     page,
   ])

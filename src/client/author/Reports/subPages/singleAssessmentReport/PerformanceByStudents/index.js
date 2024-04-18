@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
-import { Row, Col, Pagination } from 'antd'
+import { Row, Col } from 'antd'
 import { Redirect } from 'react-router-dom'
 import qs from 'qs'
 import { get } from 'lodash'
@@ -32,6 +32,7 @@ import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import PerformanceBandPieChart from './components/charts/StudentPerformancePie'
 import StudentPerformanceTable from './components/table/studentPerformanceTable'
+import BackendPagination from '../../../common/components/BackendPagination'
 
 // ducks & helpers
 import { getUserRole } from '../../../../../student/Login/ducks'
@@ -92,18 +93,18 @@ const PerformanceByStudents = ({
     defaultPageSize: 50,
     current: 0,
   })
-  const [page, setPage] = useState(Number(urlSearch.page) || 1)
+  const [pageFilters, setPageFilters] = useState({
+    page: Number(urlSearch.page) || 1,
+    pageSize: PAGE_SIZE,
+  })
   const [sortOrder, setSortOrder] = useState(urlSearch.sortOrder || 'ascend')
   const [sortKey, setSortKey] = useState(
     urlSearch.sortKey || sortKeysMap.STUDENT_SCORE
   )
   const [selectedProficiency, setProficiency] = useState()
-  const [recompute, setRecompute] = useState(true)
-  const [totalRowCount, setTotalRowCount] = useState(0)
 
   useEffect(() => {
-    setRecompute(true)
-    setPage(1)
+    setPageFilters({ ...pageFilters, page: 1 })
     setRange({
       left: '',
       right: '',
@@ -116,8 +117,7 @@ const PerformanceByStudents = ({
   }, [demographicFilters, settings])
 
   useEffect(() => {
-    setRecompute(true)
-    setPage(1)
+    setPageFilters({ ...pageFilters, page: 1 })
     setAdditionalUrlParams((oldState) => ({
       ...oldState,
       page: 1,
@@ -129,13 +129,11 @@ const PerformanceByStudents = ({
     detailsLoading,
     detailsError,
   ] = usePerformanceByStudentsDetailsFetch({
+    ...pageFilters,
     settings,
     demographicFilters,
     sortKey,
     sortOrder,
-    page,
-    pageSize: PAGE_SIZE,
-    recompute,
     selectedProficiency,
     range,
   })
@@ -148,13 +146,13 @@ const PerformanceByStudents = ({
     settings,
     demographicFilters,
   })
-  const itemsCount = get(details, 'totalRows', totalRowCount)
+
   const performanceByStudents = useMemo(() => {
     return { ...summary, ...details }
   }, [details, summary])
   const generateCSVRequired = useMemo(
-    () => [(itemsCount || 0) > PAGE_SIZE].some(Boolean),
-    [itemsCount]
+    () => [(details.totalRows || 0) > PAGE_SIZE].some(Boolean),
+    [details.totalRows]
   )
 
   const assessmentName = getAssessmentName(
@@ -179,8 +177,7 @@ const PerformanceByStudents = ({
         reportFilters: {
           ...settings.requestFilters,
           ...demographicFilters,
-          page,
-          pageSize: PAGE_SIZE,
+          ...pageFilters,
           sortKey,
           sortOrder: sortOrderMap[sortOrder],
           testId: settings.selectedTest.key,
@@ -332,13 +329,11 @@ const PerformanceByStudents = ({
     setSortOrder(value)
   }
   const onSetPage = (value) => {
-    setRecompute(false)
-    setTotalRowCount(itemsCount)
     setAdditionalUrlParams((oldState) => ({
       ...oldState,
       page: value,
     }))
-    setPage(value)
+    setPageFilters({ ...pageFilters, page: 1 })
   }
   const onSetProficiency = (_selected) => {
     const selected = {
@@ -482,20 +477,12 @@ const PerformanceByStudents = ({
                           />
                         </Col>
                       </Row>
-                      <EduIf
-                        condition={
-                          details.studentMetricInfo?.length &&
-                          itemsCount > PAGE_SIZE
-                        }
-                      >
-                        <Pagination
-                          style={{ marginTop: '10px' }}
-                          onChange={onSetPage}
-                          current={page}
-                          pageSize={PAGE_SIZE}
-                          total={itemsCount}
-                        />
-                      </EduIf>
+                      <BackendPagination
+                        itemsCount={details.totalRows}
+                        backendPagination={pageFilters}
+                        setBackendPagination={setPageFilters}
+                        hasNextPage={details.hasNextPage}
+                      />
                     </EduThen>
                     <EduElse>
                       <SpinLoader tip="Loading Students data, it may take a while..." />

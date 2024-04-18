@@ -202,6 +202,8 @@ export const yellow4 = '#FFDF88'
 export const yellow5 = '#E49B0F'
 
 export const orange = '#FFA200'
+export const orangeTheme1 = '#FFE1D6'
+export const orangeTheme2 = '#E16D44'
 export const darkOrange = '#F9942D'
 export const darkOrange1 = '#EB954B'
 

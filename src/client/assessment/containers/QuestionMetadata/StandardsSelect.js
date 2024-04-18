@@ -258,6 +258,7 @@ function StandardsSelect(props) {
           }
         }
         enableSelectAll
+        showAllInterestedCurriculums
       />
       <StandardsSelectButton
         mode={mode}

@@ -21,13 +21,13 @@ import {
 } from '../../../author/dataUtils'
 import { updateDefaultCurriculumAction } from '../../../author/src/actions/dictionaries'
 import {
-  getFormattedCurriculumsSelector,
+  getAllFormattedCurriculumsSelector,
   getRecentStandardsListSelector,
 } from '../../../author/src/selectors/dictionaries'
 import {
+  getAllInterestedCurriculumsSelector,
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
-  getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
 } from '../../../author/src/selectors/user'
 import selectsData from '../../../author/TestPage/components/common/selectsData'
@@ -399,6 +399,7 @@ const AlignmentRow = ({
           curriculumStandardsLoading={curriculumStandardsLoading}
           editAlignment={editAlignment}
           alignmentIndex={alignmentIndex}
+          showAllInterestedCurriculums
         />
       )}
       <Row>
@@ -629,7 +630,7 @@ export default connect(
   (state, props) => ({
     defaultCurriculumId: get(state, 'dictionaries.defaultCurriculumId'),
     defaultCurriculumName: get(state, 'dictionaries.defaultCurriculumName'),
-    formattedCuriculums: getFormattedCurriculumsSelector(
+    formattedCuriculums: getAllFormattedCurriculumsSelector(
       state,
       props.alignment
     ),
@@ -639,7 +640,7 @@ export default connect(
     recentStandardsList: getRecentStandardsListSelector(state),
     testSelectedSubjects: getTestEntitySubjectsSelector(state),
     testSelectedGrades: getTestEntityGradesSelector(state),
-    interestedCurriculums: getInterestedCurriculumsSelector(state),
+    interestedCurriculums: getAllInterestedCurriculumsSelector(state),
   }),
   {
     updateDefaultCurriculum: updateDefaultCurriculumAction,

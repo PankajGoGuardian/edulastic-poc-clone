@@ -128,9 +128,36 @@ export const getCurrentActiveTermIds = createSelector(
   (state) => state.map((x) => x._id)
 )
 
-export const getInterestedCurriculumsSelector = createSelector(
+export const getAllInterestedCurriculumsSelector = createSelector(
   getOrgDataSelector,
   (state) => _get(state, 'interestedCurriculums', [])
+)
+
+export const getInterestedCurriculumsSelector = createSelector(
+  getAllInterestedCurriculumsSelector,
+  (allInterestedCurriculums) => {
+    // This is the heirarchy being followed in backend.
+    const orgTypes = [
+      'teacher',
+      'school-admin',
+      'institution',
+      'district-admin',
+      'district',
+    ]
+    const orgTypeWiseCurriculums = groupBy(
+      allInterestedCurriculums,
+      (intrstCurm) => {
+        return intrstCurm.orgType
+      }
+    )
+    for (const orgType of orgTypes) {
+      const orgCurriculums = orgTypeWiseCurriculums[orgType]
+      if (!isEmpty(orgCurriculums)) {
+        return orgCurriculums
+      }
+    }
+    return []
+  }
 )
 
 export const getShowAllCurriculumsSelector = createSelector(

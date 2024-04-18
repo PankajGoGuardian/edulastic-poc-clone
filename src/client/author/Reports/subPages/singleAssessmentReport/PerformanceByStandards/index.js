@@ -139,7 +139,7 @@ const PerformanceByStandards = ({
     settings,
     toggleFilter,
   })
-  const { totalRows, hasMultiplePages } = details
+  const { totalRows, hasNextPage } = details
   const report = useMemo(() => {
     return { ...summary, ...details }
   }, [details, summary])
@@ -467,7 +467,7 @@ const PerformanceByStandards = ({
                           itemsCount={totalRows}
                           backendPagination={pageFilters}
                           setBackendPagination={setPageFilters}
-                          hasMultiplePages={hasMultiplePages}
+                          hasNextPage={hasNextPage}
                         />
                       </EduThen>
                       <EduElse>

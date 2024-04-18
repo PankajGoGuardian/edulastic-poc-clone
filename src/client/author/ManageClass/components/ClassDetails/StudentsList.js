@@ -7,10 +7,15 @@ import * as moment from 'moment'
 // components
 import { Spin, Tooltip } from 'antd'
 import { GiDominoMask } from 'react-icons/gi'
-import { MdRateReview } from 'react-icons/md'
-import { IconClose, IconCorrect, IconExclamationMark } from '@edulastic/icons'
-import { lightBlue3 } from '@edulastic/colors'
-import { EduSwitchStyled } from '@edulastic/common'
+import {
+  IconClose,
+  IconCorrect,
+  IconExclamationMark,
+  IconNote,
+  IconPlusCircle,
+} from '@edulastic/icons'
+import { lightBlue3, themeColor } from '@edulastic/colors'
+import { EduIf, EduSwitchStyled, FlexContainer } from '@edulastic/common'
 import { GROUP_TYPE } from '@edulastic/constants/const/report'
 import { roleuser } from '@edulastic/constants'
 import {
@@ -39,6 +44,7 @@ import {
 import { getFormattedName } from '../../../Gradebook/transformers'
 import FeedbackModal from '../../../Student/components/StudentTable/FeedbackModal'
 import { fieldsMapping } from '../../constants'
+import ObservationModal from './ObservationModal'
 
 const StudentsList = ({
   cuId,
@@ -57,6 +63,7 @@ const StudentsList = ({
 }) => {
   const [showCurrentStudents, setShowCurrentStudents] = useState(true)
   const [feedbackStudentId, setFeedbackStudentId] = useState(null)
+  const [showObservationModal, setShowObservationModal] = useState(false)
   const { dataWarehouseReports } = features
 
   const { _id: groupId, type, active } = selectedClass
@@ -91,7 +98,7 @@ const StudentsList = ({
     groupList,
   })
 
-  const showAddFeedbackBtn = [
+  const showObservationColumn = [
     currentClass.type === GROUP_TYPE.CLASS,
     cuRole === roleuser.TEACHER,
     dataWarehouseReports,
@@ -178,6 +185,46 @@ const StudentsList = ({
         </span>
       ),
     },
+    ...(showObservationColumn
+      ? [
+          {
+            title: 'Observations',
+            dataIndex: '_id',
+            align: 'center',
+            render: (studentId, record) => {
+              return (
+                <FlexContainer
+                  style={{ gap: '30px', margin: 'auto' }}
+                  alignItems="center"
+                  justifyContent="flex-end"
+                  width="63px"
+                >
+                  <EduIf condition={record.observationCount > 0}>
+                    <Tooltip
+                      placement="bottom"
+                      title="View Observation History"
+                    >
+                      <IconNote
+                        onClick={() => {
+                          setFeedbackStudentId(studentId)
+                          setShowObservationModal(true)
+                        }}
+                        color={themeColor}
+                      />
+                    </Tooltip>
+                  </EduIf>
+                  <Tooltip placement="bottom" title="Add Observation">
+                    <IconPlusCircle
+                      color={themeColor}
+                      onClick={() => setFeedbackStudentId(studentId)}
+                    />
+                  </Tooltip>
+                </FlexContainer>
+              )
+            },
+          },
+        ]
+      : []),
     {
       render: (_, { _id, enrollmentStatus, status }) => (
         <div>
@@ -192,11 +239,6 @@ const StudentsList = ({
                   })
                 }
               />
-            </Tooltip>
-          ) : null}
-          {showAddFeedbackBtn ? (
-            <Tooltip placement="topRight" title="Add Feedback">
-              <MdRateReview onClick={() => setFeedbackStudentId(_id)} />
             </Tooltip>
           ) : null}
         </div>
@@ -249,13 +291,22 @@ const StudentsList = ({
         </TableWrapper>
       )}
       <FeedbackModal
-        feedbackStudentId={feedbackStudentId}
+        feedbackStudentId={showObservationModal ? null : feedbackStudentId}
         feedbackStudent={{
           ...feedbackStudent,
           classId: currentClass._id,
         }}
-        termId={currentClass.termId}
         onClose={() => setFeedbackStudentId(null)}
+        termId={currentClass.termId}
+      />
+      <ObservationModal
+        visible={showObservationModal}
+        selectedStudent={feedbackStudent}
+        onClose={() => {
+          setFeedbackStudentId(null)
+          setShowObservationModal(false)
+        }}
+        termId={currentClass.termId}
       />
     </div>
   )

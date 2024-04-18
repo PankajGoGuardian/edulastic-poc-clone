@@ -5,7 +5,7 @@ const BackendPagination = ({
   itemsCount,
   backendPagination,
   setBackendPagination,
-  hasMultiplePages,
+  hasNextPage,
 }) => {
   const currentItemsCount =
     itemsCount ||
@@ -13,14 +13,18 @@ const BackendPagination = ({
     backendPagination.pageCount * backendPagination.pageSize
 
   // show dots on page 2 when item count is unknown but report has multiple pages
-  const showDotsOnPageTwo = hasMultiplePages && !currentItemsCount
+  const showDotsOnNextPage = hasNextPage && !currentItemsCount
 
-  const defaultItemsCount = showDotsOnPageTwo
-    ? backendPagination.pageSize + 1 // items count to render for exactly two pagination boxes when totalCount is unknown
+  const defaultItemsCount = showDotsOnNextPage
+    ? backendPagination.page * backendPagination.pageSize + 1 // items count to render to show the next page when totalCount is unknown
     : 1 // items count to hide pagination when totalCount is 0
 
   const itemRender = (current, type, originalElement) => {
-    if (type === 'page' && current === 2 && showDotsOnPageTwo) {
+    if (
+      type === 'page' &&
+      current === backendPagination.page + 1 &&
+      showDotsOnNextPage
+    ) {
       return <a>...</a>
     }
     return originalElement

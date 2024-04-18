@@ -366,7 +366,7 @@ const AssessmentsTable = ({
   isSharedReport,
   isPrinting,
   rowsCount,
-  hasMultiplePages,
+  hasNextPage,
   sortFilters,
   setSortFilters,
   pageFilters,
@@ -430,7 +430,7 @@ const AssessmentsTable = ({
             itemsCount={rowsCount}
             backendPagination={pageFilters}
             setBackendPagination={setPageFilters}
-            hasMultiplePages={hasMultiplePages}
+            hasNextPage={hasNextPage}
           />
         </Col>
       </Row>

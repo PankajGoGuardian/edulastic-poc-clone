@@ -151,7 +151,7 @@ const defaultPageStructure = [
 ]
 
 function* createAssessmentSaga({ payload }) {
-  let { fileURI = '' } = payload
+  let { fileURI = '', fileTitle = '' } = payload
   const { searchParam = '' } = payload
   let testItem
   let amountOfPDFPages = 0
@@ -159,6 +159,7 @@ function* createAssessmentSaga({ payload }) {
 
   try {
     if (payload.file) {
+      fileTitle = payload.file?.name || ''
       fileURI = yield call(
         uploadToS3,
         payload.file,
@@ -318,9 +319,13 @@ function* createAssessmentSaga({ payload }) {
         maxScore: testItem.maxScore,
         questions: {},
       }
+      // removing file extension
+      if (fileTitle) {
+        fileTitle = fileTitle.replace(/\.[^/.]+$/, '')
+      }
       const newAssessment = {
         ...initialTestState,
-        title: undefined,
+        title: fileTitle || undefined,
         createdBy: {
           id: user._id,
           name,
@@ -443,6 +448,7 @@ function* uploadToDriveSaga({ payload = {} }) {
     yield put(
       createAssessmentRequestAction({
         fileURI,
+        fileTitle: name,
         assessmentId,
         isAddPdf,
         merge,

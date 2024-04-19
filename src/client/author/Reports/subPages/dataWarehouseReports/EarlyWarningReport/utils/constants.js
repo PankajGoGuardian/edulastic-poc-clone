@@ -1,7 +1,6 @@
 import React from 'react'
 import { reportUtils } from '@edulastic/constants'
 import { FlexContainer } from '@edulastic/common'
-import { pick } from 'lodash'
 import { ColoredText } from '../../common/components/styledComponents'
 import { RISK_LABEL_SUFFIX } from '../../common/utils'
 
@@ -155,8 +154,10 @@ export const compareByStudentColumns = [
     dataIndex: 'attendanceRisk',
     render: (value) => (
       <ColoredText>
-        {value?.attendancePercentage >= 0
-          ? `${value.attendancePercentage}%`
+        {value?.attendanceScore >= 0
+          ? `${value.attendanceScore}${
+              value.riskBandType === 'attendance-absence' ? '' : '%'
+            }`
           : '-'}
       </ColoredText>
     ),

@@ -18,6 +18,7 @@ function useFiltersPreload({
   externalTestTypesRequired = true,
   testSettingsRequired = false,
   attendanceBandInfoRequired = false,
+  useAttendanceAbsenceRequired = undefined,
 }) {
   useEffect(() => {
     if (reportId) {
@@ -28,6 +29,7 @@ function useFiltersPreload({
         externalTestTypesRequired,
         testSettingsRequired,
         attendanceBandInfoRequired,
+        useAttendanceAbsenceRequired,
       })
       setFilters({ ...filters, ...search })
     } else {
@@ -39,6 +41,7 @@ function useFiltersPreload({
         externalTestTypesRequired,
         testSettingsRequired,
         attendanceBandInfoRequired,
+        useAttendanceAbsenceRequired,
       }
       if (firstLoad && isEmpty(search)) {
         q.firstLoad = true

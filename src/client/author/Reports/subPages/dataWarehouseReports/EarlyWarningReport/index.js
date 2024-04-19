@@ -85,6 +85,7 @@ const EarlyWarningReport = ({
         ..._requestFilters,
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
+        useAttendanceAbsence: filtersData.data.result?.useAttendanceAbsence,
       },
       selectedCompareBy,
       selectedFilterTagsData: _settings.selectedFilterTagsData,
@@ -175,6 +176,7 @@ const EarlyWarningReport = ({
             history={history}
             search={search}
             feedTypes={availableFeedTypes}
+            filtersData={filtersData}
           />
         </EduElse>
       </EduIf>

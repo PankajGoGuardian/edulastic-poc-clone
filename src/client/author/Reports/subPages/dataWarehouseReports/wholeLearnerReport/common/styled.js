@@ -192,7 +192,7 @@ export const StyleCheckBox = styled(Checkbox)`
 export const Label = styled.div`
   color: ${({ $color }) => $color || fadedBlack};
   font-size: ${({ $fontSize }) => $fontSize || '13px'};
-  font-weight: bold;
+  font-weight: ${(p) => p.$fontWeight || 'bold'};
   margin: ${({ $margin }) => $margin || '0'};
 `
 export const TestLabel = styled(Label)`

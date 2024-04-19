@@ -44,14 +44,17 @@ const {
   RISK_TYPE_OPTIONS,
   RISK_TYPE_KEYS,
 } = reportUtils.common
-const RiskSummary = ({ settings, loc = '' }) => {
+const RiskSummary = ({ settings, loc = '', filtersData }) => {
+  const useAttendanceAbsence = filtersData?.data?.result.useAttendanceAbsence
+
   const query = useMemo(
     () =>
       stringifyArrayFilters({
+        useAttendanceAbsence,
         ...settings.requestFilters,
         riskType: settings.requestFilters.riskType || RISK_TYPE_KEYS.OVERALL,
       }),
-    [settings.requestFilters]
+    [settings.requestFilters, useAttendanceAbsence]
   )
   const { data, loading, error } = useApiQuery(
     dataWarehouseApi.getEarlyWarningRiskSummary,

@@ -22,6 +22,7 @@ const AttendanceSummaryChart = ({
   filterTagsData,
   settingsData,
   setInterventionsByGroup,
+  showAbsents,
 }) => {
   const [showInterventions, setShowInterventions] = useState(false)
 
@@ -79,6 +80,7 @@ const AttendanceSummaryChart = ({
           groupBy={groupBy}
           interventionList={interventionData}
           showInterventions={showInterventions}
+          showAbsents={showAbsents}
         />
       </EduIf>
     </ChartWrapper>

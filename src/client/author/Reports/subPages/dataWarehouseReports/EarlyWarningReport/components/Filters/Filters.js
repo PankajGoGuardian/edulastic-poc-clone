@@ -70,6 +70,7 @@ const Filters = ({
       search.termId ||
       defaultTermId ||
       (schoolYears.length ? schoolYears[0].key : ''),
+    useAttendanceAbsenceRequired: true,
   })
 
   useFiltersFromURL({

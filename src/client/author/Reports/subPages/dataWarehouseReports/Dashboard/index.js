@@ -96,6 +96,7 @@ const Dashboard = ({
       (filtersData?.data?.result.attendanceBandInfo || []).map((it) => ({
         key: it._id,
         title: it.name,
+        analyzeBy: it.analyze_by,
       })),
     [filtersData]
   )
@@ -135,13 +136,11 @@ const Dashboard = ({
     settings,
     compareByOptions,
   })
-  const attendanceProfileId = useMemo(
+  const { key: attendanceProfileId, analyzeBy: showAbsents } = useMemo(
     () =>
-      (
-        attendanceBandInfo.find(
-          (it) => it._id === search.attendanceProfileId
-        ) || attendanceBandInfo[0]
-      )?.key,
+      attendanceBandInfo.find((it) => it.key === search.attendanceProfileId) ||
+      attendanceBandInfo[0] ||
+      {},
     [attendanceBandInfo, search.attendanceProfileId]
   )
 
@@ -201,6 +200,7 @@ const Dashboard = ({
         settings.academicSummaryFilters[
           academicSummaryFiltersTypes.PERFORMANCE_BAND
         ]?.key,
+      attendanceProfileId,
     },
   })
 
@@ -254,6 +254,8 @@ const Dashboard = ({
             loc={loc}
             availableTestTypes={filteredAvailableTestTypes}
             attendanceBandInfo={attendanceBandInfo}
+            showAbsents={showAbsents}
+            filtersData={filtersData}
           />
         </EduElse>
       </EduIf>

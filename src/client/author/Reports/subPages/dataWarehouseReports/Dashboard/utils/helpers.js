@@ -101,22 +101,38 @@ export const getAcademicSummaryMetrics = (rawData, externalTestType) => {
   }
 }
 
-export const getAttendanceSummaryMetrics = (prePeriod, postPeriod) => {
-  let attendanceAvgChange = 0
+export const getAttendanceSummaryMetrics = (
+  prePeriod,
+  postPeriod,
+  showAbsents
+) => {
+  let change = 0
   let attendanceDisruptionsChange = 0
   let chronicAbsentChange = 0
+  let fontColor = lightGreen12
   if (!isEmpty(prePeriod.start)) {
-    attendanceAvgChange = Math.round(postPeriod.avg - prePeriod.avg)
     attendanceDisruptionsChange = Math.round(
       postPeriod.attendanceDisruptionsPerc - prePeriod.attendanceDisruptionsPerc
     )
     chronicAbsentChange = Math.round(
       postPeriod.chronicAbsentPerc - prePeriod.chronicAbsentPerc
     )
+    if (showAbsents) {
+      change = postPeriod.totalAbsence - prePeriod.totalAbsence
+      fontColor = change > 0 ? lightRed7 : lightGreen12
+    } else {
+      change = Math.round(postPeriod.avg - prePeriod.avg)
+      fontColor = change >= 0 ? lightGreen12 : lightRed7
+    }
   }
-  const fontColor = attendanceAvgChange >= 0 ? lightGreen12 : lightRed7
   return {
-    attendanceAvgChange,
+    value: showAbsents
+      ? postPeriod.totalAbsence.toLocaleString()
+      : `${Math.round(postPeriod.avg)}%`,
+    changeValue: change,
+    changeText: showAbsents
+      ? Math.abs(change).toLocaleString()
+      : `${Math.abs(change)}%`,
     attendanceDisruptionsChange,
     chronicAbsentChange,
     fontColor,

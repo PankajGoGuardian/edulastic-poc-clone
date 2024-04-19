@@ -26,6 +26,7 @@ const AttendanceSummary = ({
   attendanceBandInfo,
   location,
   history,
+  showAbsents,
 }) => {
   const query = useMemo(
     () => ({
@@ -97,6 +98,7 @@ const AttendanceSummary = ({
               <AttendanceSummaryContents
                 data={data}
                 selectedPeriodType={settings.requestFilters.periodType}
+                showAbsents={showAbsents}
               />
             </EduThen>
             <EduElse>

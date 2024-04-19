@@ -23,16 +23,23 @@ const Summary = ({
   settings,
   isMultiSchoolYear,
   isDifferentSchoolYear,
+  filtersData,
 }) => {
+  const isAttendanceAbsence = !!filtersData?.data?.result.useAttendanceAbsence
   const query = useMemo(() => {
     const payload = {
       ...settings.requestFilters,
       studentId: settings.selectedStudent.key,
+      useAttendanceAbsence: isAttendanceAbsence,
     }
     return payload.reportId
       ? pick(payload, ['reportId'])
-      : pick(payload, ['studentId', 'termId'])
-  }, [settings.requestFilters, settings.selectedStudent.key])
+      : pick(payload, ['studentId', 'termId', 'useAttendanceAbsence'])
+  }, [
+    settings.requestFilters,
+    settings.selectedStudent.key,
+    isAttendanceAbsence,
+  ])
 
   const { data, loading, error } = useApiQuery(
     dataWarehouseApi.getRiskMetrics,

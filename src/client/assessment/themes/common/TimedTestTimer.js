@@ -72,8 +72,8 @@ const TimedTestTimer = ({
   const [upstreamUta, setUpstreamUta] = useState()
   const [autoSubmitPopUp, setAutoSubmitpopUp] = useState(false)
   const [currentAssignmentTime, setCurrentAssignmentTime] = useState(
-    window.localStorage.assignmentTime
-      ? window.localStorage.assignmentTime
+    window.localStorage[`assignmentTime_${utaId}`]
+      ? window.localStorage[`assignmentTime_${utaId}`]
       : null
   )
   const docRef = useRef(
@@ -169,7 +169,7 @@ const TimedTestTimer = ({
         setCurrentAssignmentTime(
           upstreamUta?.allowedTime - (upstreamUta?.timeSpent || 0) || 0
         )
-        window.localStorage.assignmentTime =
+        window.localStorage[`assignmentTime_${utaId}`] =
           upstreamUta?.allowedTime - (upstreamUta?.timeSpent || 0) || 0
       } else if (
         upstreamUta?.allowedTime &&
@@ -186,7 +186,7 @@ const TimedTestTimer = ({
               timeSpent: Math.max(timeSpent, _syncOffset),
             })
           })
-          window.localStorage.assignmentTime =
+          window.localStorage[`assignmentTime_${utaId}`] =
             upstreamUta?.allowedTime - (uta?.allowedTime - _currentTime) || 0
           return (
             upstreamUta?.allowedTime - (uta?.allowedTime - _currentTime) || 0
@@ -210,8 +210,11 @@ const TimedTestTimer = ({
         setAutoSubmitpopUp(true)
       } else {
         setCurrentAssignmentTime((oldTime) => oldTime - TIMER_INTERVAL)
-        if (!isAuthorPreview && window.localStorage.assignmentTime) {
-          window.localStorage.assignmentTime =
+        if (
+          !isAuthorPreview &&
+          window.localStorage[`assignmentTime_${utaId}`]
+        ) {
+          window.localStorage[`assignmentTime_${utaId}`] =
             currentAssignmentTime - TIMER_INTERVAL
         }
       }

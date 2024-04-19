@@ -53,6 +53,7 @@ const EarlyWarningTable = ({
         [tableFilterTypes.COMPARE_BY]:
           tableFilters[tableFilterTypes.COMPARE_BY]?.key,
         [tableFilterTypes.RISK]: tableFilters[tableFilterTypes.RISK],
+        requireTotalCount: tableFilters.page > 1,
       }),
     [settings.requestFilters, tableFilters]
   )

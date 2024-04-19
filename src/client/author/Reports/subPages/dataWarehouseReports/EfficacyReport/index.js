@@ -224,6 +224,7 @@ const EfficacyReport = ({
       sortKey: tableFilters.sortKey,
       sortOrder: sortOrdersMap[tableFilters.sortOrder],
       ...pageFilters,
+      requireTotalCount: pageFilters.page > 1,
     }
     if (!isInvalidSharedFilters && pageFilters.page) {
       fetchReportTableDataRequest(q)

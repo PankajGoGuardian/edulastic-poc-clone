@@ -266,6 +266,7 @@ const MultipleAssessmentReport = ({
       sortKey: sortFilters.sortKey,
       sortOrder: tableToDBSortOrderMap[sortFilters.sortOrder],
       ...pageFilters,
+      requireTotalCount: pageFilters.page > 1,
     }
     if ((q.termId || q.reportId) && pageFilters.page) {
       const query = enhanceQueryWithTermIds(q, { orgData, userRole })

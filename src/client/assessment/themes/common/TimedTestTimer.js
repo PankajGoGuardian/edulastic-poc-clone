@@ -71,7 +71,11 @@ const TimedTestTimer = ({
   const [uta, setUtaDoc] = useState()
   const [upstreamUta, setUpstreamUta] = useState()
   const [autoSubmitPopUp, setAutoSubmitpopUp] = useState(false)
-  const [currentAssignmentTime, setCurrentAssignmentTime] = useState(null)
+  const [currentAssignmentTime, setCurrentAssignmentTime] = useState(
+    window.localStorage.assignmentTime
+      ? window.localStorage.assignmentTime
+      : null
+  )
   const docRef = useRef(
     db.collection(firestoreCollectionName).doc(utaId || 'NONEXISTENT')
   )
@@ -165,9 +169,11 @@ const TimedTestTimer = ({
         setCurrentAssignmentTime(
           upstreamUta?.allowedTime - (upstreamUta?.timeSpent || 0) || 0
         )
+        window.localStorage.assignmentTime =
+          upstreamUta?.allowedTime - (upstreamUta?.timeSpent || 0) || 0
       } else if (
-        upstreamUta.allowedTime &&
-        uta.allowedTime &&
+        upstreamUta?.allowedTime &&
+        uta?.allowedTime &&
         upstreamUta.allowedTime !== uta.allowedTime
       ) {
         // If teacher updated time in LCB : sync the timeSpent and reflect changes in UI
@@ -180,6 +186,8 @@ const TimedTestTimer = ({
               timeSpent: Math.max(timeSpent, _syncOffset),
             })
           })
+          window.localStorage.assignmentTime =
+            upstreamUta?.allowedTime - (uta?.allowedTime - _currentTime) || 0
           return (
             upstreamUta?.allowedTime - (uta?.allowedTime - _currentTime) || 0
           )
@@ -202,6 +210,10 @@ const TimedTestTimer = ({
         setAutoSubmitpopUp(true)
       } else {
         setCurrentAssignmentTime((oldTime) => oldTime - TIMER_INTERVAL)
+        if (!isAuthorPreview && window.localStorage.assignmentTime) {
+          window.localStorage.assignmentTime =
+            currentAssignmentTime - TIMER_INTERVAL
+        }
       }
     }
   }, TIMER_INTERVAL)

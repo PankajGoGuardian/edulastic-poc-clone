@@ -25,6 +25,7 @@ import {
 } from '@edulastic/icons'
 import { testItemsApi, testsApi } from '@edulastic/api'
 import { useLanguageFeatureQn } from '@edulastic/constants/const/questionType'
+import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
 import { EDIT } from '../../constants/constantsForQuestions'
 import {
   setEditingItemIdAction,
@@ -70,7 +71,10 @@ import RegradeProgressModal from '../../../author/Regrade/RegradeProgressModal'
 import { getRegradeFirebaseDocIdSelector } from '../../../author/TestPage/ducks'
 import RegradeListenerLcb from '../../../author/Regrade/RegradeListenerLcb'
 import LanguageSelectorTab from '../../../common/components/LanguageSelectorTab'
-import { getCurrentLanguage } from '../../../common/components/LanguageSelectorTab/duck'
+import {
+  getCurrentLanguage,
+  setLangAction,
+} from '../../../common/components/LanguageSelectorTab/duck'
 import { changeDataToPreferredLanguage } from '../../utils/question'
 
 export const ShowUserWork = ({ onClick, loading }) => (
@@ -150,6 +154,7 @@ const QuestionBottomAction = ({
   isGradedExternally,
   allowedToSelectMultiLanguage,
   currentLanguage,
+  setLanguage,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -168,6 +173,7 @@ const QuestionBottomAction = ({
 
   const onCloseQuestionModal = () => {
     setCurrentQuestion('')
+    setLanguage(LANGUAGE_EN)
     removeQuestion(item.id)
     toggleQuestionModal(false)
     correctItemUpdateProgress(false)
@@ -642,6 +648,7 @@ const enhance = compose(
       correctItemUpdateProgress: correctItemUpdateProgressAction,
       setSilentCloning: setSilentCloningAction,
       reloadLcbDataInStudentView: reloadLcbDataInStudentViewAction,
+      setLanguage: setLangAction,
     }
   )
 )

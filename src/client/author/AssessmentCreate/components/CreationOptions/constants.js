@@ -163,7 +163,7 @@ export const TestSections = [
           type: AccessType.OR,
           features: [AccessNavigation.PREMIUM],
         },
-        isNew: new Date() <= new Date('2024-04-14'),
+        isNew: true,
       },
       {
         key: TestKeys.QTI_IMPORT_TEST,
@@ -193,6 +193,7 @@ export const TestSections = [
           pathname: '/author/tests/create',
           search: 'testType=survey',
         },
+        isNew: true,
       },
     ],
   },

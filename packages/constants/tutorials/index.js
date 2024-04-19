@@ -1,1 +1,3 @@
-module.exports = {}
+import addToFolder from './addToFolder'
+
+export { addToFolder }

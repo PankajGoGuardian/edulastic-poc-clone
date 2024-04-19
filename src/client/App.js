@@ -765,7 +765,16 @@ class App extends Component {
           <AppUpdate visible={showAppUpdate} />
           <OfflineNotifier />
           {tutorial && (
-            <Joyride continuous showProgress showSkipButton steps={tutorial} />
+            <Joyride
+              continuous
+              showProgress={false}
+              showSkipButton
+              steps={tutorial}
+              locale={{
+                skip: 'Skip',
+                last: 'Done',
+              }}
+            />
           )}
           <Suspense fallback={<Loading />}>
             <DragDrop.Provider>

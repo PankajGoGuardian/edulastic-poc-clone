@@ -171,7 +171,16 @@ class App extends Component {
           <UserTokenExpiredModal />
           <OfflineNotifier />
           {tutorial && (
-            <Joyride continuous showProgress showSkipButton steps={tutorial} />
+            <Joyride
+              continuous
+              showProgress={false}
+              showSkipButton
+              steps={tutorial}
+              locale={{
+                skip: 'Skip',
+                last: 'Done',
+              }}
+            />
           )}
           <Suspense fallback={<Loading />}>
             <DndProvider

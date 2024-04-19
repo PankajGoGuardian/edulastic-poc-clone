@@ -508,7 +508,7 @@ const PeerPerformance = ({
               itemsCount={peerPerformance.totalRows}
               backendPagination={pageFilters}
               setBackendPagination={setPageFilters}
-              hasMultiplePages={peerPerformance.hasMultiplePages}
+              hasNextPage={peerPerformance.hasNextPage}
             />
           </StyledCard>
         </TableContainer>

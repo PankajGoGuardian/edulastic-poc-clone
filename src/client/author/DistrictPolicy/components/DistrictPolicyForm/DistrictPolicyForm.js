@@ -529,8 +529,8 @@ class DistrictPolicyForm extends Component {
               <StyledElementDiv>
                 <FlexContainer justifyContent="flex-start">
                   <CheckboxLabel
-                    data-cy="ignore-race-over-ethnicity-policy"
-                    checked={!!districtPolicy?.ignoreRaceOverEthnicity}
+                    data-cy="ignore-race-for-hispanic-students-policy"
+                    checked={!!districtPolicy?.ignoreRaceForHispanicStudents}
                     onChange={() => {
                       this.toggleIgnoreRaceInfoModalVisibility(true)
                     }}
@@ -541,7 +541,7 @@ class DistrictPolicyForm extends Component {
                     placement="bottom"
                     overlayClassName="custom-dark-tooltip"
                     title={t(
-                      'districtPolicy.ignoreRaceOverEthncitiyTooltipText'
+                      'districtPolicy.ignoreRaceForHispanicStudentsTooltipText'
                     )}
                   >
                     <IconInfo style={{ marginTop: '4px' }} />

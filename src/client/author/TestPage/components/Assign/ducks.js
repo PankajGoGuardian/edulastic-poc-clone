@@ -410,8 +410,8 @@ function* saveAssignment({ payload }) {
     }
 
     if (
-      assignmentSettings.restrictNavigationOut !==
-      'warn-and-report-after-n-alerts'
+      assignmentSettings.restrictNavigationOut === 'warn-and-report' ||
+      !assignmentSettings.restrictNavigationOut
     ) {
       assignmentSettings.restrictNavigationOutAttemptsThreshold = 0
     }

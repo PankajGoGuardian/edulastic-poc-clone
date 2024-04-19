@@ -154,7 +154,10 @@ const Gradebook = ({
   }, [filters])
 
   useEffect(() => {
-    if (!onComponentLoad && (filters.classIds?.length || urlHasStudent)) {
+    if (
+      !onComponentLoad &&
+      (filters.classIds?.length || urlHasStudent || filters.groupId)
+    ) {
       const assessmentIds = curatedFiltersData.assessments
         .filter((a) => filters.assessmentIds.includes(a.id))
         .flatMap((a) => a.assessmentIds)
@@ -403,7 +406,10 @@ const Gradebook = ({
                 </StyledEduButton>
               </EduIf>
               <EduIf
-                condition={filters.classIds && filters.classIds.length > 0}
+                condition={
+                  filters.groupId ||
+                  (filters.classIds && filters.classIds.length > 0)
+                }
               >
                 <EduThen>
                   <GradebookTable

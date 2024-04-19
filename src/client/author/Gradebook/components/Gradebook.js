@@ -154,7 +154,7 @@ const Gradebook = ({
   }, [filters])
 
   useEffect(() => {
-    if (!onComponentLoad && filters.classIds?.length) {
+    if (!onComponentLoad && (filters.classIds?.length || urlHasStudent)) {
       const assessmentIds = curatedFiltersData.assessments
         .filter((a) => filters.assessmentIds.includes(a.id))
         .flatMap((a) => a.assessmentIds)

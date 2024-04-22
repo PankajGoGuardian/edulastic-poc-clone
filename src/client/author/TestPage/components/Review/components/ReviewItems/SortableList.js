@@ -50,7 +50,7 @@ const rightContent = (
       <EduIf condition={type === ITEM_GROUP_TYPES.AUTOSELECT && isEditable}>
         <Tooltip title="Replaces current items with a new set.">
           <span onClick={refreshSection}>
-            <IconReloadCircle />
+            <IconReloadCircle data-cy={`reloadIcon-${group.groupName}`} />
           </span>
         </Tooltip>
       </EduIf>
@@ -61,14 +61,18 @@ const rightContent = (
           </span>
         </Tooltip>
       )}
-      <InfoDiv hasSections={hasSections} data-cy="sectionItemCount">
+      <InfoDiv hasSections={hasSections}>
         <Text>TOTAL ITEMS</Text>
-        <Count>{items.length}</Count>
+        <Count data-cy={`totalItemCount-${group.groupName}`}>
+          {items.length}
+        </Count>
       </InfoDiv>
       {!hasSections && (
         <InfoDiv>
           <Text>Item to Deliver</Text>
-          <Count>{deliverItemsCount || items.length}</Count>
+          <Count data-cy={`deliverItemsCount-${group.groupName}`}>
+            {deliverItemsCount || items.length}
+          </Count>
         </InfoDiv>
       )}
       <EduIf
@@ -79,7 +83,7 @@ const rightContent = (
       >
         <InfoDiv>
           <Text>TOTAL POINTS</Text>
-          <Count>
+          <Count data-cy={`totalPoints-${group.groupName}`}>
             {roundOff(deliverItemsCount * (itemsDefaultMaxScore || 1))}
           </Count>
         </InfoDiv>

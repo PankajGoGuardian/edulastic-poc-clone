@@ -450,7 +450,6 @@ const QuestionBottomAction = ({
             )}
           {isSolutionVisible && (
             <EduButton
-              width="110px"
               height="30px"
               isGhost
               onClick={onClickShowSolutionHandler}

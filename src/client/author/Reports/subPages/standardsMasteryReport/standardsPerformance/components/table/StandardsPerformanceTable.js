@@ -19,6 +19,11 @@ import { CustomTableTooltip } from '../../../../../common/components/customTable
 import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 
+const headerTitleListToSkipUpdate = [
+  '"SCHOOL "',
+  '"AVG. DOMAIN PERFORMANCE "',
+  '"SIS ID"',
+]
 const { downloadCSV } = reportUtils.common
 const {
   getOptionFromKey,
@@ -176,11 +181,23 @@ const getColumns = (
   return columns
 }
 
-const onCsvConvert = (data, rawData, isSurveyTest) =>
-  downloadCSV(
+const onCsvConvert = (data, rawData, isSurveyTest) => {
+  let modifiedData = rawData
+  modifiedData[0] = modifiedData[0].map((title) => {
+    if (!headerTitleListToSkipUpdate.includes(title)) {
+      const allText = title?.replace(/"/g, '')?.trim()?.split(' ')
+      const lastText = allText?.pop()
+      const modifiedTitle = `${allText.join(' ')} - ${lastText}`
+      return modifiedTitle
+    }
+    return title
+  })
+  modifiedData = modifiedData.join('\n')
+  return downloadCSV(
     isSurveyTest ? `Survey Insights.csv` : `Mastery By Domain.csv`,
-    data
+    modifiedData
   )
+}
 
 const StandardsPerformanceTable = ({
   t,

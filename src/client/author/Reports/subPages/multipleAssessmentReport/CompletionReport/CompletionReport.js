@@ -2,7 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { omit, head, isEmpty } from 'lodash'
+import { omit, head, isEmpty, get } from 'lodash'
+import { report as reportTypes } from '@edulastic/constants'
 import {
   completionReportChartPageSize as barChartPageSize,
   analyzeBy,
@@ -18,7 +19,7 @@ import {
   getCompletionReportTableDataLoading,
   getCsvDownloadLoader,
 } from './ducks'
-import { getCsvDownloadingState } from '../../../ducks'
+import { generateCSVAction, getCsvDownloadingState } from '../../../ducks'
 import CompletionReportTable from './components/table/CompletionReportTable'
 import { Container } from './styled'
 import { getUserOrgId, getUserRole } from '../../../../src/selectors/user'
@@ -46,6 +47,7 @@ function CompletionReport({
   role,
   districtId,
   csvDownloadLoadingState,
+  generateCSV,
   ...props
 }) {
   const [selectedTests, setSelectedTests] = useState([])
@@ -141,6 +143,33 @@ function CompletionReport({
     }
   }, [pageFilters, statusColumnSortState, testColumnSort, selectedTests])
 
+  // Download csv data (server side)
+  const itemsCount = get(tableData[0], 'totalRows', 0)
+
+  const generateCSVRequired = itemsCount > TABLE_PAGE_SIZE
+  useEffect(() => {
+    if (isCsvDownloading && generateCSVRequired) {
+      const q = {
+        reportType: reportTypes.reportNavType.COMPLETION_REPORT,
+        reportFilters: {
+          ...settings.requestFilters,
+          compareBy: settings.selectedCompareBy,
+          ...pageFilters,
+          requireTotalCount: pageFilters.page === 1,
+          testOrder: testColumnSort.sortOrder,
+          sortKey: statusMap[statusColumnSortState.sortKey],
+          sortOrder: statusColumnSortState.sortOrder,
+          analyseBy: analyseBy.key,
+          recompute: true,
+        },
+        reportExtras: {
+          totalRows: itemsCount,
+        },
+      }
+      generateCSV(q)
+    }
+  }, [isCsvDownloading, generateCSVRequired])
+
   if (isEmpty(chartData) && !(isChartDataLoading && isTableDataLoading)) {
     return (
       <NoDataContainer>
@@ -185,6 +214,7 @@ function CompletionReport({
             csvDownloadLoadingState={csvDownloadLoadingState}
             compareByBasedOnRole={compareByBasedOnRole}
             isSharedReport={isSharedReport}
+            generateCSVRequired={generateCSVRequired}
           />
         </Container>
       </EduThen>
@@ -209,7 +239,7 @@ const enhance = connect(
     districtId: getUserOrgId(state),
     csvDownloadLoadingState: getCsvDownloadLoader(state),
   }),
-  { ...actions }
+  { ...actions, generateCSV: generateCSVAction }
 )
 
 export default enhance(CompletionReport)

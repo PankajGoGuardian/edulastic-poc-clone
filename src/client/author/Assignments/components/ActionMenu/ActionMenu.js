@@ -52,8 +52,10 @@ export const getCompletionReportPathForAssignment = (
   if (!isEmpty(filterSettings)) {
     const arr = Object.keys(filterSettings)
     arr.forEach((item) => {
-      const val = filterSettings[item] === '' ? 'All' : filterSettings[item]
-      q[item] = val
+      if (item !== 'reportId') {
+        const val = filterSettings[item] === '' ? 'All' : filterSettings[item]
+        q[item] = val
+      }
     })
   }
   if (testIds.includes('overall_tid')) {

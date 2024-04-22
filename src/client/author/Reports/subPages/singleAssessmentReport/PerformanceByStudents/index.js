@@ -46,6 +46,7 @@ import {
 } from './hooks/useFetch'
 
 import { sortOrderMap } from './constants'
+import { TABLE_PAGINATION_STYLE } from '../../../../../common/styled'
 
 const {
   getProficiencyBandData,
@@ -489,7 +490,7 @@ const PerformanceByStudents = ({
                         }
                       >
                         <Pagination
-                          style={{ marginTop: '10px' }}
+                          style={TABLE_PAGINATION_STYLE}
                           onChange={onSetPage}
                           current={page}
                           pageSize={PAGE_SIZE}

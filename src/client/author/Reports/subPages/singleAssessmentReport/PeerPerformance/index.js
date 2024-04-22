@@ -48,6 +48,7 @@ import {
   extAttributeIdToName,
 } from './util/transformers'
 import { getAssessmentName } from '../../../common/util'
+import { TABLE_PAGINATION_STYLE } from '../../../../../common/styled'
 
 const {
   analyseByOptions,
@@ -492,7 +493,7 @@ const PeerPerformance = ({
             />
             <EduIf condition={peerPerformance.totalRows > pageSize}>
               <Pagination
-                style={{ marginTop: '10px' }}
+                style={TABLE_PAGINATION_STYLE}
                 onChange={onSetPageNo}
                 current={pageNo}
                 pageSize={pageSize}

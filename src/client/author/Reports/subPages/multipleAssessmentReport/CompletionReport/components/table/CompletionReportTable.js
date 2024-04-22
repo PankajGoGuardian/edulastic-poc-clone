@@ -11,6 +11,7 @@ import { getTableColumnFE, getTableDataSource } from '../../utils'
 import { compareByKeysToFilterKeys } from '../../../common/utils/constants'
 import { convertTableToCSV } from '../../../../../common/util'
 import TableLoader from './TableLoader'
+import { TABLE_PAGINATION_STYLE } from '../../../../../../../common/styled'
 
 const { getTableData } = reportUtils.completionReport
 
@@ -143,6 +144,7 @@ const CompletionReportTable = ({
         pagination={
           dataSource.length > pageFilters.pageSize || pageFilters.page > 1
             ? {
+                style: TABLE_PAGINATION_STYLE,
                 total: totalPageSize,
                 onChange: handleTablePageChange,
                 pageSize: pageFilters.pageSize + 1,

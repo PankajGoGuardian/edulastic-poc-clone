@@ -12,6 +12,8 @@ import { Card, EduButton } from '@edulastic/common'
 import { Form, Input, Modal, Pagination, Select, Table, Tag } from 'antd'
 import styled from 'styled-components'
 
+export const TABLE_PAGINATION_STYLE = { margin: '15px 55px 15px 10px' }
+
 export const StyledCard = styled(Card)`
   // when u change this u have to change "StyledCard" in "src/client/author/Reports/common/styled.js" to make every css in sync
   // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS

@@ -11,6 +11,7 @@ import { StyledTable, StyledRow } from '../../common/styledComponents'
 import { getTableColumns, onCsvConvert } from './utils'
 import IncompleteTestsMessage from '../../../../../common/components/IncompleteTestsMessage'
 import { addStudentToGroupFeatureEnabled } from '../../utils'
+import { TABLE_PAGINATION_STYLE } from '../../../../../../../common/styled'
 
 const PreVsPostTable = ({
   dataSource,
@@ -60,7 +61,11 @@ const PreVsPostTable = ({
         columns={tableColumns}
         rowSelection={_rowSelection}
         tableToRender={StyledTable}
-        pagination={{ hideOnSinglePage: true, pageSize: 25 }}
+        pagination={{
+          style: TABLE_PAGINATION_STYLE,
+          hideOnSinglePage: true,
+          pageSize: 25,
+        }}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         scroll={{ x: '100%' }}

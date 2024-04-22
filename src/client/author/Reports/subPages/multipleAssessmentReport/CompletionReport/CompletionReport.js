@@ -169,8 +169,12 @@ function CompletionReport({
       generateCSV(q)
     }
   }, [isCsvDownloading, generateCSVRequired])
+  const noDataForAppliedFilters =
+    !(isChartDataLoading || isTableDataLoading) &&
+    isEmpty(chartData) &&
+    isEmpty(tableData)
 
-  if (isEmpty(chartData) && !(isChartDataLoading && isTableDataLoading)) {
+  if (noDataForAppliedFilters) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}

@@ -28,13 +28,13 @@ const slice = createSlice({
     },
 
     fetchCompletionChartDataSuccess: (state, { payload }) => {
-      state.loadingCompletionReportChartData = false
       state.completionReportChartData = payload
+      state.loadingCompletionReportChartData = false
       state.error = ''
     },
     fetchCompletionChartDataFailure: (state, { payload }) => {
-      state.loadingCompletionReportChartData = false
       state.error = payload.error
+      state.loadingCompletionReportChartData = false
     },
 
     fetchCompletionReportTableDataRequest: (state) => {
@@ -42,13 +42,13 @@ const slice = createSlice({
     },
 
     fetchCompletionTableDataSuccess: (state, { payload }) => {
-      state.completionTableDataLoading = false
       state.completionTableData = payload
       state.completionTableDataError = ''
+      state.completionTableDataLoading = false
     },
     fetchCompletionTableDataFailure: (state, { payload }) => {
-      state.completionTableDataLoading = false
       state.completionTableDataError = payload.error
+      state.completionTableDataLoading = false
     },
     resetCompletionReportData: () => initialState,
     getCsvData: () => {},

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { groupBy, mapValues, keyBy } from 'lodash'
+import { groupBy, mapValues, keyBy, omit } from 'lodash'
 import { roleuser, reportUtils } from '@edulastic/constants'
 import { IconEye } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
@@ -185,10 +185,13 @@ export const getTableColumnFE = ({
     key: 'copyReportLink',
     align: 'center',
     render: (text, record) => {
+      const filtersSetting = isSharedReport
+        ? omit(settings?.requestFilters, ['reportId', 'showApply'])
+        : settings?.requestFilters
       return (
         <CopyReportLink
           report={record}
-          filterSettings={settings?.requestFilters || {}}
+          filterSettings={filtersSetting || {}}
           compareBy={compareBy}
         />
       )

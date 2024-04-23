@@ -108,6 +108,7 @@ const VideoPreview = ({
   isAuthorReviewOrEdit,
   vqEnableClosedCaption,
   isPreviewModalVisible,
+  isAuthorReview,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -466,6 +467,13 @@ const VideoPreview = ({
       seekTo(startAt - 1)
     }
   }, [startAt, isReady])
+
+  useEffect(() => {
+    // setting isReady to initial state when VQ preview is closed
+    if (isAuthorReview && !isPreviewModalVisible) {
+      setIsReady(0)
+    }
+  }, [isPreviewModalVisible, isAuthorReview])
 
   useEffect(() => {
     annotationsRef.current = annotations

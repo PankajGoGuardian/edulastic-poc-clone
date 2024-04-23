@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react'
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -117,6 +117,7 @@ const autoSavableTypes = {
   essayRichText: 1,
   essayPlainText: 1,
   formulaessay: 1,
+  uploadFile: 1,
 }
 
 const shouldAutoSave = (itemRows, answersById, itemId) => {
@@ -425,11 +426,14 @@ export function useTabNavigationCounterEffect({
   userId,
   onTimeInBlurChange = () => {},
   blurTimeAlreadySaved,
+  saveCurrentAnswer,
 }) {
   const inFocusRef = useRef(true)
   const idleTimeoutRef = useRef(null)
   const totalBlurTimeCounterIntervalRef = useRef(null)
   const totalTimeInBlur = useRef(blurTimeAlreadySaved || 0)
+
+  const saveAnswerRef = useRef(saveCurrentAnswer)
 
   useEffect(() => {
     if (window.sessionStorage.totalTimeInBlur) {
@@ -483,22 +487,33 @@ export function useTabNavigationCounterEffect({
               clearInterval(totalBlurTimeCounterIntervalRef.current)
             }
             window.sessionStorage.removeItem('totalTimeInBlur')
-            pauseAssignment({
-              history,
-              assignmentId,
-              classId,
-              userId,
-              pauseReason: 'out-of-navigation',
-              msg:
-                'Your test has been locked for security reasons. Please contact your teacher to reopen your test',
-            })
+            const handlePauseAssignment = () =>
+              pauseAssignment({
+                history,
+                assignmentId,
+                classId,
+                userId,
+                pauseReason: 'out-of-navigation',
+                msg:
+                  'Your test has been locked for security reasons. Please contact your teacher to reopen your test',
+              })
+            saveAnswerRef.current
+              ? saveAnswerRef.current({
+                  callback: handlePauseAssignment,
+                })
+              : handlePauseAssignment()
           }
         }
       }, 1000)
       idleTimeoutRef.current = setTimeout(() => {
         if (!inFocusRef.current && enabled) {
           console.info('too much time away from screen!!!!!!!', new Date())
-          incrementNavigationCounter({ history, testActivityId })
+          saveAnswerRef.current
+            ? saveAnswerRef.current({
+                callback: () =>
+                  incrementNavigationCounter({ history, testActivityId }),
+              })
+            : incrementNavigationCounter({ history, testActivityId })
         }
       }, 2500)
     },
@@ -734,21 +749,6 @@ const AssessmentContainer = ({
     userId,
   })
 
-  useTabNavigationCounterEffect({
-    testActivityId: restProps.utaId,
-    enabled:
-      restrictNavigationOut && (enteredIntoFullScreen || currentlyFullScreen),
-    threshold: restrictNavigationOutAttemptsThreshold,
-    history,
-    assignmentId: assignmentObj?._id,
-    classId: groupId,
-    userId,
-    onTimeInBlurChange: (v) => {
-      saveBlurTime(v)
-    },
-    blurTimeAlreadySaved,
-  })
-
   useEffect(() => {
     if (!isEmpty(restrictNavigationOut)) {
       setAntiCheatingEnabled(true)
@@ -903,10 +903,29 @@ const AssessmentContainer = ({
     }
   }, [currentLanguage])
 
-  const saveCurrentAnswer = (payload) => {
-    const timeSpent = Date.now() - lastTime.current
-    saveUserAnswer(currentItem, timeSpent, false, groupId, payload)
-  }
+  const saveCurrentAnswer = useCallback(
+    (payload) => {
+      const timeSpent = Date.now() - lastTime.current
+      saveUserAnswer(currentItem, timeSpent, false, groupId, payload)
+    },
+    [currentItem, lastTime, groupId]
+  )
+
+  useTabNavigationCounterEffect({
+    testActivityId: restProps.utaId,
+    enabled:
+      restrictNavigationOut && (enteredIntoFullScreen || currentlyFullScreen),
+    threshold: restrictNavigationOutAttemptsThreshold,
+    history,
+    assignmentId: assignmentObj?._id,
+    classId: groupId,
+    userId,
+    onTimeInBlurChange: (v) => {
+      saveBlurTime(v)
+    },
+    blurTimeAlreadySaved,
+    saveCurrentAnswer,
+  })
 
   function getPreviewTab(index = currentItem) {
     let previewTab = CLEAR

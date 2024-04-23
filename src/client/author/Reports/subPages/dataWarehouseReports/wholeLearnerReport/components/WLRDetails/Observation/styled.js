@@ -112,4 +112,5 @@ export const StyledFeedbackText = styled.div`
   font-weight: 400;
   line-height: 24px;
   text-align: left;
+  overflow-wrap: break-word;
 `

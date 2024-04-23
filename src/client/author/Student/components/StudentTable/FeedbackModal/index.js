@@ -246,6 +246,19 @@ const FeedbackModal = (props) => {
 
   const selectedSharedWith = form.getFieldValue('sharedType')
 
+  const validateObservation = (rule, value, callback) => {
+    const feedbackText = value
+      .replaceAll('&nbsp;', '')
+      .replace(/<[^>]*>?/gm, '')
+    if (feedbackText.length < 10) {
+      callback('Observation should be min 10 characters')
+    } else if (feedbackText.length > 500) {
+      callback('Observation should be max 500 characters')
+    } else {
+      callback()
+    }
+  }
+
   return (
     <StyledModal
       visible={!!feedbackStudentId}
@@ -286,7 +299,7 @@ const FeedbackModal = (props) => {
               </Tooltip>
             </StudentInfoContainer>
           </FlexContainer>
-          <div style={{ width: '40%' }}>
+          <div style={{ width: '40%', marginTop: '9px' }}>
             <StyledFormItem labelAlign="left">
               {form.getFieldDecorator('type', {
                 rules: [
@@ -321,14 +334,7 @@ const FeedbackModal = (props) => {
                   required: true,
                   message: 'Observation is required',
                 },
-                {
-                  max: 500,
-                  message: 'Observation should be max 500 characters',
-                },
-                {
-                  min: 10,
-                  message: 'Observation should be min 10 characters',
-                },
+                { validator: validateObservation },
               ],
               ...(isEditFlow ? { initialValue: feedbackStudent.feedback } : {}),
             })(
@@ -406,7 +412,7 @@ const FeedbackModal = (props) => {
                 </StyledSelect>
               )}
             </StyledFormItem>
-            <div style={{ marginTop: '-10px', marginLeft: '-14px' }}>
+            <div style={{ marginTop: '-10px' }}>
               {
                 SHARE_TYPES_INFO_TEXT[
                   SHARE_TYPES_VALUE_TO_KEY_MAP[selectedSharedWith]
@@ -417,7 +423,12 @@ const FeedbackModal = (props) => {
           <EduIf
             condition={selectedSharedWith !== SHARE_TYPES_VALUES.INDIVIDUAL}
           >
-            <EduButton disabled={isSubmitting} onClick={handleSubmit} mr="10px">
+            <EduButton
+              disabled={isSubmitting}
+              onClick={handleSubmit}
+              mr="10px"
+              style={{ marginTop: '-12px' }}
+            >
               Save
             </EduButton>
           </EduIf>

@@ -82,14 +82,14 @@ const Observations = (props) => {
 
   useEffect(() => {
     if (isCsvDownloading && data.length) {
-      const header = ['DATE', 'TYPE', 'USER', 'ROLE', 'CLASS', 'FEEDBACK']
+      const header = ['DATE', 'TYPE', 'USER', 'ROLE', 'CLASS', 'OBSERVATION']
       const csvRawData = [header]
       data.forEach((row) => {
         const {
           givenBy,
           feedback,
           type: feedbackType,
-          class: { name: className = '-' } = {},
+          class: { name: className = '' } = {},
           updatedAt,
         } = row
         const date = moment(parseInt(updatedAt, 10)).format("Do MMM'YY")

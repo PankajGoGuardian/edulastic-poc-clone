@@ -46,7 +46,7 @@ function ObservationTile(props) {
     feedback,
     type: feedbackType,
     sharedWith: { type, users },
-    class: { name: className } = {},
+    class: { name: className = '' } = {},
     updatedAt,
   } = observation
 
@@ -82,7 +82,7 @@ function ObservationTile(props) {
                 </Tooltip>
                 <Tooltip title={className} placement="bottom">
                   <TeacherInfoContainer>
-                    {ROLE_LABEL[role]} <Separator /> {className || '-'}
+                    {ROLE_LABEL[role]} <Separator /> {className}
                   </TeacherInfoContainer>
                 </Tooltip>
               </div>
@@ -113,7 +113,7 @@ function ObservationTile(props) {
               <Tooltip title={appendIfMultiple(users.map((o) => o.email))}>
                 <IconInfo
                   height="11px"
-                  style={{ marginLeft: '2px', cursor: 'pointer' }}
+                  style={{ marginLeft: '-3px', cursor: 'pointer' }}
                 />
               </Tooltip>
             </EduIf>

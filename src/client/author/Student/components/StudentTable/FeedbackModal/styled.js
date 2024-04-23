@@ -74,6 +74,7 @@ export const StudentInfoContainer = styled.div`
   font-size: 15px;
   margin-left: 10px;
   justify-content: center;
+  max-width: 85%;
 `
 
 export const StyledStudentName = styled.div`

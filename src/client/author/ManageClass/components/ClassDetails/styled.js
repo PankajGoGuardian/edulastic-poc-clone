@@ -678,6 +678,7 @@ export const ViewAssignmentsContainer = styled.div`
 export const StyledObservationModal = styled(CustomModalStyled)`
   .ant-modal-content {
     height: 600px;
+    padding: 25px 15px 25px 45px;
     .ant-modal-header {
       border: none;
       padding: 20px 20px 0px 0px;
@@ -697,6 +698,7 @@ export const ObservationContainer = styled.div`
   overflow-y: auto;
   min-height: 500px;
   max-height: 500px;
+  padding-right: 18px;
   .ant-spin.ant-spin-spinning {
     position: fixed;
     top: 50%;

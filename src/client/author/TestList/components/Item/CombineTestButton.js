@@ -7,6 +7,7 @@ import {
   EduIf,
   EduElse,
   EduThen,
+  FlexContainer,
 } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
 import styled from 'styled-components'
@@ -72,29 +73,32 @@ const CombineTestButton = ({
 
   const combinedBtnText = 'Add to new test'
 
+  const tooltipText =
+    testCategory !== testConstants.testCategoryTypes.DEFAULT
+      ? 'Video, SnapQuiz & Smart Build tests cannot be combined with other tests'
+      : undefined
+
   return (
-    <Tooltip
-      title={
-        testCategory !== testConstants.testCategoryTypes.DEFAULT
-          ? 'Video, SnapQuiz & Smart Build tests cannot be combined with other tests'
-          : undefined
-      }
-    >
-      <EduIf condition={!isTestCard}>
-        <EduThen>
+    <EduIf condition={!isTestCard}>
+      <EduThen>
+        <Tooltip title={tooltipText}>
           <StyledCombineBtnContainer listView={listView}>
             <StyledCombineBtn {...combinedBtnProps}>
               {combinedBtnText}
             </StyledCombineBtn>
           </StyledCombineBtnContainer>
-        </EduThen>
-        <EduElse>
-          <EduButton {...combinedBtnProps} width={width}>
-            {combinedBtnText}
-          </EduButton>
-        </EduElse>
-      </EduIf>
-    </Tooltip>
+        </Tooltip>
+      </EduThen>
+      <EduElse>
+        <Tooltip title={tooltipText}>
+          <FlexContainer width="100%">
+            <EduButton {...combinedBtnProps} ml="0px" width={width}>
+              {combinedBtnText}
+            </EduButton>
+          </FlexContainer>
+        </Tooltip>
+      </EduElse>
+    </EduIf>
   )
 }
 

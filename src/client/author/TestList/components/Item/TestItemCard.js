@@ -118,7 +118,7 @@ const TestItemCard = ({
           {isOwner && status === 'draft' && (
             <EduButton
               style={btnStyle}
-              width="50%"
+              width="140px"
               height="32px"
               onClick={moveToItem}
             >
@@ -135,7 +135,7 @@ const TestItemCard = ({
                     e?.stopPropagation()
                     handleClick()
                   }}
-                  width="50%"
+                  width="140px"
                 >
                   Assign
                 </EduButton>
@@ -148,7 +148,7 @@ const TestItemCard = ({
               <EduButton
                 data-cy="test-preview-button"
                 style={btnStyle}
-                width="50%"
+                width="140px"
                 height="32px"
                 onClick={(e) => showPreviewModal(testId, e)}
               >
@@ -162,14 +162,14 @@ const TestItemCard = ({
                   testCategory,
                 }}
                 style={btnStyle}
-                width="50%"
+                width="140px"
                 height="32px"
                 isTestCard
               />
               <EduButton
                 style={btnStyle}
                 height="32px"
-                width="50%"
+                width="140px"
                 onClick={() => openModal('more')}
               >
                 More

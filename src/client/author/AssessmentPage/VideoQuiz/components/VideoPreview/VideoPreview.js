@@ -165,6 +165,12 @@ const VideoPreview = ({
     return setCaptionStatus(UNAVAILABLE)
   }
 
+  useEffect(() => {
+    if (![READY, UNAVAILABLE].includes(captionStatus) && playing === true) {
+      setCaptionStatus(UNAVAILABLE)
+    }
+  }, [playing])
+
   const handleOnClickCC = () => {
     setIsCCActive((prevState) => {
       if (prevState && !!videoRef?.current) {

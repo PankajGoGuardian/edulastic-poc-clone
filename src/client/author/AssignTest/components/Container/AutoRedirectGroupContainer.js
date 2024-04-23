@@ -8,6 +8,7 @@ import {
   RadioGrp,
   RadioBtn,
 } from '@edulastic/common'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   Label,
   StyledCol,
@@ -44,6 +45,7 @@ const AutoRedirectGroupContainer = ({
     autoRedirectSettings,
     maxAttempts = testSettings.maxAttempts,
     maxAnswerChecks = testSettings.maxAnswerChecks,
+    testType = testSettings.testType,
   } = assignmentSettings
 
   const {
@@ -51,6 +53,12 @@ const AutoRedirectGroupContainer = ({
     maxAttemptAllowed,
     assessmentSuperPowersCheckAnswerTries,
   } = featuresAvailable
+
+  const disableCheckAnsTries = [
+    freezeSettings,
+    !assessmentSuperPowersCheckAnswerTries,
+    testType === TEST_TYPE_SURVEY,
+  ].some((o) => !!o)
 
   const handleAutoRedirectChange = (e) => {
     const { value } = e.target
@@ -193,9 +201,7 @@ const AutoRedirectGroupContainer = ({
                   </StyledCol>
                   <StyledCol span={14}>
                     <InputNumber
-                      disabled={
-                        freezeSettings || !assessmentSuperPowersCheckAnswerTries
-                      }
+                      disabled={disableCheckAnsTries}
                       onChange={(value) =>
                         overRideSettings('maxAnswerChecks', value)
                       }
@@ -331,9 +337,7 @@ const AutoRedirectGroupContainer = ({
               </StyledCol>
               <StyledCol span={14}>
                 <NumberInputStyled
-                  disabled={
-                    freezeSettings || !assessmentSuperPowersCheckAnswerTries
-                  }
+                  disabled={disableCheckAnsTries}
                   onChange={(value) =>
                     overRideSettings('maxAnswerChecks', value)
                   }

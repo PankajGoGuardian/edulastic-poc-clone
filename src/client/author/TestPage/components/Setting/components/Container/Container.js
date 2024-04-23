@@ -1171,6 +1171,12 @@ class Setting extends Component {
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
 
+    const disableCheckAnsTries = [
+      disabled,
+      !assessmentSuperPowersCheckAnswerTries,
+      isSurveyTest,
+    ].some((o) => !!o)
+
     return (
       <MainContentWrapper ref={this.containerRef} padding="10px 20px">
         {showSaveSettingsModal && (
@@ -1789,10 +1795,7 @@ class Setting extends Component {
                         <Row gutter={24}>
                           <Col span={12}>
                             <TextInputStyled
-                              disabled={
-                                disabled ||
-                                !assessmentSuperPowersCheckAnswerTries
-                              }
+                              disabled={disableCheckAnsTries}
                               onChange={(e) =>
                                 this.updateTestData('maxAnswerChecks')(
                                   e.target.value

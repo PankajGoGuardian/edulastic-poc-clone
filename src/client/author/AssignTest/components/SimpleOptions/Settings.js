@@ -15,6 +15,7 @@ import {
 } from '@edulastic/common'
 import { withRouter } from 'react-router-dom'
 import { get, isEmpty } from 'lodash'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   AlignSwitchRight,
   SettingsWrapper,
@@ -337,6 +338,12 @@ const Settings = ({
       }
     }
   }
+  const disableCheckAnsTries = [
+    freezeSettings,
+    !assessmentSuperPowersCheckAnswerTries,
+    testType === TEST_TYPE_SURVEY,
+  ].some((o) => !!o)
+
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -442,9 +449,7 @@ const Settings = ({
                 </Col>
                 <Col span={12}>
                   <InputNumber
-                    disabled={
-                      freezeSettings || !assessmentSuperPowersCheckAnswerTries
-                    }
+                    disabled={disableCheckAnsTries}
                     onChange={(value) =>
                       overRideSettings('maxAnswerChecks', value)
                     }

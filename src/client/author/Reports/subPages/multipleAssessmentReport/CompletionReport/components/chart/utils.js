@@ -6,11 +6,9 @@ const calculateMinWidth = (value, total) => {
 }
 
 export const chartDataFormatter = (chartData = []) => {
-  const ascendingChartData = chartData.sort(
-    (a, b) =>
-      (+a.assessmentDate || Number.MAX_SAFE_INTEGER) -
-      (+b.assessmentDate || Number.MAX_SAFE_INTEGER)
-  )
+  // chart data is already sorted in required order
+  // reverse the order to show it in bar chart from right to left
+  const ascendingChartData = chartData.reverse()
   return ascendingChartData.map((item) => {
     const submittedWidth =
       item.submitted === '0'

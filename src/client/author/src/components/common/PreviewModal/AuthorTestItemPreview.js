@@ -384,7 +384,7 @@ class AuthorTestItemPreview extends Component {
     if (page === 'itemAuthoring') {
       commonProps.style.height = showScratch
         ? 'calc(100vh - 272px)'
-        : 'calc(100vh - 182px)'
+        : 'calc(100vh - 210px)'
       return commonProps
     }
     return {}

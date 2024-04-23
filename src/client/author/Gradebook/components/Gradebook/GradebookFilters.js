@@ -18,9 +18,10 @@ const FilterDropdown = ({
   options,
   dataCy,
   el,
+  isRequired,
 }) => (
   <Col span={24}>
-    <FieldLabel>{label}</FieldLabel>
+    <FieldLabel isRequired={isRequired}>{label}</FieldLabel>
     <SelectInputStyled
       data-cy={dataCy}
       placeholder={allOptionText}
@@ -85,6 +86,7 @@ const GradebookFilters = ({
           value={filters.classIds}
           options={data.classes}
           dataCy="filter-class"
+          isRequired
         />
         <FilterDropdown
           label="Assessment"

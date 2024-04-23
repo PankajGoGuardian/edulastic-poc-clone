@@ -200,6 +200,10 @@ class AddItems extends PureComponent {
         userId,
         districtId,
       })
+      const { searchString = [] } = sessionFilters
+      if (searchString?.length > 5) {
+        sessionFilters.searchString = searchString.slice(0, 5)
+      }
       const selectedSubjects = (test?.subjects || []).filter((item) => !!item)
       const selectedGrades = (test?.grades || []).filter((item) => !!item)
       search = {

@@ -93,7 +93,7 @@ const TestItemCard = ({
       onClick={openModal}
       isTestRecommendation={isTestRecommendation}
     >
-      <OnHoverContainer>
+      <OnHoverContainer data-cy="test-hover-container">
         <Header
           isTest
           src={thumbnail}

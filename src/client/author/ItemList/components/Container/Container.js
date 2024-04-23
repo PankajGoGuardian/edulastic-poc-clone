@@ -35,7 +35,6 @@ import {
   getAllInterestedCurriculumsSelector,
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
-  getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserFeatures,
@@ -90,7 +89,11 @@ import {
   PaginationContainer,
   ScrollbarContainer,
 } from './styled'
-import { setDefaultInterests, getDefaultInterests } from '../../../dataUtils'
+import {
+  setDefaultInterests,
+  getDefaultInterests,
+  getDefaultCurriculum,
+} from '../../../dataUtils'
 import HeaderFilter from '../HeaderFilter'
 import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import ApproveConfirmModal from '../ApproveConfirmModal'
@@ -124,8 +127,7 @@ class Contaier extends Component {
       history,
       interestedSubjects,
       interestedGrades,
-      interestedCurriculums: [firstCurriculum],
-      allInterestedCurriculums,
+      interestedCurriculums,
       sort: initSort = {},
       userId,
       districtId,
@@ -139,16 +141,11 @@ class Contaier extends Component {
     const {
       subject = interestedSubjects,
       grades = interestedGrades || [],
-      curriculumId = firstCurriculum &&
-      firstCurriculum.subject === interestedSubjects?.[0]
-        ? firstCurriculum._id
-        : allInterestedCurriculums.some((curr) =>
-            (interestedSubjects || []).includes(curr.subject)
-          )
-        ? // When the user level curriculum is not available, switch default to the 'All Interested Standard Set'
-          // option if there are interested curriculums available at school/district level for interested subjects.
-          INTERESTED_STANDARD_SETS
-        : '',
+      curriculumId = getDefaultCurriculum(
+        interestedCurriculums,
+        interestedSubjects,
+        userRole
+      ),
     } = getDefaultInterests()
     const isAuthoredNow = history?.location?.state?.isAuthoredNow
     const applyAuthoredFilter = isAuthoredNow
@@ -718,8 +715,7 @@ const enhance = compose(
       defaultSubject: getDefaultSubjectSelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      interestedCurriculums: getInterestedCurriculumsSelector(state),
-      allInterestedCurriculums: getAllInterestedCurriculumsSelector(state),
+      interestedCurriculums: getAllInterestedCurriculumsSelector(state),
       search: getSearchFilterStateSelector(state),
       sort: getSortFilterStateSelector(state),
       passageItems: state.tests.passageItems || [],

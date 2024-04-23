@@ -18,6 +18,7 @@ const Standards = ({
   margin,
   labelStyle,
   show,
+  reviewpage,
 }) => {
   const { curriculumId = '', standardIds = [] } = search
   const domains = []
@@ -26,7 +27,14 @@ const Standards = ({
   const alignments = get(item, 'data.questions', []).flatMap(
     (q) => q?.alignment || []
   )
-  if (!alignments.length) {
+  const interestedCurriculumById = keyBy(interestedCurriculums, '_id')
+  if (
+    !alignments.length ||
+    (reviewpage &&
+      !alignments.some(
+        (alignment) => interestedCurriculumById[alignment.curriculumId]
+      ))
+  ) {
     // No alignments present return early with No Standard tag
     return (
       <StyledStandardTags>
@@ -50,7 +58,6 @@ const Standards = ({
       </StyledStandardTags>
     )
   }
-  const interestedCurriculumById = keyBy(interestedCurriculums, '_id')
   if (
     !alignments.some(
       (alignment) => interestedCurriculumById[alignment.curriculumId]

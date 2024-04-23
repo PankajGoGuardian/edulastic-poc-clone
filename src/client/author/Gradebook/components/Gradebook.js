@@ -386,7 +386,7 @@ const Gradebook = ({
               <Spin />
             </TableContainer>
           ) : (
-            <TableContainer showFilter={showFilter}>
+            <TableContainer showFilter={showFilter} minimumTableHeight>
               <EduIf condition={loading && !fullTableLoad}>
                 <TableInnerSpin />
               </EduIf>
@@ -497,8 +497,8 @@ const Gradebook = ({
                 </EduThen>
                 <EduElse>
                   <NoDataContainer>
-                    Select a class in the filters to the left to view the
-                    gradebook
+                    Select a Class / Student group from the left-side filters to
+                    view the Gradebook
                   </NoDataContainer>
                 </EduElse>
               </EduIf>

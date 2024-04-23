@@ -78,8 +78,8 @@ const ArrowBoxShadow = `0px 4px 4px 0px rgba(0, 0, 0, 0.12)`
 export const LeftArrow = styled(Arrow)`
   display: ${(props) => (props.disabled ? 'none' : 'block')};
   transform: rotate(180deg);
-  position: fixed;
-  top: 50%;
+  position: absolute;
+  top: calc(50% - 15px);
   cursor: pointer;
   background: ${themeColor};
   stroke: ${white};
@@ -99,9 +99,9 @@ export const LeftArrow = styled(Arrow)`
 
 export const RightArrow = styled(Arrow)`
   display: ${(props) => (props.disabled ? 'none' : 'block')};
-  position: fixed;
+  position: absolute;
   right: 15px;
-  top: 50%;
+  top: calc(50% - 15px);
   cursor: pointer;
   background: ${themeColor};
   stroke: ${white};
@@ -120,7 +120,9 @@ export const RightArrow = styled(Arrow)`
 export const TableContainer = styled.div`
   position: relative;
   max-height: 100%;
-  min-height: calc(100% - 62px);
+  height: ${(props) => (props.minimumTableHeight ? 'max-content' : 'auto')};
+  min-height: ${(props) =>
+    props.minimumTableHeight ? 'max-content' : 'calc(100% - 62px)'};
   width: ${(props) => (props.showFilter ? 'calc(100% - 240px)' : '100%')};
   padding-left: ${(props) => (props.showFilter ? '40px' : '20px')};
   .ant-spin {

@@ -372,7 +372,7 @@ class QuestionWrapper extends Component {
       )
     }
     if (isTestPreview) {
-      if (assignmentLevelShowSpeechToText === undefined && features?.premium) {
+      if (testLevelShowSpeechToText === undefined && features?.premium) {
         return true
       }
       return testLevelShowSpeechToText

@@ -226,10 +226,13 @@ const SaveAndExit = ({
         </>
       )}
       <EduIf
-        condition={
-          isImmersiveReaderEnabled(showImmersiveReader, accommodations) ||
-          (isTestPreviewModalVisible && isPremiumUser)
-        }
+        condition={isImmersiveReaderEnabled(
+          showImmersiveReader,
+          accommodations,
+          isTestPreviewModalVisible,
+          isPremiumUser,
+          userRole
+        )}
       >
         <EduThen>
           <ImmersiveReader

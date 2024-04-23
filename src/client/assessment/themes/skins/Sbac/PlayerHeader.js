@@ -123,6 +123,7 @@ const PlayerHeader = ({
   accommodations,
   isTestPreviewModalVisible,
   isPremiumUser,
+  userRole,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -201,10 +202,13 @@ const PlayerHeader = ({
               </Tooltip>
             </FlexContainer>
             <EduIf
-              condition={
-                isImmersiveReaderEnabled(showImmersiveReader, accommodations) ||
-                (isTestPreviewModalVisible && isPremiumUser)
-              }
+              condition={isImmersiveReaderEnabled(
+                showImmersiveReader,
+                accommodations,
+                isTestPreviewModalVisible,
+                isPremiumUser,
+                userRole
+              )}
             >
               <ImmersiveReader
                 ImmersiveReaderButton={ImmersiveReaderButton}

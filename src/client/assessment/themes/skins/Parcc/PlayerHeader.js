@@ -49,7 +49,10 @@ import {
 } from '../../../../common/components/LineReader/duck'
 import useLineReader from '../../../../common/components/LineReader/components/useLineReader'
 import LineReader from '../../../../common/components/LineReader'
-import { getUserAccommodations } from '../../../../student/Login/ducks'
+import {
+  getUserAccommodations,
+  getUserRole,
+} from '../../../../student/Login/ducks'
 import { isImmersiveReaderEnabled } from '../../../utils/helpers'
 import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
 import { isPremiumUserSelector } from '../../../../author/src/selectors/user'
@@ -118,6 +121,7 @@ const PlayerHeader = ({
   accommodations,
   isTestPreviewModalVisible,
   isPremiumUser,
+  userRole,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -341,13 +345,13 @@ const PlayerHeader = ({
               </FlexContainer>
               <FlexContainer>
                 <EduIf
-                  condition={
-                    isImmersiveReaderEnabled(
-                      showImmersiveReader,
-                      accommodations
-                    ) ||
-                    (isTestPreviewModalVisible && isPremiumUser)
-                  }
+                  condition={isImmersiveReaderEnabled(
+                    showImmersiveReader,
+                    accommodations,
+                    isTestPreviewModalVisible,
+                    isPremiumUser,
+                    userRole
+                  )}
                 >
                   <ImmersiveReader
                     ImmersiveReaderButton={ImmersiveReaderButton}
@@ -396,6 +400,7 @@ const enhance = compose(
       accommodations: getUserAccommodations(state),
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isPremiumUser: isPremiumUserSelector(state),
+      userRole: getUserRole(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

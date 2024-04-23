@@ -1,5 +1,6 @@
 import { groupBy, difference, isEmpty } from 'lodash'
 import questionType from '@edulastic/constants/const/questionType'
+import { STUDENT } from '@edulastic/constants/const/roleType'
 import * as Sentry from '@sentry/browser'
 
 import { FRACTION_FORMATS } from '../constants/constantsForQuestions'
@@ -668,12 +669,19 @@ export const handlePreventKeyDown = (e) => {
 
 export const isImmersiveReaderEnabled = (
   showImmersiveReader,
-  accommodations
+  accommodations,
+  isTestPreviewModalVisible,
+  isPremiumUser,
+  role
 ) => {
   /* Considering accommodation.ir only when Immersive Reader in test setting is not set 
     otherwise Immersive Reader of test setting will override student acommodations */
   if (showImmersiveReader === undefined) {
-    return accommodations?.ir === 'yes'
+    if (role === STUDENT) {
+      return accommodations?.ir === 'yes'
+    }
+    // If user role in not student then check user is premium and in preview mode
+    return isTestPreviewModalVisible && isPremiumUser
   }
   return showImmersiveReader
 }

@@ -51,7 +51,10 @@ const CompletionReportTable = ({
       index,
       compareBy: settings.selectedCompareBy?.key,
     }
-
+    // Removing as in BE if reportId is present, All filters will be applied instead instead of specific test
+    if (isSharedReport) {
+      delete params.reportId
+    }
     if (compareByKeysToFilterKeys[compareBy.key]) {
       params[compareByKeysToFilterKeys[compareBy.key]] = record.dimensionId
     }

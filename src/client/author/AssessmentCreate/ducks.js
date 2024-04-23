@@ -41,6 +41,7 @@ import {
 import { setUserFeaturesAction } from '../../student/Login/ducks'
 import { videoQuizActions } from '../VideoLibrary/ducks'
 import changeViewAction from '../src/actions/view'
+import { DEFAULT_TEST_TITLE } from '../TestPage/utils'
 
 const pdfjs = require('pdfjs-dist')
 
@@ -325,7 +326,7 @@ function* createAssessmentSaga({ payload }) {
       }
       const newAssessment = {
         ...initialTestState,
-        title: fileTitle || undefined,
+        title: fileTitle || DEFAULT_TEST_TITLE,
         createdBy: {
           id: user._id,
           name,

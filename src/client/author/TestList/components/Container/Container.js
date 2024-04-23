@@ -310,6 +310,10 @@ class TestList extends Component {
         ...testFilters,
       }
     } else {
+      const { searchString = [] } = sessionFilters
+      if (searchString?.length > 5) {
+        sessionFilters.searchString = searchString.slice(0, 5)
+      }
       searchFilters = {
         ...testFilters,
         ...sessionFilters,
@@ -338,6 +342,10 @@ class TestList extends Component {
             _id: parseInt(item._id, 10),
           }))
         : []
+      const { searchString = [] } = searchParams
+      if (searchString?.length > 5) {
+        searchParams.searchString = searchString.slice(0, 5)
+      }
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)))
     }
 

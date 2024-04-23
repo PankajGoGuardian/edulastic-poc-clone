@@ -933,7 +933,7 @@ class ProfileBody extends React.Component {
                   </SelectInputStyled>
                   {!defaultGrades?.length && (
                     <StyledRequiredFieldInfoText>
-                      Atleast one grade need to be selected to save changes{' '}
+                      At least one grade needs to be selected to save changes{' '}
                     </StyledRequiredFieldInfoText>
                   )}
                   <FieldLabel>
@@ -966,7 +966,7 @@ class ProfileBody extends React.Component {
                   </SelectInputStyled>
                   {!defaultSubjects?.length && (
                     <StyledRequiredFieldInfoText>
-                      Atleast one subject need to be selected to save changes{' '}
+                      At least one subject needs to be selected to save changes{' '}
                     </StyledRequiredFieldInfoText>
                   )}
                   {user.role === roleuser.TEACHER && googleClassRoomAllowed && (

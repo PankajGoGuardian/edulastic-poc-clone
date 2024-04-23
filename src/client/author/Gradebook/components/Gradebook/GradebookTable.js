@@ -73,7 +73,7 @@ const GradebookTable = ({
         } = assMap[ass.id] || {}
         const color = STATUS_LIST.find((s) => s.id === status)?.color
         return assignmentId && classId && status !== 'UN ASSIGNED' ? (
-          <EduIf condition={isEnrolled && isAssigned}>
+          <EduIf condition={isEnrolled && isAssigned && status !== 'NOT STARTED'}>
             <EduThen>
               <Link
                 to={`/author/classBoard/${assignmentId}/${classId}/test-activity/${testActivityId}`}
@@ -84,15 +84,19 @@ const GradebookTable = ({
               </Link>
             </EduThen>
             <EduElse>
-              <StyledTableCell color={color} data-cy="percentScore">
-                {percentScore || '-'}
-              </StyledTableCell>
+              <Tooltip title="No attempt submitted yet.">
+                <StyledTableCell color={color} data-cy="percentScore">
+                  {percentScore || '-'}
+                </StyledTableCell>
+              </Tooltip>
             </EduElse>
           </EduIf>
         ) : (
-          <StyledTableCell>
-            {percentScore || '-'}
-          </StyledTableCell>
+          <Tooltip title="Test is not assigned to this student.">
+            <StyledTableCell>
+              {percentScore || '-'}
+            </StyledTableCell>
+          </Tooltip>
         )
       },
       sorter: (a, b) => {

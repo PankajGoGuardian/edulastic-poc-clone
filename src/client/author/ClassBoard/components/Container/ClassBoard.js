@@ -20,6 +20,7 @@ import {
 } from '@edulastic/common'
 import {
   IconAddStudents,
+  IconAssignVideoQuizSmall,
   IconDownload,
   IconInfo,
   IconMarkAsAbsent,
@@ -1942,11 +1943,20 @@ class ClassBoard extends Component {
                     </EduIf>
                   </LeftContainer>
                   <EduIf condition={attemptWindow}>
-                    <InfoMessage color={lightGreen4}>
-                      <IconInfo fill={green} height={10} /> {attemptWindow}
-                    </InfoMessage>
+                    <div>
+                      <InfoMessage color={lightGreen4}>
+                        <IconInfo fill={green} height={10} /> {attemptWindow}
+                      </InfoMessage>
+                    </div>
                   </EduIf>
                   <div style={{ display: 'flex' }}>
+                    <AssignVideoQuizBanner
+                      showBanner={showVideoQuizBanner}
+                      clickedFrom="LCB"
+                      user={user}
+                      history={history}
+                      component={IconAssignVideoQuizSmall}
+                    />
                     <EduIf
                       condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}
                     >
@@ -1954,7 +1964,7 @@ class ClassBoard extends Component {
                         placement="top"
                         title={assignTutoringTooltipTitle}
                       >
-                        <div>
+                        <div style={{ minWidth: 'fit-content' }}>
                           <AssignTutoring
                             active={isAssignTutoringActive}
                             data-cy="assignTutoring"
@@ -1973,39 +1983,26 @@ class ClassBoard extends Component {
                         </div>
                       </Tooltip>
                     </EduIf>
-                    <AssignVideoQuizBanner
-                      showBanner={showVideoQuizBanner}
-                      clickedFrom="LCB"
-                      user={user}
-                      history={history}
-                      style={{
-                        height: '33px',
-                        marginTop: '-9px',
-                        marginRight: '-31px',
-                      }}
-                    />
-                    <EduIf condition={process.env.NODE_ENV === 'development'}>
-                      <Tooltip
-                        placement="top"
-                        title={
-                          standardTaggingIsPresent
-                            ? testSubmittedByAtleastOneStudent
-                              ? undefined
-                              : 'No student has submitted the test yet. Test score is necessary to assign interventions.'
-                            : 'The test does not have any item tagged to standard. Standard tagging is necessary to assign interventions.'
-                        }
-                      >
-                        <div>
-                          <AssignTutoring
-                            active={enableAssignInterventionsRedirect}
-                            data-cy="assignTutoring"
-                            onClick={handleAssignInterventionsClick}
-                          >
-                            ASSIGN INTERVENTIONS
-                          </AssignTutoring>
-                        </div>
-                      </Tooltip>
-                    </EduIf>
+                    <Tooltip
+                      placement="top"
+                      title={
+                        standardTaggingIsPresent
+                          ? testSubmittedByAtleastOneStudent
+                            ? undefined
+                            : 'No student has submitted the test yet. Test score is necessary to assign interventions.'
+                          : 'The test does not have any item tagged to standard. Standard tagging is necessary to assign interventions.'
+                      }
+                    >
+                      <div style={{ minWidth: 'fit-content' }}>
+                        <AssignTutoring
+                          active={enableAssignInterventionsRedirect}
+                          data-cy="assignTutoring"
+                          onClick={handleAssignInterventionsClick}
+                        >
+                          ASSIGN INTERVENTIONS
+                        </AssignTutoring>
+                      </div>
+                    </Tooltip>
 
                     <ClassBoardFeats>
                       <RedirectButton

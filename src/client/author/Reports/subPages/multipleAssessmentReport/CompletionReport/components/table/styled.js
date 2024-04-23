@@ -11,6 +11,7 @@ export const TableContainer = styled.div`
   height: 521px;
   flex-direction: column;
   gap: 32px;
+  position: relative;
 `
 
 export const TableHeaderContainer = styled.div`
@@ -42,6 +43,11 @@ export const ActionContainer = styled.div`
 `
 
 export const StyledTable = styled(Table)`
+  .ant-spin,
+  .ant-spin-nested-loading > div > .ant-spin {
+    top: min(40%, 200px);
+    height: 0px;
+  }
   .ant-table-thead th {
     padding: 8px;
     color: #aaafb5;
@@ -97,4 +103,11 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+`
+export const StyledText = styled.p`
+  color: #555555;
+  font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 `

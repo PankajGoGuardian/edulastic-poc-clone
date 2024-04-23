@@ -14,6 +14,7 @@ const QuestionPreviewDetails = ({
   bloomsTaxonomy,
   tags,
   item,
+  showAllInterestedCurriculums,
 }) => {
   const allRubricNames = useMemo(() => {
     return getAllRubricNames(item)
@@ -71,7 +72,11 @@ const QuestionPreviewDetails = ({
         <DetailRow className="standards">
           <label>Standard: </label>
           <div data-cy="standards-on-preview">
-            <Standards item={item} show={7} />
+            <Standards
+              item={item}
+              show={7}
+              showAllInterestedCurriculums={showAllInterestedCurriculums}
+            />
           </div>
         </DetailRow>
         <DetailRow className="tags">

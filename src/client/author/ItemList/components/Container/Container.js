@@ -32,6 +32,7 @@ import {
 } from '../../../src/selectors/dictionaries'
 import { getTestItemCreatingSelector } from '../../../src/selectors/testItem'
 import {
+  getAllInterestedCurriculumsSelector,
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
   getInterestedCurriculumsSelector,
@@ -61,6 +62,7 @@ import {
   setApproveConfirmationOpenAction,
   getSortFilterStateSelector,
   initialSortState,
+  INTERESTED_STANDARD_SETS,
 } from '../../../TestPage/components/AddItems/ducks'
 import {
   getAllTagsAction,
@@ -123,6 +125,7 @@ class Contaier extends Component {
       interestedSubjects,
       interestedGrades,
       interestedCurriculums: [firstCurriculum],
+      allInterestedCurriculums,
       sort: initSort = {},
       userId,
       districtId,
@@ -139,6 +142,12 @@ class Contaier extends Component {
       curriculumId = firstCurriculum &&
       firstCurriculum.subject === interestedSubjects?.[0]
         ? firstCurriculum._id
+        : allInterestedCurriculums.some((curr) =>
+            (interestedSubjects || []).includes(curr.subject)
+          )
+        ? // When the user level curriculum is not available, switch default to the 'All Interested Standard Set'
+          // option if there are interested curriculums available at school/district level for interested subjects.
+          INTERESTED_STANDARD_SETS
         : '',
     } = getDefaultInterests()
     const isAuthoredNow = history?.location?.state?.isAuthoredNow
@@ -162,13 +171,21 @@ class Contaier extends Component {
       sortDir: 'desc',
       ...sessionSort,
     }
+    const { searchString = [] } = sessionFilters
+    if (searchString?.length > 5) {
+      sessionFilters.searchString = searchString.slice(0, 5)
+    }
     const search = {
       ...initSearch,
       ...sessionFilters,
       ...applyAuthoredFilter,
       subject: subject || [],
       grades,
-      curriculumId: parseInt(curriculumId, 10) || '',
+      curriculumId: curriculumId
+        ? curriculumId === INTERESTED_STANDARD_SETS
+          ? curriculumId
+          : parseInt(curriculumId, 10)
+        : '',
     }
     if (search.questionType === LIKERT_SCALE) {
       search.questionType = ''
@@ -369,6 +386,7 @@ class Contaier extends Component {
     } else {
       updatedKeys = {
         ...search,
+        ...updatedKeys, // To retain the changes for the related fields done in previous steps.
         [fieldName]: value,
       }
     }
@@ -701,6 +719,7 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
+      allInterestedCurriculums: getAllInterestedCurriculumsSelector(state),
       search: getSearchFilterStateSelector(state),
       sort: getSortFilterStateSelector(state),
       passageItems: state.tests.passageItems || [],

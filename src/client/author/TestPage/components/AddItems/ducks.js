@@ -14,7 +14,7 @@ import {
 } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { testItemsApi, contentErrorApi } from '@edulastic/api'
-import { keyBy } from 'lodash'
+import { isEmpty, keyBy } from 'lodash'
 import produce from 'immer'
 import {
   getAllTagsSelector,
@@ -31,8 +31,11 @@ import {
   APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS,
 } from '../../../src/constants/actions'
 import { UPDATE_TEST_ITEM_LIKE_COUNT } from '../../../ItemList/ducks'
+import { getAllInterestedCurriculumsSelector } from '../../../src/selectors/user'
 
 const { SMART_FILTERS } = libraryFilters
+
+export const INTERESTED_STANDARD_SETS = 'interested' // Dropdown value for All Interested Standard Sets
 
 export const filterMenuItems = [
   {
@@ -397,6 +400,21 @@ function* receiveTestItemsSaga({
       searchTags = tags.map((tag) => allTagsKeyById[tag]?.tagName || '')
     }
 
+    if (search.curriculumId === INTERESTED_STANDARD_SETS) {
+      // If all interested standard sets are requested by the user, populate the curriculumIds field with respective standard sets.
+      const interestedCurriculums = yield select((state) =>
+        getAllInterestedCurriculumsSelector(state)
+      )
+      search.curriculumIds = isEmpty(search.subject)
+        ? []
+        : interestedCurriculums
+            .filter((curr) => search.subject.includes(curr.subject))
+            .map((curr) => curr._id)
+    } else {
+      // Convert the single select curriculumId into array.
+      search.curriculumIds = search.curriculumId ? [search.curriculumId] : []
+    }
+    delete search.curriculumId
     const { items, count } = yield call(testItemsApi.getAll, {
       search: { ...search, tags: searchTags },
       sort,
@@ -474,7 +492,7 @@ function* removeItemFromTest({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
+    takeLatest(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
     takeEvery(CLEAR_SELECTED_ITEMS, clearSelectedItemsSaga),
     takeEvery(DELETE_ITEM_SUCCESS, removeItemFromTest),
     takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),

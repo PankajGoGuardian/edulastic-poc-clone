@@ -13,6 +13,7 @@ import {
 import { scopes } from '../../../../../../../ManageClass/components/ClassListContainer/ClassCreatePage'
 import authorizeCanvas from '../../../../../../../../common/utils/CanavsAuthorizationModule'
 import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton'
+import { Tooltip } from 'antd'
 
 const HeaderSyncAction = ({
   allowGoogleLogin,
@@ -82,14 +83,19 @@ const HeaderSyncAction = ({
           WrappedComponent={({ googleClient }) => (
             <AuthorCompleteSignupButton
               renderButton={(handleClick) => (
-                <EduButton
-                  isGhost
-                  isBlue
-                  onClick={handleClick}
-                  data-cy="syncGoogle"
+                <Tooltip
+                  title="Sync Classes with Google Classroom"
+                  placement="bottom"
                 >
-                  <p>Sync with Google Classroom</p>
-                </EduButton>
+                  <EduButton
+                    isGhost
+                    isBlue
+                    onClick={handleClick}
+                    data-cy="syncGoogle"
+                  >
+                    <p>Sync with Google Classroom</p>
+                  </EduButton>
+                </Tooltip>
               )}
               onClick={() => loginGoogle(googleClient)}
               triggerSource="Sync Google Class Button Click"

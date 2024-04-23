@@ -920,3 +920,9 @@ export const removeMetaTag = (
     head.removeChild(metaTag)
   }
 }
+
+export const appendIfMultiple = (arr) => {
+  return arr.length > 1
+    ? `${arr.slice(0, arr.length - 1).join(', ')} and ${arr[arr.length - 1]}`
+    : arr.join(', ')
+}

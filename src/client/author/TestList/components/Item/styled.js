@@ -25,6 +25,7 @@ export const Container = styled(Card)`
     overflow: ${(props) => (props.isTestRecommendation ? 'hidden' : null)};
     transform: ${(props) => (props.isTestCard ? `scale(1)` : null)};
     transition: 0.2s;
+    overflow: hidden;
     .ant-card-body {
       padding: 16px 12px;
       border: ${(props) => (props.isPlaylist ? '1px solid #dfdfdf' : 'none')};
@@ -134,6 +135,9 @@ export const Inner = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 30px;
+  padding: ${({ isTest }) => isTest && '0 12px 12px 12px'};
+  margin: ${({ isTest }) => isTest && '0 -12px 10px'};
+  border-bottom: ${({ isTest }) => isTest && '1px solid #f0f0f0'};
 `
 
 export const CardDescription = styled.div`
@@ -338,7 +342,7 @@ export const ViewButton = styled.div`
 
 export const ButtonWrapper = styled.div`
   position: ${({ position }) => position || 'absolute'};
-  height: 100%;
+  height: ${({ isTest }) => (isTest ? 'calc(100% - 100px)' : '100%')};
   left: 0px;
   right: 0px;
   top: 0px;
@@ -346,6 +350,7 @@ export const ButtonWrapper = styled.div`
   display: none;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1;
+  padding: ${({ isTest }) => isTest && '32px 0px'};
 `
 
 export const PremiumLabel = styled.div`
@@ -370,6 +375,8 @@ export const Header = styled.div`
   background-repeat: no-repeat;
   background-size: 100% 100%;
   align-items: center;
+  margin: ${({ isTest }) => (isTest ? '-16px -12px 16px -12px' : '')};
+  overflow: ${({ isTest }) => (isTest ? 'hidden' : '')};
   &:hover {
     .showHover {
       display: flex;
@@ -377,7 +384,6 @@ export const Header = styled.div`
       align-items: center;
     }
   }
-
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${({ isPlaylist, isTestRecommendation }) =>
       isPlaylist ? '100px' : isTestRecommendation ? '115px' : '135px'};
@@ -464,7 +470,7 @@ export const TestInfo = styled.div`
 
 export const MidRow = styled.div`
   border-top: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: ${({ isTest }) => !isTest && '1px solid #f0f0f0'};
   padding: 10px 12px;
   margin: 10px -12px 8px;
   color: ${titleColor};

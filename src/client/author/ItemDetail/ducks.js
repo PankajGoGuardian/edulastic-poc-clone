@@ -137,6 +137,8 @@ export const UPDATE_ITEM_DOC_BASED_REQUEST =
 export const UPDATE_ITEM_DETAIL_REQUEST = '[itemDetail] update by id request'
 export const UPDATE_ITEM_DETAIL_SUCCESS = '[itemDetail] update by id success'
 export const UPDATE_ITEM_DETAIL_ERROR = '[itemDetail] update by id error'
+export const UPDATE_ITEM_DETAIL_ITEM_DATA =
+  '[itemDetail] update item detail item data'
 export const CLEAR_ITEM_DETAIL = '[itemDetail] clear item detail'
 export const SET_ITEM_DETAIL_DATA = '[itemDetail] set data'
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING =
@@ -265,6 +267,11 @@ export const updateItemsDocBasedByIdAction = (
 export const receiveItemDetailSuccess = (item) => ({
   type: RECEIVE_ITEM_DETAIL_SUCCESS,
   payload: { item },
+})
+
+export const updateItemDetailItemDataAction = (item) => ({
+  type: UPDATE_ITEM_DETAIL_ITEM_DATA,
+  payload: item,
 })
 
 export const receiveItemDetailError = (error) => ({
@@ -889,6 +896,7 @@ export function reducer(state = initialState, { type, payload }) {
     case RECEIVE_ITEM_DETAIL_REQUEST:
       return { ...state, loading: true }
     case RECEIVE_ITEM_DETAIL_SUCCESS:
+    case UPDATE_ITEM_DETAIL_ITEM_DATA:
       return {
         ...state,
         item: payload,

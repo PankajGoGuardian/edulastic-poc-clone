@@ -312,7 +312,7 @@ export function* createTestFromCart({ payload: { testName } }) {
   }
   yield put(clearCartTestDataAction())
   notification({ type: 'info', messageKey: 'Creatingatestwithselecteditems' })
-  yield put(createTestAction(updatedTest, false, true))
+  yield put(createTestAction(updatedTest, true, true))
 }
 
 export function* approveOrRejectSingleItemSaga({ payload }) {

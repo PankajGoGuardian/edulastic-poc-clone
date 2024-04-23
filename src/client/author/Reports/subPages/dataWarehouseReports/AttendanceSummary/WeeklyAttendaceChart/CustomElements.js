@@ -2,7 +2,7 @@ import React from 'react'
 import { yAxisTickValues } from '../utils/constants'
 
 export const CustomizedLabel = (props) => {
-  const { x, y, value, stroke, index } = props
+  const { x, y, value, stroke, index, showAbsents } = props
 
   if (index === 0) return null
 
@@ -14,6 +14,7 @@ export const CustomizedLabel = (props) => {
   const recty = isLabelOverFlowing ? y + labelHeight - 18 : y - labelHeight - 10
   const newY = isLabelOverFlowing ? y + labelHeight + 8 : y - 12
   const textX = x
+  const labelText = showAbsents ? value : `${value}%`
 
   return (
     <g>
@@ -34,16 +35,18 @@ export const CustomizedLabel = (props) => {
         fontWeight="bold"
         textAnchor="middle"
       >
-        {value}%
+        {labelText}
       </text>
     </g>
   )
 }
 
-export const yAxisTick = (props) => {
-  const { payload, x, y } = props
+export const YAxisTick = (props) => {
+  const { payload, x, y, showAbsents } = props
   const { value } = payload
-  if (!yAxisTickValues.includes(value)) return null
+  if (!showAbsents && !yAxisTickValues.includes(value)) return null
+
+  const tickText = showAbsents ? value : `${value}%`
 
   return (
     <g>
@@ -56,7 +59,7 @@ export const yAxisTick = (props) => {
         fontWeight="bold"
         textAnchor="middle"
       >
-        {value}%
+        {tickText}
       </text>
     </g>
   )

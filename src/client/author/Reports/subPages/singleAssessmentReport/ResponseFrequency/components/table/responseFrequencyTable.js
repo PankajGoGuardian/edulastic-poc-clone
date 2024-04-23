@@ -39,7 +39,7 @@ const ResponseFrequencyTable = ({
       Number(a.qLabel.substring(1)) - Number(b.qLabel.substring(1))
 
     const _standardsColumnRender = (data) => (
-      <FlexContainer flexWrap="wrap">
+      <FlexContainer flexWrap="wrap" justifyContent="center">
         {data.map(({ identifier = '-', description = '' }, idx) => {
           const isLastItem = idx === data.length - 1
           return (

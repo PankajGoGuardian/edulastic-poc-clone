@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
+import { black } from '@edulastic/colors'
 import { ConfirmationModal } from '../src/components/common/ConfirmationModal'
 import {
   getAvaialbleRegradeSettingsSelector,
@@ -11,6 +12,7 @@ import {
 } from '../TestPage/ducks'
 import Actions from './Actions'
 import { getUserOrgId } from '../src/selectors/user'
+import { StyledIconInfoBlack, StyledQuestionTypeChangeInfo } from './styled'
 
 const { AddedItems, EditedItems } = Actions
 
@@ -106,6 +108,11 @@ const ConfirmRegradeModal = ({
             showLabel={showLabel}
           />
         )}
+        <StyledQuestionTypeChangeInfo>
+          <StyledIconInfoBlack fillColor={black} /> Items that have been changed
+          to a new type will not be rescored, and the current student responses
+          will be permanently deleted.
+        </StyledQuestionTypeChangeInfo>
       </div>
     </ConfirmationModal>
   )

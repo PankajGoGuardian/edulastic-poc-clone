@@ -22,6 +22,7 @@ import {
   RECEIVE_ELO_STANDARDS_SUCCESS,
 } from '../constants/actions'
 import { ADD_ALIGNMENT, REMOVE_ALIGNMENT } from '../../sharedDucks/questions'
+import { INTERESTED_STANDARD_SETS } from '../../TestPage/components/AddItems/ducks'
 
 function* receiveCurriculumsSaga() {
   try {
@@ -103,7 +104,10 @@ function* receiveStandardsEloSaga({ payload }) {
 
 function* receiveStandardsSaga({ payload }) {
   try {
-    if (payload.curriculumId) {
+    if (
+      payload.curriculumId &&
+      payload.curriculumId !== INTERESTED_STANDARD_SETS // Avoid browse standards when user is querying all interested standards.
+    ) {
       const result = yield call(dictionariesApi.receiveStandards, {
         ...payload,
         limit: dictionaries.STANDARD_DROPDOWN_LIMIT_1000,

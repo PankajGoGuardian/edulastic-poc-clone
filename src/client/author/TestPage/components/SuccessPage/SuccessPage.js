@@ -28,7 +28,7 @@ import {
 import {
   receiveAssignmentByAssignmentIdAction,
   googleSyncAssignmentAction,
-  setShareWithGCInProgressAction,
+  setShareWithGCProgressAction,
 } from '../../../src/actions/assignments'
 import BreadCrumb from '../../../src/components/Breadcrumb'
 import ListHeader from '../../../src/components/common/ListHeader'
@@ -101,7 +101,7 @@ class SuccessPage extends React.Component {
       autoShareGCAssignment,
       history,
       userId,
-      setShareWithGCInProgress,
+      setShareWithGCProgress,
       user,
       setUser,
       getSharedUsers,
@@ -124,10 +124,10 @@ class SuccessPage extends React.Component {
       const timeLeft = 60000 - (new Date().getTime() - createdAt)
       if (timeLeft > 0) {
         this.toggleShareWithGC() // disable google share button
-        setShareWithGCInProgress(true) // disable sync with GC button in LCB
+        setShareWithGCProgress('started') // disable sync with GC button in LCB
         this.timer = setTimeout(() => {
           this.toggleShareWithGC()
-          setShareWithGCInProgress(false)
+          setShareWithGCProgress('done')
           clearTimeout(this.timer)
         }, timeLeft) // this will enable button after 60 seconds from assignment created.
       }
@@ -686,22 +686,12 @@ class SuccessPage extends React.Component {
                     &nbsp;button to share it with your colleagues.
                   </FlexText>
                 </EduIf>
-                <FlexWrapperUrlBox>
-                  <FlexShareTitle>Url to Share</FlexShareTitle>
-                  <FlexShareBox>
-                    <TitleCopy copyable={{ text: shareUrl }}>
-                      <ShareUrlDiv title={shareUrl}>{shareUrl}</ShareUrlDiv>
-                    </TitleCopy>
-                  </FlexShareBox>
-                </FlexWrapperUrlBox>
                 {isAssignSuccess && isGoogleClassroomAssigned && (
                   <FlexWrapperClassroomBox>
                     <FlexTitleBox>
-                      <FlexShareTitle>
-                        Share with Google Classroom
-                      </FlexShareTitle>
+                      <FlexShareTitle>Share to Google Classroom</FlexShareTitle>
                       <FlexShareMessage>
-                        Click on Google Classroom button to share the assignment
+                        Share as an assignment in Google Classroom
                       </FlexShareMessage>
                     </FlexTitleBox>
                     <EduButton
@@ -716,6 +706,16 @@ class SuccessPage extends React.Component {
                     </EduButton>
                   </FlexWrapperClassroomBox>
                 )}
+                <FlexWrapperUrlBox>
+                  <FlexShareTitle>
+                    Url to Share with Students and Co-Teachers
+                  </FlexShareTitle>
+                  <FlexShareBox>
+                    <TitleCopy copyable={{ text: shareUrl }}>
+                      <ShareUrlDiv title={shareUrl}>{shareUrl}</ShareUrlDiv>
+                    </TitleCopy>
+                  </FlexShareBox>
+                </FlexWrapperUrlBox>
               </FlexShareContainer>
             </FlexContainerWrapperRight>
           </FlexContainerWrapper>
@@ -752,7 +752,7 @@ const enhance = compose(
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction,
       googleSyncAssignment: googleSyncAssignmentAction,
-      setShareWithGCInProgress: setShareWithGCInProgressAction,
+      setShareWithGCProgress: setShareWithGCProgressAction,
       setUser: setUserAction,
       removeTestEntity: removeTestEntityAction,
       getSharedUsers: receiveSharedWithListAction,

@@ -12,6 +12,7 @@ import {
 } from '@edulastic/constants/reportUtils/singleAssessmentReport/peerPerformance'
 
 import { themeColor } from '@edulastic/colors'
+import { withNamespaces } from '@edulastic/localization'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledH3, ColoredCell } from '../../../../../common/styled'
@@ -28,7 +29,7 @@ const enableSorts = {
 
 const compareByContainerStyle = { maxWidth: `${COLUMN_WIDTH}px` }
 
-export const PeerPerformanceTable = ({
+const PeerPerformanceTable = ({
   columns,
   dataSource,
   rowKey,
@@ -44,6 +45,7 @@ export const PeerPerformanceTable = ({
   sortOrder,
   sortKey,
   setPageNo,
+  t,
 }) => {
   let _columns = []
 
@@ -94,9 +96,7 @@ export const PeerPerformanceTable = ({
               </Col>
             </Row>
             <Row className="tooltip-row" type="flex" justify="start">
-              <Col className="custom-table-tooltip-key">
-                {`${idToName(compareBy)} Average:`}
-              </Col>
+              <Col className="custom-table-tooltip-key">Average:</Col>
               <Col className="custom-table-tooltip-value">
                 {getDisplayValue(
                   rec.districtAvg,
@@ -107,9 +107,7 @@ export const PeerPerformanceTable = ({
               </Col>
             </Row>
             <Row className="tooltip-row" type="flex" justify="start">
-              <Col className="custom-table-tooltip-key">
-                {`Filtered ${idToName(compareBy)} Average:`}
-              </Col>
+              <Col className="custom-table-tooltip-key">Filtered Average:</Col>
               <Col className="custom-table-tooltip-value">
                 {getDisplayValue(rec.avgScore, rec, analyseBy, 'dimensionAvg')}
               </Col>
@@ -202,7 +200,7 @@ export const PeerPerformanceTable = ({
         return (
           <span className="custom-column-title">
             {dimensionAvgTitle}
-            <Tooltip title="Average Score calculated excluding All Filters, except 'Test Type'">
+            <Tooltip title={t('subGroupReport.averageColumnTooltipText')}>
               <StyledInfoIcon fill={themeColor} $marginLeft="5px" />
             </Tooltip>
           </span>
@@ -215,7 +213,9 @@ export const PeerPerformanceTable = ({
         return (
           <span className="custom-column-title">
             {filteredDimensionAvgTitle}
-            <Tooltip title="Average score considering the filters.">
+            <Tooltip
+              title={t('subGroupReport.filteredAverageColumnTooltipText')}
+            >
               <StyledInfoIcon fill={themeColor} $marginLeft="5px" />
             </Tooltip>
           </span>
@@ -318,3 +318,5 @@ export const PeerPerformanceTable = ({
 const StyledDiv = styled.div`
   padding: 10px;
 `
+
+export default withNamespaces('reports')(PeerPerformanceTable)

@@ -1,4 +1,4 @@
-import { Form } from 'antd'
+import { Form, Select } from 'antd'
 import styled from 'styled-components'
 import { CustomModalStyled } from '@edulastic/common'
 import {
@@ -37,23 +37,26 @@ export const StyledFormItem = styled(Form.Item)`
  */
 export const StyledModal = styled(CustomModalStyled)`
   .ant-modal-content {
-    width: 540px;
     .ant-modal-close-x {
       padding-top: 35px;
       height: 36px;
       line-height: 36px;
       .ant-modal-close-icon {
         vertical-align: end;
+        margin-right: 10px;
       }
     }
     .ant-modal-header {
       padding-top: 22px;
-      padding-bottom: 26px;
       .ant-modal-title {
         padding: 0;
       }
+      margin-left: 10px;
+      margin-right: 10px;
     }
     .ant-modal-body {
+      padding-top: 0px;
+      padding-bottom: 0px;
     }
     .ant-modal-footer {
       border: none;
@@ -64,13 +67,23 @@ export const StyledModal = styled(CustomModalStyled)`
   }
 `
 
-export const StudentNameContainer = styled.div`
+export const StudentInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
   font-size: 15px;
-  margin-bottom: 18px;
   margin-left: 10px;
-  span {
-    font-weight: 700;
-  }
+  justify-content: center;
+  max-width: 85%;
+`
+
+export const StyledStudentName = styled.div`
+  font-weight: 600;
+  text-transform: capitalize;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 export const ModalTitle = styled.div`
@@ -182,4 +195,39 @@ export const StyledTextArea = styled(TextArea)`
 
 export const StyledDiv = styled.div`
   margin-left: 10px;
+`
+
+export const StyledImg = styled.img`
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+`
+
+/** @type {typeof Select} */
+export const StyledSelect = styled(Select)`
+  & > .ant-select-selection {
+    background: transparent !important;
+    border: none !important;
+    font-weight: 550;
+    max-width: fit-content;
+    padding-left: 0px;
+    &:hover,
+    &:focus {
+      outline: none;
+      box-shadow: none !important;
+    }
+    & > .ant-select-arrow {
+      right: 8px;
+      color: ${themeColor};
+    }
+  }
+`
+
+export const StyledObservationTypeSelect = styled(Select)`
+  .ant-select-selection__placeholder {
+    color: black;
+  }
+  .ant-select-arrow {
+    color: ${themeColor};
+  }
 `

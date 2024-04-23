@@ -35,6 +35,7 @@ const Container = ({
   filters,
   history,
   location,
+  showAbsents,
 }) => {
   const search = qs.parse(location.search)
   const defaultGroupBy = getSelectedGroupBy(search)
@@ -67,6 +68,7 @@ const Container = ({
     compareBy,
     sortOrder,
     sortKey,
+    showAbsents,
     page,
     pageSize,
     profileId,
@@ -125,6 +127,7 @@ const Container = ({
                     loading={loading}
                     groupBy={groupBy}
                     setGroupBy={onSetGroupBy}
+                    showAbsents={showAbsents}
                   />
                   <div>
                     <Row gutter={[16, 16]}>
@@ -148,6 +151,7 @@ const Container = ({
                       sortKey={sortKey}
                       page={page}
                       compareBy={compareBy}
+                      showAbsents={showAbsents}
                       setSortOrder={setSortOrder}
                       setSortKey={setSortKey}
                       setPage={setPage}

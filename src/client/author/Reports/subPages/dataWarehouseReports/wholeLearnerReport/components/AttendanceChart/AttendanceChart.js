@@ -36,8 +36,9 @@ const getXTickText = (payload, _data) => {
 }
 
 const CustomizedLabel = (props) => {
-  const { x, y, stroke, value, index } = props
+  const { x, y, stroke, value, index, useAttendanceAbsence } = props
   if (index === 0) return null
+  const label = useAttendanceAbsence ? value : `${value}%`
 
   return (
     <text
@@ -49,7 +50,7 @@ const CustomizedLabel = (props) => {
       fontWeight={800}
       textAnchor="middle"
     >
-      {`${value}%`}
+      {label}
     </text>
   )
 }
@@ -65,6 +66,7 @@ const AttendanceChart = ({
   filter = {},
   showInterventions,
   interventionsData,
+  filtersData,
 }) => {
   // NOTE workaround to fix labels not rendering due to interrupted animation
   // ref: https://github.com/recharts/react-smooth/issues/44
@@ -72,6 +74,8 @@ const AttendanceChart = ({
   const parentContainerRef = useRef(null)
   const tooltipRef = useRef(null)
   const [tooltipType, setTooltipType] = useState('right')
+
+  const { useAttendanceAbsence = false } = filtersData?.data?.result || {}
 
   useEffect(() => setAnimate(true), [attendanceChartData])
 
@@ -106,6 +110,7 @@ const AttendanceChart = ({
           tardies: 0,
           total: 0,
           value: 0,
+          totalAbsence: 0,
         },
         ...pagedData,
       ]
@@ -131,7 +136,7 @@ const AttendanceChart = ({
 
   const getTooltipContent = (payload) => {
     updateTooltipPos(parentContainerRef, chartRef, tooltipRef, setTooltipType)
-    return getTooltipJSX(payload)
+    return getTooltipJSX(payload, useAttendanceAbsence)
   }
 
   const hasFilters = Object.keys(filter).length > 0
@@ -233,14 +238,15 @@ const AttendanceChart = ({
           />
           <YAxis
             type="number"
-            domain={[0, 100]}
             tick={{ fill: '#010101' }}
             tickCount={6}
             tickMargin={2}
             label={
               <YAxisLabel
                 data={{
-                  value: 'AVG ATTENDANCE %',
+                  value: useAttendanceAbsence
+                    ? 'TOTAL ABSENCE'
+                    : 'AVG ATTENDANCE %',
                   angle: -90,
                   dx: 25,
                   fontSize: 14,
@@ -248,6 +254,7 @@ const AttendanceChart = ({
                 }}
               />
             }
+            {...(useAttendanceAbsence ? {} : { domain: [0, 100] })}
           />
           <Tooltip
             cursor={false}
@@ -262,10 +269,14 @@ const AttendanceChart = ({
           />
           <Line
             type="monotone"
-            dataKey="value"
+            dataKey={useAttendanceAbsence ? 'totalAbsence' : 'value'}
+            // `key` is changed to force remount, otherwise recharts won't update the chart on `dataKey` change
+            key={useAttendanceAbsence ? 'totalAbsence' : 'value'}
             stroke="#707070"
             strokeDasharray="5 5"
-            label={CustomizedLabel}
+            label={
+              <CustomizedLabel useAttendanceAbsence={useAttendanceAbsence} />
+            }
             dot={<CustomDot />}
             activeDot={<CustomDot active />}
             isAnimationActive={animate}

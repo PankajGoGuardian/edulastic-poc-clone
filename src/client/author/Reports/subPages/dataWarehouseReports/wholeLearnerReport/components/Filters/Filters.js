@@ -183,6 +183,7 @@ const WholeLearnerReportFilters = ({
       districtGroupId: districtGroup?._id,
       externalTestTypesRequired: true,
       externalTestsRequired: true,
+      useAttendanceAbsenceRequired: true,
     }
     if (reportId) {
       Object.assign(q, { reportId })

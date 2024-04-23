@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Icon } from 'antd'
 import { v4 } from 'uuid'
@@ -36,6 +36,17 @@ const Criteria = ({
     points: 0,
   })
 
+  const [selectedRatingToExpand, setSelectedRatingToExpand] = useState('')
+
+  const handleOnClickExpand = (ratingId) => {
+    setSelectedRatingToExpand((prevState) => {
+      if (prevState !== ratingId) {
+        return ratingId
+      }
+      return ''
+    })
+  }
+
   const getRatings = () =>
     data.ratings.map((rating, index, arr) => (
       <Rating
@@ -45,6 +56,9 @@ const Criteria = ({
         data={rating}
         isEditable={isEditable}
         className={index + 1 === arr.length ? 'last-rating' : ''}
+        handleOnClickExpand={handleOnClickExpand}
+        selectedRatingToExpand={selectedRatingToExpand}
+        criteria={data}
       />
     ))
 

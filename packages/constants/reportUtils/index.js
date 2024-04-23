@@ -22,7 +22,7 @@ const peerPerformance = require('./singleAssessmentReport/peerPerformance')
 
 // -----|-----|-----|-----| MULTIPLE ASSESSMENT REPORT |-----|-----|-----|----- //
 
-// TODO...
+const completionReport = require('./multiAssessmentReport/completionReport')
 
 // -----|-----|-----|-----| MULTIPLE ASSESSMENT REPORT |-----|-----|-----|----- //
 
@@ -50,4 +50,6 @@ module.exports = {
   standardsPerformanceSummary,
   standardsGradebook,
   standardsProgress,
+  // MAR
+  completionReport,
 }

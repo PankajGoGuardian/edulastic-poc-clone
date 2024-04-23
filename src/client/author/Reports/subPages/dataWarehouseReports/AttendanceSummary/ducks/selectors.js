@@ -11,6 +11,10 @@ const loadingFiltersData = createSelector(
   (state) => state.loadingFiltersData
 )
 const filtersData = createSelector(stateSelector, (state) => state.filtersData)
+const attendanceBandInfo = createSelector(
+  stateSelector,
+  (state) => state.filtersData?.data?.result?.attendanceBandInfo || []
+)
 const filtersTabKey = createSelector(
   stateSelector,
   (state) => state.filtersTabKey
@@ -42,6 +46,7 @@ export {
   firstLoad,
   loadingFiltersData,
   filtersData,
+  attendanceBandInfo,
   filtersTabKey,
   filters,
   filterTagsData,

@@ -94,7 +94,11 @@ const MainHeader = ({
                 </EditableTitleWrapper>
               ) : (
                 <>
-                  <TitleWrapper {...restProps} title={title} data-cy="title">
+                  <TitleWrapper
+                    {...restProps}
+                    title={typeof title === 'string' ? title : null}
+                    data-cy="title"
+                  >
                     {headingText}
                   </TitleWrapper>
                   {restProps.headingSubContent}

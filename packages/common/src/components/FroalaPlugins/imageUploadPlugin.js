@@ -13,10 +13,12 @@ import { showProgressBar, hideProgressBar } from './CustomLoader'
 
 function imageUploadPlugin(FroalaEditor) {
   FroalaEditor.PLUGINS.customImageUploadPlugin = function (editor) {
+    this.uploading = false
     function imageBeforeUpload(images) {
       this.popups.hideAll()
       showProgressBar()
       this.edit.off()
+      this.uploading = true
 
       if (
         !canInsert(this.selection.element()) ||
@@ -83,6 +85,13 @@ function imageUploadPlugin(FroalaEditor) {
       editor.events.on('image.beforeUpload', imageBeforeUpload)
       editor.events.on('image.beforePasteUpload', beforePasteUpload)
       editor.events.on('image.inserted', imageInserted)
+      editor.events.on('image.loaded', function (img) {
+        // removing the image that was pasted. Still we have the uploaded image appended to froala
+        if (img.attr('data-fr-image-pasted') === 'true' && this.uploading) {
+          img.remove()
+          this.uploading = false
+        }
+      })
     }
 
     return {

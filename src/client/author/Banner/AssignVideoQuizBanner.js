@@ -1,6 +1,5 @@
 import { segmentApi } from '@edulastic/api'
 import { EduIf } from '@edulastic/common'
-import { IconAssignVideoQuiz } from '@edulastic/icons'
 import { Tooltip } from 'antd'
 import React from 'react'
 
@@ -10,6 +9,7 @@ function AssignVideoQuizBanner({
   user,
   history,
   style = {},
+  component,
 }) {
   const handleBannerClick = () => {
     segmentApi.genericEventTrack('VQBannerButton', {
@@ -21,6 +21,8 @@ function AssignVideoQuizBanner({
     history.push('/author/vqlibrary')
   }
 
+  const ComponentToRender = component
+
   return (
     <EduIf condition={showBanner}>
       <Tooltip
@@ -28,10 +30,14 @@ function AssignVideoQuizBanner({
         placement="bottom"
         overlayClassName="vqTooltip"
       >
-        <IconAssignVideoQuiz
+        <ComponentToRender
           data-cy="VQBannerButton"
           onClick={handleBannerClick}
-          style={{ marginTop: '-10px', cursor: 'pointer', ...style }}
+          style={{
+            marginTop: '-8px',
+            cursor: 'pointer',
+            ...style,
+          }}
         />
       </Tooltip>
     </EduIf>

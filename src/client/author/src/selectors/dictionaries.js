@@ -4,6 +4,7 @@ import { dictionaries } from '@edulastic/constants'
 import selectData from '../../TestPage/components/common/selectsData'
 import {
   getInterestedCurriculumsSelector,
+  getAllInterestedCurriculumsSelector,
   getShowAllCurriculumsSelector,
 } from './user'
 
@@ -94,7 +95,21 @@ export const getFormattedCurriculums = (
     : defaultStandard
 }
 
+export const getAllFormattedCurriculumsSelector = (state, props) => {
+  // This is the selector used to populate the curriculum dropdown with union of interested standards at all org levels.
+  const showAllStandards = getShowAllCurriculumsSelector(state)
+  const interestedCurriculums = getAllInterestedCurriculumsSelector(state)
+  const allCurriculums = getCurriculumsListSelector(state)
+  return getFormattedCurriculums(
+    interestedCurriculums,
+    allCurriculums,
+    props,
+    showAllStandards
+  )
+}
+
 export const getFormattedCurriculumsSelector = (state, props) => {
+  // This is the selector used to populate the curriculum dropdown with heirarchial interested standards.
   const showAllStandards = getShowAllCurriculumsSelector(state)
   const interestedCurriculums = getInterestedCurriculumsSelector(state)
   const allCurriculums = getCurriculumsListSelector(state)

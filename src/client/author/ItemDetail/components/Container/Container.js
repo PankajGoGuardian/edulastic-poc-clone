@@ -903,6 +903,7 @@ class Container extends Component {
                   onShowSettings={this.handleShowSettings}
                   containerType="question"
                   showAddItemButton={showAddItemButton}
+                  langaugeTabExist={langaugeTabExist}
                 />
               </>
             ))}

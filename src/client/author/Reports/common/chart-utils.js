@@ -5,7 +5,7 @@ import { isNull } from 'lodash'
 import { percentage } from '@edulastic/constants/reportUtils/common'
 import { TooltipRow, TooltipRowTitle, TooltipRowValue } from './styled'
 import { setProperties, tooltipParams } from './util'
-import { ATTENDANCE_EVENT_CATEGORY_LABELS } from '../subPages/dataWarehouseReports/common/utils'
+import { ATTENDANCE_EVENT_CATEGORY_LABELS } from '../subPages/dataWarehouseReports/common/utils/constants'
 
 const { spaceForLittleTriangle } = tooltipParams
 
@@ -50,33 +50,37 @@ export const updateTooltipPos = (
 const TooltipRowItem = ({ title = '', value = '' }) => (
   <TooltipRow style={{ flexDirection: 'column' }}>
     <TooltipRowTitle>{title}</TooltipRowTitle>
-    <TooltipRowValue>{value}%</TooltipRowValue>
+    <TooltipRowValue>{value}</TooltipRowValue>
   </TooltipRow>
 )
 
-export const getTooltipJSX = (payload) => {
+export const getTooltipJSX = (payload, showAbsents = false) => {
   if (payload && payload.length) {
     const tooltipData = payload[0].payload
     if (!tooltipData || tooltipData.week === -1 || tooltipData.month === -1)
       return null
-
-    const tooltipText = (
-      <div>
-        {Object.keys(ATTENDANCE_EVENT_CATEGORY_LABELS).map((category) => (
+    const tooltipContent = Object.keys(ATTENDANCE_EVENT_CATEGORY_LABELS)
+      .filter((category) => !!tooltipData[category])
+      .map((category) => {
+        const studentPercentInCategory = percentage(
+          tooltipData[category],
+          tooltipData.totalDays,
+          true
+        )
+        const value = showAbsents
+          ? tooltipData[category]
+          : `${studentPercentInCategory}%`
+        return (
           <EduIf condition={!isNull(tooltipData[category])} key={category}>
             <TooltipRowItem
               title={`${ATTENDANCE_EVENT_CATEGORY_LABELS[category]} - `}
-              value={percentage(
-                tooltipData[category],
-                tooltipData.totalDays,
-                true
-              )}
+              value={value}
             />
           </EduIf>
-        ))}
-      </div>
-    )
-    return tooltipText
+        )
+      })
+    if (!tooltipContent.length) return null
+    return <div>{tooltipContent}</div>
   }
   return null
 }

@@ -179,9 +179,7 @@ const transformTestItems = (props) => {
 
           if (
             filter === 'attempted' &&
-            !(
-              firstQAct.score >= 0 || firstQAct.score <= firstQAct.maxScore
-            )
+            !(firstQAct.score >= 0 || firstQAct.score <= firstQAct.maxScore)
           ) {
             return false
           }

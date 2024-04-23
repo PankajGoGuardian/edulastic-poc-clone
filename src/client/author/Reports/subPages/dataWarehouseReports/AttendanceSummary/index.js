@@ -17,27 +17,27 @@ import { selectors, actions } from './ducks'
 import Filters from './components/Filters'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import Container from './Container'
+import { attendanceBandInfo } from './ducks/selectors'
 
-const AttendanceReport = (props) => {
-  const {
-    loc,
-    breadcrumbData,
-    isCliUser,
-    onRefineResultsCB,
-    showFilter,
-    location,
-    history,
-    isPrinting,
-    settings,
-    setSettings,
-    showApply,
-    setShowApply,
-    resetAllReports,
-    updateNavigation,
-    sharedReportList,
-    _filters,
-  } = props
-
+const AttendanceReport = ({
+  loc,
+  breadcrumbData,
+  isCliUser,
+  onRefineResultsCB,
+  showFilter,
+  location,
+  history,
+  isPrinting,
+  settings,
+  setSettings,
+  showApply,
+  setShowApply,
+  resetAllReports,
+  updateNavigation,
+  sharedReportList,
+  _filters,
+  attendanceBands,
+}) => {
   const toggleFilter = (e, status) => {
     if (onRefineResultsCB) {
       onRefineResultsCB(e, status === false ? status : status || !showFilter)
@@ -60,6 +60,11 @@ const AttendanceReport = (props) => {
     })
     setShowApply(false)
   }
+
+  const showAbsents = useMemo(
+    () => attendanceBands.find((band) => band._id === profileId)?.analyze_by,
+    [profileId, attendanceBands]
+  )
 
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
@@ -121,6 +126,7 @@ const AttendanceReport = (props) => {
         history={history}
         location={location}
         filters={_filters}
+        showAbsents={showAbsents}
       />
     </>
   )
@@ -137,6 +143,7 @@ const enhance = connect(
     settings: settings(state),
     firstLoad: firstLoad(state),
     _filters: filters(state),
+    attendanceBands: attendanceBandInfo(state),
   }),
   {
     resetAllReports: resetAllReportsAction,

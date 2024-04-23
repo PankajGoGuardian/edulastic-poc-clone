@@ -29,6 +29,15 @@ const getFeedbacks = (id, params) =>
     })
     .then((r) => r.data)
 
+const getFeedbacksForClass = (classId, params) =>
+  api
+    .callApi({
+      url: `${prefix}/class-feedbacks/${classId}`,
+      method: 'get',
+      params,
+    })
+    .then((r) => r.data)
+
 const deleteFeedback = (id, params) =>
   api
     .callApi({
@@ -43,4 +52,5 @@ export default {
   editFeedback,
   getFeedbacks,
   deleteFeedback,
+  getFeedbacksForClass,
 }

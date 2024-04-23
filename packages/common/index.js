@@ -105,6 +105,7 @@ export { default as withWindowSizes } from './src/HOC/withWindowSizes'
 export { default as withWindowScroll } from './src/HOC/withWindowScroll'
 export { WithResources, useResources } from './src/HOC/withResources'
 export { withMathFormula as WithMathFormula } from './src/HOC/withMathFormula'
+export { default as withInterestedCurriculums } from './src/HOC/withInterestedCurriculums'
 export { default as withKeyboard } from './src/HOC/withKeyboard'
 export { scrollTo, offset, isDOMElement } from './src/utils/DomUtils'
 export {

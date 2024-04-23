@@ -9,9 +9,9 @@ import MasteryReportSection from './MasteryReportSection'
 import { FilledTabBar } from './FilledTabBar'
 import { Tutoring } from './Tutoring'
 import { getStudentName } from '../../utils'
-import FeedbacksTable from '../FeedbacksTable'
 import { convertItemToArray } from '../../../common/utils'
 import { NoDataContainer } from './MasteryReportSection/styled'
+import Observations from './Observation/Observations'
 
 const { TabPane } = Tabs
 
@@ -28,9 +28,9 @@ const TABLE_TABS = {
     key: 'tutoring',
     label: 'Tutoring',
   },
-  FEEDBACK: {
-    key: 'feedback',
-    label: 'Feedback',
+  OBSERVATION: {
+    key: 'observation',
+    label: 'Observation',
   },
 }
 const DISABLE_MSG =
@@ -88,22 +88,6 @@ const WLRDetails = ({
   const isDisableTab =
     (testTermIdsArr.length === 1 && termId !== testTermIdsArr[0]) ||
     isMultiSchoolYear
-
-  const onCsvConvert = (data) => {
-    const splittedData = data.split('\n')
-    const finalData = splittedData
-      .map((row) =>
-        row
-          .split(',')
-          .slice(0, row.split(',').length - 2)
-          .join(',')
-      )
-      .join('\n')
-    downloadCSV(
-      `Whole Learner Report - ${studentName} - FeedBacks.csv`,
-      finalData
-    )
-  }
 
   const tableTabs = [
     {
@@ -185,18 +169,23 @@ const WLRDetails = ({
       ),
     },
     {
-      key: TABLE_TABS.FEEDBACK.key,
-      label: TABLE_TABS.FEEDBACK.label,
+      key: TABLE_TABS.OBSERVATION.key,
+      label: TABLE_TABS.OBSERVATION.label,
       children: (
-        <FeedbacksTable
+        <Observations
           studentId={settings.selectedStudent.key}
           termId={settings.requestFilters.termId}
-          onCsvConvert={onCsvConvert}
-          isCsvDownloading={
-            tableTabKey === TABLE_TABS.FEEDBACK.key && isCsvDownloading
-          }
           studentData={settings.selectedStudentInformation}
           isSharedReport={isSharedReport}
+          isCsvDownloading={
+            tableTabKey === TABLE_TABS.OBSERVATION.key && isCsvDownloading
+          }
+          onCsvConvert={(data) =>
+            downloadCSV(
+              `Whole Learner Report - ${studentName} - Observation.csv`,
+              data
+            )
+          }
         />
       ),
     },

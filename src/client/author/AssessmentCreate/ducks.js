@@ -41,6 +41,7 @@ import {
 import { setUserFeaturesAction } from '../../student/Login/ducks'
 import { videoQuizActions } from '../VideoLibrary/ducks'
 import changeViewAction from '../src/actions/view'
+import { DEFAULT_TEST_TITLE } from '../TestPage/utils'
 
 const pdfjs = require('pdfjs-dist')
 
@@ -151,7 +152,7 @@ const defaultPageStructure = [
 ]
 
 function* createAssessmentSaga({ payload }) {
-  let { fileURI = '' } = payload
+  let { fileURI = '', fileTitle = '' } = payload
   const { searchParam = '' } = payload
   let testItem
   let amountOfPDFPages = 0
@@ -159,6 +160,7 @@ function* createAssessmentSaga({ payload }) {
 
   try {
     if (payload.file) {
+      fileTitle = payload.file?.name || ''
       fileURI = yield call(
         uploadToS3,
         payload.file,
@@ -318,9 +320,13 @@ function* createAssessmentSaga({ payload }) {
         maxScore: testItem.maxScore,
         questions: {},
       }
+      // removing file extension
+      if (fileTitle) {
+        fileTitle = fileTitle.replace(/\.[^/.]+$/, '')
+      }
       const newAssessment = {
         ...initialTestState,
-        title: undefined,
+        title: fileTitle || DEFAULT_TEST_TITLE,
         createdBy: {
           id: user._id,
           name,
@@ -389,11 +395,10 @@ function* createAssessmentSaga({ payload }) {
       yield put(receiveTestByIdAction(assessment._id, true, false))
       if (assessment?.testCategory === testCategoryTypes.VIDEO_BASED) {
         yield put(push(`/author/assessments/${assessment._id}${searchParam}`))
-        yield put(changeViewAction(docBasedAssessment.tabs.WORKSHEET))
       } else {
         yield put(push(`/author/assessments/${assessment._id}`))
-        yield put(changeViewAction(docBasedAssessment.tabs.DESCRIPTION))
       }
+      yield put(changeViewAction(docBasedAssessment.tabs.WORKSHEET))
     }
   } catch (error) {
     console.log(error, 'error')
@@ -444,6 +449,7 @@ function* uploadToDriveSaga({ payload = {} }) {
     yield put(
       createAssessmentRequestAction({
         fileURI,
+        fileTitle: name,
         assessmentId,
         isAddPdf,
         merge,

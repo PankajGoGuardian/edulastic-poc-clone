@@ -384,7 +384,7 @@ class AuthorTestItemPreview extends Component {
     if (page === 'itemAuthoring') {
       commonProps.style.height = showScratch
         ? 'calc(100vh - 272px)'
-        : 'calc(100vh - 182px)'
+        : 'calc(100vh - 210px)'
       return commonProps
     }
     return {}
@@ -408,6 +408,7 @@ class AuthorTestItemPreview extends Component {
       isPassage,
       ...restProps
     } = this.props
+    const { page } = restProps
     const { value, isEnableScratchpad, collapseDirection } = this.state
     const { createdBy, data = {}, maxScore, _id } = item
     const { questions = [] } = data
@@ -519,6 +520,9 @@ class AuthorTestItemPreview extends Component {
               tags={tags}
               standards={standardIdentfiers}
               item={item}
+              showAllInterestedCurriculums={
+                page === 'addItems' || page === 'itemList'
+              }
             />
           )}
           {isPassage && colIndex === 1 && (
@@ -531,6 +535,9 @@ class AuthorTestItemPreview extends Component {
               bloomsTaxonomy={bloomsTaxonomy}
               tags={tags}
               item={item}
+              showAllInterestedCurriculums={
+                page === 'addItems' || page === 'itemList'
+              }
             />
           )}
         </WidgetContainer>

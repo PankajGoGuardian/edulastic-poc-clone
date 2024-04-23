@@ -107,6 +107,7 @@ const PerformanceReport = ({
           attendanceChartData={attendanceChartData}
           showInterventions={showInterventions}
           interventionsData={attendanceInterventions}
+          filtersData={filtersData}
         />
       </EduIf>
       <EduIf condition={!isEmpty(tableData)}>

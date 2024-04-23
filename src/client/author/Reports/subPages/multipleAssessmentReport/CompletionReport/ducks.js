@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 import { call, put, all, takeLatest } from 'redux-saga/effects'
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
+import { capitalize } from 'lodash'
 import { downloadCSV } from '../../../common/util'
 
 const initialState = {
@@ -27,13 +28,13 @@ const slice = createSlice({
     },
 
     fetchCompletionChartDataSuccess: (state, { payload }) => {
-      state.loadingCompletionReportChartData = false
       state.completionReportChartData = payload
+      state.loadingCompletionReportChartData = false
       state.error = ''
     },
     fetchCompletionChartDataFailure: (state, { payload }) => {
-      state.loadingCompletionReportChartData = false
       state.error = payload.error
+      state.loadingCompletionReportChartData = false
     },
 
     fetchCompletionReportTableDataRequest: (state) => {
@@ -41,13 +42,13 @@ const slice = createSlice({
     },
 
     fetchCompletionTableDataSuccess: (state, { payload }) => {
-      state.completionTableDataLoading = false
       state.completionTableData = payload
       state.completionTableDataError = ''
+      state.completionTableDataLoading = false
     },
     fetchCompletionTableDataFailure: (state, { payload }) => {
-      state.completionTableDataLoading = false
       state.completionTableDataError = payload.error
+      state.completionTableDataLoading = false
     },
     resetCompletionReportData: () => initialState,
     getCsvData: () => {},
@@ -123,7 +124,10 @@ function* getCsvDataSaga({ payload }) {
     delete payload.progressName
     delete payload.index
     const result = yield call(reportsApi.getCsvData, payload)
-    downloadCSV(`${testName} ${progressName}.csv`, result?.data?.result || '')
+    downloadCSV(
+      `${testName}_${capitalize(progressName)}.csv`,
+      result?.data?.result || ''
+    )
   } catch (error) {
     notification({ msg: 'Failed to download the data' })
   } finally {

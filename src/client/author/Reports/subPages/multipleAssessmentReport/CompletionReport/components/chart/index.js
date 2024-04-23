@@ -85,7 +85,7 @@ const Chart = ({
       }
       dataToDisplay[progressStatus] = `${
         result[hoveredCategory.insideLabelKey]
-      } (${result[hoveredCategory.key]}%)`
+      } (${Math.round(result[hoveredCategory.percent])}%)`
       return (
         <div>
           {Object.keys(dataToDisplay).map((key) => {
@@ -102,66 +102,65 @@ const Chart = ({
 
   return (
     <ChartContainer>
-      <EduIf condition={formattedChartData.length}>
-        <Heading
-          title={title}
-          description={description}
-          titleFontSize={titleFontSize}
-          descriptionFontSize={descriptionFontSize}
-        />
-        <EduIf condition={!loading}>
-          <EduThen>
-            <SignedStackedBarChart
-              backendPagination={pagination}
-              setBackendPagination={setPagination}
-              barsData={barLabelData}
-              data={formattedChartData}
-              yDomain={yDomain}
-              xAxisDataKey="testId"
-              onBarClickCB={handleToggleSelectedBars}
-              onResetClickCB={_onResetClickCB}
-              filter={selectedTestsFilter}
-              getXTickText={getXTickText}
-              onLegendMouseEnter={(payload) =>
-                console.log('Cursor Over Legend', payload)
-              }
-              onLegendMouseLeave={(payload) =>
-                console.log('Cursor away from Legend', payload)
-              }
-              yAxisLabel={yAxisLabel}
-              hideOnlyYAxis
-              handleMouseOver={handleMouseOver}
-              onMouseBarLeave={() => setHoveredCategory(null)}
-              getTooltipJSX={getTooltipJSX}
-              getXAxisTickSyle={{ fontWeight: 'bold' }}
-              hideCartesianGrid
-              hasBarInsideLabels
-              barsLabelFormatter={barsLabelFormatter}
-              ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
-              tick
-              yTickLine={{ stroke: 'black' }}
-              margin={{ top: 0, right: 60, left: 60, bottom: 50 }}
-              hasRoundedBars={false}
-              referenceLines={referenceLines}
-              tickMargin={2}
-              legendProps={{ wrapperStyle: { top: -10 } }}
-              tooltipType="left"
-              needWhiteBackgroundToolTip
-              xTickTooltipPosition={380}
-              yTickFormatter={yTickFormatter}
-              xAxisFontWeight={400}
-              startFromLast
-              yAxisStyle={{ transform: 'translate(-15px)', fill: 'black' }}
-            />
-          </EduThen>
-          <EduElse>
-            <SpinLoader
-              tip="Loading completion chart data..."
-              position="relative"
-              height="70%"
-            />
-          </EduElse>
-        </EduIf>
+      <Heading
+        title={title}
+        description={description}
+        titleFontSize={titleFontSize}
+        descriptionFontSize={descriptionFontSize}
+      />
+      <EduIf condition={!loading}>
+        <EduThen>
+          <SignedStackedBarChart
+            backendPagination={pagination}
+            setBackendPagination={setPagination}
+            barsData={barLabelData}
+            data={formattedChartData}
+            yDomain={yDomain}
+            xAxisDataKey="testId"
+            onBarClickCB={handleToggleSelectedBars}
+            onResetClickCB={_onResetClickCB}
+            filter={selectedTestsFilter}
+            getXTickText={getXTickText}
+            onLegendMouseEnter={(payload) =>
+              console.log('Cursor Over Legend', payload)
+            }
+            onLegendMouseLeave={(payload) =>
+              console.log('Cursor away from Legend', payload)
+            }
+            yAxisLabel={yAxisLabel}
+            hideOnlyYAxis
+            handleMouseOver={handleMouseOver}
+            onMouseBarLeave={() => setHoveredCategory(null)}
+            getTooltipJSX={getTooltipJSX}
+            getXAxisTickSyle={{ fontWeight: 'bold' }}
+            hideCartesianGrid
+            hasBarInsideLabels
+            barsLabelFormatter={barsLabelFormatter}
+            ticks={[0, 100]}
+            tick
+            yTickLine={{ stroke: 'black' }}
+            margin={{ top: 0, right: 60, left: 60, bottom: 50 }}
+            hasRoundedBars={false}
+            referenceLines={referenceLines}
+            tickMargin={2}
+            legendProps={{ wrapperStyle: { top: -10 } }}
+            tooltipType="left"
+            needWhiteBackgroundToolTip
+            xTickTooltipPosition={380}
+            yTickFormatter={yTickFormatter}
+            xAxisFontWeight={400}
+            startFromLast
+            yAxisStyle={{ transform: 'translate(-15px)', fill: 'black' }}
+            showTestDateOnTestNameHover={false}
+          />
+        </EduThen>
+        <EduElse>
+          <SpinLoader
+            tip="Loading completion chart data..."
+            position="relative"
+            height="70%"
+          />
+        </EduElse>
       </EduIf>
     </ChartContainer>
   )

@@ -205,6 +205,16 @@ class QuestionWrapper extends Component {
     this.setPage(1)
   }
 
+  componentDidUpdate(prevProps) {
+    const { isQuestionTypeUpdated } = this.props
+    if (
+      isQuestionTypeUpdated &&
+      isQuestionTypeUpdated !== prevProps.isQuestionTypeUpdated
+    ) {
+      this.setState({ main: [], advanced: [], extras: [] })
+    }
+  }
+
   openStudentWork = () => {
     const { data, loadScratchPad, showStudentWork, isVideoQuiz } = this.props
     // load the data from server and then show

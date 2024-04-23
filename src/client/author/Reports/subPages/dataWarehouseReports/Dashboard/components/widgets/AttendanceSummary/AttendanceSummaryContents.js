@@ -1,13 +1,11 @@
 import React from 'react'
 import {
   lightBrown,
-  lightGreen12,
   lightGrey8,
   lightGrey9,
-  lightRed7,
   lightRed6,
 } from '@edulastic/colors'
-import { EduIf } from '@edulastic/common'
+import { EduIf, EduThen, EduElse } from '@edulastic/common'
 import { isEmpty, isNull } from 'lodash'
 import { DashedLine } from '../../../../../../common/styled'
 import { getTrendPeriodLabel } from '../../../../common/utils'
@@ -25,7 +23,7 @@ import {
 import Footer from '../../../../common/components/Footer'
 import WidgetCell from '../../../../common/components/WidgetCell'
 
-function AttendanceSummaryContents({ data, selectedPeriodType }) {
+function AttendanceSummaryContents({ data, selectedPeriodType, showAbsents }) {
   const {
     result: { postPeriod, prePeriod },
   } = data
@@ -44,17 +42,19 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
       )
     : 0
   const {
-    attendanceAvgChange,
+    value,
+    changeValue,
+    changeText,
     attendanceDisruptionsChange,
     chronicAbsentChange,
     fontColor,
-  } = getAttendanceSummaryMetrics(prePeriod, postPeriod)
+  } = getAttendanceSummaryMetrics(prePeriod, postPeriod, showAbsents)
 
   return (
     <ContentWrapper>
       <WidgetCell
-        header="AVERAGE"
-        value={`${Math.round(postPeriod.avg)}%`}
+        header={showAbsents ? 'TOTAL ABSENCE' : 'AVERAGE'}
+        value={value}
         dataCy="avgergeAttendancePercentage"
         cellType="large"
         color="#cef5d8"
@@ -67,12 +67,14 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
             color={fontColor}
             data-cy="attendanceAvgChange"
           >
-            {Math.abs(attendanceAvgChange)}%{' '}
-            <EduIf condition={attendanceAvgChange >= 0}>
-              <StyledIconCaretUp color={lightGreen12} />
-            </EduIf>
-            <EduIf condition={attendanceAvgChange < 0}>
-              <StyledIconCaretDown color={lightRed7} />
+            {changeText}{' '}
+            <EduIf condition={changeValue >= 0}>
+              <EduThen>
+                <StyledIconCaretUp color={fontColor} />
+              </EduThen>
+              <EduElse>
+                <StyledIconCaretDown color={fontColor} />
+              </EduElse>
             </EduIf>
           </StyledText>
           <StyledText fontSize="13px" color={lightGrey9}>

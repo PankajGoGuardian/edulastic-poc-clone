@@ -557,6 +557,7 @@ const WholeLearnerReport = ({
                           settings={settings}
                           isMultiSchoolYear={isMultiSchoolYear}
                           isDifferentSchoolYear={isDifferentSchoolYear}
+                          filtersData={filtersData}
                         />
                         <WLRDetails
                           isPrinting={isPrinting}

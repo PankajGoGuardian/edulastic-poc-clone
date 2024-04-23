@@ -38,7 +38,7 @@ const useTestListFilter = ({
       draft.status = status
       draft.testCategories = [testCategoryTypes.VIDEO_BASED]
       draft.collections = []
-      draft.filter = SMART_FILTERS.CO_AUTHOR
+      draft.filter = SMART_FILTERS.CO_AUTHOR_AND_USED_VQ
       if (currentTab === COMMUNITY) {
         draft.collections = collections
         draft.filter = SMART_FILTERS.ENTIRE_LIBRARY

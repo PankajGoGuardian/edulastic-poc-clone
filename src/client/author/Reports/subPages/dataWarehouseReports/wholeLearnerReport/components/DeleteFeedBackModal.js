@@ -27,13 +27,13 @@ const DeleteFeedBackModal = (props) => {
         setDeleteFeedback(null)
         notification({
           type: 'success',
-          msg: `Sucessfully deleted the selected student feedback`,
+          msg: `Sucessfully deleted the selected student observation`,
         })
       }
     } catch (err) {
       notification({
         type: 'error',
-        msg: `Unable to delete feedback`,
+        msg: `Unable to delete observation`,
       })
     }
   }
@@ -62,7 +62,9 @@ const DeleteFeedBackModal = (props) => {
       $rounded
     >
       <TitleWrapper>
-        <ModalTitle>Are you sure you want to delete this feedback?</ModalTitle>
+        <ModalTitle>
+          Are you sure you want to delete this observation?
+        </ModalTitle>
         <p>It will be deleted permanently and cannot be recovered.</p>
       </TitleWrapper>
     </StyledConfirmationModal>

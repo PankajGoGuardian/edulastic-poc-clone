@@ -20,6 +20,7 @@ import PrintableTable from '../../../../../common/components/tables/PrintableTab
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 
 import columnData from '../../static/json/tableColumns.json'
+import { TABLE_PAGINATION_STYLE } from '../../../../../../../common/styled'
 
 const AssessmentStatisticTable = (props) => {
   const [tableType, setTableType] = useState({
@@ -247,6 +248,7 @@ const AssessmentStatisticTable = (props) => {
         tableToRender={PrintableTable}
         scroll={{ x: '100%' }}
         pagination={{
+          style: TABLE_PAGINATION_STYLE,
           hideOnSinglePage: true,
           pageSize: 10,
         }}

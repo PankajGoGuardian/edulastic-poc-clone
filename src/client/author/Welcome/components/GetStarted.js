@@ -66,7 +66,8 @@ const GetStartedModal = ({
       onCancel={closeModal}
       footer={null}
       maskClosable={false}
-      closable={!isCliUser}
+      closable={false}
+      keyboard={false}
       centered
       modalWidth="565px"
       borderRadius="10px"

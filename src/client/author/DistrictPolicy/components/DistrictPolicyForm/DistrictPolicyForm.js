@@ -5,6 +5,7 @@ import {
   TextInputStyled,
   EduButton,
   EduIf,
+  FlexContainer,
 } from '@edulastic/common'
 import { Form } from 'antd'
 import { produce } from 'immer'
@@ -12,6 +13,7 @@ import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withNamespaces } from '@edulastic/localization'
 import { compose } from 'redux'
 import { IconInfo, IconSaveNew } from '@edulastic/icons'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
@@ -26,6 +28,7 @@ import {
   saveCanvasKeysRequestAction,
 } from '../../ducks'
 import ConfigureCanvasModal from './ConfigureCanvasModal'
+import IgnoreRaceInfoModal from './IgnoreRaceInfoModal'
 import {
   InputLabel,
   StyledCol,
@@ -99,6 +102,7 @@ class DistrictPolicyForm extends Component {
         errorMsg: '',
       },
       showCanvasConfigrationModal: false,
+      showIgnoreRaceOverEthnicityInfoModal: false,
     }
   }
 
@@ -390,6 +394,12 @@ class DistrictPolicyForm extends Component {
     }
   }
 
+  toggleIgnoreRaceInfoModalVisibility = (showModal) => {
+    this.setState({
+      showIgnoreRaceOverEthnicityInfoModal: showModal,
+    })
+  }
+
   render() {
     const {
       allowDomainForTeacherValidate,
@@ -397,9 +407,10 @@ class DistrictPolicyForm extends Component {
       allowDomainForSchoolValidate,
       allowIpForAssignmentValidate,
       showCanvasConfigrationModal,
+      showIgnoreRaceOverEthnicityInfoModal,
     } = this.state
 
-    const { districtPolicy } = this.props
+    const { districtPolicy, t } = this.props
     const thirdPartyValue = districtPolicy.googleClassroom
       ? _3RDPARTYINTEGRATION.googleClassroom
       : districtPolicy.canvas
@@ -515,6 +526,28 @@ class DistrictPolicyForm extends Component {
                   </div>
                 </StyledElementDiv>
               </EduIf>
+              <StyledElementDiv>
+                <FlexContainer justifyContent="flex-start">
+                  <CheckboxLabel
+                    data-cy="ignore-race-for-hispanic-students-policy"
+                    checked={!!districtPolicy?.ignoreRaceForHispanicStudents}
+                    onChange={() => {
+                      this.toggleIgnoreRaceInfoModalVisibility(true)
+                    }}
+                  >
+                    Ignore race for hispanic students
+                  </CheckboxLabel>
+                  <Tooltip
+                    placement="bottom"
+                    overlayClassName="custom-dark-tooltip"
+                    title={t(
+                      'districtPolicy.ignoreRaceForHispanicStudentsTooltipText'
+                    )}
+                  >
+                    <IconInfo style={{ marginTop: '4px' }} />
+                  </Tooltip>
+                </FlexContainer>
+              </StyledElementDiv>
             </StyledCol>
             <StyledCol mb="10px" sm={24} md={12} xl={6}>
               <StyledHeading1>Allow student addition with</StyledHeading1>
@@ -739,12 +772,17 @@ class DistrictPolicyForm extends Component {
             user={user}
           />
         )}
+        <IgnoreRaceInfoModal
+          visible={showIgnoreRaceOverEthnicityInfoModal}
+          onClose={() => this.toggleIgnoreRaceInfoModalVisibility(false)}
+        />
       </>
     )
   }
 }
 
 const enhance = compose(
+  withNamespaces('manageDistrict'),
   connect(
     (state) => ({
       districtPolicy: getPolicies(state),

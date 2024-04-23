@@ -17,6 +17,11 @@ const InputTag = ({
       value={value}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
       disabled={disabled}
+      onInputKeyDown={(e) => {
+        if (value.length >= 5 && e.key !== 'Backspace' && e.key !== 'Delete') {
+          e.preventDefault()
+        }
+      }}
     />
   </Container>
 )

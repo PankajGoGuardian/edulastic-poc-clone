@@ -6,6 +6,7 @@ import { AUTH_FLOW, GoogleLoginWrapper } from '../../../../../vendors/google'
 import NoClassNotification from '../NoClassNotification'
 import { ClassCreateContainer, ButtonsContainer } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { Tooltip } from 'antd'
 
 export const scopes = [
   'https://www.googleapis.com/auth/classroom.courses.readonly',
@@ -93,10 +94,15 @@ const ClassCreatePage = ({
                 WrappedComponent={({ googleClient }) => (
                   <AuthorCompleteSignupButton
                     renderButton={(handleClick) => (
-                      <EduButton isBlue onClick={handleClick}>
-                        <IconGoogleClassroom />
-                        <span>SYNC WITH GOOGLE CLASSROOM</span>
-                      </EduButton>
+                      <Tooltip
+                        title="Add a class from Google Classroom"
+                        placement="bottom"
+                      >
+                        <EduButton isBlue onClick={handleClick}>
+                          <IconGoogleClassroom />
+                          <span>SYNC WITH GOOGLE CLASSROOM</span>
+                        </EduButton>
+                      </Tooltip>
                     )}
                     onClick={() => {
                       segmentApi.genericEventTrack('syncButtonClicked', {

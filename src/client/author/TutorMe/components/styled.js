@@ -135,7 +135,8 @@ export const TutorMeNoLicensePopupDescription = styled.div`
 export const ViewProgressLinkContainer = styled(FlexContainer)`
   line-height: 35px;
   font-size: 12px;
-  margin-left: 10px;
+  margin-left: 20px;
+  white-space: nowrap;
   svg {
     margin-top: 9px;
     margin-right: 3px;

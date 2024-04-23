@@ -68,6 +68,7 @@ import {
   DEFAULT_TEST_TITLE,
   createGroupSummary,
   getSettingsToSaveOnTestType,
+  applyRubricScoreToTest,
   showRubricToStudentsSetting,
 } from './utils'
 import {
@@ -408,6 +409,8 @@ export const SET_ALLOW_SA_DISTRICT_COMMON_SETTING =
   '[tests] set allow school admin district common setting'
 export const SET_AUTO_SCROLL_REVIEW_PAGE =
   '[tests] set auto scroll for review page to create item button'
+export const SET_QUESTION_TYPE_CHANGED_TESTITEM_ID =
+  '[tests] set question type changed testitem id'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -521,6 +524,9 @@ export const setYoutubeThumbnailFailure = createAction(
 )
 export const setCanSchoolAdminUseDistrictCommonAction = createAction(
   SET_ALLOW_SA_DISTRICT_COMMON_SETTING
+)
+export const setQuestionTypeChangedTestItemIdAction = createAction(
+  SET_QUESTION_TYPE_CHANGED_TESTITEM_ID
 )
 
 export const receiveTestByIdAction = (
@@ -813,8 +819,10 @@ export const isVideoQuizSelector = createSelector(
 export const isTestTypeWithDefaultTestTitleSelector = createSelector(
   getTestEntitySelector,
   (test) => {
-    const { VIDEO_BASED, DEFAULT } = testCategoryTypes
-    return [VIDEO_BASED, DEFAULT].includes(test?.testCategory)
+    const { VIDEO_BASED, DEFAULT, DOC_BASED, DYNAMIC_TEST } = testCategoryTypes
+    return [VIDEO_BASED, DEFAULT, DOC_BASED, DYNAMIC_TEST].includes(
+      test?.testCategory
+    )
   }
 )
 
@@ -1310,6 +1318,7 @@ const initialState = {
   ytThumbnail: '',
   ytloading: false,
   scrollToBottom: false,
+  questionTypeChangedTestItemId: '',
 }
 
 const getDefaultScales = (state, payload) => {
@@ -1566,6 +1575,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         thumbnail: '',
         sharedUsersList: [],
         ytThumbnail: '',
+        questionTypeChangedTestItemId: '',
       }
     case CLEAR_CART_TEST_DATA:
       return {
@@ -2014,6 +2024,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         scrollToBottom: payload,
       }
+    case SET_QUESTION_TYPE_CHANGED_TESTITEM_ID:
+      return {
+        ...state,
+        questionTypeChangedTestItemId: payload,
+      }
     default:
       return state
   }
@@ -2138,6 +2153,11 @@ export const getTestCreatedItemsSelector = createSelector(
 export const getCurrentSettingsIdSelector = createSelector(
   stateSelector,
   (state) => state.currentTestSettingsId
+)
+
+export const getQuestionTypeChangedTestItemIdSelector = createSelector(
+  stateSelector,
+  (state) => state?.questionTypeChangedTestItemId || ''
 )
 
 const setTime = (userRole) => {
@@ -2380,13 +2400,21 @@ export function* receiveTestByIdSaga({ payload }) {
   try {
     const prevTest = yield select(getTestSelector)
     let createdItems = yield select(getTestCreatedItemsSelector)
-    const entity = yield call(testsApi.getById, payload.id, {
-      data: true,
-      requestLatest: payload.requestLatest,
-      editAndRegrade: payload.editAssigned,
-      ...(payload.playlistId ? { playlistId: payload.playlistId } : {}),
-    })
+    const { rubricScoreMap = {}, ...entity } = yield call(
+      testsApi.getById,
+      payload.id,
+      {
+        data: true,
+        requestLatest: payload.requestLatest,
+        editAndRegrade: payload.editAssigned,
+        ...(payload.playlistId ? { playlistId: payload.playlistId } : {}),
+      }
+    )
+    applyRubricScoreToTest(entity, rubricScoreMap)
     const userId = yield select(getUserIdSelector)
+    const questionTypeUpdatedTestItemId = yield select(
+      getQuestionTypeChangedTestItemIdSelector
+    )
     if (
       payload.editAssigned &&
       isRegradedByCoAuthor(userId, entity, payload.id)
@@ -2444,12 +2472,23 @@ export function* receiveTestByIdSaga({ payload }) {
       })
     })
     if (createdItems.length) {
-      const createdItemskeyedById = _keyBy(createdItems, '_id')
-      entity.itemGroups[currentGroupIndex].items = uniqBy(
-        [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
-        (x) =>
-          createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
-      )
+      if (questionTypeUpdatedTestItemId?.length && !isEmpty(createdItems[0])) {
+        const newTestItem = createdItems[0]
+        entity.itemGroups.forEach((itemGroup, groupIndex) => {
+          itemGroup.items.forEach((item, itemIndex) => {
+            if (item?._id === questionTypeUpdatedTestItemId) {
+              entity.itemGroups[groupIndex].items[itemIndex] = newTestItem
+            }
+          })
+        })
+      } else {
+        const createdItemskeyedById = _keyBy(createdItems, '_id')
+        entity.itemGroups[currentGroupIndex].items = uniqBy(
+          [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
+          (x) =>
+            createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
+        )
+      }
     }
     const features = yield select(getUserFeatures)
 
@@ -2573,6 +2612,8 @@ export function* receiveTestByIdSaga({ payload }) {
       notification({ msg: errorMessage })
     }
     yield put(receiveTestByIdError(errorMessage))
+  } finally {
+    yield put(setQuestionTypeChangedTestItemIdAction(''))
   }
 }
 
@@ -2678,10 +2719,11 @@ function* createTestSaga({ payload }) {
         // try to keep the user on the same tab after test creation
         // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
         const currentTab =
-          currentTabMatch?.[1] ||
-          (entity.testCategory === testCategoryTypes.DEFAULT
+          currentTabMatch?.[1] || payload.toReview
+            ? 'review'
+            : entity.testCategory === testCategoryTypes.DEFAULT
             ? 'addItems'
-            : 'description')
+            : 'description'
         yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
       }
     }

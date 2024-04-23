@@ -180,7 +180,7 @@ export const MenuWrapper = styled.div`
 
 export const Menu = styled(AntMenu)`
   background: transparent;
-  overflow: auto;
+  overflow: ${({ collapsed }) => (collapsed ? 'hidden' : 'auto')};
   height: ${({ isBannerShown }) =>
     isBannerShown ? 'calc(100vh - 270px)' : 'calc(100vh - 235px)'};
   &:not(.ant-menu-horizontal) {

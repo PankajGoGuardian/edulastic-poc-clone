@@ -24,6 +24,7 @@ export const CriteriaSection = styled.div`
 
 export const RatingSection = styled.div`
   min-width: 175px;
+  max-width: 400px;
   min-height: 100px;
   margin-right: 10px;
   padding: 5px 10px;
@@ -32,6 +33,7 @@ export const RatingSection = styled.div`
   box-shadow: 0px 2px 5px ${boxShadowColor3};
   border-radius: 2px;
   background: ${({ selected }) => (selected ? lightGreen3 : 'inherit')};
+  overflow: auto;
   > div:first-child {
     font-weight: ${(props) => props.theme.semiBold};
     margin-bottom: 7px;

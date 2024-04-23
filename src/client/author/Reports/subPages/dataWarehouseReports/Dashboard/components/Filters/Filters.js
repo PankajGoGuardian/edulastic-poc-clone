@@ -82,6 +82,7 @@ const Filters = ({
     externalBandsRequired: true,
     attendanceBandInfoRequired: true,
     externalTestsRequired: true,
+    useAttendanceAbsenceRequired: true,
   })
 
   useFiltersFromURL({

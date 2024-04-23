@@ -4,6 +4,7 @@ import {
   pageSize as defaultPageSize,
   sortKeys,
   sortOrderMap,
+  compareByEnums,
 } from '../utils/constants'
 
 const {
@@ -19,6 +20,7 @@ export const useAttendanceDetailsFetch = ({
   compareBy,
   sortOrder,
   sortKey,
+  showAbsents,
   page = 1,
   pageSize = defaultPageSize,
   profileId,
@@ -27,6 +29,11 @@ export const useAttendanceDetailsFetch = ({
   const [totalRows, setTotalRows] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const defaultSortKey = showAbsents
+    ? compareBy === compareByEnums.STUDENT
+      ? sortKeys.TOTAL_ABSENCE
+      : sortKeys.AVG_ABSENCE
+    : sortKeys.AVG_ATTENDANCE
   useEffect(() => {
     const fetchData = () => {
       if (settings.requestFilters && settings.requestFilters.termId) {
@@ -34,7 +41,7 @@ export const useAttendanceDetailsFetch = ({
         const params = {
           ...settings.requestFilters,
           compareBy,
-          sortKey: sortOrder ? sortKey : sortKeys.ATTENDANCE,
+          sortKey: sortOrder ? sortKey : defaultSortKey,
           sortOrder: sortOrderMap[sortOrder] || sortOrderMap.ascend,
           page,
           pageSize,

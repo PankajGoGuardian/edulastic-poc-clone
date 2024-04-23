@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { isEmpty } from 'lodash'
 import {
   EduButton,
@@ -16,6 +17,8 @@ import {
 } from '@edulastic/constants/const/languages'
 import connect from 'react-redux/es/connect/connect'
 import { questionType as constantsQuestionType } from '@edulastic/constants'
+import { IconGoogleTranslate } from '@edulastic/icons'
+import { white } from '@edulastic/colors'
 import {
   StyledOptionContainer,
   StyledOptionLabel,
@@ -99,6 +102,7 @@ const SpeakableText = ({
             onSelect={(value) => onLanguageChange(value)}
             value={selectedLanguage}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            bg={white}
           >
             {LANGUAGES_OPTIONS.map((language) => (
               <option
@@ -110,7 +114,10 @@ const SpeakableText = ({
                 value={language.value}
                 key={language.value}
               >
-                {language.label}
+                <FlexContainer justifyContent="center" alignItems="center">
+                  <IconGoogleTranslate margin="0 5px 0 0" />
+                  {language.label}
+                </FlexContainer>
               </option>
             ))}
           </SelectInputStyled>
@@ -120,7 +127,9 @@ const SpeakableText = ({
         <Spin style={{ marginTop: '20px' }} />
       </EduIf>
       <EduIf condition={ttsTextAPIStatus === 'SUCCESS'}>
-        <StyledSpeakableTextContainer>
+        <StyledSpeakableTextContainer
+          margin={showLanguageSelector ? '0px' : '32px 0 0 0'}
+        >
           <EduIf condition={(audioSrc || '').length > 0 && showTTSTextModal}>
             <AudioControls
               key={question?.id}
@@ -128,46 +137,54 @@ const SpeakableText = ({
               qId={question?.id}
               audioSrc={audioSrc}
               className="speakable-text-audio-controls"
+              isMinimalDesign
             />
           </EduIf>
+          <StyledTTStextWrapper>
+            <h4>Question TTS Text</h4>
+            <TextAreaInputStyled
+              style={{
+                paddingLeft: '5px',
+                paddingTop: '5px',
+                marginBottom: '10px',
+              }}
+              value={stimulusText}
+              autoSize={{ minRows: 4 }}
+              onChange={(e) =>
+                handleUpdateTtsData(e?.target?.value || '', 'stimulus')
+              }
+            />
+            <EduIf condition={optionIds.length}>
+              <h4 style={{ marginTop: '20px' }}>Options TTS Text</h4>
+              {(optionIds || []).map((optionId, index) => {
+                const optionText = options?.[optionId]?.text || ''
+                return (
+                  <StyledOptionContainer>
+                    <StyledOptionLabel>{ALPHABET[index]}</StyledOptionLabel>
+                    <StyledTextArea
+                      bordered={false}
+                      style={{ paddingLeft: '5px', paddingTop: '5px' }}
+                      value={optionText || ''}
+                      onChange={(e) =>
+                        handleUpdateTtsData(
+                          e?.target?.value || '',
+                          'option',
+                          optionId
+                        )
+                      }
+                    />
+                  </StyledOptionContainer>
+                )
+              })}
+            </EduIf>
+          </StyledTTStextWrapper>
 
-          <h4>Question TTS Text</h4>
-          <TextAreaInputStyled
-            style={{ paddingLeft: '5px', paddingTop: '5px', marginBottom: 10 }}
-            value={stimulusText}
-            autoSize={{ minRows: 4 }}
-            onChange={(e) =>
-              handleUpdateTtsData(e?.target?.value || '', 'stimulus')
-            }
-          />
-          <EduIf condition={optionIds.length}>
-            <h4 style={{ marginTop: '20px' }}>Options TTS Text</h4>
-            {(optionIds || []).map((optionId, index) => {
-              const optionText = options?.[optionId]?.text || ''
-              return (
-                <StyledOptionContainer>
-                  <StyledOptionLabel>{ALPHABET[index]}</StyledOptionLabel>
-                  <StyledTextArea
-                    bordered={false}
-                    style={{ paddingLeft: '5px', paddingTop: '5px' }}
-                    value={optionText || ''}
-                    onChange={(e) =>
-                      handleUpdateTtsData(
-                        e?.target?.value || '',
-                        'option',
-                        optionId
-                      )
-                    }
-                  />
-                </StyledOptionContainer>
-              )
-            })}
-          </EduIf>
           <FlexContainer justifyContent="space-between">
             <FlexContainer justifyContent="flex-start">
               <EduIf condition={!showLanguageSelector}>
                 <FlexContainer justifyContent="flex-start" alignItems="center">
-                  <TTSFormLabel margin="0">Set TTS Language to:</TTSFormLabel>
+                  <TTSFormLabel margin="0">Set TTS voice in:</TTSFormLabel>
+
                   <VoiceLanguageSelector
                     data-cy="tts-language-selector"
                     width="100px"
@@ -203,7 +220,7 @@ const SpeakableText = ({
                 onClick={updateTTSText}
                 disabled={updateTTSAPIStatus === 'INITIATED'}
               >
-                Generate TTS
+                Generate TTS Audio
               </EduButton>
             </FlexContainer>
           </FlexContainer>
@@ -216,3 +233,11 @@ const SpeakableText = ({
 export default connect((state) => ({
   allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
 }))(SpeakableText)
+
+const StyledTTStextWrapper = styled(FlexContainer)`
+  height: 340px;
+  overflow: auto;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+`

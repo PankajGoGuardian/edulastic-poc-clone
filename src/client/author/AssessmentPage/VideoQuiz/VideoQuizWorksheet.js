@@ -339,6 +339,7 @@ const VideoQuizWorksheetComponent = ({
             showAuthorReviewTabVideoPlayer={showAuthorReviewTabVideoPlayer}
             isAuthorReviewOrEdit={isAuthorReviewOrEdit}
             isPreviewModalVisible={isPreviewModalVisible}
+            isAuthorReview={isAuthorReview}
           />
         </VideoViewerContainer>
         <Questions

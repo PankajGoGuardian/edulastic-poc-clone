@@ -28,6 +28,7 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from './ClassCreatePage'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { Tooltip } from 'antd'
 
 const Header = ({
   classGroups,
@@ -209,15 +210,20 @@ const Header = ({
           >
             <GoogleLoginWrapper
               WrappedComponent={({ googleClient }) => (
-                <EduButton
-                  isBlue
-                  data-cy="syncGoogle"
-                  isGhost
-                  onClick={() => loginGoogle(googleClient)}
+                <Tooltip
+                  title="Sync Classes with Google Classroom"
+                  placement="bottom"
                 >
-                  <IconGoogleClassroom />
-                  <span>SYNC WITH GOOGLE CLASSROOM</span>
-                </EduButton>
+                  <EduButton
+                    isBlue
+                    data-cy="syncGoogle"
+                    isGhost
+                    onClick={() => loginGoogle(googleClient)}
+                  >
+                    <IconGoogleClassroom />
+                    <span>SYNC WITH GOOGLE CLASSROOM</span>
+                  </EduButton>
+                </Tooltip>
               )}
               scopes={scopes}
               successCallback={handleLoginSucess}

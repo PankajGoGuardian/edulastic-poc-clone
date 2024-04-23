@@ -29,19 +29,25 @@ const Standards = ({
   if (!alignments.length) {
     // No alignments present return early with No Standard tag
     return (
-      <Tags
-        tags={[
-          {
-            tagName: 'No Standard',
-          },
-        ]}
-        labelStyle={{
-          ...labelStyle,
-          color: greyDarken,
-          background: greyLight1,
-        }}
-        margin={margin}
-      />
+      <StyledStandardTags>
+        <Tags
+          tags={[
+            {
+              tagName: 'No Standard',
+              stdTooltip:
+                'No Standard assigned. Please edit the item to add a standard for standard-based reporting.',
+            },
+          ]}
+          titleKey="stdTooltip"
+          labelStyle={{
+            ...labelStyle,
+            color: greyDarken,
+            background: greyLight1,
+          }}
+          margin={margin}
+          tooltipContainer={(e) => e.parentNode} // using parent node for styling the tooltip
+        />
+      </StyledStandardTags>
     )
   }
   const interestedCurriculumById = keyBy(interestedCurriculums, '_id')

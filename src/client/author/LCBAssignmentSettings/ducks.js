@@ -463,6 +463,17 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
       notification({ messageKey: 'noChangesToBeSaved' })
       return
     }
+
+    if ('restrictNavigationOut' in settings) {
+      const { restrictNavigationOut } = settings
+      if (
+        restrictNavigationOut === 'warn-and-report' ||
+        !restrictNavigationOut
+      ) {
+        settings.restrictNavigationOutAttemptsThreshold = 0
+      }
+    }
+
     yield call(assignmentApi.updateClassSettings, {
       assignmentId,
       classId,

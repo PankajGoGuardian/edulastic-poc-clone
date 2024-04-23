@@ -344,7 +344,20 @@ const AntiCheatingGroupContainer = ({
                 }
                 disabled={freezeSettings || !premium || safeBrowser}
                 onChange={(e) => {
-                  overRideSettings('restrictNavigationOut', e.target.value)
+                  const _restrictNavigationOut = e.target.value
+                  overRideSettings(
+                    'restrictNavigationOut',
+                    _restrictNavigationOut
+                  )
+                  if (
+                    _restrictNavigationOut === 'warn-and-report' ||
+                    !_restrictNavigationOut
+                  ) {
+                    overRideSettings(
+                      'restrictNavigationOutAttemptsThreshold',
+                      0
+                    )
+                  }
                 }}
               >
                 <RadioBtn

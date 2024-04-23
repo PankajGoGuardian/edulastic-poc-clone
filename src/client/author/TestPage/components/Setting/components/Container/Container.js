@@ -2467,9 +2467,19 @@ class Setting extends Component {
                         <Col span={11}>
                           <StyledRadioGroup
                             disabled={disabled || !premium || safeBrowser}
-                            onChange={this.updateFeatures(
-                              'restrictNavigationOut'
-                            )}
+                            onChange={(_restrictNavigationOut) => {
+                              this.updateFeatures('restrictNavigationOut')(
+                                _restrictNavigationOut
+                              )
+                              if (
+                                _restrictNavigationOut === 'warn-and-report' ||
+                                !_restrictNavigationOut
+                              ) {
+                                this.updateFeatures(
+                                  'restrictNavigationOutAttemptsThreshold'
+                                )(0)
+                              }
+                            }}
                             value={restrictNavigationOut || undefined}
                           >
                             <RadioBtn

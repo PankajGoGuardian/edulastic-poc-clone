@@ -144,10 +144,7 @@ const AssessmentAutoComplete = ({
     }
   }, [query])
   useEffect(() => {
-    if (
-      (searchTerms.selectedKey || selectedTestIds.length) &&
-      !searchTerms.searchedText
-    ) {
+    if (selectedTestIds.length && !searchTerms.searchedText) {
       const validTests = dropdownData.filter((d) =>
         selectedTestIds.includes(d.key)
       )

@@ -117,6 +117,7 @@ const autoSavableTypes = {
   essayRichText: 1,
   essayPlainText: 1,
   formulaessay: 1,
+  uploadFile: 1,
 }
 
 const shouldAutoSave = (itemRows, answersById, itemId) => {

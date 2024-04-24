@@ -248,7 +248,7 @@ export const RatingContainer = styled.div`
   margin: 2px
     ${({ className }) => (className === 'last-rating' ? '0px' : '15px')} 20px
     0px;
-  height: ${({ isFullScreen }) => (isFullScreen ? '100%' : '179px')};
+  height: ${({ isFullScreen }) => (isFullScreen ? '' : '179px')};
   display: inline-block;
   box-shadow: 0px 2px 5px ${boxShadowColor2};
   background: ${white};
@@ -301,7 +301,7 @@ export const RatingContainer = styled.div`
       background: ${backgroundGrey};
       > .fr-box {
         width: ${({ isFullScreen }) => (isFullScreen ? '100%' : '242px')};
-        height ${({ isFullScreen }) => (isFullScreen ? '500px' : '92px')};
+        height ${({ isFullScreen }) => (isFullScreen ? '50vh' : '92px')};
         overflow-y: auto;
         .fr-view {
           padding: 7px;
@@ -616,4 +616,12 @@ export const RubricsTag = styled.span`
   margin-right: 10px;
   font-weight: 500;
   cursor: pointer;
+`
+export const ScrollableDescriptionWrapper = styled(PerfectScrollbar)`
+  height: ${({ height }) => height};
+  max-height: ${({ maxHeight }) => maxHeight};
+  width: ${({ width }) => width};
+  background: ${({ background }) => background};
+  padding: ${({ padding }) => padding};
+  margin: ${({ margin }) => margin}; ;
 `

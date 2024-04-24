@@ -3,7 +3,7 @@ import { withNamespaces } from '@edulastic/localization'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
-import { EduIf, MathFormulaDisplay } from '@edulastic/common'
+import { EduIf, Stimulus } from '@edulastic/common'
 import { AI_EVALUATION_STATUS } from '@edulastic/constants/const/evaluationType'
 import { calculateScore } from './helper'
 import {
@@ -17,6 +17,7 @@ import {
   NextBtn,
   MessageContainer,
 } from './PreviewRubricStyledComponents'
+import { ScrollableDescriptionWrapper } from '../../styled'
 
 const RatingCards = ({
   criteria,
@@ -90,11 +91,15 @@ const RatingCards = ({
                 data-cy="ratingPoint"
               >{`${rating.points} pts`}</div>
             </div>
-
-            <MathFormulaDisplay
-              data-cy="ratingDesc"
-              dangerouslySetInnerHTML={{ __html: rating.desc }}
-            />
+            <ScrollableDescriptionWrapper
+              maxHeight="50vh"
+              margin="0 -10px -5px 0"
+            >
+              <Stimulus
+                data-cy="ratingDesc"
+                dangerouslySetInnerHTML={{ __html: rating.desc }}
+              />
+            </ScrollableDescriptionWrapper>
           </RatingSection>
         ))}
       </RatingScrollContainer>

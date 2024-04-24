@@ -122,6 +122,7 @@ const StyledInput = styled(Input)`
   text-overflow: ellipsis;
   font-weight: ${(props) => props.theme.bold};
   cursor: default;
+
   &:focus,
   &:active {
     cursor: text;

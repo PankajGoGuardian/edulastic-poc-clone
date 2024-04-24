@@ -102,8 +102,8 @@ const Rating = ({
           flexDirection="column"
           justifyContent="flex-start"
           alignItems="center"
-          height="100%"
-          padding="16px 0 0 0"
+          height="calc(100% - 68px)"
+          padding="32px 0 0 0"
         >
           <StyledFullScreenRatingWrapper data-cy="ratingContainer">
             <RatingBox {...ratingProps} isFullScreen />
@@ -158,13 +158,8 @@ const StyledFullScreenRatingWrapper = styled.div`
   max-width: 700px;
   width: 100%;
   position: relative;
-  top: -60px;
 `
 
-const StyledRatingCardWrapper = styled.div`
+const StyledRatingCardWrapper = styled(FlexContainer)`
   background: #f2f2f2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
 `

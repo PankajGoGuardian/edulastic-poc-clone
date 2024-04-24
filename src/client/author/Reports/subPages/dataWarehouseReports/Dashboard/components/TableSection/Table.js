@@ -20,10 +20,12 @@ const DashboardTable = ({
   isCsvDownloading,
   rowSelection,
   availableTestTypes,
+  useAttendanceAbsence,
 }) => {
   const {
     metricInfo: districtAveragesMetricInfo,
     avgAttendance: districtAvgAttendance,
+    totalAbsence: districtTotalAbsence,
   } = districtAveragesData
 
   const { metricInfo: tableMetricInfo = [] } = tableData
@@ -32,6 +34,7 @@ const DashboardTable = ({
     const districtAvgRecord = {
       dimension: districtAvgDimension,
       avgAttendance: districtAvgAttendance,
+      totalAbsence: districtTotalAbsence,
       performance: districtAveragesMetricInfo,
     }
     return [districtAvgRecord, ...tableMetricInfo]
@@ -40,14 +43,27 @@ const DashboardTable = ({
   const isStudentCompareBy =
     tableFilters[tableFilterTypes.COMPARE_BY].key === compareByKeys.STUDENT
 
-  const tableColumns = getTableColumns({
-    metricInfo,
-    tableFilters,
-    isStudentCompareBy,
-    getTableDrillDownUrl,
-    selectedPerformanceBand,
-    availableTestTypes,
-  })
+  const tableColumns = useMemo(
+    () =>
+      getTableColumns({
+        metricInfo,
+        tableFilters,
+        isStudentCompareBy,
+        getTableDrillDownUrl,
+        selectedPerformanceBand,
+        availableTestTypes,
+        useAttendanceAbsence,
+      }),
+    [
+      metricInfo,
+      tableFilters,
+      isStudentCompareBy,
+      getTableDrillDownUrl,
+      selectedPerformanceBand,
+      availableTestTypes,
+      useAttendanceAbsence,
+    ]
+  )
 
   const handleTableChange = useCallback(
     (_pagination, _filters, sorter) => {

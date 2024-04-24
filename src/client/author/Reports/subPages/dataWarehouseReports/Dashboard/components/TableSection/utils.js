@@ -20,6 +20,7 @@ import PerformanceDistribution from './PerformanceDistribution'
 const tableColumnKeys = {
   DIMENSION: 'dimension',
   AVG_ATTENDANCE: 'avgAttendance',
+  TOTAL_ABSENCE: 'totalAbsence',
 }
 
 const tableColumnsData = [
@@ -40,6 +41,16 @@ const tableColumnsData = [
     width: 200,
     className: 'avg-attendance',
     render: (value) => (typeof value === 'number' ? `${value}%` : '-'),
+    sorter: true,
+  },
+  {
+    dataIndex: 'totalAbsence',
+    key: tableColumnKeys.TOTAL_ABSENCE,
+    title: 'TOTAL ABSENCE',
+    align: 'center',
+    width: 200,
+    className: 'avg-attendance',
+    render: (value) => value || '-',
     sorter: true,
   },
   // next up are dynamic columns for each assessment type
@@ -77,6 +88,7 @@ export const getTableColumns = ({
   getTableDrillDownUrl,
   selectedPerformanceBand,
   availableTestTypes,
+  useAttendanceAbsence,
 }) => {
   if (isEmpty(metricInfo)) return []
   const columnSortOrder = dbToTableSortOrderMap[tableFilters.sortOrder]
@@ -97,7 +109,7 @@ export const getTableColumns = ({
     ? 'WHOLE LEARNER'
     : 'PERFORMANCE TRENDS'
 
-  const tableColumns = next(tableColumnsData, (_columns) => {
+  let tableColumns = next(tableColumnsData, (_columns) => {
     // compareBy column
     const compareByIdx = _columns.findIndex(
       (col) => col.key === tableColumnKeys.DIMENSION
@@ -122,6 +134,12 @@ export const getTableColumns = ({
     )
     _columns[avgAttendanceIdx].sortOrder =
       tableFilters.sortKey === tableColumnKeys.AVG_ATTENDANCE && columnSortOrder
+
+    const totalAbsenceIdx = _columns.findIndex(
+      (col) => col.key === tableColumnKeys.TOTAL_ABSENCE
+    )
+    _columns[totalAbsenceIdx].sortOrder =
+      tableFilters.sortKey === tableColumnKeys.TOTAL_ABSENCE && columnSortOrder
 
     // dynamic columns
     const testTypesBasedColumns = map(
@@ -220,7 +238,15 @@ export const getTableColumns = ({
       )
     },
   }
-
   tableColumns.push(externalLinkColumn)
+  if (useAttendanceAbsence) {
+    tableColumns = tableColumns.filter(
+      (col) => col.key !== tableColumnKeys.AVG_ATTENDANCE
+    )
+  } else {
+    tableColumns = tableColumns.filter(
+      (col) => col.key !== tableColumnKeys.TOTAL_ABSENCE
+    )
+  }
   return tableColumns
 }

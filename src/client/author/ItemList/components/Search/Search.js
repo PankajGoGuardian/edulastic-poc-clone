@@ -397,7 +397,7 @@ const Search = ({
                     optionFilterProp="children"
                     onSelect={onSearchFieldChange('curriculumId')}
                     filterOption={(input, option) =>
-                      option.props.children
+                      option.props.searchText
                         .toLowerCase()
                         .indexOf(input.toLowerCase()) >= 0
                     }
@@ -406,7 +406,11 @@ const Search = ({
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   >
                     {isAllStandardSetVisible && (
-                      <Select.Option key="" value="">
+                      <Select.Option
+                        key=""
+                        value=""
+                        searchText="All Standard Sets"
+                      >
                         All Standard Sets
                       </Select.Option>
                     )}
@@ -417,6 +421,7 @@ const Search = ({
                           ? [
                               {
                                 value: INTERESTED_STANDARD_SETS,
+                                searchText: 'All Interested Standard Sets',
                                 text: (
                                   <AllInterestedContainer>
                                     <span>All Interested Standard Sets</span>
@@ -441,6 +446,7 @@ const Search = ({
                           key={el.value}
                           value={el.value}
                           disabled={el.disabled}
+                          searchText={el.searchText ?? el.text}
                         >
                           {el.text}
                         </Select.Option>

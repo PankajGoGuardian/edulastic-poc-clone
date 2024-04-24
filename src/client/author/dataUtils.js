@@ -1,5 +1,5 @@
 import React from 'react'
-import { get, keyBy, uniqBy, uniq, memoize, omit } from 'lodash'
+import { get, keyBy, uniqBy, uniq, memoize, omit, isEmpty } from 'lodash'
 import { questionType as questionTypes } from '@edulastic/constants'
 import { nonPremiumCollections } from '@edulastic/constants/const/collections'
 import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
@@ -250,7 +250,7 @@ export const getDefaultCurriculum = (
   const subjectInterestedCurriculums = (
     interestedCurriculums || []
   ).filter((curr) => interestedSubjects.includes(curr.subject))
-  if (subjectInterestedCurriculums) {
+  if (!isEmpty(subjectInterestedCurriculums)) {
     const userSubjectInterestedCurriculums = subjectInterestedCurriculums.find(
       (curr) => curr.orgType === userRole
     )

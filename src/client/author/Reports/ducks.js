@@ -14,7 +14,10 @@ import { get, isEmpty, omitBy, mapValues, uniqBy, sortBy } from 'lodash'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 import { assignmentApi, reportsApi } from '@edulastic/api'
 
-import { reportGroupType } from '@edulastic/constants/const/report'
+import {
+  reportGroupType,
+  reportNavType,
+} from '@edulastic/constants/const/report'
 import {
   reducer as reportCompletionReportReducers,
   watcherSaga as completionReportSaga,
@@ -760,15 +763,19 @@ function* getGroupTags(ids, options) {
 }
 function* getTestTags(ids, options) {
   let result = []
-  const { statePrefix } = options
+  const { statePrefix, loc } = options
   if (Array.isArray(ids) && ids.length) {
-    const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
+    const { IN_PROGRESS, IN_GRADING, DONE, NOT_OPEN } = assignmentStatusOptions
+    const statuses = [IN_PROGRESS, IN_GRADING, DONE]
+    if (loc === reportNavType.COMPLETION_REPORT) {
+      statuses.push(NOT_OPEN)
+    }
     const q = {
       limit: ids.length || 25,
       page: 1,
       search: {
         searchString: '',
-        statuses: [IN_PROGRESS, IN_GRADING, DONE],
+        statuses,
         districtId: options.districtId,
         testIds: ids,
       },

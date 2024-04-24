@@ -346,6 +346,7 @@ const MultipleAssessmentReportFilters = ({
             options: {
               termId: _filters.termId,
               schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+              loc,
             },
           })
         }

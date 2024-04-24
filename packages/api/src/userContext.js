@@ -83,6 +83,16 @@ const deleteCustomKeypad = (documentId, filter) =>
     data: filter,
   })
 
+const setViewedTutorials = (viewedTutorial) =>
+  api.callApi({
+    method: 'post',
+    url: `${prefix}`,
+    data: {
+      name: 'VIEWED_TUTORIALS',
+      value: [viewedTutorial],
+    },
+  })
+
 export default {
   setLastUsedPlayList,
   setRecentUsedPlayLists,
@@ -92,4 +102,5 @@ export default {
   getCustomKeypad,
   updateCustomKeypad,
   deleteCustomKeypad,
+  setViewedTutorials,
 }

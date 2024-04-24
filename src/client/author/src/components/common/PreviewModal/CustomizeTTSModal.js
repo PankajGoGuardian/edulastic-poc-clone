@@ -45,10 +45,10 @@ const CustomizeTTSModal = ({
         borderRadius="8px"
         disabled={modalDraggable}
         width="75%"
-        height="calc(70vh + 60px)"
+        minHeight="calc(60px + 70vh)"
       >
-        <ModalInner width="100%" height="100%">
-          <ModalHeader justifyContent="space-between" padding="32px">
+        <ModalInner width="100%" minHeight="calc(60px + 70vh)">
+          <ModalHeader justifyContent="space-between" padding="16px 32px">
             <FlexContainer flexDirection="column">
               <Title justifyContent="flex-start" alignItems="center">
                 Customize TTS
@@ -77,7 +77,9 @@ const CustomizeTTSModal = ({
           <StyledWrapper
             background="#f7f7f7"
             alignmentItems="center"
-            height="calc(100% - 115px)"
+            borderBottomRightRadius="8px"
+            borderBottomLeftRadius="8px"
+            minHeight="calc(70vh - 22px)"
           >
             <EduIf condition={currentQuestionIndex > 0}>
               <PrevArrowTTS onClick={() => changeQuestion(TTS_NAV_PREV)}>
@@ -94,11 +96,10 @@ const CustomizeTTSModal = ({
               marginLeft="32px"
               mr="32px"
               mt="2px"
-              marginBottom="32px"
             >
               <ModalContentArea
                 tts
-                style={{ minHeight: 400, padding: '32px' }}
+                style={{ minHeight: 400, padding: '0 32px 16px 32px' }}
                 width="100%"
               >
                 <div
@@ -145,7 +146,7 @@ const ModalInner = styled.div`
   position: relative;
   background: ${white};
   width: ${({ width }) => width};
-  height: ${({ height }) => height};
+  min-height: ${({ minHeight }) => minHeight};
   z-index: 1003;
   border-radius: 8px;
   & .input__math {

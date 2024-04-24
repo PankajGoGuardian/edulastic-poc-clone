@@ -94,7 +94,7 @@ const SpeakableText = ({
   return (
     <>
       <EduIf condition={showLanguageSelector}>
-        <FlexContainer justifyContent="flex-end" marginBottom="10px">
+        <FlexContainer justifyContent="flex-end">
           <SelectInputStyled
             data-cy="tts-language-selector"
             width="120px"
@@ -128,7 +128,7 @@ const SpeakableText = ({
       </EduIf>
       <EduIf condition={ttsTextAPIStatus === 'SUCCESS'}>
         <StyledSpeakableTextContainer
-          margin={showLanguageSelector ? '0px' : '32px 0 0 0'}
+          margin={showLanguageSelector ? '0px' : '10px 0 0 0'}
         >
           <EduIf condition={(audioSrc || '').length > 0 && showTTSTextModal}>
             <AudioControls
@@ -235,9 +235,7 @@ export default connect((state) => ({
 }))(SpeakableText)
 
 const StyledTTStextWrapper = styled(FlexContainer)`
-  height: 340px;
   overflow: auto;
   flex-direction: column;
   justify-content: flex-start;
-  margin-bottom: 10px;
 `

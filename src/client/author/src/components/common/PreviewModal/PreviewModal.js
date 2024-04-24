@@ -41,6 +41,7 @@ import {
   TTS_ENABLED_QUESTION_TYPES,
 } from '@edulastic/constants/const/questionType'
 import produce from 'immer'
+import { LANGUAGE_ES } from '@edulastic/constants/const/languages'
 import SelectGroupModal from '../../../../TestPage/components/AddItems/SelectGroupModal'
 import { SMALL_DESKTOP_WIDTH } from '../../../../../assessment/constants/others'
 import { Nav } from '../../../../../assessment/themes/common'
@@ -149,7 +150,7 @@ class PreviewModal extends React.Component {
   get ttsCustomizableData() {
     const { item = {} } = this.props
     return produce(item?.data || {}, (draft) => {
-      draft.questions = (draft?.questions || []).filter(({ type }) =>
+      draft.questions = (draft?.questions || [])?.filter(({ type }) =>
         TTS_ENABLED_QUESTION_TYPES.includes(type)
       )
     })
@@ -217,6 +218,7 @@ class PreviewModal extends React.Component {
       updateCurrentItemFromPassagePagination,
       passage,
       clearPreview,
+      updateTTSAPIStatus,
     } = this.props
 
     const { item: oldItem, archivedItems: newArchivedItems } = prevProps
@@ -233,6 +235,14 @@ class PreviewModal extends React.Component {
       } else {
         clearPreview()
       }
+    }
+
+    if (
+      (this.ttsCustomizableData?.questions || []).length === 1 &&
+      prevProps?.updateTTSAPIStatus !== updateTTSAPIStatus &&
+      updateTTSAPIStatus === 'SUCCESS'
+    ) {
+      this.toggleTTSTextModal()
     }
   }
 
@@ -696,9 +706,17 @@ class PreviewModal extends React.Component {
   }
 
   toggleTTSTextModal = () => {
-    this.setState(({ showTTSTextModal: prevShowTTSTextModal }) => ({
-      showTTSTextModal: !prevShowTTSTextModal,
-    }))
+    this.setState(({ showTTSTextModal: prevShowTTSTextModal }) => {
+      const isEnglishLanguageDisable = !this.ttsCustomizableData?.questions?.[0]
+        .stimulus
+      return {
+        showTTSTextModal: !prevShowTTSTextModal,
+        currentQuestionIndex: 0,
+        ...(isEnglishLanguageDisable
+          ? { selectedLanguage: LANGUAGE_ES }
+          : { selectedLanguage: LANGUAGE_EN }),
+      }
+    })
   }
 
   onLanguageChange = (value) => {
@@ -1081,17 +1099,28 @@ class PreviewModal extends React.Component {
       if (action === TTS_NAV_NEXT) {
         const newIndex = prevCurrentQuestionIndex + 1
         if (newIndex < questionsCount) {
+          const isEnglishLanguageDisable = !this.ttsCustomizableData
+            ?.questions?.[newIndex].stimulus
           return {
             ...prevState,
             currentQuestionIndex: newIndex,
+            ...(isEnglishLanguageDisable
+              ? { selectedLanguage: LANGUAGE_ES }
+              : {}),
           }
         }
       } else {
         const newIndex = prevCurrentQuestionIndex - 1
+        const isEnglishLanguageDisable = !this.ttsCustomizableData?.questions?.[
+          newIndex
+        ].stimulus
         if (prevCurrentQuestionIndex > 0)
           return {
             ...prevState,
             currentQuestionIndex: newIndex,
+            ...(isEnglishLanguageDisable
+              ? { selectedLanguage: LANGUAGE_ES }
+              : {}),
           }
       }
     }, callBack)
@@ -1244,7 +1273,7 @@ class PreviewModal extends React.Component {
             (grp) => !!grp.items.find((i) => i._id === item._id)
           )?.groupName || 'Test'
 
-    const showviewTTSTextBtn = questionsType.some((type) =>
+    const showviewTTSTextBtn = (questionsType || [])?.some((type) =>
       TTS_ENABLED_QUESTION_TYPES.includes(type)
     )
 

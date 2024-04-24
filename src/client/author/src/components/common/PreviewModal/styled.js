@@ -581,9 +581,11 @@ export const PremiumItemBannerWrapper = styled.div`
 export const StyledWrapper = styled(FlexContainer)`
   background: ${({ background }) => background};
   height: ${({ height }) => height};
-  border-bottom-right-radius: 8px;
-  border-bottom-left-radius: 8px;
-  overflow: auto;
+  min-height: ${({ minHeight }) => minHeight};
+  border-bottom-right-radius: ${({ borderBottomRightRadius }) =>
+    borderBottomRightRadius};
+  border-bottom-left-radius: ${({ borderBottomLeftRadius }) =>
+    borderBottomLeftRadius};
 `
 const ArrowStyle = css`
   max-width: 30px;

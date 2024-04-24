@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import Helmet from 'react-helmet'
 import { Redirect } from 'react-router-dom'
 import styled from 'styled-components'
 import { Layout } from 'antd'
@@ -53,6 +54,9 @@ const Login = ({
             : Partners[partnerCheck].background
         }
       >
+        <Helmet>
+          <link rel="canonical" href="https://assessment.peardeck.com/login" />
+        </Helmet>
         {Partners[partnerCheck].name !== 'login' && (
           <Backdrop Partners={Partners[partnerCheck]} />
         )}

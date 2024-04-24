@@ -4,8 +4,10 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { convertTableToCSV } from '../../util'
 import { getPrintingState } from '../../../ducks'
+import { TABLE_PAGINATION_STYLE } from '../../../../../common/styled'
 
 const defaultPagination = {
+  style: TABLE_PAGINATION_STYLE,
   hideOnSinglePage: true,
   pageSize: 50,
 }
@@ -18,6 +20,7 @@ const CsvTable = ({
   getColumnHeaders,
   columns,
   pagination = defaultPagination,
+  isSurveyTest = false,
   ...restProps
 }) => {
   const Component = tableToRender
@@ -57,7 +60,7 @@ const CsvTable = ({
         childrenRef.current,
         getColumnHeaders
       )
-      onCsvConvert(csvText, csvRawData)
+      onCsvConvert(csvText, csvRawData, isSurveyTest)
     }
   }, [isCsvDownloading])
 

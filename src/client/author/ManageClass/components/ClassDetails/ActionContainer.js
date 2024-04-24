@@ -477,7 +477,7 @@ const ActionContainer = ({
           stds={selectedStudent}
           isEdit={isEdit}
           loadStudents={loadStudents}
-          districtTestSettings={districtTestSettings}
+          enableSpeechToText={districtTestSettings?.enableSpeechToText}
         />
       )}
 

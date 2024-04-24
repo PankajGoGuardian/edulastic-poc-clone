@@ -262,6 +262,7 @@ class AddNewUserForm extends React.Component {
       resetClassDetails,
       location: { pathname },
       isPremium,
+      enableSpeechToText,
     } = this.props
 
     const { isUserExists, userInfo, userExistsInClass } = this.state
@@ -324,7 +325,7 @@ class AddNewUserForm extends React.Component {
           <IconAccessibility style={{ fill: themeColor }} />
           <label>Configure Accommodations</label>
         </div>
-        <small>Set TTS, STT, IR acommodations</small>
+        <small>Set TTS, STT, IR at student level</small>
       </PanelHeader>
     )
 
@@ -674,6 +675,7 @@ class AddNewUserForm extends React.Component {
                 <AdditionalFields
                   type="accommodations"
                   getFieldDecorator={getFieldDecorator}
+                  enableSpeechToText={enableSpeechToText}
                 />
               </Panel>
             )}

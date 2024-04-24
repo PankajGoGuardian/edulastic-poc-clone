@@ -51,6 +51,7 @@ export default function PickItemCountWrapperContainer({
     <ItemCountWrapper>
       <span>Pick </span>
       <Input
+        data-cy={`pickCountInput-${itemGroup.groupName}`}
         type="number"
         disabled={disabled}
         min={1}
@@ -64,6 +65,7 @@ export default function PickItemCountWrapperContainer({
       />
       <span>item(s) and deliver</span>
       <Input
+        data-cy={`pickDeliveryCountInput-${itemGroup.groupName}`}
         type="number"
         disabled={disabled}
         value={showValue ? relevantGroup?.deliverItemsCount || '' : ''}
@@ -77,6 +79,7 @@ export default function PickItemCountWrapperContainer({
         min={1}
         value={showValue ? relevantGroup?.itemsDefaultMaxScore || 1 : ''}
         onChange={handleSectionScoreChange}
+        data-cy={`sectionScoreInput-${itemGroup.groupName}`}
       />
       <span>points for each question</span>
     </ItemCountWrapper>

@@ -76,10 +76,13 @@ export const getTableColumns = ({
       )
       schoolColumn.render = (name) => <LinkCell value={{ name }} />
 
+      const attendanceColumnIdx = _columns.findIndex(
+        ({ key }) => key === tableColumnKeys.AVG_ATTENDANCE
+      )
+      if (filters.useAttendanceAbsence) {
+        _columns[attendanceColumnIdx].title = 'NUMBER OF ABSENCES'
+      }
       if (filters.riskType === RISK_TYPE_KEYS.ACADEMIC) {
-        const attendanceColumnIdx = _columns.findIndex(
-          ({ key }) => key === tableColumnKeys.AVG_ATTENDANCE
-        )
         _columns.splice(attendanceColumnIdx, 1)
       }
       const riskColumn = _columns.find(

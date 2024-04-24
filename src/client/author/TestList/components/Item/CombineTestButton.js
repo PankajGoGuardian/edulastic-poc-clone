@@ -1,7 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { EduButton, notification } from '@edulastic/common'
+import {
+  EduButton,
+  notification,
+  EduIf,
+  EduElse,
+  EduThen,
+  FlexContainer,
+} from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
 import styled from 'styled-components'
 import { themeColor, white } from '@edulastic/colors'
@@ -22,6 +29,8 @@ const CombineTestButton = ({
   addItemsToCartFromTest,
   isAddingTestToCart,
   listView = false,
+  isTestCard = false,
+  width,
 }) => {
   const { testCategory, itemGroups } = test
   /** *****===========*******
@@ -55,24 +64,41 @@ const CombineTestButton = ({
       itemsFromTestWithoutCartItemIds,
     })
   }
+
+  const combinedBtnProps = {
+    onClick: handleCombineTest,
+    listView,
+    disabled: testCategory !== testConstants.testCategoryTypes.DEFAULT,
+  }
+
+  const combinedBtnText = 'Add to new test'
+
+  const tooltipText =
+    testCategory !== testConstants.testCategoryTypes.DEFAULT
+      ? 'Video, SnapQuiz & Smart Build tests cannot be combined with other tests'
+      : undefined
+
   return (
-    <Tooltip
-      title={
-        testCategory !== testConstants.testCategoryTypes.DEFAULT
-          ? 'Video, SnapQuiz & Smart Build tests cannot be combined with other tests'
-          : undefined
-      }
-    >
-      <StyledCombineBtnContainer listView={listView}>
-        <StyledCombineBtn
-          onClick={handleCombineTest}
-          listView={listView}
-          disabled={testCategory !== testConstants.testCategoryTypes.DEFAULT}
-        >
-          Add to new test
-        </StyledCombineBtn>
-      </StyledCombineBtnContainer>
-    </Tooltip>
+    <EduIf condition={!isTestCard}>
+      <EduThen>
+        <Tooltip title={tooltipText}>
+          <StyledCombineBtnContainer listView={listView}>
+            <StyledCombineBtn {...combinedBtnProps}>
+              {combinedBtnText}
+            </StyledCombineBtn>
+          </StyledCombineBtnContainer>
+        </Tooltip>
+      </EduThen>
+      <EduElse>
+        <Tooltip title={tooltipText}>
+          <FlexContainer width="100%">
+            <EduButton {...combinedBtnProps} ml="0px" width={width}>
+              {combinedBtnText}
+            </EduButton>
+          </FlexContainer>
+        </Tooltip>
+      </EduElse>
+    </EduIf>
   )
 }
 

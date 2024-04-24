@@ -1,7 +1,6 @@
 import React from 'react'
 import { reportUtils } from '@edulastic/constants'
 import { FlexContainer } from '@edulastic/common'
-import { pick } from 'lodash'
 import { ColoredText } from '../../common/components/styledComponents'
 import { RISK_LABEL_SUFFIX } from '../../common/utils'
 
@@ -35,6 +34,7 @@ export const tableColumnKeys = {
 }
 
 /** @type {import('antd/lib/table').ColumnProps[]} */
+const RISK_LABEL_SUFFIX_UPPERCASE = RISK_LABEL_SUFFIX.toUpperCase()
 export const tableColumnsData = [
   {
     key: tableColumnKeys.DIMENSION,
@@ -61,14 +61,14 @@ export const tableColumnsData = [
   {
     key: tableColumnKeys.ACADEMIC_RISK,
     dataIndex: 'distribution',
-    title: `ACADEMIC RISK${RISK_LABEL_SUFFIX}`,
+    title: `ACADEMIC RISK${RISK_LABEL_SUFFIX_UPPERCASE}`,
     align: 'left',
     className: 'risk-distribution',
   },
   {
     key: tableColumnKeys.ATTENDANCE_RISK,
     dataIndex: 'distribution',
-    title: `ATTENDANCE RISK${RISK_LABEL_SUFFIX}`,
+    title: `ATTENDANCE RISK${RISK_LABEL_SUFFIX_UPPERCASE}`,
     align: 'left',
     className: 'risk-distribution',
   },
@@ -102,7 +102,7 @@ export const compareByStudentColumns = [
     key: tableColumnKeys.RISK,
     title: (
       <FlexContainer flexDirection="column" style={{ gap: '10px' }}>
-        <div>RISK{RISK_LABEL_SUFFIX}</div>
+        <div>RISK{RISK_LABEL_SUFFIX_UPPERCASE}</div>
         <div>PRIORITY</div>
       </FlexContainer>
     ),
@@ -154,8 +154,10 @@ export const compareByStudentColumns = [
     dataIndex: 'attendanceRisk',
     render: (value) => (
       <ColoredText>
-        {value?.attendancePercentage >= 0
-          ? `${value.attendancePercentage}%`
+        {value?.attendanceScore >= 0
+          ? `${value.attendanceScore}${
+              value.riskBandType === 'attendance-absence' ? '' : '%'
+            }`
           : '-'}
       </ColoredText>
     ),

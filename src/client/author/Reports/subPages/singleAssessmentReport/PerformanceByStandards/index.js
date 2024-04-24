@@ -37,6 +37,7 @@ import {
   usePerformanceByStandardSummaryFetch,
 } from './hooks/useFetch'
 import NoDataNotification from '../../../../../common/components/NoDataNotification'
+import { TABLE_PAGINATION_STYLE } from '../../../../../common/styled'
 
 const {
   viewByMode,
@@ -469,7 +470,7 @@ const PerformanceByStandards = ({
                         />
                         <EduIf condition={itemsCount > pageSize}>
                           <Pagination
-                            style={{ marginTop: '10px' }}
+                            style={TABLE_PAGINATION_STYLE}
                             onChange={onSetPage}
                             current={page}
                             pageSize={pageSize}

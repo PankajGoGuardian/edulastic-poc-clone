@@ -2,7 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { omit, head, isEmpty } from 'lodash'
+import { omit, head, isEmpty, get } from 'lodash'
+import { report as reportTypes } from '@edulastic/constants'
 import {
   completionReportChartPageSize as barChartPageSize,
   analyzeBy,
@@ -18,13 +19,12 @@ import {
   getCompletionReportTableDataLoading,
   getCsvDownloadLoader,
 } from './ducks'
-import { getCsvDownloadingState } from '../../../ducks'
+import { generateCSVAction, getCsvDownloadingState } from '../../../ducks'
 import CompletionReportTable from './components/table/CompletionReportTable'
 import { Container } from './styled'
 import { getUserOrgId, getUserRole } from '../../../../src/selectors/user'
 import { NoDataContainer } from '../../../common/styled'
 import { getCompareByOptions } from '../../dataWarehouseReports/MultipleAssessmentReport/utils'
-import { getNoDataContainerText } from '../PreVsPost/utils'
 
 const TABLE_PAGE_SIZE = 50
 function CompletionReport({
@@ -47,9 +47,10 @@ function CompletionReport({
   role,
   districtId,
   csvDownloadLoadingState,
-  pageTitle,
+  generateCSV,
   ...props
 }) {
+  const [selectedTests, setSelectedTests] = useState([])
   const [userRole, sharedReportFilters] = useMemo(
     () => [
       sharedReport?.sharedBy?.role || role,
@@ -88,7 +89,7 @@ function CompletionReport({
       page: pagination.page,
       ...(pagination.page === 1 && { recompute: true }),
     }
-    if (!sharedReport && (q.termId || q.reportId)) {
+    if (q.termId || q.reportId) {
       fetchCompletionReportChartDataRequest(q)
 
       return () => toggleFilter(null, false)
@@ -132,24 +133,48 @@ function CompletionReport({
       sortOrder: statusColumnSortState.sortOrder,
       recompute: true,
     }
+    if (selectedTests.length) {
+      q.testIds = selectedTests.join(',')
+    }
     const _q = omit(q, ['selectedCompareBy'])
-    if (!isSharedReport && (q.termId || q.reportId) && pageFilters.page) {
+    if ((q.termId || q.reportId) && pageFilters.page) {
       fetchCompletionReportTableDataRequest(_q)
       return () => toggleFilter(null, false)
     }
-  }, [pageFilters, statusColumnSortState, testColumnSort])
+  }, [pageFilters, statusColumnSortState, testColumnSort, selectedTests])
 
-  const noDataContainerText = getNoDataContainerText(
-    settings,
-    {},
-    isSharedReport,
-    pageTitle
-  )
-  if (isSharedReport) {
-    return <NoDataContainer>{noDataContainerText}</NoDataContainer>
-  }
+  // Download csv data (server side)
+  const itemsCount = get(tableData[0], 'totalRows', 0)
 
-  if (isEmpty(chartData) && !(isChartDataLoading && isTableDataLoading)) {
+  const generateCSVRequired = itemsCount > TABLE_PAGE_SIZE
+  useEffect(() => {
+    if (isCsvDownloading && generateCSVRequired) {
+      const q = {
+        reportType: reportTypes.reportNavType.COMPLETION_REPORT,
+        reportFilters: {
+          ...settings.requestFilters,
+          compareBy: settings.selectedCompareBy,
+          ...pageFilters,
+          requireTotalCount: pageFilters.page === 1,
+          testOrder: testColumnSort.sortOrder,
+          sortKey: statusMap[statusColumnSortState.sortKey],
+          sortOrder: statusColumnSortState.sortOrder,
+          analyseBy: analyseBy.key,
+          recompute: true,
+        },
+        reportExtras: {
+          totalRows: itemsCount,
+        },
+      }
+      generateCSV(q)
+    }
+  }, [isCsvDownloading, generateCSVRequired])
+  const noDataForAppliedFilters =
+    !(isChartDataLoading || isTableDataLoading) &&
+    isEmpty(chartData) &&
+    isEmpty(tableData)
+
+  if (noDataForAppliedFilters) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}
@@ -166,6 +191,8 @@ function CompletionReport({
             pageSize={barChartPageSize}
             pagination={pagination}
             setPagination={setPagination}
+            selectedTests={selectedTests}
+            setSelectedTests={setSelectedTests}
             {...props}
           />
 
@@ -191,6 +218,7 @@ function CompletionReport({
             csvDownloadLoadingState={csvDownloadLoadingState}
             compareByBasedOnRole={compareByBasedOnRole}
             isSharedReport={isSharedReport}
+            generateCSVRequired={generateCSVRequired}
           />
         </Container>
       </EduThen>
@@ -215,7 +243,7 @@ const enhance = connect(
     districtId: getUserOrgId(state),
     csvDownloadLoadingState: getCsvDownloadLoader(state),
   }),
-  { ...actions }
+  { ...actions, generateCSV: generateCSVAction }
 )
 
 export default enhance(CompletionReport)

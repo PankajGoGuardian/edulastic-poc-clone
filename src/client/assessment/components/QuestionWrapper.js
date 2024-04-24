@@ -205,6 +205,16 @@ class QuestionWrapper extends Component {
     this.setPage(1)
   }
 
+  componentDidUpdate(prevProps) {
+    const { isQuestionTypeUpdated } = this.props
+    if (
+      isQuestionTypeUpdated &&
+      isQuestionTypeUpdated !== prevProps.isQuestionTypeUpdated
+    ) {
+      this.setState({ main: [], advanced: [], extras: [] })
+    }
+  }
+
   openStudentWork = () => {
     const { data, loadScratchPad, showStudentWork, isVideoQuiz } = this.props
     // load the data from server and then show
@@ -708,11 +718,7 @@ class QuestionWrapper extends Component {
                     : flowLayout
                 }
               >
-                <StyledFlexContainer
-                  showScroll={isLCBView || isExpressGrader}
-                  flexDirection="column"
-                  maxWidth="100%"
-                >
+                <StyledFlexContainer flexDirection="column" maxWidth="100%">
                   {evaluation === 'pending' && (
                     <Tooltip
                       title={translate('component.pendingEvaluation.tooltip')}

@@ -11,6 +11,7 @@ import { GradebookTable } from '../styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 
 import { getTableColumnsFE, onCsvConvert } from '../../utils/transformers'
+import { TABLE_PAGINATION_STYLE } from '../../../../../../../common/styled'
 
 const { getTableData } = reportUtils.standardsGradebook
 
@@ -39,6 +40,7 @@ const StandardsGradebookTable = ({
   )
   const pagination = useMemo(
     () => ({
+      style: TABLE_PAGINATION_STYLE,
       hideOnSinglePage: true,
       pageSize: tableFilters.pageSize,
     }),

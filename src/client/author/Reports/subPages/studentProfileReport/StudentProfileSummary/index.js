@@ -52,6 +52,11 @@ import {
 } from './ducks'
 import { getInterestedCurriculumsSelector } from '../../../../src/selectors/user'
 import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
+import {
+  GradeTooltipContent,
+  IconInfoWithTooltip,
+  SchoolTooltipContent,
+} from '../../../common/components/tooltip/IconInfoWithTooltip'
 
 const getTooltip = (payload) => {
   if (payload && payload.length) {
@@ -277,6 +282,8 @@ const StudentProfileSummary = ({
     studentInformation
   )
   const anonymousString = t('common.anonymous')
+  const { grade, gradesStr } = getGrades(studentClassData)
+  const { schoolName, schoolsStr } = getSchools(studentClassData, grade.key)
 
   const onCsvConvert = (_data) =>
     downloadCSV(
@@ -285,8 +292,6 @@ const StudentProfileSummary = ({
       }.csv`,
       _data
     )
-
-  const schoolName = getSchools(studentClassData)
 
   if (error && error.dataSizeExceeded) {
     return <DataSizeExceeded />
@@ -317,14 +322,28 @@ const StudentProfileSummary = ({
               </UserIconWrapper>
             </IconContainer>
             <StudentDetailsContainer>
-              <span>NAME</span>
+              <StyledSpan>NAME</StyledSpan>
               <p>{studentName || anonymousString}</p>
-              <span>GRADE</span>
-              <p>{getGrades(studentClassData)}</p>
-              <span>SCHOOL</span>
-              <Tooltip title={schoolName}>
-                <p className="school-name">{schoolName}</p>
-              </Tooltip>
+              <StyledSpan>GRADE</StyledSpan>
+              <FlexContainer>
+                <p>{grade.label || '-'}</p>
+                <EduIf condition={!isEmpty(gradesStr)}>
+                  <IconInfoWithTooltip
+                    title={<GradeTooltipContent grades={gradesStr} />}
+                  />
+                </EduIf>
+              </FlexContainer>
+              <StyledSpan>SCHOOL</StyledSpan>
+              <FlexContainer>
+                <Tooltip title={schoolName}>
+                  <p className="school-name">{schoolName || '-'}</p>
+                </Tooltip>
+                <EduIf condition={!isEmpty(schoolsStr)}>
+                  <IconInfoWithTooltip
+                    title={<SchoolTooltipContent schools={schoolsStr} />}
+                  />
+                </EduIf>
+              </FlexContainer>
             </StudentDetailsContainer>
           </StudentDetailsCard>
           <Card width="calc(100% - 300px)">
@@ -476,7 +495,6 @@ const StudentDetailsContainer = styled.div`
   text-align: center;
   span {
     color: ${labelGrey};
-    font-weight: bold;
   }
   p {
     color: ${secondaryTextColor};
@@ -488,7 +506,14 @@ const StudentDetailsContainer = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  svg {
+    margin: 4px 0 0 5px;
+  }
 `
+const StyledSpan = styled.span`
+  font-weight: bold;
+`
+
 const FilterRow = styled(FlexContainer)`
   @media print {
     display: none;

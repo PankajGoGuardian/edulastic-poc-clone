@@ -3,6 +3,7 @@ import { Tooltip } from 'antd'
 import { reportUtils } from '@edulastic/constants'
 
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import { isEmpty } from 'lodash'
 import { getGrades, getSchools } from '../../../../../common/util'
 import {
   DetailsWrapper,
@@ -11,6 +12,11 @@ import {
   StudentMetaData,
   UserIcon,
 } from '../../common/styled'
+import {
+  GradeTooltipContent,
+  IconInfoWithTooltip,
+  SchoolTooltipContent,
+} from '../../../../../common/components/tooltip/IconInfoWithTooltip'
 
 const { formatName } = reportUtils.common
 
@@ -18,8 +24,8 @@ const StudentDetails = ({ studentInformation, studentClassData }) => {
   const { thumbnail } = studentInformation
 
   const studentName = formatName(studentInformation, { lastNameFirst: false })
-  const schoolName = getSchools(studentClassData) || '-'
-  const grades = getGrades(studentClassData) || '-'
+  const { grade, gradesStr } = getGrades(studentClassData)
+  const { schoolName, schoolsStr } = getSchools(studentClassData, grade.key)
 
   return (
     <DetailsWrapper>
@@ -39,19 +45,27 @@ const StudentDetails = ({ studentInformation, studentClassData }) => {
         </div>
         <div className="grades-name">
           <span>Grade : </span>
-          <Tooltip title={grades}>
-            <span className="value" data-testid="grade">
-              {grades}
-            </span>
-          </Tooltip>
+          <span className="value" data-testid="grade">
+            {grade.label || '-'}
+          </span>
+          <EduIf condition={!isEmpty(gradesStr)}>
+            <IconInfoWithTooltip
+              title={<GradeTooltipContent grades={gradesStr} />}
+            />
+          </EduIf>
         </div>
         <div className="schools-name">
           <span>School : </span>
-          <Tooltip title={schoolName}>
+          <Tooltip title={schoolName || ''}>
             <span className="value" data-testid="schoolName">
-              {schoolName}
+              {schoolName || '-'}
             </span>
           </Tooltip>
+          <EduIf condition={!isEmpty(schoolsStr)}>
+            <IconInfoWithTooltip
+              title={<SchoolTooltipContent schools={schoolsStr} />}
+            />
+          </EduIf>
         </div>
       </StudentMetaData>
     </DetailsWrapper>

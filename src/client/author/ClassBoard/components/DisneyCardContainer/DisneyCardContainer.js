@@ -181,7 +181,7 @@ class DisneyCardContainer extends Component {
       </>
     )
 
-    const showLoader = () => <Spin size="small" />
+    const showLoader = () => <Spin size="small" style={{ top: '50px' }} />
     const styledCard = []
     const classess = detailedClasses?.filter(({ _id }) => _id === classId)
 
@@ -287,6 +287,7 @@ class DisneyCardContainer extends Component {
             activeUtaId: selectedAttemptId,
             archiveUtaId: student.testActivityId,
             activeAttemptQuestionIds,
+            groupId: classId,
           })
           loadTestActivity(assignmentId, classId)
         }

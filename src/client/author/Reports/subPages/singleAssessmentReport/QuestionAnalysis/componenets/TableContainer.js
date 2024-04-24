@@ -4,6 +4,7 @@ import { EduIf, SpinLoader } from '@edulastic/common'
 
 import { reportUtils } from '@edulastic/constants'
 import { QuestionAnalysisTable } from './table/questionAnalysisTable'
+import { TABLE_PAGINATION_STYLE } from '../../../../../../common/styled'
 
 const { compareByToPluralName } = reportUtils.questionAnalysis
 
@@ -47,7 +48,7 @@ const TableContainer = ({
         />
         <EduIf condition={performanceByDimension?.totalRows > pageSize}>
           <Pagination
-            style={{ marginTop: '10px' }}
+            style={TABLE_PAGINATION_STYLE}
             onChange={setpageNo}
             current={pageNo}
             pageSize={pageSize}

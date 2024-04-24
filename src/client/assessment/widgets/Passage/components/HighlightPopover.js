@@ -17,7 +17,7 @@ const getStyles = ({
   const style = { position: 'fixed', zIndex: 9999 }
 
   style.left = selectionLeft + selectionWidth / 2 - pickerWidth / 2
-  style.top = selectionTop - 50 // - 50 is height of picker
+  style.top = selectionTop + 32 // 16px below text
 
   // If the popover is placed beyond the left edge of the screen align
   // with left edge

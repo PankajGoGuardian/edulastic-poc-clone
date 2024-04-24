@@ -1,21 +1,19 @@
 import { takeLatest, all, call, select, put } from 'redux-saga/effects'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { captureSentryException, notification } from '@edulastic/common'
+import { notification } from '@edulastic/common'
 import { reportsApi, tutorMeApi } from '@edulastic/api'
 import { getUser, getUserOrgId } from '../src/selectors/user'
 import { initTutorMeService } from './service'
 import { setInterventionDataInUtaAction } from '../src/reducers/testActivity'
 import { invokeTutorMeSDKtoAssignTutor } from './helper'
-import { tutorMeSdkConfig } from '../../../app-config'
+import { PAError, handleError } from '../../common/utils/errors'
 
 const reduxNamespaceKey = 'tutorMe'
 const initialState = {
-  tutorMeInitAt: null,
   isSessionRequestActive: false,
   isTutorMeModalOpen: false,
 }
-const { authTimeout } = tutorMeSdkConfig
 
 const slice = createSlice({
   slice: reduxNamespaceKey,
@@ -26,9 +24,6 @@ const slice = createSlice({
     },
     tutorMeRequestSessionComplete: (state) => {
       state.isSessionRequestActive = false
-    },
-    setTutorMeInitAt: (state, { payload }) => {
-      state.tutorMeInitAt = payload
     },
     setIsTutorMeModalOpen: (state, { payload }) => {
       state.isTutorMeModalOpen = payload
@@ -41,15 +36,6 @@ export const { actions, reducer } = slice
 export { reduxNamespaceKey }
 
 const stateSelector = (state) => state.tutorMeReducer
-
-const tutorMeInitAtSelector = createSelector(
-  stateSelector,
-  (state) => state.tutorMeInitAt
-)
-const tutorMeInitExpiredSelector = createSelector(
-  tutorMeInitAtSelector,
-  (tutorMeInitAt) => !tutorMeInitAt || tutorMeInitAt + authTimeout < Date.now()
-)
 
 export const tutorMeServiceInitializingSelector = createSelector(
   stateSelector,
@@ -86,35 +72,34 @@ function* createTutorMeInterventionSaga(payload) {
     }
     notification({ type: 'success', msg: 'Tutoring Assigned Successfully' })
   } catch (err) {
-    captureSentryException(err)
-    notification({
-      type: 'error',
-      msg: 'Unable to assign tutoring to students',
-    })
+    throw new PAError(err, 'Unable to assign tutoring to students.')
   }
 }
 
-function* initializeTutorMeServiceSaga() {
+function* initializeTutorMeServiceSaga(student) {
+  let authCredentials
   try {
-    const tutorMeInitExpired = yield select(tutorMeInitExpiredSelector)
-    if (tutorMeInitExpired) {
-      const now = Date.now()
-      const authCredentials = yield call(tutorMeApi.authorizeTutorme)
-      const user = yield select(getUser)
-      yield call(initTutorMeService, authCredentials, user)
-      yield put(actions.setTutorMeInitAt(now))
-    }
+    authCredentials = yield call(tutorMeApi.authorizeTutorme)
   } catch (err) {
-    captureSentryException(err)
-    notification({ msg: 'Authentication failed. Please contact support.' })
-    yield put(actions.setTutorMeInitAt(null))
+    throw new PAError(err, {
+      // TODO: we mistakenly omitted the `type: 'error'` in initial implementation.
+      // It should be error type with `msg: 'Authentication failed.'` (support message is appended automatically for error type)
+      // Not implementing the TODO to avoid unexpected impact in hotfix.
+      msg: 'Authentication failed. Please contact support.',
+    })
+  }
+  const user = yield select(getUser)
+  try {
+    yield call(initTutorMeService, [student], authCredentials, user)
+  } catch (err) {
+    throw new PAError(err, 'Unable to assign tutoring to students.')
   }
 }
 
 function* tutorMeRequestSesssionSaga({ payload }) {
   try {
     const [, tutorMeStandards] = yield all([
-      initializeTutorMeServiceSaga(),
+      call(initializeTutorMeServiceSaga, payload.student),
       call(tutorMeApi.getTutorMeStandards, {
         standardIds: payload.standardsMasteryData
           .map(({ standardId }) => standardId)
@@ -122,9 +107,6 @@ function* tutorMeRequestSesssionSaga({ payload }) {
           .join(','),
       }),
     ])
-    if (yield select(tutorMeInitExpiredSelector)) {
-      return
-    }
     yield put(actions.setIsTutorMeModalOpen(true))
     const tutorMeInterventionResponse = yield call(
       invokeTutorMeSDKtoAssignTutor,
@@ -137,6 +119,8 @@ function* tutorMeRequestSesssionSaga({ payload }) {
     if (tutorMeInterventionResponse) {
       yield* createTutorMeInterventionSaga(tutorMeInterventionResponse)
     }
+  } catch (err) {
+    handleError(err)
   } finally {
     yield put(actions.setIsTutorMeModalOpen(false))
     yield put(actions.tutorMeRequestSessionComplete())

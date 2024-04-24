@@ -4,7 +4,7 @@ import { downloadCSV } from '../../../common/util'
 export const MULTIPART_LABEL = 'Multipart'
 export const NOT_AVAILABLE_LABEL = 'NA'
 
-export function onCsvConvert(data, rawData) {
+export function onCsvConvert(data, rawData, isSurveyTest) {
   // extract all rows except the columns name
   const csvRows = rawData.splice(1, rawData.length)
   const responseColumnIndex = rawData[0].indexOf('"RESPONSE"')
@@ -27,7 +27,10 @@ export function onCsvConvert(data, rawData) {
     return csvRow.join(',')
   })
   const csvData = [rawData[0].join(','), ...modifiedCsvRows].join('\n')
-  downloadCSV(`Response Frequency.csv`, csvData)
+  downloadCSV(
+    isSurveyTest ? `Survey Response Summary.csv` : `Response Frequency.csv`,
+    csvData
+  )
 }
 
 export const filterData = (data, filter) =>

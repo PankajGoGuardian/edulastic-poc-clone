@@ -146,7 +146,7 @@ const MiscellaneousGroupContainer = ({
       value: showTextToSpeech,
       description: translate('accommodationsSettings.textToSpeech.description'),
       id: textToSpeech.id,
-      isEnabled: isAccommodationEditAllowed,
+      isEnabled: featuresAvailable?.textToSpeech && isAccommodationEditAllowed,
     },
   ]
 
@@ -279,11 +279,11 @@ const MiscellaneousGroupContainer = ({
 
       <div>
         <Block smallSize id="accommodations">
-          {!!accommodationsData.filter((a) => a.isEnabled).length && (
-            <>
-              <Title>Accommodations Settings</Title>
-              <p>{translate('accommodationsSettings.description')}</p>
-              {!isDocBased && (
+          {!isDocBased &&
+            !!accommodationsData.filter((a) => a.isEnabled).length && (
+              <>
+                <Title>Accommodations Settings</Title>
+                <p>{translate('accommodationsSettings.description')}</p>
                 <RadioWrapper
                   disabled={freezeSettings}
                   style={{ marginTop: '10px', marginBottom: 0 }}
@@ -291,7 +291,7 @@ const MiscellaneousGroupContainer = ({
                   {accommodationsData
                     .filter((accommodation) =>
                       accommodation.key === speechToText.key
-                        ? districtTestSettings.enableSpeechToText
+                        ? districtTestSettings?.enableSpeechToText
                         : true
                     )
                     .map(({ key, value, description, id }) => (
@@ -300,7 +300,7 @@ const MiscellaneousGroupContainer = ({
                           width={tootltipWidth}
                           title={accommodations[key]}
                           content={description}
-                          premium
+                          premium={premium}
                           placement="rightTop"
                         />
                         <StyledRow
@@ -316,7 +316,7 @@ const MiscellaneousGroupContainer = ({
                           <Col span={16}>
                             <StyledRadioGroup
                               isAssignment
-                              disabled={freezeSettings}
+                              disabled={freezeSettings || !premium}
                               onChange={(e) =>
                                 overRideSettings(key, e.target.value)
                               }
@@ -338,9 +338,8 @@ const MiscellaneousGroupContainer = ({
                       </SettingContainer>
                     ))}
                 </RadioWrapper>
-              )}
-            </>
-          )}
+              </>
+            )}
         </Block>
         <Block smallSize id="accessibility">
           {!!accessibilityData.length && (

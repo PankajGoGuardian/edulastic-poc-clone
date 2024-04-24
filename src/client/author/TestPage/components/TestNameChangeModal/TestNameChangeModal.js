@@ -43,6 +43,7 @@ const TestNameChangeModal = ({
         height="36px"
         width="124px"
         fontSize="14px"
+        data-cy="continue"
         style={{ textTransform: 'none' }}
         loading={testNameSaving}
         disabled={
@@ -70,7 +71,7 @@ const TestNameChangeModal = ({
       zIndex="2000"
     >
       <ModalHeader>
-        <ModalHeaderTitle>
+        <ModalHeaderTitle data-cy="testPopUpTitle">
           <span>{showSaveTitle ? 'Save' : 'Enter'} Test Name</span>
         </ModalHeaderTitle>
         <EduButton

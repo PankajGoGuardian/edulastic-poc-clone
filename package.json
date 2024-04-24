@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "42.2.0",
+  "version": "43.3.1",
   "sideEffects": [
     "!(**/ducks.js)",
     "!(**/duck.js)",
@@ -134,6 +134,7 @@
     "react-drag-and-drop": "^2.4.0",
     "react-dropzone": "^10.1.4",
     "react-froala-wysiwyg": "3.1.1",
+    "react-helmet": "^6.1.0",
     "react-icons": "^3.1.0",
     "react-joyride": "^2.0.5",
     "react-jsx-parser": "1.18.0",

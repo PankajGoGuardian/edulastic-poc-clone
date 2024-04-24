@@ -32,7 +32,12 @@ const IAP_EOY = 'IAP_EOY'
 const IAP_Window = 'IAP_Window'
 const MCAS_Historical = 'MCAS_Historical'
 const ACCESS_v2 = 'ACCESS_v2'
-
+const IAM = 'IAM'
+const Class_Report = 'Class_Report'
+const Interim_Data = 'Interim_Data'
+const IREAD3 = 'IREAD3'
+const IXL = 'IXL'
+const On_Course_Grades = 'On_Course_Grades'
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
 const EXTERNAL_TEST_TYPES = {
   [AIR]: 'AIR',
@@ -167,4 +172,10 @@ module.exports = {
   IAP_Window,
   MCAS_Historical,
   ACCESS_v2,
+  IAM,
+  Class_Report,
+  Interim_Data,
+  IREAD3,
+  IXL,
+  On_Course_Grades,
 }

@@ -62,10 +62,10 @@ const StudentDetailRow = ({
           style={{ marginRight: '10px' }}
         />
         <StyledCircularDiv>
-          {getInitials(firstName, lastName)}
+          {getInitials(lastName, firstName)}
         </StyledCircularDiv>
-        <StudentFullName>{`${firstName || ''} 
-		  ${lastName || ''}`}</StudentFullName>
+        <StudentFullName>{`${lastName || ''}${lastName ? ',' : ''} 
+		  ${firstName || ''}`}</StudentFullName>
       </TableStudentName>
       <TableStudentMastery>
         {avgMastery} {'%'}

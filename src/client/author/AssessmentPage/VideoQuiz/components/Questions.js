@@ -6,9 +6,10 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { sortBy, maxBy, uniqBy, isEmpty, keyBy } from 'lodash'
 import produce from 'immer'
+import { themeColor } from '@edulastic/colors'
 import { SortableElement, SortableContainer } from 'react-sortable-hoc'
 
-import { EduButton, EduElse, EduIf, EduThen, helpers } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, helpers } from '@edulastic/common'
 import { IconEye } from '@edulastic/icons'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
@@ -35,6 +36,7 @@ import {
   AnswerAction,
   QuestionWidgetWrapper,
   StyledEmptyQuestionContainer,
+  StyledEyeIconWrapper,
 } from '../styled-components/Questions'
 import { clearAnswersAction } from '../../../src/actions/answers'
 import {
@@ -579,16 +581,6 @@ class Questions extends React.Component {
             review={review}
             ref={questionsContainerRef}
           >
-            {isAuthorReview && !isPreviewModalVisible && (
-              <EduButton
-                isGhost
-                width="90%"
-                justifyContent="center"
-                onClick={handleShowTestPreviewModal}
-              >
-                <IconEye /> VIEW AS STUDENT
-              </EduButton>
-            )}
             <EduIf
               condition={!this.questionList?.length && viewMode === 'edit'}
             >
@@ -682,6 +674,18 @@ class Questions extends React.Component {
           )}
           {review && !noCheck && !reportMode && (
             <AnswerActionsWrapper>
+              {isAuthorReview && !isPreviewModalVisible && (
+                <AnswerAction
+                  width="145px"
+                  onClick={handleShowTestPreviewModal}
+                  data-cy="viewAsStudent"
+                >
+                  <StyledEyeIconWrapper>
+                    <IconEye color={themeColor} />
+                  </StyledEyeIconWrapper>
+                  VIEW AS STUDENT
+                </AnswerAction>
+              )}
               <AnswerAction
                 active={previewMode === 'check'}
                 onClick={this.handleCheckAnswer}

@@ -19,7 +19,9 @@ export const sortOrders = {
 
 export const sortKeys = {
   DIMENSION: 'dimension',
-  ATTENDANCE: 'attendance',
+  AVG_ATTENDANCE: 'avgAttendance',
+  AVG_ABSENCE: 'avgAbsence',
+  TOTAL_ABSENCE: 'totalAbsence',
   ATTENDANCE_DISRUPTIONS: 'attendanceDisruptions',
   STUDENTS: 'students',
   ATTENDANCE_EVENTS: 'attendanceEvents',

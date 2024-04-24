@@ -49,6 +49,7 @@ import {
 import { getUserRole } from '../selectors/user'
 import {
   setBulkUpdateAssignmentSettingState,
+  setShareWithGCProgressAction,
   setTagsUpdatingStateAction,
 } from '../actions/assignments'
 
@@ -248,6 +249,7 @@ function* updateAssignmetSaga({ payload }) {
 function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
   try {
     notification({ type: 'success', messageKey: 'sharedAssignmentInProgress' })
+    yield put(setShareWithGCProgressAction('started'))
     const result = yield call(assignmentApi.syncWithGoogleClassroom, payload)
     if (result?.[0]?.success) {
       yield put({

@@ -1,6 +1,7 @@
 import { Icon } from 'antd'
 import React from 'react'
-import { ActionContainer } from './styled'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import { ActionContainer, StyledText } from './styled'
 
 const StatusCsvDownload = ({
   csvDownloadLoadingState,
@@ -10,6 +11,7 @@ const StatusCsvDownload = ({
   progressName,
   index,
   children,
+  showStatusCellHyperLink,
 }) => {
   const isLoading =
     csvDownloadLoadingState[`${record.testId}_${progressName}_${index}`]
@@ -17,14 +19,22 @@ const StatusCsvDownload = ({
   if (isLoading) {
     return <Icon type="loading" spin />
   }
+
   return (
-    <ActionContainer
-      onClick={() =>
-        handleDownloadCsv(record, progressStatus, progressName, index)
-      }
-    >
-      {children}
-    </ActionContainer>
+    <EduIf condition={showStatusCellHyperLink}>
+      <EduThen>
+        <ActionContainer
+          onClick={() =>
+            handleDownloadCsv(record, progressStatus, progressName, index)
+          }
+        >
+          {children}
+        </ActionContainer>
+      </EduThen>
+      <EduElse>
+        <StyledText>{children}</StyledText>
+      </EduElse>
+    </EduIf>
   )
 }
 

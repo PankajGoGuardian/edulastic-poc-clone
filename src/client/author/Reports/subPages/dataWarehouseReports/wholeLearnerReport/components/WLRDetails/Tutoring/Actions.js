@@ -1,11 +1,8 @@
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { map, uniq } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import qs from 'qs'
-
 import {
   EduElse,
   EduIf,
@@ -17,41 +14,17 @@ import { withNamespaces } from '@edulastic/localization'
 import { greyThemeLight } from '@edulastic/colors'
 
 import { Tooltip } from 'antd'
+import { getStudentProgressProfileReportLink } from './utils'
 import { StyledBtn } from './styled'
 import { isPremiumUserSelector } from '../../../../../../../src/selectors/user'
 
 const Actions = ({ t, data, isPremiumUser, isSharedReport }) => {
   const { tutoringLink } = data
 
-  const reportLink = useMemo(() => {
-    const {
-      studentId,
-      interventionCriteria: { standardMasteryDetails },
-      _id: interventionId,
-      tutorMeSessions,
-      termId,
-    } = data
-    const filteredTutorMeSessions = tutorMeSessions.filter(
-      ({ sessionCompleteTime }) => !!sessionCompleteTime
-    )
-    let link = ''
-    if (filteredTutorMeSessions.length) {
-      const domainIds = uniq(map(standardMasteryDetails, 'domainId')).join(',')
-      const standardIds = uniq(map(standardMasteryDetails, 'standardId')).join(
-        ','
-      )
-      const curriculumId = standardMasteryDetails[0].curriculumId
-      const queryStr = qs.stringify({
-        termId,
-        domainId: domainIds,
-        standardId: standardIds,
-        curriculumId,
-        interventionId,
-      })
-      link = `/author/reports/student-progress-profile/student/${studentId}?${queryStr}`
-    }
-    return link
-  }, [data])
+  const studentProgressProfileReportLink = useMemo(
+    () => getStudentProgressProfileReportLink(data),
+    [data]
+  )
 
   const handleClick = () => {
     notification({
@@ -60,9 +33,10 @@ const Actions = ({ t, data, isPremiumUser, isSharedReport }) => {
     })
   }
 
-  const isViewProgressEnabled = isPremiumUser && reportLink && !isSharedReport
+  const isViewProgressEnabled =
+    isPremiumUser && studentProgressProfileReportLink && !isSharedReport
 
-  const viewProgressDisabledTooltipTitle = !reportLink
+  const viewProgressDisabledTooltipTitle = !studentProgressProfileReportLink
     ? t('wholeLearnerReport.noTutoringSessions')
     : !isPremiumUser
     ? t('wholeLearnerReport.noPremiumAccess')
@@ -72,7 +46,7 @@ const Actions = ({ t, data, isPremiumUser, isSharedReport }) => {
     <FlexContainer alignItems="center" justifyContent="flex-start">
       <EduIf condition={isViewProgressEnabled}>
         <EduThen>
-          <Link to={reportLink} target="_blank">
+          <Link to={studentProgressProfileReportLink} target="_blank">
             View Progress
           </Link>
         </EduThen>

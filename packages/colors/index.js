@@ -130,6 +130,7 @@ export const deleteRed = '#FF0080'
 export const deleteRed2 = '#EF3863'
 export const strikeOutHover = '#f7cbcc'
 export const fieldRequiredColor = '#e82a83'
+export const fieldRequiredColor2 = '#ff0100'
 
 export const mainBlueColor = '#00b0ff'
 export const blue = '#1774F0'
@@ -201,6 +202,8 @@ export const yellow4 = '#FFDF88'
 export const yellow5 = '#E49B0F'
 
 export const orange = '#FFA200'
+export const orangeTheme1 = '#FFE1D6'
+export const orangeTheme2 = '#E16D44'
 export const darkOrange = '#F9942D'
 export const darkOrange1 = '#EB954B'
 

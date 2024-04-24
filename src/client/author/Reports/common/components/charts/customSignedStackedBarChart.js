@@ -16,7 +16,7 @@ import {
 import { isEmpty, findLast } from 'lodash'
 
 import { greyLight1 } from '@edulastic/colors'
-import { useOfflinePagination } from '@edulastic/common'
+import { useOfflinePagination, EduIf } from '@edulastic/common'
 import { LAST_PAGE_INDEX } from '@edulastic/constants/reportUtils/common'
 import {
   StyledCustomChartTooltipDark,
@@ -146,6 +146,7 @@ export const SignedStackedBarChart = ({
   yTickLine,
   yAxisStyle = null,
   needWhiteBackgroundToolTip = false,
+  showTestDateOnTestNameHover = true,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const parentContainerRef = useRef(null)
@@ -272,7 +273,9 @@ export const SignedStackedBarChart = ({
         <>
           <span>{testName}</span>
           <br />
-          <span>Date: {formatDate(test.assessmentDate)}</span>
+          <EduIf condition={showTestDateOnTestNameHover}>
+            <span>Date: {formatDate(test.assessmentDate)}</span>
+          </EduIf>
         </>
       )
     } else {
@@ -394,6 +397,7 @@ export const SignedStackedBarChart = ({
         onClick={chartNavLeftClick}
         style={{
           visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <StyledChartNavButton
@@ -405,6 +409,7 @@ export const SignedStackedBarChart = ({
         onClick={chartNavRightClick}
         style={{
           visibility: chartNavRightVisibility ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <CustomXAxisTickTooltipContainer

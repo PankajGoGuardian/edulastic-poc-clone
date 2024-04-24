@@ -231,6 +231,9 @@ export const TimePickerStyled = styled(TimePicker)`
 `
 
 export const SelectInputStyled = styled(Select)`
+  .ant-select-selection-selected-value .hide-selected {
+    display: none;
+  }
   &.ant-select {
     width: ${(props) => props.width || '100%'};
     min-height: ${(props) => props.height || 'auto'};

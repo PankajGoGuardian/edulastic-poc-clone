@@ -32,9 +32,9 @@ import {
 } from '../../../src/selectors/dictionaries'
 import { getTestItemCreatingSelector } from '../../../src/selectors/testItem'
 import {
+  getAllInterestedCurriculumsSelector,
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
-  getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserFeatures,
@@ -61,6 +61,7 @@ import {
   setApproveConfirmationOpenAction,
   getSortFilterStateSelector,
   initialSortState,
+  INTERESTED_STANDARD_SETS,
 } from '../../../TestPage/components/AddItems/ducks'
 import {
   getAllTagsAction,
@@ -88,7 +89,11 @@ import {
   PaginationContainer,
   ScrollbarContainer,
 } from './styled'
-import { setDefaultInterests, getDefaultInterests } from '../../../dataUtils'
+import {
+  setDefaultInterests,
+  getDefaultInterests,
+  getDefaultCurriculum,
+} from '../../../dataUtils'
 import HeaderFilter from '../HeaderFilter'
 import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import ApproveConfirmModal from '../ApproveConfirmModal'
@@ -122,7 +127,7 @@ class Contaier extends Component {
       history,
       interestedSubjects,
       interestedGrades,
-      interestedCurriculums: [firstCurriculum],
+      interestedCurriculums,
       sort: initSort = {},
       userId,
       districtId,
@@ -136,10 +141,11 @@ class Contaier extends Component {
     const {
       subject = interestedSubjects,
       grades = interestedGrades || [],
-      curriculumId = firstCurriculum &&
-      firstCurriculum.subject === interestedSubjects?.[0]
-        ? firstCurriculum._id
-        : '',
+      curriculumId = getDefaultCurriculum(
+        interestedCurriculums,
+        interestedSubjects,
+        userRole
+      ),
     } = getDefaultInterests()
     const isAuthoredNow = history?.location?.state?.isAuthoredNow
     const applyAuthoredFilter = isAuthoredNow
@@ -162,13 +168,21 @@ class Contaier extends Component {
       sortDir: 'desc',
       ...sessionSort,
     }
+    const { searchString = [] } = sessionFilters
+    if (searchString?.length > 5) {
+      sessionFilters.searchString = searchString.slice(0, 5)
+    }
     const search = {
       ...initSearch,
       ...sessionFilters,
       ...applyAuthoredFilter,
       subject: subject || [],
       grades,
-      curriculumId: parseInt(curriculumId, 10) || '',
+      curriculumId: curriculumId
+        ? curriculumId === INTERESTED_STANDARD_SETS
+          ? curriculumId
+          : parseInt(curriculumId, 10)
+        : '',
     }
     if (search.questionType === LIKERT_SCALE) {
       search.questionType = ''
@@ -369,6 +383,7 @@ class Contaier extends Component {
     } else {
       updatedKeys = {
         ...search,
+        ...updatedKeys, // To retain the changes for the related fields done in previous steps.
         [fieldName]: value,
       }
     }
@@ -700,7 +715,7 @@ const enhance = compose(
       defaultSubject: getDefaultSubjectSelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      interestedCurriculums: getInterestedCurriculumsSelector(state),
+      interestedCurriculums: getAllInterestedCurriculumsSelector(state),
       search: getSearchFilterStateSelector(state),
       sort: getSortFilterStateSelector(state),
       passageItems: state.tests.passageItems || [],

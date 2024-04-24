@@ -16,6 +16,7 @@ import { Container, SpaceElement } from './styled'
 import { isPremiumUserSelector } from '../../../src/selectors/user'
 
 import PremiumPopover from '../../../../features/components/PremiumPopover'
+import { SURVEY_RESPONSE_SUMMARY_LINK_PREFIX } from '../../constants'
 
 const getReportPathForAnalyze = (
   linkPrefix,
@@ -28,15 +29,19 @@ const getReportPathForAnalyze = (
     grade: 'All',
     classIds: classId,
   }
-  if (isDSUserAndSurveyTest) {
+  if (
+    isDSUserAndSurveyTest &&
+    linkPrefix !== SURVEY_RESPONSE_SUMMARY_LINK_PREFIX
+  ) {
     Object.assign(q, {
       testIds: testId,
       assessmentTypes: TEST_TYPE_SURVEY,
     })
   }
-  const urlPrefix = isDSUserAndSurveyTest
-    ? `${linkPrefix}`
-    : `${linkPrefix}${testId}`
+  const urlPrefix =
+    isDSUserAndSurveyTest && linkPrefix !== SURVEY_RESPONSE_SUMMARY_LINK_PREFIX
+      ? `${linkPrefix}`
+      : `${linkPrefix}${testId}`
   return `${urlPrefix}?${qs.stringify(q)}`
 }
 

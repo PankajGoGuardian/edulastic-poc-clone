@@ -6,6 +6,7 @@ import {
 } from '../ClassBoard/utils'
 import { TUTOR_ME_URL } from './constants'
 import { createSessionRequest } from './service'
+import { PAError } from '../../common/utils/errors'
 
 export const createInterventionObject = ({
   student,
@@ -98,14 +99,6 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
   ]
 
   const requestPayload = {
-    students: [
-      {
-        firstName: student.firstName,
-        lastName: student.lastName,
-        externalId: student.studentId,
-        email: student.email,
-      },
-    ],
     data: {
       grade: tutorMeStandards.tutorMeGrade,
       subject: tutorMeStandards.tutorMeSubject,
@@ -157,11 +150,7 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
       testActivityId,
     })
   } catch (err) {
-    console.error(err)
-    notification({
-      type: 'error',
-      msg: `Unexpected error: ${err}`,
-    })
+    throw new PAError(err, `Unexpected error: ${err}`)
   }
 }
 

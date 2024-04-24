@@ -1,8 +1,14 @@
 /* eslint-disable array-callback-return */
 import React from 'react'
-import { connect } from 'react-redux'
-import { keyBy, uniqBy } from 'lodash'
-import { getInterestedCurriculumsSelector } from '../../../src/selectors/user'
+import { keyBy, uniqBy, get } from 'lodash'
+import { withInterestedCurriculums } from '@edulastic/common'
+import {
+  greyDarken,
+  greyLight1,
+  orangeTheme1,
+  orangeTheme2,
+} from '@edulastic/colors'
+import styled from 'styled-components'
 import Tags from '../../../src/components/common/Tags'
 
 const Standards = ({
@@ -12,28 +18,91 @@ const Standards = ({
   margin,
   labelStyle,
   show,
+  reviewpage,
 }) => {
   const { curriculumId = '', standardIds = [] } = search
   const domains = []
   let standards = []
-  if (item.data && item.data.questions) {
+  let titleKey = null
+  const alignments = get(item, 'data.questions', []).flatMap(
+    (q) => q?.alignment || []
+  )
+  const interestedCurriculumById = keyBy(interestedCurriculums, '_id')
+  if (
+    !alignments.length ||
+    (reviewpage &&
+      !alignments.some(
+        (alignment) => interestedCurriculumById[alignment.curriculumId]
+      ))
+  ) {
+    // No alignments present return early with No Standard tag
+    return (
+      <StyledStandardTags>
+        <Tags
+          tags={[
+            {
+              tagName: 'No Standard',
+              stdTooltip:
+                'No Standard assigned. Please edit the item to add a standard for standard-based reporting.',
+            },
+          ]}
+          titleKey="stdTooltip"
+          labelStyle={{
+            ...labelStyle,
+            color: greyDarken,
+            background: greyLight1,
+          }}
+          margin={margin}
+          tooltipContainer={(e) => e.parentNode} // using parent node for styling the tooltip
+        />
+      </StyledStandardTags>
+    )
+  }
+  if (
+    !alignments.some(
+      (alignment) => interestedCurriculumById[alignment.curriculumId]
+    )
+  ) {
+    // None of the alignment is interested show authored alignment in orange color
+    alignments
+      .filter(
+        (alignment) =>
+          alignment && !alignment.isEquivalentStandard && alignment.curriculumId
+      )
+      .forEach((alignment) => {
+        const { curriculum = '', domains: _domains = [] } = alignment
+        standards = _domains.flatMap((domain) =>
+          domain.standards
+            .map((std = {}) => ({
+              ...std,
+              stdTooltip: `This standard belongs to "${curriculum}" which isn't currently included in your interested set. Add your standard by editing item for standard-based reporting.`,
+            }))
+            .filter((std) => !!std)
+        )
+      })
+    if (standards.length) {
+      titleKey = 'stdTooltip'
+      labelStyle = {
+        ...labelStyle,
+        color: orangeTheme2,
+        background: orangeTheme1,
+      }
+    }
+  }
+  if (!standards?.length && item.data && item.data.questions) {
     item.data.questions.map((question) => {
       if (!question.alignment || !question.alignment.length) return
       // removing all multiStandard mappings
       const authorAlignments = question.alignment.filter(
         (_item) =>
           (!_item.isEquivalentStandard ||
-            interestedCurriculums.some(
-              (interested) => interested._id == _item.curriculumId
-            )) &&
+            interestedCurriculumById[_item.curriculumId]) &&
           _item.curriculumId
       )
 
       // pick alignments matching with interested curriculums
-      let interestedAlignments = authorAlignments.filter((alignment) =>
-        interestedCurriculums.some(
-          (interested) => interested._id == alignment.curriculumId
-        )
+      let interestedAlignments = authorAlignments.filter(
+        (alignment) => interestedCurriculumById[alignment.curriculumId]
       )
 
       // pick alignments based on search if interested alignments is empty
@@ -67,15 +136,19 @@ const Standards = ({
   }
 
   return standards.length ? (
-    <Tags
-      tags={uniqBy(standards, (x) => x.name).map((_item) => ({
-        ..._item,
-        tagName: _item.name,
-      }))}
-      show={show || 2}
-      labelStyle={labelStyle}
-      margin={margin}
-    />
+    <StyledStandardTags>
+      <Tags
+        tags={uniqBy(standards, (x) => x.name).map((_item) => ({
+          ..._item,
+          tagName: _item.name,
+        }))}
+        titleKey={titleKey}
+        show={show || 2}
+        labelStyle={labelStyle}
+        margin={margin}
+        tooltipContainer={(e) => (titleKey ? e.parentNode : document.body)} // using parent node for styling the tooltip
+      />
+    </StyledStandardTags>
   ) : null
 }
 
@@ -86,11 +159,23 @@ Standards.defaultProps = {
   margin: '',
   labelStyle: {},
   show: 2,
+  showAllInterestedCurriculums: false,
 }
 
-export default connect(
-  (state) => ({
-    interestedCurriculums: getInterestedCurriculumsSelector(state),
-  }),
-  null
-)(Standards)
+export default withInterestedCurriculums(Standards)
+
+const StyledStandardTags = styled.div`
+  .ant-tooltip-content {
+    width: 550px;
+  }
+  .ant-tooltip-inner {
+    background: #fff;
+    color: #333;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  .ant-tooltip-arrow::before {
+    background: #fff;
+    width: 10px;
+    height: 10px;
+  }
+`

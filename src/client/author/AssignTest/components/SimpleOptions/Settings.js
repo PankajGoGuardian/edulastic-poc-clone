@@ -15,6 +15,7 @@ import {
 } from '@edulastic/common'
 import { withRouter } from 'react-router-dom'
 import { get, isEmpty } from 'lodash'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   AlignSwitchRight,
   SettingsWrapper,
@@ -276,6 +277,7 @@ const Settings = ({
     calcTypes = tempTestSettings.calcTypes,
     answerOnPaper = tempTestSettings.answerOnPaper,
     vqPreventSkipping = tempTestSettings.vqPreventSkipping,
+    vqEnableClosedCaption = tempTestSettings.vqEnableClosedCaption,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
     passwordPolicy = tempTestSettings.passwordPolicy,
     assignmentPassword = tempTestSettings.assignmentPassword,
@@ -336,6 +338,12 @@ const Settings = ({
       }
     }
   }
+  const disableCheckAnsTries = [
+    freezeSettings,
+    !assessmentSuperPowersCheckAnswerTries,
+    testType === TEST_TYPE_SURVEY,
+  ].some((o) => !!o)
+
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -441,9 +449,7 @@ const Settings = ({
                 </Col>
                 <Col span={12}>
                   <InputNumber
-                    disabled={
-                      freezeSettings || !assessmentSuperPowersCheckAnswerTries
-                    }
+                    disabled={disableCheckAnsTries}
                     onChange={(value) =>
                       overRideSettings('maxAnswerChecks', value)
                     }
@@ -1005,7 +1011,7 @@ const Settings = ({
               content="Students will be able to see the hint associated with an item while attempting the assignment"
               premium={premium}
             />
-            <StyledRow gutter={16} mb="15p">
+            <StyledRow gutter={16} mb="15px">
               <Col span={12}>
                 <Label>SHOW HINTS TO STUDENTS</Label>
               </Col>
@@ -1074,7 +1080,7 @@ const Settings = ({
               content="If ON, Students won't be able to skip ahead in a video."
               premium={premium}
             />
-            <StyledRow gutter={16} mb="15p">
+            <StyledRow gutter={16} mb="15px">
               <Col span={12}>
                 <Label>Prevent Skipping</Label>
               </Col>
@@ -1091,8 +1097,34 @@ const Settings = ({
               </Col>
             </StyledRow>
           </SettingContainer>
+          {/* Prevent vq skipping */}
+
+          {/* Enable vq cc */}
+          <SettingContainer>
+            <DetailsTooltip
+              title="Turn on closed captions"
+              content="Enable closed captions if available for YouTube videos."
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15px">
+              <Col span={12}>
+                <Label>Turn on closed captions</Label>
+              </Col>
+              <Col span={12}>
+                <AlignSwitchRight
+                  data-cy="vqEnableClosedCaption"
+                  disabled={freezeSettings || !premium}
+                  size="small"
+                  checked={vqEnableClosedCaption}
+                  onChange={(value) =>
+                    overRideSettings('vqEnableClosedCaption', value)
+                  }
+                />
+              </Col>
+            </StyledRow>
+          </SettingContainer>
         </EduIf>
-        {/* Prevent vq skipping */}
+        {/* Enable vq cc */}
 
         {/* Multi language */}
         {showMultiLangSelection && (

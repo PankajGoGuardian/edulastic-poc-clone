@@ -15,6 +15,7 @@ export const getAttendanceChartData = (attendanceData, groupBy) => {
         [groupBy]: item.fromTermStart,
         startDate: moment(item.minDate).format('DD MMM'),
         value: round(item.attendanceRatio),
+        absences: item.excusedAbsenceDays + item.unexcusedAbsenceDays,
         assessmentDate: item.minDate,
       }
     })
@@ -39,6 +40,7 @@ export const transformDataForChart = (page, pagedData, groupBy, type) => {
         startDate: START_X_LABEL,
         attendanceDisruptions: 0,
         value: 0,
+        absences: 0,
       },
       ...pagedData,
     ]

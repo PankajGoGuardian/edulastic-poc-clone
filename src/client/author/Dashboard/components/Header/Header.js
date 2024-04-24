@@ -9,6 +9,7 @@ import { Popover, Tooltip } from 'antd'
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
 import { EduButton, EduIf, FlexContainer, MainHeader } from '@edulastic/common'
 import {
+  IconAssignVideoQuiz,
   IconClockDashboard,
   IconHangouts,
   IconManage,
@@ -38,6 +39,7 @@ import {
   getInterestedSubjectsSelector,
   currentDistrictInstitutionIds,
   getManualEnrollmentAllowedSelector,
+  isGcpsDistrictSelector,
 } from '../../../src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
@@ -54,6 +56,10 @@ import {
 import CanvasClassSelectModal from '../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
 import ClassSelectModal from '../../../ManageClass/components/ClassListContainer/ClassSelectModal'
 import { getFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
+import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
+import { ItemsAmount } from '../../../ItemList/components/CartButton/styled'
+import { createTestFromCartAction } from '../../../ItemList/ducks'
+import AssignVideoQuizBanner from '../../../Banner/AssignVideoQuizBanner'
 
 const getContent = ({
   setvisible,
@@ -152,6 +158,10 @@ const HeaderSection = ({
   setShowClassCreationModal,
   setCreateClassTypeDetails,
   manualEnrollmentAllowed = true,
+  history,
+  selectedItems,
+  createTestFromCart,
+  isGcpsDistrict,
 }) => {
   const { subEndDate, subType } = subscription || {}
 
@@ -171,7 +181,7 @@ const HeaderSection = ({
   }
 
   const isPremiumUser = user.user?.features?.premium
-
+  const isVideoQuizAndAIEnabled = user.user?.features?.isVideoQuizAndAIEnabled
   /**
    *  a user is paid premium user if
    *  - subType exists and
@@ -221,6 +231,10 @@ const HeaderSection = ({
 
   const handleShowTrialModal = () => setShowHeaderTrialModal(true)
 
+  const onClickCreateTest = () => {
+    history.push('/author/tests/select')
+  }
+
   const isSignupComplete = currentSignUpState === signUpState.DONE
 
   const atleastOneClassPresent = allActiveClasses.length > 0
@@ -233,9 +247,23 @@ const HeaderSection = ({
   const isManualEnrollmentAllowed =
     user?.user?.role === roleuser.TEACHER ? manualEnrollmentAllowed : true
   const showCreateClass = atleastOneClassPresent && isManualEnrollmentAllowed
+  const numberOfSelectedItems = selectedItems && selectedItems.length
+  const showVideoQuizBanner = [
+    !isVideoQuizAndAIEnabled,
+    !isGcpsDistrict,
+    isPremiumUser,
+  ].every((o) => !!o)
+
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
+        <AssignVideoQuizBanner
+          showBanner={showVideoQuizBanner}
+          history={history}
+          clickedFrom="Dashboard"
+          user={user.user}
+          component={IconAssignVideoQuiz}
+        />
         {atleastOneClassPresent && (
           <>
             <Tooltip title="Manage Class">
@@ -308,6 +336,26 @@ const HeaderSection = ({
             trackClick={trackClick('dashboard:create-new-class:click')}
           />
         </EduIf>
+        {numberOfSelectedItems ? (
+          <EduButton
+            isBlue
+            isGhost
+            onClick={() => createTestFromCart()}
+            disabled={!numberOfSelectedItems}
+          >
+            <span>Create test with</span>
+            <ItemsAmount threeDigit={numberOfSelectedItems > 99}>
+              {numberOfSelectedItems}
+            </ItemsAmount>
+            items
+          </EduButton>
+        ) : (
+          <EduButton onClick={onClickCreateTest} isBlue>
+            <IconPlusCircle />
+            NEW TEST
+          </EduButton>
+        )}
+
         {showPopup && (
           <PopoverWrapper>
             <Popover
@@ -393,6 +441,8 @@ const enhance = compose(
       isPremiumTrialUsed:
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
       manualEnrollmentAllowed: getManualEnrollmentAllowedSelector(state),
+      selectedItems: getSelectedItemSelector(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
     }),
     {
       openLaunchHangout: launchHangoutOpen,
@@ -405,6 +455,7 @@ const enhance = compose(
       setShowCanvasSyncModal: setShowCanvasSyncModalAction,
       setShowClassCreationModal: setShowClassCreationModalAction,
       setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
+      createTestFromCart: createTestFromCartAction,
     }
   )
 )

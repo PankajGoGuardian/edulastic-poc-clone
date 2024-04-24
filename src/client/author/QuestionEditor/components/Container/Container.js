@@ -45,6 +45,7 @@ import {
   setQuestionDataAction,
   getCalculatingSelector,
   getQuestionDataSelector,
+  setQuestionAction,
 } from '../../ducks'
 import {
   getItemIdSelector,
@@ -52,10 +53,16 @@ import {
   proceedPublishingItemAction,
   savePassageAction,
   saveAndPublishItemAction,
+  updateItemDetailItemDataAction,
 } from '../../../ItemDetail/ducks'
-import { changeUpdatedFlagAction } from '../../../sharedDucks/questions'
+import {
+  changeUpdatedFlagAction,
+  isRegradeFlowSelector,
+  updateQuestionAction,
+} from '../../../sharedDucks/questions'
 import {
   checkAnswerAction,
+  createTestItemAction,
   showAnswerAction,
   toggleCreateItemModalAction,
 } from '../../../src/actions/testItem'
@@ -68,10 +75,17 @@ import { getCurrentLanguage } from '../../../../common/components/LanguageSelect
 import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
 import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 import { EDIT } from '../../../../assessment/constants/constantsForQuestions'
-import { isSurveyTestSelector } from '../../../TestPage/ducks'
 import { getSearchParams } from '../../../src/utils/util'
+import ChangeQType from '../ChangeQType/ChangeQType'
+import {
+  getNewQuestionTypeData,
+  getPathAndRouterState,
+  getUpdatedItemData,
+} from '../../../utils/questionEditor'
+import { setQuestionTypeChangedTestItemIdAction } from '../../../TestPage/ducks'
+import { defaultWidgets } from '../../constants'
 
-const { useLanguageFeatureQn } = constantsQuestionType
+const { useLanguageFeatureQn, MULTIPART } = constantsQuestionType
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
   const multipartItem = get(item, 'multipartItem')
@@ -105,7 +119,9 @@ class Container extends Component {
       showModal: false,
       saveClicked: false,
       clearClicked: false,
+      isQuestionTypeUpdated: false,
       showHints: false,
+      isQuestionTypeChangePopupVisible: false,
     }
 
     this.innerDiv = React.createRef()
@@ -152,6 +168,10 @@ class Container extends Component {
 
   handleHideSource = () => {
     this.setState({ showModal: false })
+  }
+
+  handleQuestionTypeChangePopupVisibilityChange = (value) => {
+    this.setState({ isQuestionTypeChangePopupVisible: value })
   }
 
   handleApplySource = (json) => {
@@ -232,9 +252,116 @@ class Container extends Component {
     }
   }
 
+  handleChangeQuestionType = (newQuestionType) => {
+    this.handleQuestionTypeChangePopupVisibilityChange(false)
+    const {
+      t: i18Translate,
+      question: currentQuestionData,
+      updateQuestion,
+      setQuestion,
+      testItemId,
+      isTestFlow,
+      history,
+      match,
+      itemFromState,
+      updateItemDetailItemData,
+      isRegradeFlow,
+      setQuestionTypeChangedTestItemId,
+      createTestItem,
+    } = this.props
+
+    const { type: currentQuestionType } = currentQuestionData
+    const { multipartItem: isCurrentItemMultipart } = itemFromState
+    if (
+      currentQuestionType === newQuestionType ||
+      (newQuestionType === MULTIPART && isCurrentItemMultipart)
+    ) {
+      return
+    }
+
+    const { testId } = match.params
+    const isNewTypeMultipart = newQuestionType === MULTIPART
+
+    const newQuestionData = isNewTypeMultipart
+      ? currentQuestionData
+      : getNewQuestionTypeData({
+          currentQuestionData,
+          newQuestionType,
+        })
+
+    const updatedItemData = getUpdatedItemData({
+      currentItemData: itemFromState,
+      newQuestionData,
+      newQuestionType,
+    })
+
+    const { backButtonPath, currentPath, routerState } = getPathAndRouterState({
+      newQuestionType,
+      testItemId,
+      testId,
+      isRegradeFlow,
+      isTestFlow,
+      history,
+      match,
+      i18Translate,
+    })
+
+    this.setState({ isQuestionTypeUpdated: true }, () => {
+      if (isNewTypeMultipart) {
+        if (testItemId !== 'new' && isRegradeFlow) {
+          setQuestionTypeChangedTestItemId(testItemId)
+          createTestItem(
+            defaultWidgets,
+            true,
+            testId,
+            false,
+            '',
+            true,
+            newQuestionData,
+            true
+          )
+        } else {
+          updateItemDetailItemData(updatedItemData)
+        }
+      } else {
+        updateQuestion(newQuestionData)
+        setQuestion(newQuestionData)
+
+        if (testItemId !== 'new' && !isRegradeFlow) {
+          updateItemDetailItemData(updatedItemData)
+        }
+
+        if (testItemId !== 'new' && isRegradeFlow) {
+          setQuestionTypeChangedTestItemId(testItemId)
+          createTestItem(
+            defaultWidgets,
+            true,
+            testId,
+            false,
+            '',
+            false,
+            undefined,
+            true
+          )
+        }
+      }
+      if (backButtonPath?.length && currentPath?.length) {
+        history.push({
+          pathname: backButtonPath,
+          state: routerState,
+        })
+        history.push({
+          pathname: currentPath,
+          state: routerState,
+        })
+      }
+      this.setState({ isQuestionTypeUpdated: false })
+    })
+  }
+
   renderQuestion = () => {
     const { view, question, preview, itemFromState, testItemId } = this.props
-    const { saveClicked, clearClicked } = this.state
+    const { saveClicked, clearClicked, isQuestionTypeUpdated } = this.state
     const questionType = question && question.type
     if (view === 'metadata') {
       return <QuestionMetadata />
@@ -263,6 +390,7 @@ class Container extends Component {
             saveClicked={saveClicked}
             clearClicked={clearClicked}
             testItemId={testItemId}
+            isQuestionTypeUpdated={isQuestionTypeUpdated}
           />
           {/* we may need to bring hint button back */}
           {/* {showHints && <Hints questions={[question]} />} */}
@@ -348,13 +476,7 @@ class Container extends Component {
   }
 
   renderButtons = () => {
-    const {
-      view,
-      question,
-      preview,
-      itemFromState = {},
-      isSurveyTest,
-    } = this.props
+    const { view, question, preview, itemFromState = {} } = this.props
     const { showHints } = this.state
     const { checkAnswerButton = false, checkAttempts = 1 } =
       question.validation || {}
@@ -364,9 +486,10 @@ class Container extends Component {
     const isShowAnswerVisible =
       question &&
       !constantsQuestionType.manuallyGradableQn.includes(question.type) &&
-      !isSurveyTest
+      question.type !== constantsQuestionType.LIKERT_SCALE
     const isShowCheckButton =
-      (isShowAnswerVisible || checkAnswerButton) && !isSurveyTest
+      (isShowAnswerVisible || checkAnswerButton) &&
+      question.type !== constantsQuestionType.LIKERT_SCALE
 
     return (
       <ButtonAction
@@ -539,6 +662,11 @@ class Container extends Component {
       allowedToSelectMultiLanguage,
     } = this.props
 
+    const {
+      isQuestionTypeUpdated = false,
+      isQuestionTypeChangePopupVisible,
+    } = this.state
+
     if (!question) {
       const backUrl = get(history, 'location.state.backUrl', '')
       if (backUrl.includes('pickup-questiontype')) {
@@ -565,11 +693,27 @@ class Container extends Component {
     const itemId = question === null ? '' : question._id
     const questionType = question && question.type
 
+    const questionHeaderTitle = isMultipartItem ? (
+      question.title
+    ) : (
+      <>
+        <ChangeQType
+          onQuestionTypeSelect={this.handleChangeQuestionType}
+          handlePopupVisibilityChange={
+            this.handleQuestionTypeChangePopupVisibilityChange
+          }
+          isQuestionTypeChangePopupVisible={isQuestionTypeChangePopupVisible}
+        >
+          {question.title}
+        </ChangeQType>
+      </>
+    )
+
     return (
       <EditorContainer ref={this.innerDiv} isInModal={isInModal}>
         {/* TODO: message can be seen only when react-router-dom detects changes */}
         <CustomPrompt
-          when={!!hasUnsavedChanges}
+          when={!!hasUnsavedChanges && !isQuestionTypeUpdated}
           onUnload
           message={(loc) => {
             console.log('path: ', loc.pathname) // TODO: keep this comment for now, then remove
@@ -586,14 +730,13 @@ class Container extends Component {
         )}
         <HeaderContainer isInModal={isInModal}>
           <ItemHeader
-            title={question.title}
+            title={questionHeaderTitle}
             reference={itemId}
             isInModal={isInModal}
             hideSideMenu={isMultipartItem}
           >
             {this.header()}
           </ItemHeader>
-
           <BreadCrumbBar
             className={isInModal ? '' : 'sticky-header'}
             isMultipartItem={isMultipartItem}
@@ -713,7 +856,7 @@ const enhance = compose(
       previewMode: getPreviewSelector(state),
       currentLanguage: getCurrentLanguage(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
-      isSurveyTest: isSurveyTestSelector(state),
+      isRegradeFlow: isRegradeFlowSelector(state),
     }),
     {
       changeView: changeViewAction,
@@ -730,6 +873,11 @@ const enhance = compose(
       savePassage: savePassageAction,
       changeQuestionUpdateFlag: changeUpdatedFlagAction,
       clearAnswers: clearAnswersAction,
+      updateQuestion: updateQuestionAction,
+      setQuestion: setQuestionAction,
+      updateItemDetailItemData: updateItemDetailItemDataAction,
+      setQuestionTypeChangedTestItemId: setQuestionTypeChangedTestItemIdAction,
+      createTestItem: createTestItemAction,
     }
   )
 )
@@ -748,7 +896,7 @@ const BreadCrumbBar = styled.div`
     left: 70px;
     right: 0;
     background: #fff;
-    z-index: 999;
+    z-index: 0;
   }
 `
 

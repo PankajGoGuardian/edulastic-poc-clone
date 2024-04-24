@@ -15,8 +15,11 @@ import {
   MULTIPLE_SELECTION,
   SHORT_TEXT,
   TRUE_OR_FALSE,
-  CHOICE_MATRIX_STANDARD,
+  CHOICE_MATRIX,
   CLOZE_DROP_DOWN,
+  ESSAY_RICH_TEXT,
+  TEXT,
+  UPLOAD_FILE,
 } from '@edulastic/constants/const/questionType'
 import { Partners } from './static/partnerData'
 import { smallestZoomLevel } from './static/zoom'
@@ -287,6 +290,24 @@ export const validateQuestionsForGoogleForm = (
     return false
   }
 
+  const haveStimulus = questions
+    .filter((question) =>
+      [
+        CHOICE_MATRIX,
+        CLOZE_DROP_DOWN,
+        ESSAY_RICH_TEXT,
+        TEXT,
+        MULTIPLE_CHOICE,
+        SHORT_TEXT,
+        TRUE_OR_FALSE,
+        MULTIPLE_SELECTION,
+        UPLOAD_FILE,
+      ].includes(question.type)
+    )
+    .every((question) => {
+      return !isEmpty(question.stimulus)
+    })
+
   const correctAnswerPicked = questions
     .filter((question) =>
       [
@@ -295,20 +316,35 @@ export const validateQuestionsForGoogleForm = (
         MULTIPLE_SELECTION,
         CLOZE_DROP_DOWN,
         SHORT_TEXT,
-        CHOICE_MATRIX_STANDARD,
+        CHOICE_MATRIX,
       ].includes(question.type)
     )
     .every((question) => {
       const validationValue = get(question, 'validation.validResponse.value')
       if (question.type === CLOZE_DROP_DOWN) {
+        if (isEmpty(validationValue)) {
+          return false
+        }
         return validationValue.every((value) => !isEmpty(value.value))
+      }
+      if (question.type === CHOICE_MATRIX) {
+        if (isEmpty(validationValue)) {
+          return false
+        }
+        const responseIds = get(question, 'responseIds', [])
+        const validResponseUUIDs = Object.keys(validationValue)
+        return responseIds.every((rowResponseIds) =>
+          rowResponseIds.some((responseId) =>
+            validResponseUUIDs.includes(responseId)
+          )
+        )
       }
       return !isEmpty(validationValue)
     })
 
-  if (!correctAnswerPicked) {
+  if (!correctAnswerPicked || !haveStimulus) {
     if (showNotification) {
-      notification({ type: 'warn', messageKey: 'correctAnswer' })
+      notification({ type: 'warn', messageKey: 'missingContentOrAnswer' })
     }
     return false
   }
@@ -883,4 +919,10 @@ export const removeMetaTag = (
     const head = document.getElementsByTagName('head')[0]
     head.removeChild(metaTag)
   }
+}
+
+export const appendIfMultiple = (arr) => {
+  return arr.length > 1
+    ? `${arr.slice(0, arr.length - 1).join(', ')} and ${arr[arr.length - 1]}`
+    : arr.join(', ')
 }

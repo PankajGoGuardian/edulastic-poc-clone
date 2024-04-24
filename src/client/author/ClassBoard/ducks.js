@@ -40,6 +40,11 @@ import { isNullOrUndefined } from 'util'
 import * as Sentry from '@sentry/browser'
 import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
+  DISTRICT_ADMIN,
+  SCHOOL_ADMIN,
+} from '@edulastic/constants/const/roleType'
+import { gradingStatus } from '@edulastic/constants/const/testActivity'
+import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
   updateOpenAssignmentsAction,
@@ -1479,14 +1484,14 @@ export const getTestDataSelector = createSelector(
 )
 
 export const getIsOverrideFreezeSelector = createSelector(
-  getAdditionalDataSelector,
   getTestDataSelector,
-  getUserIdSelector,
-  (additionalData, testData, userId) => {
+  getUserRole,
+  (testData, role) => {
+    const allowedRoles = [SCHOOL_ADMIN, DISTRICT_ADMIN]
     if (!testData.freezeSettings) {
       return false
     }
-    if (additionalData?.testAuthors?.some((author) => author._id === userId)) {
+    if (allowedRoles.includes(role)) {
       return false
     }
     return true
@@ -1609,6 +1614,16 @@ export const notStartedStudentsSelector = createSelector(
         x.isAssigned &&
         x.isEnrolled
     )
+)
+
+export const notGradedStudentsCountSelector = createSelector(
+  getTestActivitySelector,
+  (state) =>
+    state.filter(
+      (x) =>
+        x.UTASTATUS === testActivityStatus.SUBMITTED &&
+        x.graded === gradingStatus.IN_GRADING
+    ).length
 )
 
 export const inProgressStudentsSelector = createSelector(

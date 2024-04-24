@@ -8,9 +8,9 @@ import {
   folderTypes,
   dictionaries,
 } from '@edulastic/constants'
-import { IconExpandBox } from '@edulastic/icons'
+import { IconExpandBox, IconInfoCircle } from '@edulastic/icons'
 import { Select } from 'antd'
-import { get, isEqual, keyBy } from 'lodash'
+import { get, isEmpty, isEqual, keyBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { connect } from 'react-redux'
@@ -24,9 +24,11 @@ import {
   getCurrentDistrictUsersAction,
   getCurrentDistrictUsersSelector,
 } from '../../../../student/Login/ducks'
-import { getFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
+import { getAllFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
 import {
+  getAllInterestedCurriculumsSelector,
   getCollectionsSelector,
+  getShowAllCurriculumsSelector,
   getUserFeatures,
   getUserOrgId,
   getUserRole,
@@ -50,6 +52,8 @@ import {
 } from '../../../TestPage/ducks'
 import { StyledDiv } from '../../../../assessment/containers/QuestionMetadata/styled/ELOList'
 import { getDictStandardsForCurriculumAction } from '../../../src/actions/dictionaries'
+import { INTERESTED_STANDARD_SETS } from '../../../TestPage/components/AddItems/ducks'
+import { CustomTableTooltip } from '../../../Reports/common/components/customTableTooltip'
 
 const { SMART_FILTERS } = libraryFilters
 const Search = ({
@@ -83,6 +87,8 @@ const Search = ({
   elosByTloId,
   getCurriculumStandards,
   isSurveyTest,
+  showAllCurriculums,
+  interestedCurriculums,
 }) => {
   const [showModal, setShowModalValue] = useState(false)
   const [searchProps, setSearchProps] = useState({
@@ -243,6 +249,32 @@ const Search = ({
     }
   }
 
+  // The interested standard sets for the selected subjects.
+  const interestedSubjectCurriculums = useMemo(
+    () =>
+      isEmpty(subject)
+        ? []
+        : interestedCurriculums.filter((curr) =>
+            subject.includes(curr.subject)
+          ),
+    [interestedCurriculums, subject]
+  )
+
+  // All Standards Sets option will be shown if there are no standard sets/no interested standard sets in the dropdown
+  // for the given subject(s). It will also be shown in the pages other than the Entire Library irrespective of remaining conditions.
+  const isAllStandardSetVisible =
+    filter !== SMART_FILTERS.ENTIRE_LIBRARY ||
+    showAllCurriculums ||
+    !formattedCuriculums.length ||
+    !interestedSubjectCurriculums.length
+
+  useEffect(() => {
+    if (curriculumId === '' && !isAllStandardSetVisible) {
+      // '' is the default curriculumId fallback on subject change. If the All Standard Sets option
+      // is not visible, fallback to interested standard sets instead.
+      onSearchFieldChange('curriculumId')(INTERESTED_STANDARD_SETS)
+    }
+  }, [curriculumId, isAllStandardSetVisible])
   return (
     <MainFilterItems>
       {showModal && (
@@ -373,11 +405,38 @@ const Search = ({
                     defaultValue=""
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   >
-                    <Select.Option key="" value="">
-                      All Standard set
-                    </Select.Option>
+                    {isAllStandardSetVisible && (
+                      <Select.Option key="" value="">
+                        All Standard Sets
+                      </Select.Option>
+                    )}
                     {subject?.length &&
-                      formattedCuriculums.map((el) => (
+                      [
+                        // Display the interested standards set option only if available options for the given subjects.
+                        ...(interestedSubjectCurriculums.length
+                          ? [
+                              {
+                                value: INTERESTED_STANDARD_SETS,
+                                text: (
+                                  <AllInterestedContainer>
+                                    <span>All Interested Standard Sets</span>
+                                    <CustomTableTooltip
+                                      title="Standard sets selected by your District, School, or by you in settings/profile."
+                                      getCellContents={() => (
+                                        <IconInfoCircle
+                                          width="16px"
+                                          height="16px"
+                                          className="hide-selected"
+                                        />
+                                      )}
+                                    />
+                                  </AllInterestedContainer>
+                                ),
+                              },
+                            ]
+                          : []),
+                        ...formattedCuriculums,
+                      ].map((el) => (
                         <Select.Option
                           key={el.value}
                           value={el.value}
@@ -559,7 +618,8 @@ Search.propTypes = {
 export default connect(
   (state, { search = {} }) => ({
     collections: getCollectionsSelector(state),
-    formattedCuriculums: getFormattedCurriculumsSelector(state, search),
+    formattedCuriculums: getAllFormattedCurriculumsSelector(state, search),
+    interestedCurriculums: getAllInterestedCurriculumsSelector(state),
     userFeatures: getUserFeatures(state),
     districtId: getUserOrgId(state),
     currentDistrictUsers: getCurrentDistrictUsersSelector(state),
@@ -567,6 +627,7 @@ export default connect(
     enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
     elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
     isSurveyTest: isSurveyTestSelector(state),
+    showAllCurriculums: getShowAllCurriculumsSelector(state),
   }),
   {
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,
@@ -583,4 +644,11 @@ const StandardSelectStyled = styled(SelectInputStyled)`
   .ant-select-selection {
     cursor: pointer !important;
   }
+`
+
+const AllInterestedContainer = styled.div`
+  display: flex;
+  flex-direction: horizontal;
+  gap: 5px;
+  align-items: center;
 `

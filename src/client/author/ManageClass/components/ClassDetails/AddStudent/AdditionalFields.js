@@ -19,7 +19,7 @@ const AdditionalFields = ({
   stds,
   isEdit,
   foundUserContactEmails = [],
-  districtTestSettings,
+  enableSpeechToText,
   ...restProps
 }) => {
   const isEditMode = isEdit && stds && stds.length
@@ -35,9 +35,7 @@ const AdditionalFields = ({
   const checkHideCondition = (item) => {
     switch (item.fieldName) {
       case 'stt':
-        return districtTestSettings
-          ? districtTestSettings.enableSpeechToText
-          : true
+        return enableSpeechToText
       default:
         return true
     }

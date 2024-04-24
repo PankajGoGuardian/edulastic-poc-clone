@@ -637,7 +637,11 @@ class Item extends Component {
                     isGhost
                     iconBtn
                     onClick={openPreviewModal}
-                    style={{ marginTop: '15px', marginRight: '3px' }}
+                    style={{
+                      marginTop: '15px',
+                      marginRight: '3px',
+                      padding: '0px',
+                    }}
                   >
                     <IconEye />
                   </EduButton>
@@ -661,7 +665,11 @@ class Item extends Component {
                     isGhost
                     iconBtn
                     onClick={openPreviewModal}
-                    style={{ marginTop: '15px', marginRight: '3px' }}
+                    style={{
+                      marginTop: '15px',
+                      marginRight: '3px',
+                      padding: 0,
+                    }}
                   >
                     {/* found 17,3 values by trial & error */}
                     <IconEye />
@@ -699,7 +707,12 @@ class Item extends Component {
             <Detail>
               <TypeCategory>
                 {windowWidth > MAX_TAB_WIDTH && (
-                  <Standards data-cy="standards" item={item} search={search} />
+                  <Standards
+                    data-cy="standards"
+                    item={item}
+                    search={search}
+                    showAllInterestedCurriculums
+                  />
                 )}
                 {windowWidth > MAX_TAB_WIDTH && (
                   <Tags data-cy="tags" tags={item.tags} key="tags" />
@@ -796,7 +809,12 @@ class Item extends Component {
           </Row>
           {windowWidth <= MAX_TAB_WIDTH && (
             <Details isOpenedDetails={isOpenedDetails}>
-              <Standards data-cy="standards" item={item} search={search} />
+              <Standards
+                data-cy="standards"
+                item={item}
+                search={search}
+                showAllInterestedCurriculums
+              />
               <Tags tags={item.tags} key="tags" />
               <TestStatusWrapper>
                 {({ children, ...rest }) => (

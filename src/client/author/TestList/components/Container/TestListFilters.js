@@ -506,14 +506,13 @@ export const FilterItemWrapper = styled.div`
 `
 
 const ClearAll = styled.span`
-  color: ${themeColor};
+  color: #3F85E5;
+  border: 1px solid #3F85E5;
+  padding: 2px 10px;
+  border-radius: 3px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-
-  :hover {
-    color: ${themeColor};
-  }
 `
 
 const IconExpandBoxWrapper = styled.div`

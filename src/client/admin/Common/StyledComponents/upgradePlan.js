@@ -1,6 +1,12 @@
 import styled from 'styled-components'
 import { Select, Button } from 'antd'
 
+export const SectionHeadingSpan = styled.div`
+  font-weight: bold;
+  font-size: 22px;
+  margin-bottom: 30px;
+`
+
 export const HeadingSpan = styled.span`
   font-weight: bold;
   font-size: 14px;

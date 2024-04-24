@@ -278,6 +278,7 @@ const StandardsMasteryReportContainer = (props) => {
     [reportNavType.STANDARDS_PERFORMANCE_SUMMARY]: standardsPerformanceSummary,
     [reportNavType.STANDARDS_GRADEBOOK]: standardsGradebookSkillInfo,
     [reportNavType.STANDARDS_PROGRESS]: standardsGradebookSkillInfo,
+    [reportNavType.DW_SEL_REPORT]: standardsPerformanceSummary,
   }
   const {
     allDomainIds,

@@ -51,13 +51,14 @@ const GoogleFormQuiz = ({
     }
   }
 
-  const { apiStatus, result } = importGoogleFormState
+  const { apiStatus, result, errorMessage } = importGoogleFormState
 
   return (
     <>
       <ImportGoogleFormModal
         status={apiStatus}
         data={result}
+        errorMessage={errorMessage}
         formName={formName}
         visible={modalVisible}
         onCancel={toggleModal}

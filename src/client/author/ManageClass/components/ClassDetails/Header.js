@@ -334,9 +334,14 @@ const Header = ({
                         handleCanvasAndGoogleSyncButtonClick('google')
                       }
                     >
-                      <span className="menu-label">
-                        Sync with Google Classroom
-                      </span>
+                      <Tooltip
+                        title="Sync class roster from Google Classroom"
+                        placement="left"
+                      >
+                        <span className="menu-label">
+                          Sync with Google Classroom
+                        </span>
+                      </Tooltip>
                       <IconGoogleClassroom width={18} height={18} />
                     </Option>
                   )
@@ -348,9 +353,14 @@ const Header = ({
                         <OptionWrapper
                           onClick={() => loginGoogle(googleClient)}
                         >
-                          <span className="menu-label">
-                            Sync with Google Classroom
-                          </span>
+                          <Tooltip
+                            title="Sync class roster from Google Classroom"
+                            placement="left"
+                          >
+                            <span className="menu-label">
+                              Sync with Google Classroom
+                            </span>
+                          </Tooltip>
                           <IconGoogleClassroom />
                         </OptionWrapper>
                       )}
@@ -419,26 +429,38 @@ const Header = ({
             )}
             {showGoogleSyncButton &&
               (isUserGoogleLoggedIn ? (
-                <EduButton
-                  isBlue
-                  isGhost
-                  onClick={() => handleCanvasAndGoogleSyncButtonClick('google')}
+                <Tooltip
+                  title="Sync class roster from Google Classroom"
+                  placement="bottom"
                 >
-                  <IconGoogleClassroom />
-                  <span>SYNC WITH GOOGLE CLASSROOM</span>
-                </EduButton>
+                  <EduButton
+                    isBlue
+                    isGhost
+                    onClick={() =>
+                      handleCanvasAndGoogleSyncButtonClick('google')
+                    }
+                  >
+                    <IconGoogleClassroom />
+                    <span>SYNC WITH GOOGLE CLASSROOM</span>
+                  </EduButton>
+                </Tooltip>
               ) : (
                 <GoogleLoginWrapper
                   WrappedComponent={({ googleClient }) => (
-                    <EduButton
-                      isBlue
-                      isGhost
-                      onClick={() => loginGoogle(googleClient)}
-                      data-cy="syncGoogleClass"
+                    <Tooltip
+                      title="Sync class roster from Google Classroom"
+                      placement="bottom"
                     >
-                      <IconGoogleClassroom />
-                      <span>SYNC WITH GOOGLE CLASSROOM</span>
-                    </EduButton>
+                      <EduButton
+                        isBlue
+                        isGhost
+                        onClick={() => loginGoogle(googleClient)}
+                        data-cy="syncGoogleClass"
+                      >
+                        <IconGoogleClassroom />
+                        <span>SYNC WITH GOOGLE CLASSROOM</span>
+                      </EduButton>
+                    </Tooltip>
                   )}
                   scopes={scopes}
                   successCallback={handleLoginSuccess}

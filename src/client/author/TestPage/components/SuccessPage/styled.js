@@ -295,7 +295,7 @@ export const FlexWrapperClassroomBox = styled.div`
   flex-direction: row;
   background: ${backgroundGrey};
   padding: 13px 23px 23px 17px;
-  margin-top: 13px;
+  margin-bottom: 13px;
 `
 
 export const FlexTitleBox = styled.div`

@@ -1,3 +1,5 @@
+import { FlexContainer } from '@edulastic/common'
+import { lightGrey } from '@edulastic/colors'
 import { Button } from 'antd'
 import styled from 'styled-components'
 
@@ -10,5 +12,13 @@ export const SaveButton = styled(Button)`
   &:hover {
     background: #fff;
     border-color: #40a9ff;
+  }
+`
+export const StyledFlexContainer = styled(FlexContainer)`
+  background: ${lightGrey};
+  padding: 10px;
+
+  p {
+    margin-left: 10px;
   }
 `

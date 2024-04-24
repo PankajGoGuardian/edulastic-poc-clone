@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
 import { test } from '@edulastic/constants'
 import { segmentApi } from '@edulastic/api'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   getOrgDataSelector,
   getCollectionsSelector,
@@ -118,6 +119,9 @@ class Item extends Component {
           isDynamicTest:
             item?.testCategory === test.testCategoryTypes.DYNAMIC_TEST,
         },
+        ...(item.testType === TEST_TYPE_SURVEY
+          ? { search: `testType=${TEST_TYPE_SURVEY}` }
+          : {}),
       })
     }
   }
@@ -353,6 +357,8 @@ class Item extends Component {
         sharedType,
         isDocBased,
         videoUrl,
+        testCategory,
+        itemGroups,
       },
       orgCollections = [],
       item,
@@ -465,6 +471,8 @@ class Item extends Component {
       isUseThisLoading,
       isTestRecommendation,
       videoUrl,
+      testCategory,
+      itemGroups,
     }
 
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard

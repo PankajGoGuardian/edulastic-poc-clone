@@ -3,7 +3,6 @@ import {
   manageSubscriptionsApi,
   paymentApi,
   subscriptionApi,
-  userApi,
 } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { keyBy } from 'lodash'
@@ -329,14 +328,10 @@ function* getDistrictData({ payload }) {
 function* upgradeDistrict({ payload }) {
   try {
     const { isUpdate, subscriptionId, searchData, ...rest } = payload
-    const { districtId, permissions, permissionsExpiry } = payload.dataStudio
     const { districtData = [] } = payload.seedDsData
 
-    delete rest.dataStudio
     delete rest.seedDsData
 
-    let updateSeedDsData = true
-    let updateUserResult = true
     const subscriptionResult = {
       success: true,
       subscription: {},
@@ -370,17 +365,7 @@ function* upgradeDistrict({ payload }) {
       subscriptionResult.message = message
     }
 
-    updateUserResult = true
-    if (payload.dataStudio) {
-      updateUserResult = false
-      updateUserResult = yield call(saveOrgPermissionsApi, {
-        districtId,
-        permissions,
-        permissionsExpiry,
-      })
-    }
-
-    updateSeedDsData = true
+    let updateSeedDsData = true
     if (districtData.length > 0) {
       updateSeedDsData = false
       updateSeedDsData = yield call(seedDsDataApi, {
@@ -389,7 +374,7 @@ function* upgradeDistrict({ payload }) {
     }
 
     const { success, message, subscription } = subscriptionResult
-    if (success && updateUserResult && updateSeedDsData) {
+    if (success && updateSeedDsData) {
       notification({ type: 'success', msg: message })
       yield put(
         manageSubscriptionsBydistrict.actions.subscribeSuccess(subscription)
@@ -439,10 +424,8 @@ function* upgradeUserData({ payload }) {
   try {
     let result = {}
     const { subscriptionIds = [], userIds = [], identifiers, ...data } = payload
-    const { users = [] } = payload.dataStudio
     const { districtData = [] } = payload.seedDsData
 
-    delete data.dataStudio
     delete data.seedDsData
 
     if (subscriptionIds.length) {
@@ -459,12 +442,6 @@ function* upgradeUserData({ payload }) {
       result = res.result.success ? res.result : result
     }
 
-    let updateUserResult = true
-    if (users.length > 0) {
-      updateUserResult = false
-      updateUserResult = yield call(userApi.updateManyUserAdminTool, { users })
-    }
-
     let updateSeedDsData = true
     if (districtData.length > 0) {
       updateSeedDsData = false
@@ -473,7 +450,7 @@ function* upgradeUserData({ payload }) {
       })
     }
 
-    if (result.success && updateUserResult && updateSeedDsData) {
+    if (result.success && updateSeedDsData) {
       yield put(searchUsersByEmailIdAction({ identifiers }))
       notification({ type: 'success', msg: result.message })
     } else {

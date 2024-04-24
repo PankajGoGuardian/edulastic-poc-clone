@@ -1,13 +1,15 @@
-import { FieldLabel, SelectInputStyled } from '@edulastic/common'
+import {
+  FieldLabel,
+  SelectInputStyled,
+  withInterestedCurriculums,
+} from '@edulastic/common'
 import { Col, Row, Select } from 'antd'
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-import { getFormattedCurriculumsSelector } from '../../../author/src/selectors/dictionaries'
 import selectsData from '../../../author/TestPage/components/common/selectsData'
 import { ItemBody } from './styled/ItemBody'
 
 const PopupRowSelect = ({
-  formattedCuriculums,
+  formattedCurriculums,
   handleChangeStandard,
   handleChangeGrades,
   handleChangeSubject,
@@ -20,13 +22,13 @@ const PopupRowSelect = ({
     if (
       standard.id &&
       standard.curriculum &&
-      formattedCuriculums.find((curr) => curr.value === standard.id)
+      formattedCurriculums.find((curr) => curr.value === standard.id)
     )
       return
-    const firstCurriculum = formattedCuriculums.find((curr) => !curr.disabled)
+    const firstCurriculum = formattedCurriculums.find((curr) => !curr.disabled)
     if (!firstCurriculum) return
     handleChangeStandard(firstCurriculum.text, { key: firstCurriculum.value })
-  }, [standard, formattedCuriculums])
+  }, [standard, formattedCurriculums])
 
   return (
     <Row gutter={24}>
@@ -62,7 +64,7 @@ const PopupRowSelect = ({
             onChange={handleChangeStandard}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
-            {formattedCuriculums.map(({ value, text, disabled }) => (
+            {formattedCurriculums.map(({ value, text, disabled }) => (
               <Select.Option key={value} value={text} disabled={disabled}>
                 {text}
               </Select.Option>
@@ -94,9 +96,4 @@ const PopupRowSelect = ({
   )
 }
 
-export default connect(
-  (state, props) => ({
-    formattedCuriculums: getFormattedCurriculumsSelector(state, props),
-  }),
-  null
-)(PopupRowSelect)
+export default withInterestedCurriculums(PopupRowSelect)

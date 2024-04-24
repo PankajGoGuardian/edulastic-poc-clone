@@ -518,6 +518,7 @@ export const getAttendanceChartData = (attendanceData) => {
       .add(1, 'day')
       .format('D/M/YYYY'),
     assessmentDate: item.minDate,
+    totalAbsence: item.excusedAbsenceDays + item.unexcusedAbsenceDays,
     value: percentage(item.attendanceValue, item.totalDays, true),
   }))
   return attendanceChartData
@@ -608,6 +609,7 @@ export const getAssessmentChartData = (
             }
           : null
       }
+      if (!barsDataForInternal.length) return null
       return {
         ...d,
         [barsDataForInternal[0].key]: d.averageScore,

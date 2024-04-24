@@ -333,8 +333,8 @@ export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR =
 export const TOGGLE_STUDENT_REPORT_CARD_SETTINGS =
   '[assignments] show student report card popup'
 
-export const SET_SHARE_WITH_GC_IN_PROGRESS =
-  '[LCB] set share with google classroom in progress'
+export const SET_SHARE_WITH_GC_PROGRESS =
+  '[LCB] set share with google classroom progress'
 
 export const SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST =
   '[LCB] sync assignment grades with google classroom request'

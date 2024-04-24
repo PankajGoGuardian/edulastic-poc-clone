@@ -3,10 +3,6 @@ export const SUBSCRIPTION_TYPES = {
     subType: 'free',
     label: 'Free',
   },
-  dataStudio: {
-    subType: 'dataStudio',
-    label: 'Data Studio',
-  },
   premium: {
     subType: 'premium',
     label: 'Premium',
@@ -15,17 +11,9 @@ export const SUBSCRIPTION_TYPES = {
     subType: 'partial_premium',
     label: 'Partial Premium',
   },
-  premiumPlusDataStudio: {
-    subType: 'premiumPlusDataStudio',
-    label: 'Premium + Data Studio',
-  },
   enterprise: {
     subType: 'enterprise',
     label: 'Enterprise',
-  },
-  enterprisePlusDataStudio: {
-    subType: 'enterprisePlusDataStudio',
-    label: 'Enterprise + Data Studio',
   },
 }
 
@@ -40,21 +28,14 @@ export const DISTRICT_SUBSCRIPTION_OPTIONS = [
     value: SUBSCRIPTION_TYPES.enterprise.subType,
     label: SUBSCRIPTION_TYPES.enterprise.label,
   },
-  {
-    key: SUBSCRIPTION_TYPES.dataStudio.subType,
-    value: SUBSCRIPTION_TYPES.dataStudio.subType,
-    label: SUBSCRIPTION_TYPES.dataStudio.label,
-  },
-  {
-    key: SUBSCRIPTION_TYPES.enterprisePlusDataStudio.subType,
-    value: SUBSCRIPTION_TYPES.enterprisePlusDataStudio.subType,
-    label: SUBSCRIPTION_TYPES.enterprisePlusDataStudio.label,
-  },
 ]
 
 export const ADDITIONAL_SUBSCRIPTION_TYPES = {
   TUTORME: 'tutorme',
+  DATA_WAREHOUSE_REPORTS: 'data_warehouse_reports',
 }
+
+export const DATA_STUDIO_LABEL = 'Data Studio'
 
 export const SUBSCRIPTION_STATUS = {
   ARCHIVED: 0,

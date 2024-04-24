@@ -50,7 +50,7 @@ const testBreadcrumbs = [
 ]
 
 const snapquizVideoBreadcrumb = {
-  title: 'VideoQuiz',
+  title: 'Video Quiz',
   to: '',
 }
 
@@ -231,6 +231,7 @@ class Container extends React.Component {
 }
 const StyledCreateOptionWrapper = styled.div`
   padding: 16px 64px 0px 0px;
+  max-width: 1600px;
 `
 const enhance = compose(
   withRouter,

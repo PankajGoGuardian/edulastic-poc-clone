@@ -235,6 +235,10 @@ class TestList extends Component {
     if (searchParams.removeInterestedFilters) {
       searchFilters = playListFilters
     } else {
+      const { searchString = [] } = sessionFilters
+      if (searchString?.length > 5) {
+        sessionFilters.searchString = searchString.slice(0, 5)
+      }
       searchFilters = {
         ...playListFilters,
         ...sessionFilters,

@@ -284,6 +284,10 @@ const getSettings = (
     ? test.vqPreventSkipping
     : assignmentSettings.vqPreventSkipping
 
+  const vqEnableClosedCaption = isTestPreview
+    ? test.vqEnableClosedCaption
+    : assignmentSettings.vqEnableClosedCaption
+
   return {
     testType,
     calcProvider: calculatorProvider,
@@ -322,6 +326,7 @@ const getSettings = (
     showSpeechToText,
     showTextToSpeech,
     vqPreventSkipping,
+    vqEnableClosedCaption,
   }
 }
 

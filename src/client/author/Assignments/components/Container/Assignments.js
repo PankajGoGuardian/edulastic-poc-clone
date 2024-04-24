@@ -17,6 +17,7 @@ import { roleuser, testTypes as testTypesConstants } from '@edulastic/constants'
 import { IconFilter, IconAssignment, IconCloseFilter } from '@edulastic/icons'
 
 import { authorAssignment } from '@edulastic/colors'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   receiveAssignmentsAction,
   receiveAssignmentsSummaryAction,
@@ -348,10 +349,17 @@ class Assignments extends Component {
   }
 
   onEnableEdit = (currentTestId) => {
-    const { history } = this.props
+    const { history, tests, assignmentsSummary } = this.props
+    let currentTest = find(tests, (o) => o._id === currentTestId)
+    if (!currentTest) {
+      currentTest = find(assignmentsSummary, (o) => o.testId === currentTestId)
+    }
     history.push({
       pathname: `/author/tests/tab/review/id/${currentTestId}`,
       state: { editAssigned: true, showCancelButton: true },
+      ...(currentTest?.testType === TEST_TYPE_SURVEY
+        ? { search: `testType=${TEST_TYPE_SURVEY}` }
+        : {}),
     })
   }
 

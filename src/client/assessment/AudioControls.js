@@ -1,7 +1,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable prefer-promise-reject-errors */
 import { compose } from 'redux'
-import { white, themeColorBlue } from '@edulastic/colors'
+import { white, themeColorBlue, themeColor } from '@edulastic/colors'
 import { EduButton, notification } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
@@ -57,6 +57,7 @@ const AudioControls = ({
   playerSkinType,
   isStudentReport,
   controlRef,
+  isMinimalDesign,
   t: i18Translate,
 }) => {
   const [loading, setLoading] = useState(true)
@@ -343,6 +344,7 @@ const AudioControls = ({
             playerSkinType={playerSkinType}
             disabled={isPremiumContentWithoutAccess}
             data-cy="playBtn"
+            isMinimalDesign={isMinimalDesign}
           >
             {currentPlayingDetails.qId === qId ? (
               <>
@@ -380,6 +382,7 @@ const AudioControls = ({
               currentPlayingDetails.qId !== qId || isPremiumContentWithoutAccess
             }
             data-cy="stopBtn"
+            isMinimalDesign={isMinimalDesign}
           >
             <>
               {btnWithText ? (
@@ -401,6 +404,7 @@ const AudioControls = ({
             className="not-supported"
             playerSkinType={playerSkinType}
             disabled
+            isMinimalDesign={isMinimalDesign}
           >
             <IconExclamationMark width={20} height={20} color={white} />
           </AudioButton>
@@ -467,6 +471,34 @@ const buttonStyles = {
       }
     }
   `,
+  minimal: css`
+    &.ant-btn.ant-btn-primary {
+      background: ${white};
+      color: ${themeColor};
+      border: none;
+      box-shadow: none !important;
+      font-size: 12px;
+
+      svg {
+        fill: ${themeColor};
+        width: 20px;
+        height: 20px;
+      }
+
+      &:hover,
+      &:active,
+      &:focus {
+        box-shadow: none !important;
+        outline: 0;
+      }
+
+      &:hover svg,
+      &:active svg,
+      &:focus svg {
+        fill: ${white} !important;
+      }
+    }
+  `,
 }
 
 const AudioButton = styled(EduButton)`
@@ -483,5 +515,6 @@ const AudioButton = styled(EduButton)`
     box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 
-  ${({ playerSkinType }) => buttonStyles[playerSkinType]}
+  ${({ playerSkinType, isMinimalDesign }) =>
+    buttonStyles[isMinimalDesign ? 'minimal' : playerSkinType]}
 `

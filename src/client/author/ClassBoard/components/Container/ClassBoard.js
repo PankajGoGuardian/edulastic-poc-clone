@@ -20,6 +20,7 @@ import {
 } from '@edulastic/common'
 import {
   IconAddStudents,
+  IconAssignVideoQuizSmall,
   IconDownload,
   IconInfo,
   IconMarkAsAbsent,
@@ -44,6 +45,7 @@ import {
   Tooltip,
   Divider,
   Icon,
+  Spin,
 } from 'antd'
 import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
@@ -183,6 +185,8 @@ import {
   getUser,
   isPremiumUserSelector,
   getDataWarehouseReports,
+  getUserFeatures,
+  isGcpsDistrictSelector,
 } from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
@@ -205,6 +209,7 @@ import TutorMeNoLicensePopup from '../../../TutorMe/components/TutorMeNoLicenseP
 import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/constants/form'
 import AnalyzeLink from '../../../Assignments/components/AnalyzeLink/AnalyzeLink'
 import SelectFilter from './SelectFilter'
+import AssignVideoQuizBanner from '../../../Banner/AssignVideoQuizBanner'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -1375,6 +1380,9 @@ class ClassBoard extends Component {
       isTutorMeModalLoading,
       isSurveyTest,
       isDataWarehouseReports,
+      userFeatures,
+      isGcpsDistrict,
+      user,
     } = this.props
     const {
       selectedTab,
@@ -1597,6 +1605,12 @@ class ClassBoard extends Component {
         `/author/classboard/interventions/${assignmentId}/${classId}`
       )
     }
+
+    const showVideoQuizBanner = [
+      !userFeatures?.isVideoQuizAndAIEnabled,
+      !isGcpsDistrict,
+      userFeatures?.premium,
+    ].every((o) => !!o)
 
     return (
       <div>
@@ -1929,11 +1943,20 @@ class ClassBoard extends Component {
                     </EduIf>
                   </LeftContainer>
                   <EduIf condition={attemptWindow}>
-                    <InfoMessage color={lightGreen4}>
-                      <IconInfo fill={green} height={10} /> {attemptWindow}
-                    </InfoMessage>
+                    <div>
+                      <InfoMessage color={lightGreen4}>
+                        <IconInfo fill={green} height={10} /> {attemptWindow}
+                      </InfoMessage>
+                    </div>
                   </EduIf>
                   <div style={{ display: 'flex' }}>
+                    <AssignVideoQuizBanner
+                      showBanner={showVideoQuizBanner}
+                      clickedFrom="LCB"
+                      user={user}
+                      history={history}
+                      component={IconAssignVideoQuizSmall}
+                    />
                     <EduIf
                       condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}
                     >
@@ -1941,7 +1964,7 @@ class ClassBoard extends Component {
                         placement="top"
                         title={assignTutoringTooltipTitle}
                       >
-                        <div>
+                        <div style={{ minWidth: 'fit-content' }}>
                           <AssignTutoring
                             active={isAssignTutoringActive}
                             data-cy="assignTutoring"
@@ -1970,7 +1993,7 @@ class ClassBoard extends Component {
                           : 'The test does not have any item tagged to standard. Standard tagging is necessary to assign interventions.'
                       }
                     >
-                      <div>
+                      <div style={{ minWidth: 'fit-content' }}>
                         <AssignTutoring
                           active={enableAssignInterventionsRedirect}
                           data-cy="assignTutoring"
@@ -2430,55 +2453,60 @@ class ClassBoard extends Component {
             {selectedTab === 'questionView' &&
               !isEmpty(testActivity) &&
               !isEmpty(classResponse) &&
-              !isLoading &&
               (selectedQuestion || selectedQuestion === 0) && (
-                <>
-                  <QuestionContainer
-                    isQuestionView
-                    classResponse={classResponse}
-                    testActivity={testActivity}
-                    qIndex={selectedQuestion}
-                    itemId={itemId}
-                    question={{ id: selectedQid }}
-                    isPresentationMode={isPresentationMode}
-                  >
-                    <GenSelect
-                      dataCy="dropDownSelect"
-                      classid="DI"
-                      classname={
-                        firstQuestionEntities.map((x, index) => ({
-                          value: index,
-                          name: `Question ${x?.barLabel?.slice(1)}`,
-                        })) // filtering after map to get the correct index value
-                      }
-                      selected={selectedQuestion}
-                      justifyContent="flex-end"
-                      handleChange={(value) => {
-                        const {
-                          assignmentId: _assignmentId,
-                          classId: _classId,
-                        } = match.params
+                <EduIf condition={isLoading}>
+                  <EduThen>
+                    <Spin />
+                  </EduThen>
+                  <EduElse>
+                    <QuestionContainer
+                      isQuestionView
+                      classResponse={classResponse}
+                      testActivity={testActivity}
+                      qIndex={selectedQuestion}
+                      itemId={itemId}
+                      question={{ id: selectedQid }}
+                      isPresentationMode={isPresentationMode}
+                    >
+                      <GenSelect
+                        dataCy="dropDownSelect"
+                        classid="DI"
+                        classname={
+                          firstQuestionEntities.map((x, index) => ({
+                            value: index,
+                            name: `Question ${x?.barLabel?.slice(1)}`,
+                          })) // filtering after map to get the correct index value
+                        }
+                        selected={selectedQuestion}
+                        justifyContent="flex-end"
+                        handleChange={(value) => {
+                          const {
+                            assignmentId: _assignmentId,
+                            classId: _classId,
+                          } = match.params
 
-                        const { _id: qid, testItemId } = firstQuestionEntities[
-                          value
-                        ]
-                        history.push(
-                          `/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${
-                            isCliUser ? '?cliUser=true' : ''
-                          }`
-                        )
-                        this.setState({
-                          selectedQuestion: value,
-                          selectedQid: qid,
-                          itemId: testItemId,
-                        })
-                      }}
-                    />
-                    {toggleBackTopIcon && (
-                      <BackTop toggleBackTopIcon={toggleBackTopIcon} />
-                    )}
-                  </QuestionContainer>
-                </>
+                          const {
+                            _id: qid,
+                            testItemId,
+                          } = firstQuestionEntities[value]
+                          history.push(
+                            `/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${
+                              isCliUser ? '?cliUser=true' : ''
+                            }`
+                          )
+                          this.setState({
+                            selectedQuestion: value,
+                            selectedQid: qid,
+                            itemId: testItemId,
+                          })
+                        }}
+                      />
+                      {toggleBackTopIcon && (
+                        <BackTop toggleBackTopIcon={toggleBackTopIcon} />
+                      )}
+                    </QuestionContainer>
+                  </EduElse>
+                </EduIf>
               )}
           </LCBScrollContext.Provider>
         </MainContentWrapper>
@@ -2570,6 +2598,8 @@ const enhance = compose(
       isTutorMeModalLoading: isTutorMeModalLoadingSelector(state),
       isSurveyTest: isSurveyTestTypeClassBoard(state),
       isDataWarehouseReports: getDataWarehouseReports(state),
+      userFeatures: getUserFeatures(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

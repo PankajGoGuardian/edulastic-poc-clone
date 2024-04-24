@@ -242,6 +242,26 @@ export const setDefaultInterests = (newInterest) => {
   )
 }
 
+export const getDefaultCurriculum = (
+  interestedCurriculums = [],
+  interestedSubjects = [],
+  userRole
+) => {
+  const subjectInterestedCurriculums = (
+    interestedCurriculums || []
+  ).filter((curr) => interestedSubjects.includes(curr.subject))
+  if (subjectInterestedCurriculums) {
+    const userSubjectInterestedCurriculums = subjectInterestedCurriculums.find(
+      (curr) => curr.orgType === userRole
+    )
+    if (userSubjectInterestedCurriculums) {
+      return userSubjectInterestedCurriculums._id
+    }
+    return 'interested'
+  }
+  return ''
+}
+
 export const getDefaultInterests = () =>
   JSON.parse(sessionStorage.getItem('filters[globalSessionFilters]')) || {}
 

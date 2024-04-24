@@ -1,5 +1,6 @@
 import React from 'react'
 import { Pagination } from 'antd'
+import { TABLE_PAGINATION_STYLE } from '../../../../common/styled'
 
 const BackendPagination = ({
   itemsCount,
@@ -7,7 +8,7 @@ const BackendPagination = ({
   setBackendPagination,
 }) => (
   <Pagination
-    style={{ margin: '10px' }}
+    style={TABLE_PAGINATION_STYLE}
     current={backendPagination.page}
     pageSize={backendPagination.pageSize}
     onChange={(page) =>

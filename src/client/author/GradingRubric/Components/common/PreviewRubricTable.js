@@ -3,7 +3,7 @@ import { withNamespaces } from '@edulastic/localization'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
-import { EduIf } from '@edulastic/common'
+import { EduIf, MathFormulaDisplay } from '@edulastic/common'
 import { AI_EVALUATION_STATUS } from '@edulastic/constants/const/evaluationType'
 import { calculateScore } from './helper'
 import {
@@ -90,7 +90,8 @@ const RatingCards = ({
                 data-cy="ratingPoint"
               >{`${rating.points} pts`}</div>
             </div>
-            <div
+
+            <MathFormulaDisplay
               data-cy="ratingDesc"
               dangerouslySetInnerHTML={{ __html: rating.desc }}
             />

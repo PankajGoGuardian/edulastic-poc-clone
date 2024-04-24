@@ -26,6 +26,7 @@ const LanguageSelectorTab = ({
   isEditView,
   item,
   passage,
+  isLCB = false,
 }) => {
   const handleChangeLanguage = ({ key }) => {
     setLanguage(key)
@@ -58,7 +59,7 @@ const LanguageSelectorTab = ({
       onClick={handleChangeLanguage}
       selectedKeys={[currentLang]}
       mode="horizontal"
-      isPassage={item.isPassageWithQuestions || item.multipartItem}
+      isPassage={item.isPassageWithQuestions || item.multipartItem || isLCB}
       isEditView={isEditView}
     >
       {LANGUAGES_OPTIONS.map((language) => (
@@ -93,7 +94,7 @@ const StyledMenu = styled(Menu)`
   width: ${({ isPassage }) => (isPassage ? '100%' : '96%;')};
   background: transparent;
   .ant-menu-item {
-    z-index: 999;
+    z-index: 1;
   }
   .ant-menu-item:hover {
     color: #1ab394;

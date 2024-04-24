@@ -86,6 +86,7 @@ export const LimitationTextWrapper = styled.div`
 export const ExclamationIcon = styled.i`
   color: #000;
   font-size: 18px;
+  margin-right: 5px;
 `
 
 export const DemographicsWrapper = styled.div`
@@ -137,7 +138,13 @@ export const StudentMetaData = styled.div`
   color: ${greyThemeDark1};
   .schools-name,
   .grades-name {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     font-size: 13px;
+    svg {
+      margin-top: 5px;
+    }
   }
   .student-name {
     font-weight: bold;
@@ -185,7 +192,7 @@ export const StyleCheckBox = styled(Checkbox)`
 export const Label = styled.div`
   color: ${({ $color }) => $color || fadedBlack};
   font-size: ${({ $fontSize }) => $fontSize || '13px'};
-  font-weight: bold;
+  font-weight: ${(p) => p.$fontWeight || 'bold'};
   margin: ${({ $margin }) => $margin || '0'};
 `
 export const TestLabel = styled(Label)`

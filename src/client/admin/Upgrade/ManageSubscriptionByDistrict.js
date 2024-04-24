@@ -1,4 +1,3 @@
-import { userPermissions } from '@edulastic/constants'
 import { Row as AntdRow, AutoComplete, Button, Col, Form, Select } from 'antd'
 import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
@@ -14,15 +13,16 @@ import {
   ValueSpan,
 } from '../Common/StyledComponents/upgradePlan'
 import {
+  checkIsDataStudioEnabled,
+  getAdditionalSubscription,
   getDate,
   getNextAdditionalSubscriptions,
-  getTutorMeSubscription,
-  updateDataStudioPermission,
   useUpdateEffect,
   validateForTutorMeAuthTokenCheck,
 } from '../Common/Utils'
 import { SUBSCRIPTION_TYPE_CONFIG } from '../Data'
 import {
+  ADDITIONAL_SUBSCRIPTION_TYPES,
   DISTRICT_SUBSCRIPTION_OPTIONS,
   SUBSCRIPTION_STATUS,
   SUBSCRIPTION_TYPES,
@@ -97,12 +97,7 @@ const ManageDistrictPrimaryForm = Form.create({
 
     const { _source = {}, _id: districtId, subscription = {} } =
       selectedDistrict || {}
-    const {
-      location = {},
-      permissions = [],
-      permissionsExpiry = [],
-      name,
-    } = _source
+    const { location = {}, permissions = [], name } = _source
     const {
       subType = 'free',
       subStartDate,
@@ -119,21 +114,6 @@ const ManageDistrictPrimaryForm = Form.create({
 
     const savedDate = useRef()
 
-    const getSubTypeLabel = (_subType, _permissions) => {
-      let label = _subType || SUBSCRIPTION_TYPES.free.subType
-      if (
-        (_permissions || []).includes(userPermissions.DATA_WAREHOUSE_REPORTS)
-      ) {
-        if (_subType === SUBSCRIPTION_TYPES.free.subType) {
-          label = SUBSCRIPTION_TYPES.dataStudio.label
-        } else if (_subType === SUBSCRIPTION_TYPES.enterprise.subType) {
-          label = SUBSCRIPTION_TYPES.enterprisePlusDataStudio.label
-        }
-      }
-
-      return label
-    }
-
     // here once component is mounted, the current date is calculated just once, and stored in a ref
     useEffect(() => {
       savedDate.current = getDate()
@@ -141,23 +121,23 @@ const ManageDistrictPrimaryForm = Form.create({
 
     // when a district is searched, the form fields are populated according to the data received
     useUpdateEffect(() => {
-      let _subType = subType || SUBSCRIPTION_TYPES.free.subType
-      if (
-        (permissions || []).includes(userPermissions.DATA_WAREHOUSE_REPORTS)
-      ) {
-        if (subType === SUBSCRIPTION_TYPES.free.subType) {
-          _subType = SUBSCRIPTION_TYPES.dataStudio.subType
-        } else if (subType === SUBSCRIPTION_TYPES.enterprise.subType) {
-          _subType = SUBSCRIPTION_TYPES.enterprisePlusDataStudio.subType
-        }
-      }
       const {
         startDate: tutorMeStartDate,
         endDate: tutorMeEndDate,
         authToken: tutorMeAuthToken,
-      } = getTutorMeSubscription({ additionalSubscriptions })
+      } = getAdditionalSubscription(
+        { additionalSubscriptions },
+        ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME
+      )
+      const {
+        startDate: dataStudioStartDate,
+        endDate: dataStudioEndDate,
+      } = getAdditionalSubscription(
+        { additionalSubscriptions },
+        ADDITIONAL_SUBSCRIPTION_TYPES.DATA_WAREHOUSE_REPORTS
+      )
       setFieldsValue({
-        subType: _subType,
+        subType: subType || SUBSCRIPTION_TYPES.free.subType,
         subStartDate: moment(subStartDate || savedDate.current.currentDate),
         subEndDate: moment(subEndDate || savedDate.current.oneYearDate),
         notes,
@@ -168,6 +148,8 @@ const ManageDistrictPrimaryForm = Form.create({
         tutorMeEndDate: tutorMeEndDate && moment(tutorMeEndDate),
         tutorMeAuthToken,
         tutorMeAuthTokenCheck: false,
+        dataStudioStartDate: dataStudioStartDate && moment(dataStudioStartDate),
+        dataStudioEndDate: dataStudioEndDate && moment(dataStudioEndDate),
       })
     }, [
       subType,
@@ -202,12 +184,16 @@ const ManageDistrictPrimaryForm = Form.create({
             tutorMeEndDate: rawTutorMeEndDate,
             tutorMeAuthToken,
             tutorMeAuthTokenCheck,
+            dataStudioStartDate: rawDataStudioStartDate,
+            dataStudioEndDate: rawDataStudioEndDate,
             ...rest
           }
         ) => {
           if (!err) {
             const tutorMeStartDate = rawTutorMeStartDate?.valueOf()
             const tutorMeEndDate = rawTutorMeEndDate?.valueOf()
+            const dataStudioStartDate = rawDataStudioStartDate?.valueOf()
+            const dataStudioEndDate = rawDataStudioEndDate?.valueOf()
 
             // ensure tutorMe authentication key has been double checked
             const isValidTutorMeAuth = validateForTutorMeAuthTokenCheck({
@@ -217,44 +203,6 @@ const ManageDistrictPrimaryForm = Form.create({
               tutorMeAuthTokenCheck,
             })
             if (!isValidTutorMeAuth) return
-
-            const _isDataStudio =
-              currentSubType === SUBSCRIPTION_TYPES.dataStudio.subType
-            const _isEnterprisePlusDataStudio =
-              currentSubType ===
-              SUBSCRIPTION_TYPES.enterprisePlusDataStudio.subType
-
-            const enableDataStudio =
-              _isDataStudio || _isEnterprisePlusDataStudio
-            const dataStudio = updateDataStudioPermission({
-              isDataStudio: enableDataStudio,
-              permissions: permissions || [],
-              permissionsExpiry: permissionsExpiry || [],
-              perStartDate: startDate.valueOf(),
-              perEndDate: endDate.valueOf(),
-            })
-
-            dataStudio.districtId = districtId
-
-            const seedDsData = {
-              districtData: [
-                {
-                  districtId,
-                  name,
-                  status: enableDataStudio,
-                },
-              ],
-            }
-
-            if (_isDataStudio) {
-              Object.assign(rest, {
-                subType: SUBSCRIPTION_TYPES.free.subType,
-              })
-            } else if (_isEnterprisePlusDataStudio) {
-              Object.assign(rest, {
-                subType: SUBSCRIPTION_TYPES.enterprise.subType,
-              })
-            }
 
             const changedToFree =
               currentSubType === SUBSCRIPTION_TYPES.free.subType &&
@@ -266,11 +214,25 @@ const ManageDistrictPrimaryForm = Form.create({
               tutorMeEndDate,
               tutorMeAuthToken,
               tutorMeAuthTokenCheck,
+              dataStudioStartDate,
+              dataStudioEndDate,
             })
+            const isDataStudioEnabled = checkIsDataStudioEnabled(
+              nextAdditionalSubscriptions
+            )
+            const seedDsData = {
+              districtData: [
+                {
+                  districtId,
+                  name,
+                  status: isDataStudioEnabled,
+                },
+              ],
+            }
 
             // keep subscription active if additionalSubscriptions are present
             if (
-              (changedToFree || (_isDataStudio && subscriptionId)) &&
+              (changedToFree || subscriptionId) &&
               !nextAdditionalSubscriptions.length
             ) {
               Object.assign(rest, {
@@ -285,7 +247,6 @@ const ManageDistrictPrimaryForm = Form.create({
               subStartDate: startDate.valueOf(),
               subEndDate: endDate.valueOf(),
               ...rest,
-              dataStudio,
               seedDsData,
               searchData,
               additionalSubscriptions: nextAdditionalSubscriptions,
@@ -322,7 +283,7 @@ const ManageDistrictPrimaryForm = Form.create({
         </Row>
         <Row>
           <HeadingSpan>Existing Plan:</HeadingSpan>
-          <ValueSpan>{getSubTypeLabel(subType, permissions)}</ValueSpan>
+          <ValueSpan>{subType || SUBSCRIPTION_TYPES.free.subType}</ValueSpan>
         </Row>
         <Row>
           <HeadingSpan>District Name:</HeadingSpan>
@@ -389,6 +350,7 @@ const ManageDistrictPrimaryForm = Form.create({
           getFieldValue={getFieldValue}
           showAdditionalDetails
           showTutorMeFormItems
+          showDataStudioFormItems
         />
         <Form.Item>
           <Button data-cy="submit-btn" type="primary" htmlType="submit">

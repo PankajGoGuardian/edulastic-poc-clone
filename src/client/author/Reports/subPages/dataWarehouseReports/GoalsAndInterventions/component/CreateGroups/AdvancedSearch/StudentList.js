@@ -1,6 +1,7 @@
 import { get, isEmpty, isNumber, uniq } from 'lodash'
 import React, { useState } from 'react'
 import StyledTable from '../../../common/components/Table'
+import { TABLE_PAGINATION_STYLE } from '../../../../../../../../common/styled'
 
 const StudentList = ({ studentsData, isStudentLoading, handleQuickFilter }) => {
   if (isEmpty(studentsData)) return null
@@ -106,6 +107,7 @@ const StudentList = ({ studentsData, isStudentLoading, handleQuickFilter }) => {
         columns={columns}
         size="default"
         pagination={{
+          style: TABLE_PAGINATION_STYLE,
           pageSize,
           current: current || page,
           defaultPageSize: 10,

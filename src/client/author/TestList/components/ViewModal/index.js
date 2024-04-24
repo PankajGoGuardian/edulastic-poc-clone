@@ -330,6 +330,7 @@ class ViewModal extends React.Component {
                 }
                 onClick={this.onShareModalChange}
                 data-cy="share"
+                IconBtn
               >
                 <IconShare />
               </EduButton>

@@ -30,11 +30,13 @@ import { v4 } from 'uuid'
 import { sanitizeForReview } from '@edulastic/common/src/helpers'
 import { tagsApi } from '@edulastic/api'
 import { withRouter } from 'react-router-dom'
+import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
 import {
   CustomStyleBtn,
   CustomStyleBtn2,
 } from '../../../assessment/styled/ButtonStyles'
 import { getUserDetails } from '../../../student/Login/ducks'
+import { getCurrentLanguage } from '../../../common/components/LanguageSelectorTab/duck'
 import { setItemLevelScoreFromRubricAction } from '../../ItemDetail/ducks'
 import {
   getCurrentQuestionSelector,
@@ -124,6 +126,7 @@ const UseExisting = ({
   history,
   isAiEvaulationDistrict,
   isGcpsDistrict,
+  currentLang,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -178,9 +181,15 @@ const UseExisting = ({
     ? t('rubric.stimulusNotPresent')
     : rubricAlreadyGeneratedOrNotMsg
 
+  let stimulus = currentQuestion?.stimulus
+  if (currentLang !== LANGUAGE_EN && currentQuestion?.languageFeatures) {
+    const languageCode = Object.keys(currentQuestion?.languageFeatures).shift()
+    stimulus = currentQuestion?.languageFeatures?.[languageCode]?.stimulus
+  }
+
   const disableAutoGenerateRubricBtn = [
-    isEmpty(currentQuestion?.stimulus),
-    previousRubricGeneratedStimulus === currentQuestion?.stimulus,
+    isEmpty(stimulus),
+    previousRubricGeneratedStimulus === stimulus,
     !isAiEvaulationDistrict,
   ].some((o) => !!o)
 
@@ -213,10 +222,10 @@ const UseExisting = ({
       })
       return
     }
-    const stimulus = sanitizeForReview(currentQuestion?.stimulus)
-    if (stimulus) {
-      autoGenerateRubric({ stimulus })
-      setRubricGenerationStimulus(stimulus)
+    const stimulusContent = sanitizeForReview(stimulus)
+    if (stimulusContent) {
+      autoGenerateRubric({ stimulus: stimulusContent })
+      setRubricGenerationStimulus(stimulusContent)
       setAIAssisted(true)
     }
   }
@@ -729,6 +738,7 @@ const enhance = compose(
       ),
       isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
       isGcpsDistrict: isGcpsDistrictSelector(state),
+      currentLang: getCurrentLanguage(state),
     }),
     {
       updateRubricData: updateRubricDataAction,

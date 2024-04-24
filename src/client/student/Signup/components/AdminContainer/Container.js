@@ -1,4 +1,5 @@
 import React from 'react'
+import Helmet from 'react-helmet'
 import PropTypes from 'prop-types'
 import { Col, Form, Input, message } from 'antd'
 import { Link, Redirect } from 'react-router-dom'
@@ -196,6 +197,12 @@ class AdminSignup extends React.Component {
         <RegistrationWrapper
           image={partner.partnerKey === 'login' ? adminBg : partner.background}
         >
+          <Helmet>
+            <link
+              rel="canonical"
+              href="https://assessment.peardeck.com/adminsignup"
+            />
+          </Helmet>
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
               <EduIf condition={isPearDomain}>

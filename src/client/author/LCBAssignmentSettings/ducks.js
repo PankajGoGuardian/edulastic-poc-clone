@@ -213,6 +213,7 @@ function* loadAssignmentSaga({ payload }) {
       allowAutoEssayEvaluation,
       attemptWindow,
       vqPreventSkipping,
+      vqEnableClosedCaption,
     } = data.class[0] || {}
     if (openPolicy) {
       data.openPolicy = openPolicy
@@ -252,6 +253,9 @@ function* loadAssignmentSaga({ payload }) {
     }
     if (typeof vqPreventSkipping === 'boolean') {
       data.vqPreventSkipping = vqPreventSkipping
+    }
+    if (typeof vqEnableClosedCaption === 'boolean') {
+      data.vqEnableClosedCaption = vqEnableClosedCaption
     }
     if (typeof penaltyOnUsingHints === 'number') {
       data.penaltyOnUsingHints = penaltyOnUsingHints
@@ -325,6 +329,7 @@ function getSettingsSelector(state) {
     allowAutoEssayEvaluation,
     attemptWindow,
     vqPreventSkipping,
+    vqEnableClosedCaption,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -439,6 +444,7 @@ function getSettingsSelector(state) {
       allowAutoEssayEvaluation,
       attemptWindow,
       vqPreventSkipping,
+      vqEnableClosedCaption,
     },
     isUndefined
   )

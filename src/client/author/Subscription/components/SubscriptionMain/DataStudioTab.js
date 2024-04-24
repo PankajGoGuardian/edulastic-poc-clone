@@ -1,11 +1,9 @@
 import { segmentApi } from '@edulastic/api'
-import { userPermissions } from '@edulastic/constants'
 import React, { useEffect } from 'react'
-import moment from 'moment'
 import { IconDSSellPage } from '@edulastic/icons'
 import { EduButton, FlexContainer } from '@edulastic/common'
 import { reportGroupType } from '@edulastic/constants/const/report'
-import { subscription } from '../../constants/subscription'
+import { subscription as subscriptionConstants } from '../../constants/subscription'
 import SubscriptionContainer from './SubscriptionContainer'
 import {
   MiddleContentWrapper,
@@ -13,45 +11,24 @@ import {
   SectionTitle,
 } from './styled'
 import { proxyDemoPlaygroundUser } from '../../../authUtils'
+import { getAdditionalSubscription } from '../../../../admin/Common/Utils'
+import { ADDITIONAL_SUBSCRIPTION_TYPES } from '../../../../admin/Common/constants/subscription'
 
 const { DATA_WAREHOUSE_REPORT } = reportGroupType
 const DATA_STUDIO_REPORTS_PATH = `/author/reports/${DATA_WAREHOUSE_REPORT}`
 
-const DataStudioTab = ({ features, user }) => {
-  const { dataWarehouseReports } = features
-  const {
-    permissionsExpiry: userPermissionsExpiry = [],
-    orgData: { districts = [] } = {},
-  } = user
+const DataStudioTab = ({ features, subscription, user }) => {
+  const { endDate: dataStudioEndDate } = getAdditionalSubscription(
+    subscription,
+    ADDITIONAL_SUBSCRIPTION_TYPES.DATA_WAREHOUSE_REPORTS
+  )
 
-  const districtPermissionExpiry =
-    districts?.[0]?.districtPermissionsExpiry || []
-
-  const districtDataWareHouseExpiryDate = districtPermissionExpiry.find(
-    (item) => item.permissionKey === userPermissions.DATA_WAREHOUSE_REPORTS
-  )?.perEndDate
-
-  const userDataWareHouseExpiryDate = userPermissionsExpiry.find(
-    (item) => item.permissionKey === userPermissions.DATA_WAREHOUSE_REPORTS
-  )?.perEndDate
-
-  let permissionEndDate = districtDataWareHouseExpiryDate
-
-  if (
-    !permissionEndDate ||
-    (userDataWareHouseExpiryDate &&
-      moment(userDataWareHouseExpiryDate).isAfter(permissionEndDate))
-  ) {
-    permissionEndDate = userDataWareHouseExpiryDate
-  }
-
-  const subscribed = dataWarehouseReports
-
+  const subscribed = features.dataWarehouseReports
   const showRequestOption = !subscribed
 
-  const data = subscription.dataStudio({
+  const data = subscriptionConstants.dataStudio({
     subscribed,
-    expiryDate: permissionEndDate,
+    expiryDate: dataStudioEndDate,
   })
 
   const handleOnViewSampleReportsClick = (evt) => {

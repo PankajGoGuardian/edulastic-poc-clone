@@ -1,13 +1,11 @@
 import { roleuser } from '@edulastic/constants'
 import { useEffect } from 'react'
-import { reportGroupType } from '@edulastic/constants/const/report'
 import {
   EXTERNAL_SCORE_TYPES,
   getUrlTestTermIds,
 } from '../../../../common/utils'
 
 function useFiltersFromUrl({
-  location,
   termOptions,
   search,
   staticDropDownData,
@@ -17,12 +15,8 @@ function useFiltersFromUrl({
   setFilters,
   filterTagsData,
   setFilterTagsData,
-  setShowApply,
-  toggleFilter,
-  setFirstLoad,
   setStudent,
   urlStudentId,
-  _onGoClick,
 }) {
   useEffect(() => {
     const urlSchoolYear =
@@ -70,21 +64,8 @@ function useFiltersFromUrl({
     }
     setFilters(_filters)
     setFilterTagsData(_filterTagsData)
-    if (location.state?.source === reportGroupType.DATA_WAREHOUSE_REPORT) {
-      setShowApply(true)
-      toggleFilter(null, true)
-      setFirstLoad(false)
-    } else {
-      _onGoClick({
-        filters: _filters,
-        selectedStudent: { key: urlStudentId },
-        selectedFilterTagsData: { ...filterTagsData },
-      })
-    }
     if (urlStudentId) {
       setStudent({ key: urlStudentId })
-    } else {
-      setFirstLoad(false)
     }
   }, [])
 }

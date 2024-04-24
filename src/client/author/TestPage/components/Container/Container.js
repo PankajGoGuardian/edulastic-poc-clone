@@ -132,6 +132,7 @@ import VideoQuizWorksheet from '../../../AssessmentPage/VideoQuiz/VideoQuizWorks
 import {
   getQuestionsSelector,
   getQuestionsArraySelector,
+  getAuthorQuestionStatus,
 } from '../../../sharedDucks/questions'
 import {
   validateQuestionsForDocBased,
@@ -177,7 +178,10 @@ import { getUserAccommodations } from '../../../../student/Login/ducks'
 import { checkInvalidTestTitle } from '../../../utils/tests'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
-import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import {
+  resetStudentAttemptAction,
+  setIsTestPreviewVisibleAction,
+} from '../../../../assessment/actions/test'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -252,10 +256,14 @@ class Container extends PureComponent {
     //   url += `?page=${pageNumber}`
     // }
 
+    // this flag is used for VQ Library menu highlight
+    const haveVQLibSource =
+      new URLSearchParams(window.location.search).get('source') === 'vq-library'
+
     history.push({
       pathname: url,
       state: { ...history.location.state, showCancelButton },
-      ...getSearchParams('testType'),
+      ...getSearchParams(haveVQLibSource ? 'source' : 'testType'),
     })
   }
 
@@ -337,7 +345,7 @@ class Container extends PureComponent {
       } else if (!_location?.state?.persistStore) {
         // currently creating test do nothing
         location?.state?.isDynamicTest
-          ? this.gotoTab('description')
+          ? this.gotoTab('manageSections')
           : this.gotoTab('addItems')
         clearTestAssignments([])
         setDefaultData()
@@ -434,6 +442,7 @@ class Container extends PureComponent {
       setEditEnable,
       setTestSettingsList,
       isDynamicTest,
+      getItemsSubjectAndGrade,
     } = this.props
     // reset test data when it's a saved test or dynamic test in creation
     if (match.params.id || isDynamicTest) {
@@ -443,6 +452,10 @@ class Container extends PureComponent {
     setEditEnable(false)
     resetPageState()
     setTestSettingsList([])
+    getItemsSubjectAndGrade({
+      subjects: [],
+      grades: [],
+    })
   }
 
   componentDidUpdate(prevProps) {
@@ -706,6 +719,7 @@ class Container extends PureComponent {
       hasSections,
       currentTab,
       isTestTypeWithDefaultTestTitle,
+      authorQuestionStatus: newQuestionsAdded,
     } = this.props
     const { groupNotEdited } = this.state
     const { authors, itemGroups = [], _id } = test
@@ -761,6 +775,7 @@ class Container extends PureComponent {
     }
 
     const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
+    const isDocBasedAndNewQuestionsAdded = test?.isDocBased && newQuestionsAdded
 
     if (_hasUnsavedAiItems && checkAiItems && currentTab === 'review') {
       this.setState((state) => ({
@@ -785,7 +800,7 @@ class Container extends PureComponent {
           test.testCategory !== testCategoryTypes.DYNAMIC_TEST) &&
         (totalTestItems > 0 || isAutoSelectGroup) &&
         !(totalTestItems === 1 && !_id && creating && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
-        updated &&
+        (updated || isDocBasedAndNewQuestionsAdded) &&
         (!firstFlow || _hasUnsavedAiItems)
       ) {
         this.handleSave()
@@ -1518,13 +1533,26 @@ class Container extends PureComponent {
       ) {
         newTest.isInEditAndRegrade = true
       }
+      // for VQ or docbased test call handleDocBasedSave method so that testItem is also updated along with the test
+      if (test.isDocBased) {
+        this.handleDocBasedSave({
+          currentTab,
+          nextLocation,
+          nextAction,
+        })
+        return
+      }
       updateTest(test._id, { ...newTest, currentTab, nextLocation, nextAction })
     } else {
       createTest({ ...newTest, currentTab, nextLocation, nextAction })
     }
   }
 
-  handleDocBasedSave = async () => {
+  handleDocBasedSave = async ({
+    currentTab,
+    nextLocation,
+    nextAction,
+  } = {}) => {
     const {
       questions: assessmentQuestions,
       test,
@@ -1539,7 +1567,11 @@ class Container extends PureComponent {
     ) {
       return
     }
-    updateDocBasedTest(test._id, test, true)
+    updateDocBasedTest(
+      test._id,
+      { ...test, currentTab, nextLocation, nextAction },
+      true
+    )
   }
 
   validateTest = (test, toBeResumedTestAction = null) => {
@@ -1555,6 +1587,7 @@ class Container extends PureComponent {
       hasSections,
     } = test
     const {
+      questions: assessmentQuestions,
       userFeatures,
       isOrganizationDistrictUser,
       isTestTypeWithDefaultTestTitle,
@@ -1670,15 +1703,29 @@ class Container extends PureComponent {
       }
     }
 
-    if (!itemGroupWithQuestionsCount) {
-      notification({ messageKey: `noQuestions` })
-      return false
+    // For docbased/VQ for questions validation validateQuestionsForDocBased should be used
+    if (test.isDocBased) {
+      if (
+        !validateQuestionsForDocBased(
+          assessmentQuestions,
+          false,
+          !!test.videoUrl
+        )
+      ) {
+        return false
+      }
+    } else {
+      if (!itemGroupWithQuestionsCount) {
+        notification({ messageKey: `noQuestions` })
+        return false
+      }
+
+      if (testHasInvalidItem) {
+        notification({ messageKey: `testHasInvalidItem` })
+        return false
+      }
     }
 
-    if (testHasInvalidItem) {
-      notification({ messageKey: `testHasInvalidItem` })
-      return false
-    }
     return true
   }
 
@@ -1937,6 +1984,7 @@ class Container extends PureComponent {
       isTestTypeWithDefaultTestTitle,
       isPreviewModalVisible,
       setIsTestPreviewVisible,
+      resetStudentAttempt,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -2116,8 +2164,12 @@ class Container extends PureComponent {
           <TestPreviewModal
             isModalVisible={isPreviewModalVisible}
             testId={testId}
-            closeTestPreviewModal={() => setIsTestPreviewVisible(false)}
+            closeTestPreviewModal={() => {
+              resetStudentAttempt()
+              setIsTestPreviewVisible(false)
+            }}
             resetOnClose={() => {
+              resetStudentAttempt()
               setIsTestPreviewVisible(false)
             }}
             unmountOnClose
@@ -2307,6 +2359,7 @@ const enhance = compose(
       accommodations: getUserAccommodations(state),
       isVideoQuiz: isVideoQuizSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      authorQuestionStatus: getAuthorQuestionStatus(state),
     }),
     {
       createTest: createTestAction,
@@ -2344,6 +2397,7 @@ const enhance = compose(
       setTestSettingsList: setTestSettingsListAction,
       setCurrentGroupIndexInStore: setCurrentGroupIndexAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      resetStudentAttempt: resetStudentAttemptAction,
     }
   )
 )

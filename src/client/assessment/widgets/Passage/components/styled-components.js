@@ -28,7 +28,7 @@ export const ColorPickerContainer = styled.div`
   z-index: 900;
   padding: 8px 16px;
   background: ${white};
-  box-shadow: 0 2px 8px #00000090;
+  box-shadow: 0 -2px 8px #00000090;
   border-radius: 4px;
   user-select: none;
   transition: opacity 0.3s;
@@ -41,9 +41,9 @@ export const ColorPickerContainer = styled.div`
     border-right-color: transparent;
     border-bottom-color: transparent;
     border-left-color: transparent;
-    bottom: -20px;
+    bottom: 40px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) rotate(180deg);
   }
 `
 

@@ -10,6 +10,7 @@ import {
 import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
 
 import { uniqBy, get } from 'lodash'
+import { LIKERT_SCALE } from '@edulastic/constants/const/questionTitle'
 import {
   curriculumsByIdSelector,
   standardsSelector,
@@ -20,6 +21,7 @@ import {
 } from '../../../src/selectors/user'
 import { getKnownTagsSelector } from '../../../TestPage/ducks'
 import selectsData from '../../../TestPage/components/common/selectsData'
+import { INTERESTED_STANDARD_SETS } from '../../../TestPage/components/AddItems/ducks'
 
 // TK instead of PK for PreKindergarten is intentional
 const gradeKeys = {
@@ -70,7 +72,7 @@ const HeaderFilter = ({
     filter === libraryFilters.SMART_FILTERS.FAVORITES
       ? gradeAndSubjectFilters
       : allFilters
-  const curriculum = curriculumById[curriculumId]
+  const curriculum = curriculumById[curriculumId] // undefined for 'All Interested Standard Set' as curriculumId is INTERESTED_STANDARD_SETS.
   let extras = []
   if (standardIds.length && !Object.keys(elosByTloId).length) {
     extras = standardIds
@@ -135,16 +137,20 @@ const HeaderFilter = ({
       text = allDepthOfKnowledgeMap[tagTitle]?.text
     }
     const widthOfTag = getWidthOfTag(text)
+    const isClosable = type !== 'questionType' || text !== LIKERT_SCALE
     if (widthOfTag <= containerWidthObj.remainingWidth) {
       containerWidthObj.remainingWidth -= widthOfTag
       bodyArr.push(
-        <Tag closable onClose={(e) => handleCloseTag(e, type, d)}>
+        <Tag closable={isClosable} onClose={(e) => handleCloseTag(e, type, d)}>
           {text}
         </Tag>
       )
     } else {
       popOverArray.push(
-        <StyledPopupTag closable onClose={(e) => handleCloseTag(e, type, d)}>
+        <StyledPopupTag
+          closable={isClosable}
+          onClose={(e) => handleCloseTag(e, type, d)}
+        >
           {text}
         </StyledPopupTag>
       )
@@ -191,7 +197,19 @@ const HeaderFilter = ({
       })
     }
     if (type === 'curriculumId') {
-      if (curriculum?._id) {
+      // Handling when curriculum will be undefined for INTERESTED_STANDARD_SETS,
+      // directly compare the curriculumId field.
+      if (curriculumId === INTERESTED_STANDARD_SETS) {
+        const tagTitle = 'All Interested Standard Sets'
+        getTag(
+          type,
+          undefined,
+          tagTitle,
+          bodyArr,
+          popOverArray,
+          containerWidthObj
+        )
+      } else if (curriculum?._id) {
         const tagTitle = curriculum.curriculum
         getTag(
           type,
@@ -202,6 +220,7 @@ const HeaderFilter = ({
           containerWidthObj
         )
       }
+      return null
     }
     if (typeof data === 'string' && data?.length) {
       let tagTitle = data
@@ -276,13 +295,16 @@ export default connect((state) => ({
 }))(HeaderFilter)
 
 const TagsStyle = css`
-  color: #686f75;
-  background: #bac3ca;
+  color: #3f85e5;
+  background: #3f85e51a;
   padding: 2px 10px;
-  border: none;
+  border: 1px solid #3f85e5;
   font-weight: bold;
   border-radius: 6px;
   margin-bottom: 5px;
+  .anticon-close {
+    color: #3f85e5;
+  }
 `
 
 const StyledPopupTag = styled(Tag)`

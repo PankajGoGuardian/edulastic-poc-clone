@@ -68,7 +68,10 @@ import TestNameChangeModal from '../../../TestPage/components/TestNameChangeModa
 import { isValidVqVideoURL } from '../../../utils/videoQuiz'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
-import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import {
+  resetStudentAttemptAction,
+  setIsTestPreviewVisibleAction,
+} from '../../../../assessment/actions/test'
 
 const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants
 
@@ -539,6 +542,7 @@ class Container extends React.Component {
       isVideoQuiz,
       isPreviewModalVisible,
       setIsTestPreviewVisible,
+      resetStudentAttempt,
     } = this.props
 
     const {
@@ -639,8 +643,12 @@ class Container extends React.Component {
           <TestPreviewModal
             isModalVisible={isPreviewModalVisible}
             testId={testId}
-            closeTestPreviewModal={() => setIsTestPreviewVisible(false)}
+            closeTestPreviewModal={() => {
+              resetStudentAttempt()
+              setIsTestPreviewVisible(false)
+            }}
             resetOnClose={() => {
+              resetStudentAttempt()
               setIsTestPreviewVisible(false)
             }}
             unmountOnClose
@@ -718,6 +726,7 @@ const enhance = compose(
       setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
       removeTestEntity: removeTestEntityAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      resetStudentAttempt: resetStudentAttemptAction,
     }
   )
 )

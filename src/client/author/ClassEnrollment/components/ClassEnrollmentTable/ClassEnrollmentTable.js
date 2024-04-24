@@ -73,6 +73,10 @@ import {
 import { AddNewUserModal } from '../Common/AddNewUser'
 import { StyledTable } from './styled'
 import ResetPwd from '../../../ManageClass/components/ClassDetails/ResetPwd/ResetPwd'
+import {
+  getTestSettings,
+  receiveTestSettingAction,
+} from '../../../TestSetting/ducks'
 
 const { Option } = Select
 
@@ -104,7 +108,13 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   componentDidMount() {
-    const { dataPassedWithRoute } = this.props
+    const {
+      dataPassedWithRoute,
+      userOrgId,
+      userRole,
+      loadTestSetting,
+      schoolId,
+    } = this.props
     if (!isEmpty(dataPassedWithRoute)) {
       this.setState(
         { filtersData: [{ ...dataPassedWithRoute }] },
@@ -112,6 +122,11 @@ class ClassEnrollmentTable extends React.Component {
       )
     } else {
       this.loadClassEnrollmentList()
+    }
+    if (userRole === 'school-admin') {
+      loadTestSetting({ orgType: 'institution', orgId: schoolId })
+    } else {
+      loadTestSetting({ orgType: 'district', orgId: userOrgId })
     }
   }
 
@@ -605,6 +620,7 @@ class ClassEnrollmentTable extends React.Component {
       count,
       history,
       isPremium,
+      districtTestSettings,
     } = this.props
 
     const tableDataSource = classEnrollmentData.map((item) => {
@@ -935,6 +951,7 @@ class ClassEnrollmentTable extends React.Component {
           resetClassDetails={resetClassDetails}
           location={location}
           isPremium={isPremium}
+          enableSpeechToText={districtTestSettings.enableSpeechToText}
         />
 
         <AddStudentsToOtherClassModal
@@ -1012,6 +1029,8 @@ const enhance = compose(
       userRole: getUserRole(state),
       getValidatedClass: getValidatedClassDetails(state),
       enableStudentGroups: get(state, 'user.user.features.studentGroups'),
+      districtTestSettings: getTestSettings(state),
+      schoolId: get(state, 'user.saSettingsSchool'),
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -1021,6 +1040,7 @@ const enhance = compose(
       fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
       moveUsersToOtherClass: moveUsersToOtherClassAction,
       requestEnrolExistingUserToClass: requestEnrolExistingUserToClassAction,
+      loadTestSetting: receiveTestSettingAction,
     }
   )
 )

@@ -6,15 +6,16 @@ export default function DynamicChartTooltip({
   tooltipRef,
   parentContainerRef,
   chartRef,
+  showAbsents = false,
   ...restProps
 }) {
   const [tooltipType, setTooltipType] = useState('right')
   const getTooltipContent = useCallback(
     (payload) => {
       updateTooltipPos(parentContainerRef, chartRef, tooltipRef, setTooltipType)
-      return getTooltipJSX(payload)
+      return getTooltipJSX(payload, showAbsents)
     },
-    [parentContainerRef, chartRef, tooltipRef, setTooltipType]
+    [parentContainerRef, chartRef, tooltipRef, setTooltipType, showAbsents]
   )
   return (
     <StyledCustomChartTooltipDark

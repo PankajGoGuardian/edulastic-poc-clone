@@ -320,15 +320,19 @@ export const changeDataToPreferredLanguage = (
     language === LANGUAGE_EN &&
     !questionData?.stimulus?.length &&
     !questionData?.contentsTitle?.length &&
-    questionData.languageFeatures
+    !questionData?.summary?.length &&
+    !questionData?.content?.length &&
+    questionData?.languageFeatures
   ) {
     // Extracting the first languageCode from keys of languageFeatures
-    const languageCode = Object.keys(questionData.languageFeatures).shift()
+    const languageCode = Object.keys(
+      questionData?.languageFeatures || {}
+    ).shift()
     language = languageCode
   }
   if (
     LANGUAGE_EN !== language &&
-    useLanguageFeatureQn.includes(questionData.type) &&
+    useLanguageFeatureQn.includes(questionData?.type) &&
     questionData?.languageFeatures?.[language]
   ) {
     const languageData = questionData.languageFeatures[language]

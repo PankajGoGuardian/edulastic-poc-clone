@@ -658,16 +658,16 @@
     ],
     "ds-sel-reports": [
       {
-        "key": "sel-response-summary",
-        "title": "Survey Response Summary",
-        "location": "/author/reports/sel-response-summary/test/",
-        "exactPath": false
-      },
-      {
         "key": "sel-insights",
         "title": "Survey Insights",
         "location": "/author/reports/sel-insights/",
         "exactPath": true
+      },
+      {
+        "key": "sel-response-summary",
+        "title": "Survey Response Summary",
+        "location": "/author/reports/sel-response-summary/test/",
+        "exactPath": false
       }
     ]
   }

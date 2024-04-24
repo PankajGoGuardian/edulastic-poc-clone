@@ -15,13 +15,20 @@ import {
   BlurEffect,
 } from '../../common/styled'
 
-const RiskSummary = ({ data, isMultiSchoolYear }) => {
+const RiskSummary = ({ data, isMultiSchoolYear, isDifferentSchoolYear }) => {
   const {
     overallRisk,
     internalAssessmentRisk,
     externalAssessmentRisk,
     attendanceRisk,
   } = data
+  const limitationText = isMultiSchoolYear
+    ? `Multi-year
+  and individual Test filters are not yet supported for this section.`
+    : isDifferentSchoolYear
+    ? `Different school years in students and test filters are not currently supported for risk calculation.`
+    : ''
+
   return (
     <StyledDiv>
       <RiskSummaryWrapper padding="20px 5px" flexWrap="nowrap">
@@ -46,12 +53,12 @@ const RiskSummary = ({ data, isMultiSchoolYear }) => {
         />
         <AttendanceRisk attendanceRisk={attendanceRisk} />
       </RiskSummaryWrapper>
-      <EduIf condition={isMultiSchoolYear}>
+      <EduIf condition={isMultiSchoolYear || isDifferentSchoolYear}>
         <BlurEffect />
         <LimitationTextWrapper>
           <span>
-            <ExclamationIcon className="fa fa-exclamation-circle" /> Multi-year
-            and individual Test filters are not yet supported for this section
+            <ExclamationIcon className="fa fa-exclamation-circle" />
+            {limitationText}
           </span>
         </LimitationTextWrapper>
       </EduIf>

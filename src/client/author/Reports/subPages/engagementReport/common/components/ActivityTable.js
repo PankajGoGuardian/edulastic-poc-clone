@@ -9,6 +9,7 @@ import CsvTable from '../../../../common/components/tables/CsvTable'
 import { StyledTable, TooltipDiv } from './styled'
 
 import { downloadCSV } from '../../../../common/util'
+import { TABLE_PAGINATION_STYLE } from '../../../../../../common/styled'
 
 const sortNumbers = (key) => (a, b) =>
   (Number(a[key]) || 0) - (Number(b[key]) || 0)
@@ -98,6 +99,7 @@ const ActivityTable = ({
       tableToRender={StyledTable}
       scroll={{ x: '100%' }}
       pagination={{
+        style: TABLE_PAGINATION_STYLE,
         pageSize: 10,
       }}
     />

@@ -2,12 +2,16 @@ import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { Col, Select } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   getAvailableTestTypesForUser,
   includeCommonOnTestType,
 } from '../../../../common/utils/testTypeUtils'
 import { isPremiumUserSelector } from '../../../src/selectors/user'
-import { canSchoolAdminUseDistrictCommonSelector } from '../../../TestPage/ducks'
+import {
+  canSchoolAdminUseDistrictCommonSelector,
+  isSurveyTestSelector,
+} from '../../../TestPage/ducks'
 
 const TestTypeSelector = ({
   testType,
@@ -19,6 +23,7 @@ const TestTypeSelector = ({
   paddingTop,
   isPremiumUser,
   canSchoolAdminUseDistrictCommon,
+  isSurveyTest,
 }) => {
   const availableTestTypes = getAvailableTestTypesForUser({
     isPremium: isPremiumUser,
@@ -28,6 +33,10 @@ const TestTypeSelector = ({
   const testTypes = disabled
     ? includeCommonOnTestType(availableTestTypes, testType)
     : availableTestTypes
+
+  if (!isSurveyTest) {
+    delete testTypes[TEST_TYPE_SURVEY]
+  }
 
   const SelectOption = (
     <SelectInputStyled
@@ -75,4 +84,5 @@ export default connect((state) => ({
   canSchoolAdminUseDistrictCommon: canSchoolAdminUseDistrictCommonSelector(
     state
   ),
+  isSurveyTest: isSurveyTestSelector(state),
 }))(TestTypeSelector)

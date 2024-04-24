@@ -68,6 +68,7 @@ import {
   DEFAULT_TEST_TITLE,
   createGroupSummary,
   getSettingsToSaveOnTestType,
+  applyRubricScoreToTest,
   showRubricToStudentsSetting,
 } from './utils'
 import {
@@ -83,6 +84,7 @@ import {
   loadQuestionsAction,
   getQuestionsArraySelector,
   UPDATE_QUESTION,
+  ADD_QUESTION,
 } from '../sharedDucks/questions'
 import { evaluateItem } from '../src/utils/evalution'
 import createShowAnswerData from '../src/utils/showAnswer'
@@ -407,6 +409,8 @@ export const SET_ALLOW_SA_DISTRICT_COMMON_SETTING =
   '[tests] set allow school admin district common setting'
 export const SET_AUTO_SCROLL_REVIEW_PAGE =
   '[tests] set auto scroll for review page to create item button'
+export const SET_QUESTION_TYPE_CHANGED_TESTITEM_ID =
+  '[tests] set question type changed testitem id'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -520,6 +524,9 @@ export const setYoutubeThumbnailFailure = createAction(
 )
 export const setCanSchoolAdminUseDistrictCommonAction = createAction(
   SET_ALLOW_SA_DISTRICT_COMMON_SETTING
+)
+export const setQuestionTypeChangedTestItemIdAction = createAction(
+  SET_QUESTION_TYPE_CHANGED_TESTITEM_ID
 )
 
 export const receiveTestByIdAction = (
@@ -812,8 +819,10 @@ export const isVideoQuizSelector = createSelector(
 export const isTestTypeWithDefaultTestTitleSelector = createSelector(
   getTestEntitySelector,
   (test) => {
-    const { VIDEO_BASED, DEFAULT } = testCategoryTypes
-    return [VIDEO_BASED, DEFAULT].includes(test?.testCategory)
+    const { VIDEO_BASED, DEFAULT, DOC_BASED, DYNAMIC_TEST } = testCategoryTypes
+    return [VIDEO_BASED, DEFAULT, DOC_BASED, DYNAMIC_TEST].includes(
+      test?.testCategory
+    )
   }
 )
 
@@ -855,6 +864,12 @@ export const sectionsEnabledDistrictSelector = createSelector(
 // currently present testItems in the test.
 export const getSelectedTestItemsSelector = createSelector(
   getTestEntitySelector,
+  (_test) =>
+    _test.itemGroups.flatMap((itemGroup) => itemGroup.items || []) || []
+)
+
+export const getCartTestItemsSelector = createSelector(
+  getCartTestSelector,
   (_test) =>
     _test.itemGroups.flatMap((itemGroup) => itemGroup.items || []) || []
 )
@@ -904,6 +919,11 @@ export const getDisableAnswerOnPaperSelector = createSelector(
 
 export const getCurentTestPassagesSelector = createSelector(
   getTestEntitySelector,
+  (_test) => _test.passages || []
+)
+
+export const getCartTestPassagesSelector = createSelector(
+  getCartTestSelector,
   (_test) => _test.passages || []
 )
 
@@ -1298,6 +1318,7 @@ const initialState = {
   ytThumbnail: '',
   ytloading: false,
   scrollToBottom: false,
+  questionTypeChangedTestItemId: '',
 }
 
 const getDefaultScales = (state, payload) => {
@@ -1554,6 +1575,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         thumbnail: '',
         sharedUsersList: [],
         ytThumbnail: '',
+        questionTypeChangedTestItemId: '',
       }
     case CLEAR_CART_TEST_DATA:
       return {
@@ -1615,6 +1637,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       }
     case SET_LOADING_TEST_PAGE:
       return { ...state, loading: payload }
+    case ADD_QUESTION:
     case UPDATE_QUESTION:
       return produce(state, (_state) => {
         if (_state.entity.isDocBased) {
@@ -2001,6 +2024,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         scrollToBottom: payload,
       }
+    case SET_QUESTION_TYPE_CHANGED_TESTITEM_ID:
+      return {
+        ...state,
+        questionTypeChangedTestItemId: payload,
+      }
     default:
       return state
   }
@@ -2127,6 +2155,11 @@ export const getCurrentSettingsIdSelector = createSelector(
   (state) => state.currentTestSettingsId
 )
 
+export const getQuestionTypeChangedTestItemIdSelector = createSelector(
+  stateSelector,
+  (state) => state?.questionTypeChangedTestItemId || ''
+)
+
 const setTime = (userRole) => {
   const addDate = userRole !== 'teacher' ? 28 : 7
   return moment()
@@ -2195,6 +2228,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     showSpeechToText: entity.showSpeechToText,
     showTextToSpeech: entity.showTextToSpeech,
     vqPreventSkipping: entity.vqPreventSkipping,
+    vqEnableClosedCaption: entity.vqEnableClosedCaption,
   }
 
   if (entity.safeBrowser) {
@@ -2366,13 +2400,21 @@ export function* receiveTestByIdSaga({ payload }) {
   try {
     const prevTest = yield select(getTestSelector)
     let createdItems = yield select(getTestCreatedItemsSelector)
-    const entity = yield call(testsApi.getById, payload.id, {
-      data: true,
-      requestLatest: payload.requestLatest,
-      editAndRegrade: payload.editAssigned,
-      ...(payload.playlistId ? { playlistId: payload.playlistId } : {}),
-    })
+    const { rubricScoreMap = {}, ...entity } = yield call(
+      testsApi.getById,
+      payload.id,
+      {
+        data: true,
+        requestLatest: payload.requestLatest,
+        editAndRegrade: payload.editAssigned,
+        ...(payload.playlistId ? { playlistId: payload.playlistId } : {}),
+      }
+    )
+    applyRubricScoreToTest(entity, rubricScoreMap)
     const userId = yield select(getUserIdSelector)
+    const questionTypeUpdatedTestItemId = yield select(
+      getQuestionTypeChangedTestItemIdSelector
+    )
     if (
       payload.editAssigned &&
       isRegradedByCoAuthor(userId, entity, payload.id)
@@ -2401,6 +2443,7 @@ export function* receiveTestByIdSaga({ payload }) {
             showCancelButton: payload.editAssigned,
             editAssigned: payload.editAssigned,
           },
+          ...getSearchParams('testType'),
         })
       )
     }
@@ -2429,12 +2472,23 @@ export function* receiveTestByIdSaga({ payload }) {
       })
     })
     if (createdItems.length) {
-      const createdItemskeyedById = _keyBy(createdItems, '_id')
-      entity.itemGroups[currentGroupIndex].items = uniqBy(
-        [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
-        (x) =>
-          createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
-      )
+      if (questionTypeUpdatedTestItemId?.length && !isEmpty(createdItems[0])) {
+        const newTestItem = createdItems[0]
+        entity.itemGroups.forEach((itemGroup, groupIndex) => {
+          itemGroup.items.forEach((item, itemIndex) => {
+            if (item?._id === questionTypeUpdatedTestItemId) {
+              entity.itemGroups[groupIndex].items[itemIndex] = newTestItem
+            }
+          })
+        })
+      } else {
+        const createdItemskeyedById = _keyBy(createdItems, '_id')
+        entity.itemGroups[currentGroupIndex].items = uniqBy(
+          [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
+          (x) =>
+            createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
+        )
+      }
     }
     const features = yield select(getUserFeatures)
 
@@ -2558,6 +2612,8 @@ export function* receiveTestByIdSaga({ payload }) {
       notification({ msg: errorMessage })
     }
     yield put(receiveTestByIdError(errorMessage))
+  } finally {
+    yield put(setQuestionTypeChangedTestItemIdAction(''))
   }
 }
 
@@ -2663,10 +2719,11 @@ function* createTestSaga({ payload }) {
         // try to keep the user on the same tab after test creation
         // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
         const currentTab =
-          currentTabMatch?.[1] ||
-          (entity.testCategory === testCategoryTypes.DEFAULT
+          currentTabMatch?.[1] || payload.toReview
+            ? 'review'
+            : entity.testCategory === testCategoryTypes.DEFAULT
             ? 'addItems'
-            : 'description')
+            : 'description'
         yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
       }
     }
@@ -3976,15 +4033,29 @@ function* duplicateTestSaga({ payload }) {
         })
       )
     }
+    const searchObj =
+      data?.testType === TEST_TYPE_SURVEY
+        ? { search: `testType=${TEST_TYPE_SURVEY}` }
+        : {}
     if (redirectToNewTest) {
       // cloning from test review page or test library (non-regrade flow)
-      yield put(push(`/author/tests/${data._id}${searchParam}`))
+      yield put(
+        push({
+          pathname: `/author/tests/${data._id}${searchParam}`,
+          ...searchObj,
+        })
+      )
       yield put(setEditEnableAction(true))
       yield put(setTestsLoadingAction(false))
       yield put(receiveTestByIdAction(data._id, true))
       return
     }
-    yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`))
+    yield put(
+      push({
+        pathname: `/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`,
+        ...searchObj,
+      })
+    )
     yield put(setTestsLoadingAction(false))
     yield put(receiveTestByIdAction(data._id, true))
     notification({ msg: 'You are currently editing a cloned test' })
@@ -4025,12 +4096,19 @@ function* duplicateTestSaga({ payload }) {
  */
 function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
   try {
+    const cart = page === 'itemList'
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
-    const _test = yield select(getTestSelector)
-    const hasSections = yield select(hasSectionsSelector)
-    const isDynamicTest = yield select(isDynamicTestSelector)
+    const _test = yield select(cart ? getCartTestSelector : getTestSelector)
+    const hasSections = yield select(
+      cart ? isCartTestHasSectionsSelector : hasSectionsSelector
+    )
+    const isDynamicTest = yield select(
+      cart ? isCartTestDynamicSelector : isDynamicTestSelector
+    )
     const { passageId } = passageItems?.[0] || {}
-    const currentPassages = yield select(getCurentTestPassagesSelector)
+    const currentPassages = yield select(
+      cart ? getCartTestPassagesSelector : getCurentTestPassagesSelector
+    )
     const currentPassageIds = currentPassages.map((i) => i._id)
     // new payload to update the tests' store's entity.
     const newPayload = {}
@@ -4039,7 +4117,9 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
       const passage = yield call(passageApi.getById, passageId)
       newPayload.passages = [...currentPassages, passage]
     }
-    const testItems = yield select(getSelectedTestItemsSelector)
+    const testItems = yield select(
+      cart ? getCartTestItemsSelector : getSelectedTestItemsSelector
+    )
     newPayload.itemGroups = _test.itemGroups
     if (remove) {
       const passageItemIds = passageItems.map((x) => x._id)
@@ -4102,9 +4182,7 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
     if (!_test._id && page !== 'itemList') {
       yield put(createTestAction({ ..._test, ...newPayload }))
     }
-    if (page === 'itemList') {
-      newPayload.cart = true
-    }
+    newPayload.cart = cart
     // for weird reason there is another store to show if a testItem should be shown
     // as selected or not in item banks page. Adding test items to there.
     yield put(setTestItemsAction(itemIds))

@@ -3,7 +3,6 @@ import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import {
   referenceLinesForCompletionChart as referenceLines,
   barDataForCompletionChart as barLabelData,
-  xAxisDataKey,
   yDomain,
   yAxisLabel,
   preLabelHeading,
@@ -13,6 +12,7 @@ import { barsLabelFormatter, chartDataFormatter } from './utils'
 import Heading from '../../../../../common/components/Heading'
 import { ChartContainer } from './styled'
 import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
+import { toggleItem } from '../../../../../common/util'
 
 const {
   title,
@@ -27,6 +27,8 @@ const Chart = ({
   pagination,
   setPagination,
   pageSize,
+  selectedTests,
+  setSelectedTests,
 }) => {
   const [hoveredCategory, setHoveredCategory] = useState(null)
 
@@ -55,6 +57,23 @@ const Chart = ({
     return `${value}%`
   }
 
+  const selectedTestsFilter = selectedTests.reduce(
+    (res, ele) => ({
+      ...res,
+      [ele]: true,
+    }),
+    {}
+  )
+
+  const handleToggleSelectedBars = (item) => {
+    const _selectedTests = toggleItem(selectedTests, item)
+    setSelectedTests(_selectedTests)
+  }
+
+  const _onResetClickCB = () => {
+    setSelectedTests([])
+  }
+
   const getTooltipJSX = (payload) => {
     if (payload.length && payload[0].payload && hoveredCategory) {
       const result = payload[0].payload
@@ -66,7 +85,7 @@ const Chart = ({
       }
       dataToDisplay[progressStatus] = `${
         result[hoveredCategory.insideLabelKey]
-      } (${result[hoveredCategory.key]}%)`
+      } (${Math.round(result[hoveredCategory.percent])}%)`
       return (
         <div>
           {Object.keys(dataToDisplay).map((key) => {
@@ -77,66 +96,71 @@ const Chart = ({
     }
   }
 
+  const getXTickText = (payload, _data) => {
+    return _data[payload.index]?.testName || '-'
+  }
+
   return (
     <ChartContainer>
-      <EduIf condition={formattedChartData.length}>
-        <Heading
-          title={title}
-          description={description}
-          titleFontSize={titleFontSize}
-          descriptionFontSize={descriptionFontSize}
-        />
-        <EduIf condition={!loading}>
-          <EduThen>
-            <SignedStackedBarChart
-              backendPagination={pagination}
-              setBackendPagination={setPagination}
-              barsData={barLabelData}
-              data={formattedChartData}
-              yDomain={yDomain}
-              xAxisDataKey={xAxisDataKey}
-              onBarClickCB={(bar) => console.log('bar is clicked', bar)}
-              onResetClickCB={(bar) => console.log('Reset bar is clicked', bar)}
-              onLegendMouseEnter={(payload) =>
-                console.log('Cursor Over Legend', payload)
-              }
-              onLegendMouseLeave={(payload) =>
-                console.log('Cursor away from Legend', payload)
-              }
-              yAxisLabel={yAxisLabel}
-              hideOnlyYAxis
-              handleMouseOver={handleMouseOver}
-              onMouseBarLeave={() => setHoveredCategory(null)}
-              getTooltipJSX={getTooltipJSX}
-              getXAxisTickSyle={{ fontWeight: 'bold' }}
-              hideCartesianGrid
-              hasBarInsideLabels
-              barsLabelFormatter={barsLabelFormatter}
-              ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
-              tick
-              yTickLine={{ stroke: 'black' }}
-              margin={{ top: 0, right: 60, left: 60, bottom: 50 }}
-              hasRoundedBars={false}
-              referenceLines={referenceLines}
-              tickMargin={2}
-              legendProps={{ wrapperStyle: { top: -10 } }}
-              tooltipType="left"
-              needWhiteBackgroundToolTip
-              xTickTooltipPosition={380}
-              yTickFormatter={yTickFormatter}
-              xAxisFontWeight={400}
-              startFromLast
-              yAxisStyle={{ transform: 'translate(-15px)', fill: 'black' }}
-            />
-          </EduThen>
-          <EduElse>
-            <SpinLoader
-              tip="Loading completion chart data..."
-              position="relative"
-              height="70%"
-            />
-          </EduElse>
-        </EduIf>
+      <Heading
+        title={title}
+        description={description}
+        titleFontSize={titleFontSize}
+        descriptionFontSize={descriptionFontSize}
+      />
+      <EduIf condition={!loading}>
+        <EduThen>
+          <SignedStackedBarChart
+            backendPagination={pagination}
+            setBackendPagination={setPagination}
+            barsData={barLabelData}
+            data={formattedChartData}
+            yDomain={yDomain}
+            xAxisDataKey="testId"
+            onBarClickCB={handleToggleSelectedBars}
+            onResetClickCB={_onResetClickCB}
+            filter={selectedTestsFilter}
+            getXTickText={getXTickText}
+            onLegendMouseEnter={(payload) =>
+              console.log('Cursor Over Legend', payload)
+            }
+            onLegendMouseLeave={(payload) =>
+              console.log('Cursor away from Legend', payload)
+            }
+            yAxisLabel={yAxisLabel}
+            hideOnlyYAxis
+            handleMouseOver={handleMouseOver}
+            onMouseBarLeave={() => setHoveredCategory(null)}
+            getTooltipJSX={getTooltipJSX}
+            getXAxisTickSyle={{ fontWeight: 'bold' }}
+            hideCartesianGrid
+            hasBarInsideLabels
+            barsLabelFormatter={barsLabelFormatter}
+            ticks={[0, 100]}
+            tick
+            yTickLine={{ stroke: 'black' }}
+            margin={{ top: 0, right: 60, left: 60, bottom: 50 }}
+            hasRoundedBars={false}
+            referenceLines={referenceLines}
+            tickMargin={2}
+            legendProps={{ wrapperStyle: { top: -10 } }}
+            tooltipType="left"
+            needWhiteBackgroundToolTip
+            xTickTooltipPosition={380}
+            yTickFormatter={yTickFormatter}
+            xAxisFontWeight={400}
+            startFromLast
+            yAxisStyle={{ transform: 'translate(-15px)', fill: 'black' }}
+            showTestDateOnTestNameHover={false}
+          />
+        </EduThen>
+        <EduElse>
+          <SpinLoader
+            tip="Loading completion chart data..."
+            position="relative"
+            height="70%"
+          />
+        </EduElse>
       </EduIf>
     </ChartContainer>
   )

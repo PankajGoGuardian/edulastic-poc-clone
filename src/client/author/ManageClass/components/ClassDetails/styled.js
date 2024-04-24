@@ -18,7 +18,12 @@ import {
   themeColorBlue,
   lightRed,
 } from '@edulastic/colors'
-import { Paper, EduTableStyled, SelectInputStyled } from '@edulastic/common'
+import {
+  Paper,
+  EduTableStyled,
+  SelectInputStyled,
+  CustomModalStyled,
+} from '@edulastic/common'
 import { IconManage } from '@edulastic/icons'
 import IconArchive from '@edulastic/icons/src/IconArchive'
 import { Button, Divider, Icon, Menu, Modal, Row, Col } from 'antd'
@@ -666,5 +671,42 @@ export const ViewAssignmentsContainer = styled.div`
 
   @media (min-width: ${extraDesktopWidthMax}) {
     width: 350px;
+  }
+`
+
+/** @type {typeof CustomModalStyled} */
+export const StyledObservationModal = styled(CustomModalStyled)`
+  .ant-modal-content {
+    height: 600px;
+    padding: 25px 15px 25px 45px;
+    .ant-modal-header {
+      border: none;
+      padding: 20px 20px 0px 0px;
+
+      .ant-modal-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+    }
+    .ant-modal-close {
+      top: 32px;
+    }
+  }
+`
+
+export const ObservationContainer = styled.div`
+  overflow-y: auto;
+  min-height: 500px;
+  max-height: 500px;
+  padding-right: 18px;
+  .ant-spin.ant-spin-spinning {
+    position: fixed;
+    top: 50%;
+  }
+  ::-webkit-scrollbar-track {
+    background: #fff;
+  }
+  div:last-child {
+    margin-bottom: 0px;
   }
 `

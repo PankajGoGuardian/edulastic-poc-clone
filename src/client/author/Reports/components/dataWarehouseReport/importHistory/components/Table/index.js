@@ -6,6 +6,7 @@ import {
   NoDataContainer,
 } from '../../../common/components/StyledComponents'
 import CsvTable from './CsvTable'
+import { TABLE_PAGINATION_STYLE } from '../../../../../../../common/styled'
 
 const Table = ({ data, columns }) => {
   return (
@@ -21,6 +22,7 @@ const Table = ({ data, columns }) => {
           columns={columns}
           tableToRender={CustomStyledTable}
           pagination={{
+            style: TABLE_PAGINATION_STYLE,
             pageSize: 10,
           }}
         />

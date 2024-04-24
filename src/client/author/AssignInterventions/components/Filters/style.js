@@ -26,10 +26,19 @@ export const TestNameContainer = styled.div`
   line-height: 18px;
   color: ${greyThemeDark4};
   padding-top: 14px;
-  width: max-content;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
   @media (min-width: 1400px) {
     padding-top: 20px;
   }
+`
+
+export const TestNameTextContainer = styled.div`
+  max-width: calc(100% - 50px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 
 export const StudentInfoContainer = styled.div`
@@ -44,6 +53,7 @@ export const StudentInfoContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
+  max-width: 330px;
 
   @media (min-width: 1400px) {
     padding-top: 11px;
@@ -53,7 +63,7 @@ export const StudentInfoContainer = styled.div`
 export const StudentInfoElement = styled.div`
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipses;
+  text-overflow: ellipsis;
   text-transform: capitalize;
 `
 

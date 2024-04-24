@@ -437,7 +437,7 @@ const StyledMainContainer = styled.div`
           ? 'block'
           : 'none!important'
       };
-      z-index: 9999;
+      z-index: 1000;
       position: absolute;
       top: 50%;
       right: 0px;

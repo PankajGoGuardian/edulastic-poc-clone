@@ -884,6 +884,10 @@
     "message": " Correct answers have to be chosen for every question",
     "description": ""
   },
+  "missingContentOrAnswer": {
+    "message": " Content or answer is missing for one or more item.",
+    "description": ""
+  },
   "redirectingToStudentDshboard": {
     "message": "Redirecting to the student dashboard",
     "description": ""

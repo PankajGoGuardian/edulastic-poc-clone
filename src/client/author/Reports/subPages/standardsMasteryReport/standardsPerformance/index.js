@@ -271,6 +271,7 @@ const StandardsPerformance = ({
           }
           isSharedReport={!!sharedReport?._id}
           displayTextForMastery={displayTextForMastery}
+          isSurveyTest={testTypesAllowed === TEST_TYPE_SURVEY}
         />
       </StyledCard>
     </DropDownContainer>

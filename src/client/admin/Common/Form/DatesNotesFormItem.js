@@ -1,14 +1,18 @@
 import React, { useCallback } from 'react'
-import { Form, Input, DatePicker, Checkbox } from 'antd'
+import { Form, Input, DatePicker, Checkbox, Divider } from 'antd'
 import styled from 'styled-components'
 import moment from 'moment'
 
 import { red } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
-import { HeadingSpan } from '../StyledComponents/upgradePlan'
+import {
+  HeadingSpan,
+  SectionHeadingSpan,
+} from '../StyledComponents/upgradePlan'
 import { subscriptionAdditionalDetails } from '../../Data'
 
 const { TextArea } = Input
+
 const CharacterLimitSpan = styled.span`
   font-size: 12px;
   font-style: italic;
@@ -23,13 +27,22 @@ const OuterDiv = styled.div`
   margin-top: 20px;
 `
 
+const formLayout = {
+  labelCol: { span: 3 },
+  labelAlign: 'left',
+  wrapperCol: { span: 5 },
+}
+const authKeyFormLayout = {
+  ...formLayout,
+  wrapperCol: { span: 12 },
+}
+
 const DatesFormItem = ({
   getFieldDecorator,
   initialStartDate,
   initialEndDate,
 }) => {
   const disabledDate = useCallback((val) => val < moment().startOf('day'), [])
-  const formLayout = { labelCol: { span: 3 }, labelAlign: 'left' }
   return (
     <>
       <Form.Item label={<HeadingSpan>Start Date</HeadingSpan>} {...formLayout}>
@@ -54,11 +67,6 @@ DatesFormItem.defaultProps = {
 }
 
 const AdditionalDetailsFormItems = ({ getFieldDecorator }) => {
-  const formLayout = {
-    labelCol: { span: 3 },
-    labelAlign: 'left',
-    wrapperCol: { span: 5 },
-  }
   const children = subscriptionAdditionalDetails.map((element) => (
     <Form.Item
       label={<HeadingSpan>{element.label}</HeadingSpan>}
@@ -92,15 +100,6 @@ const TutorMeFormItems = ({
       !!tutorMeStartDate && val < moment(tutorMeStartDate).startOf('day'),
     [tutorMeStartDate]
   )
-  const formLayout = {
-    labelCol: { span: 3 },
-    labelAlign: 'left',
-    wrapperCol: { span: 5 },
-  }
-  const authKeyFormLayout = {
-    ...formLayout,
-    wrapperCol: { span: 12 },
-  }
   return (
     <>
       <Form.Item
@@ -183,6 +182,68 @@ const TutorMeFormItems = ({
   )
 }
 
+const DataStudioFormItems = ({
+  getFieldDecorator,
+  initialDataStudioStartDate,
+  initialDataStudioEndDate,
+  getFieldValue,
+}) => {
+  const dataStudioStartDate = getFieldValue('dataStudioStartDate')
+  const dataStudioEndDate = getFieldValue('dataStudioEndDate')
+  const disabledStartDate = useCallback(
+    (val) =>
+      !!dataStudioEndDate && val > moment(dataStudioEndDate).startOf('day'),
+    [dataStudioEndDate]
+  )
+  const disabledEndDate = useCallback(
+    (val) =>
+      !!dataStudioStartDate && val < moment(dataStudioStartDate).startOf('day'),
+    [dataStudioStartDate]
+  )
+  return (
+    <>
+      <Form.Item
+        label={<HeadingSpan>Data Studio Start Date</HeadingSpan>}
+        {...formLayout}
+      >
+        {getFieldDecorator('dataStudioStartDate', {
+          rules: [
+            {
+              required: !!dataStudioEndDate,
+              message: 'Data Studio Start Date is required',
+            },
+          ],
+          initialValue: initialDataStudioStartDate,
+        })(
+          <DatePicker
+            data-cy="dataStudioStartDate"
+            disabledDate={disabledStartDate}
+          />
+        )}
+      </Form.Item>
+      <Form.Item
+        label={<HeadingSpan>Data Studio End Date</HeadingSpan>}
+        {...formLayout}
+      >
+        {getFieldDecorator('dataStudioEndDate', {
+          rules: [
+            {
+              required: !!dataStudioStartDate,
+              message: 'Data Studio End Date is required',
+            },
+          ],
+          initialValue: initialDataStudioEndDate,
+        })(
+          <DatePicker
+            data-cy="dataStudioEndDate"
+            disabledDate={disabledEndDate}
+          />
+        )}
+      </Form.Item>
+    </>
+  )
+}
+
 const NotesFormItem = ({
   getFieldDecorator,
   notesFieldName,
@@ -209,6 +270,11 @@ NotesFormItem.defaultProps = {
   placeholder: 'Add Notes*',
 }
 
+/**
+ * @todo create folder for the DatesNotesForItem component
+ * @todo rename folder to FormItemSections
+ * @todo move each section to separate file and combine under FormItemSections/index.js
+ */
 const DatesNotesFormItem = ({
   getFieldDecorator,
   getFieldValue,
@@ -218,11 +284,14 @@ const DatesNotesFormItem = ({
   initialTutorMeEndDate,
   initialTutorMeAuthToken,
   initialTutorMeAuthTokenCheck,
+  initialDataStudioStartDate,
+  initialDataStudioEndDate,
   notesFieldName,
   initialValue,
   placeholder,
   showAdditionalDetails,
   showTutorMeFormItems,
+  showDataStudioFormItems,
   children,
 }) => (
   <>
@@ -231,10 +300,23 @@ const DatesNotesFormItem = ({
       initialStartDate={initialStartDate}
       initialEndDate={initialEndDate}
     />
-    {showAdditionalDetails ? (
+    <EduIf condition={showAdditionalDetails}>
       <AdditionalDetailsFormItems getFieldDecorator={getFieldDecorator} />
-    ) : null}
-    {showTutorMeFormItems ? (
+    </EduIf>
+    <EduIf condition={children}>{children}</EduIf>
+    <EduIf condition={showDataStudioFormItems}>
+      <Divider />
+      <SectionHeadingSpan>Data Studio Subscription Settings</SectionHeadingSpan>
+      <DataStudioFormItems
+        getFieldDecorator={getFieldDecorator}
+        initialDataStudioStartDate={initialDataStudioStartDate}
+        initialDataStudioEndDate={initialDataStudioEndDate}
+        getFieldValue={getFieldValue}
+      />
+    </EduIf>
+    <EduIf condition={showTutorMeFormItems}>
+      <Divider />
+      <SectionHeadingSpan>PDT Subscription Settings</SectionHeadingSpan>
       <TutorMeFormItems
         getFieldDecorator={getFieldDecorator}
         initialTutorMeStartDate={initialTutorMeStartDate}
@@ -243,10 +325,8 @@ const DatesNotesFormItem = ({
         initialTutorMeAuthTokenCheck={initialTutorMeAuthTokenCheck}
         getFieldValue={getFieldValue}
       />
-    ) : null}
-
-    {children}
-
+    </EduIf>
+    <Divider />
     <NotesFormItem
       getFieldDecorator={getFieldDecorator}
       notesFieldName={notesFieldName}
@@ -261,6 +341,7 @@ DatesNotesFormItem.defaultProps = {
   ...DatesFormItem.defaultProps,
   showAdditionalDetails: false,
   showTutorMeFormItems: false,
+  showDataStudioFormItems: false,
 }
 
 export { DatesFormItem, NotesFormItem }

@@ -33,6 +33,8 @@ function ReportView({
   loc,
   availableTestTypes,
   attendanceBandInfo,
+  showAbsents,
+  filtersData,
 }) {
   const { academicSummaryFilters } = settings
   const internalPerformanceBandsList = bandInfo.map(
@@ -86,13 +88,18 @@ function ReportView({
           settings={settings}
         />
         <WidgetColumn>
-          <RiskSummary loc={loc} settings={settings} />
+          <RiskSummary
+            loc={loc}
+            settings={settings}
+            filtersData={filtersData}
+          />
           <AttendanceSummary
             location={location}
             history={history}
             settings={settings}
             setSettings={setSettings}
             attendanceBandInfo={attendanceBandInfo}
+            showAbsents={showAbsents}
           />
         </WidgetColumn>
       </WidgetsContainer>

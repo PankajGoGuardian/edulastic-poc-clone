@@ -32,6 +32,7 @@ const Tags = ({
   placement = 'bottomLeft',
   dataKey = 'tagName',
   titleKey = null,
+  tooltipContainer,
 }) => {
   if (!tags.length) return null
 
@@ -42,7 +43,10 @@ const Tags = ({
   const popup = (
     <PopupContainer className="tag-wrapper">
       {hiddenTags.map((tag, i) => (
-        <Tooltip title={titleKey ? tag[titleKey] : ''}>
+        <Tooltip
+          title={titleKey ? tag[titleKey] : ''}
+          getPopupContainer={tooltipContainer}
+        >
           <Label
             data-cy="standards"
             className={className}
@@ -69,6 +73,7 @@ const Tags = ({
         <Tooltip
           overlayClassName="custom-table-tooltip"
           title={titleKey ? tag[titleKey] : ''}
+          getPopupContainer={tooltipContainer}
         >
           <Label
             data-cy="standards"
@@ -110,12 +115,14 @@ Tags.propTypes = {
   labelStyle: PropTypes.object,
   type: PropTypes.string,
   show: PropTypes.number,
+  tooltipContainer: PropTypes.func,
 }
 
 Tags.defaultProps = {
   labelStyle: {},
   type: 'primary', // primary, secondary
   show: 2,
+  tooltipContainer: () => document.body,
 }
 
 export default Tags

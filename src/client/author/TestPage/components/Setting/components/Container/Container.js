@@ -849,6 +849,7 @@ class Setting extends Component {
       hasSections,
       canSchoolAdminUseDistrictCommon,
       districtTestSettings,
+      isSurveyTest,
     } = this.props
     const {
       isDocBased,
@@ -901,6 +902,7 @@ class Setting extends Component {
       showTtsForPassages = true,
       allowAutoEssayEvaluation = false,
       vqPreventSkipping,
+      vqEnableClosedCaption,
       showSpeechToText,
     } = entity
 
@@ -915,6 +917,9 @@ class Setting extends Component {
       canSchoolAdminUseDistrictCommon,
     })
     const testTypes = includeCommonOnTestType(availableTestTypes, testType)
+    if (!isSurveyTest) {
+      delete testTypes[TEST_TYPE_SURVEY]
+    }
     let isSettingPresent = false
     if (
       currentSettingsId &&
@@ -1058,7 +1063,7 @@ class Setting extends Component {
           'accommodationsSettings.textToSpeech.description'
         ),
         id: textToSpeech.id,
-        isEnabled: isAccommodationEditAllowed,
+        isEnabled: features?.textToSpeech && isAccommodationEditAllowed,
       },
     ]
 
@@ -1138,7 +1143,7 @@ class Setting extends Component {
       const hasAccommodationsData = accommodationsData.filter(
         (a) => a.isEnabled
       ).length
-      if (!hasAccommodationsData) {
+      if (isDocBased || !hasAccommodationsData) {
         return settingCategories.filter(
           (settingCategory) => settingCategory.id !== 'accommodations'
         )
@@ -1165,6 +1170,12 @@ class Setting extends Component {
 
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
+
+    const disableCheckAnsTries = [
+      disabled,
+      !assessmentSuperPowersCheckAnswerTries,
+      isSurveyTest,
+    ].some((o) => !!o)
 
     return (
       <MainContentWrapper ref={this.containerRef} padding="10px 20px">
@@ -1353,6 +1364,8 @@ class Setting extends Component {
                       </Body>
                     </Row>
                   </Block>
+                  {/* VQ prevent skipping */}
+
                   <EduIf
                     condition={
                       entity.testCategory === testCategoryTypes.VIDEO_BASED
@@ -1371,13 +1384,36 @@ class Setting extends Component {
                         />
                       </Title>
                       <Body smallSize={isSmallSize}>
-                        <Description>
+                        <Description data-cy="preventSkippingDescription">
                           If <b>ON</b>, Students won&apos;t be able to skip
                           ahead in a video.
                         </Description>
                       </Body>
                     </Block>
+                    {/* VQ prevent skipping */}
+
+                    {/* VQ enable cc */}
+                    <Block id="vq-enable-cc" smallSize={isSmallSize}>
+                      <Title>
+                        <span>Turn on closed captions</span>
+                        <EduSwitchStyled
+                          checked={vqEnableClosedCaption}
+                          data-cy="vqEnableClosedCaption"
+                          onChange={(v) =>
+                            this.updateTestData('vqEnableClosedCaption')(v)
+                          }
+                          disabled={disabled}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Description>
+                          Enable closed captions if available for YouTube
+                          videos.
+                        </Description>
+                      </Body>
+                    </Block>
                   </EduIf>
+
                   {COMMON.includes(testType) && (
                     <Block id="allow-redirect" smallSize={isSmallSize}>
                       <SettingContainer>
@@ -1759,10 +1795,7 @@ class Setting extends Component {
                         <Row gutter={24}>
                           <Col span={12}>
                             <TextInputStyled
-                              disabled={
-                                disabled ||
-                                !assessmentSuperPowersCheckAnswerTries
-                              }
+                              disabled={disableCheckAnsTries}
                               onChange={(e) =>
                                 this.updateTestData('maxAnswerChecks')(
                                   e.target.value
@@ -2107,7 +2140,10 @@ class Setting extends Component {
                 </>
               )}
               <EduIf
-                condition={accommodationsData.filter((a) => a.isEnabled).length}
+                condition={
+                  !isDocBased &&
+                  accommodationsData.filter((a) => a.isEnabled).length
+                }
               >
                 <SettingsCategoryBlock id="accommodations">
                   <span>
@@ -2156,7 +2192,7 @@ class Setting extends Component {
                             </Col>
                             <Col span={18}>
                               <StyledRadioGroup
-                                disabled={disabled}
+                                disabled={disabled || !premium}
                                 onChange={(e) => {
                                   // const value = last !== undefined ? last : first
                                   this.updateTestData(o.key)(e.target.value)

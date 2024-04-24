@@ -5,7 +5,7 @@ import { LAST_PAGE_INDEX } from '@edulastic/constants/reportUtils/common'
 import { StyledAttendanceChartContainer } from '../../wholeLearnerReport/components/AttendanceChart/styled-components'
 import { StyledChartNavButton } from '../../../../common/styled'
 import { CustomChartXTick } from '../../../../common/components/charts/chartUtils/customChartXTick'
-import { CustomizedLabel, yAxisTick } from './CustomElements'
+import { CustomizedLabel, YAxisTick } from './CustomElements'
 import {
   getAttendanceChartData,
   getXTickText,
@@ -43,6 +43,7 @@ function AttendanceSummaryGraph({
   groupBy,
   showInterventions,
   interventionList,
+  showAbsents,
 }) {
   const attendanceChartData = useMemo(() => {
     const _attendanceChartData = getAttendanceChartData(attendanceData, groupBy)
@@ -82,6 +83,14 @@ function AttendanceSummaryGraph({
     [page, pagedData, groupBy]
   )
 
+  const yAxisTickProps = { tick: <YAxisTick showAbsents={showAbsents} /> }
+  if (!showAbsents) {
+    Object.assign(yAxisTickProps, {
+      domain: [0, 100],
+      ticks: [0, 20, 40, 60, 80, 100],
+    })
+  }
+
   return (
     <StyledAttendanceChartContainer
       strokeOpacity={1}
@@ -102,6 +111,7 @@ function AttendanceSummaryGraph({
           marginTop: -30,
           marginLeft: 0,
           visibility: hasPreviousPage ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <StyledChartNavButton
@@ -118,6 +128,7 @@ function AttendanceSummaryGraph({
           marginTop: -30,
           marginRight: 0,
           visibility: hasNextPage ? 'visible' : 'hidden',
+          padding: 0,
         }}
       />
       <CustomXAxisTickTooltipContainer
@@ -171,9 +182,6 @@ function AttendanceSummaryGraph({
           />
           <YAxis
             type="number"
-            domain={[0, 100]}
-            ticks={[0, 20, 40, 60, 80, 100]}
-            tick={yAxisTick}
             padding={{ top: 10 }}
             tickCount={6}
             tickLine={false}
@@ -181,13 +189,14 @@ function AttendanceSummaryGraph({
             label={
               <YAxisLabel
                 data={{
-                  value: 'PERCENTAGE',
+                  value: showAbsents ? 'TOTAL ABSENCE' : 'PERCENTAGE',
                   angle: -90,
                   fontSize: 14,
-                  rightMargin: 5,
+                  rightMargin: 25,
                 }}
               />
             }
+            {...yAxisTickProps}
           />
           <Tooltip
             cursor={false}
@@ -196,14 +205,17 @@ function AttendanceSummaryGraph({
                 tooltipRef={tooltipRef}
                 parentContainerRef={parentContainerRef}
                 chartRef={chartRef}
+                showAbsents={showAbsents}
               />
             }
           />
           <Line
             type="monotone"
-            dataKey="value"
+            dataKey={showAbsents ? 'absences' : 'value'}
             stroke="#9FC6D2"
-            label={<CustomizedLabel stroke="#9FC6D2" />}
+            label={
+              <CustomizedLabel stroke="#9FC6D2" showAbsents={showAbsents} />
+            }
             dot={<CustomDot />}
             activeDot={<CustomDot active />}
             isAnimationActive={animate}

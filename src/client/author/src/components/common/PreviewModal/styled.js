@@ -11,6 +11,7 @@ import {
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import { Button, Icon, Typography, Input } from 'antd'
+import { Nav } from '../../../../../assessment/themes/common'
 
 const { Text } = Typography
 
@@ -576,4 +577,85 @@ export const PremiumItemBannerWrapper = styled.div`
     position: absolute;
     top: -40px;
   }
+`
+export const StyledWrapper = styled(FlexContainer)`
+  background: ${({ background }) => background};
+  height: ${({ height }) => height};
+  min-height: ${({ minHeight }) => minHeight};
+  border-bottom-right-radius: ${({ borderBottomRightRadius }) =>
+    borderBottomRightRadius};
+  border-bottom-left-radius: ${({ borderBottomLeftRadius }) =>
+    borderBottomLeftRadius};
+`
+const ArrowStyle = css`
+  max-width: 30px;
+  font-size: 26px;
+  border-radius: 0px;
+  left: 0px;
+  svg {
+    fill: #878a91;
+    path {
+      fill: unset;
+    }
+  }
+  .help-text {
+    color: #878a91;
+  }
+
+  &:hover {
+    svg {
+      fill: ${white};
+    }
+    .help-text {
+      color: ${white};
+      font-size: 20;
+      font-weight: 600;
+    }
+  }
+`
+
+export const PrevArrow = styled(Nav.BackArrow)`
+  ${ArrowStyle};
+`
+
+export const NextArrow = styled(Nav.NextArrow)`
+  ${ArrowStyle};
+  left: unset;
+  right: 0px;
+`
+export const PrevArrowTTS = styled(PrevArrow)`
+  .help-text {
+    color: #878a91;
+    font-size: 11px;
+  }
+  &:hover {
+    .help-text {
+      color: ${white};
+    }
+  }
+  transform: unset;
+`
+export const NextArrowTTS = styled(NextArrow)`
+  .help-text {
+    color: #878a91;
+    font-size: 11px;
+  }
+  &:hover {
+    .help-text {
+      color: ${white};
+    }
+  }
+  transform: unset;
+`
+export const Title = styled(FlexContainer)`
+  font-weight: bold;
+  font-size: 20px;
+  user-select: none;
+`
+
+export const ModalContentArea = styled.div`
+  border-radius: ${({ tts }) => (tts ? '8px' : '0px')};
+  padding: 0px 30px;
+  height: ${({ isMobile }) => (isMobile ? 'calc(100vh - 100px)' : '100%')};
+  width: ${({ width }) => width};
 `

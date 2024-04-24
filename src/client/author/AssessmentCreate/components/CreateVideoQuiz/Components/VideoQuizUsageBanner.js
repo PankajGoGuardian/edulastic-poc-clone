@@ -26,7 +26,7 @@ const VideoQuizUsageBanner = ({ vqUsageCount, vqQuotaForDistrict }) => {
           <VideoQuizUsage />
         </EduThen>
         <EduElse>
-          <UpgradeToAiSuitBox>
+          <UpgradeToAiSuitBox data-cy="videoQuizUsageBanner">
             <FlexContainer justifyContent="flex-start" alignItems="center">
               <VideoIconWrapper mr="16px">
                 <IconVQVideo />
@@ -36,10 +36,12 @@ const VideoQuizUsageBanner = ({ vqUsageCount, vqQuotaForDistrict }) => {
                 height="50px"
                 justifyContent="space-between"
               >
-                <UpgradeAiSuitTitle>You’re on our Free Plan</UpgradeAiSuitTitle>
+                <UpgradeAiSuitTitle data-cy="upgradeAiSuitTitle">
+                  You’re on our Free Plan
+                </UpgradeAiSuitTitle>
                 <FlexContainer justifyContent="flex-start" alignItems="center">
                   <IconVQTextCheck margin="3px 0 0 0" />
-                  <UpgradeAiSuitText ml="5px">
+                  <UpgradeAiSuitText ml="5px" data-cy="videoQuizUsageCount">
                     {vqQuotaForDistrict} Free Video Quizzes Included
                   </UpgradeAiSuitText>
                 </FlexContainer>

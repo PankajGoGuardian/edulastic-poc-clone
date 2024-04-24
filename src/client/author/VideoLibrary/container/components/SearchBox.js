@@ -74,6 +74,7 @@ const VideoLibrarySearchBox = ({
                   type="search"
                 />
               }
+              data-cy="videoLibrarySearchInput"
             />
           </FormItem>
         </StyledForm>

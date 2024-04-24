@@ -11,18 +11,20 @@ import GroupsFilter from './GroupsFilter'
 
 const FilterDropdown = ({
   label,
+  allOptionText,
   mode,
   onChange,
   value,
   options,
   dataCy,
   el,
+  isRequired,
 }) => (
   <Col span={24}>
-    <FieldLabel>{label}</FieldLabel>
+    <FieldLabel isRequired={isRequired}>{label}</FieldLabel>
     <SelectInputStyled
       data-cy={dataCy}
-      placeholder={`All ${label}`}
+      placeholder={allOptionText}
       mode={mode}
       ref={el}
       onChange={onChange}
@@ -37,7 +39,7 @@ const FilterDropdown = ({
       {options &&
         options.map((data) => (
           <Select.Option key={data.id} value={data.id}>
-            {data.name === 'All' ? `All ${label}` : data.name}
+            {data.name === 'All' ? allOptionText : data.name}
           </Select.Option>
         ))}
     </SelectInputStyled>
@@ -74,7 +76,21 @@ const GradebookFilters = ({
           </StyledSpan>
         </Col>
         <FilterDropdown
+          label="Class"
+          allOptionText="Select Classes"
+          mode="multiple"
+          el={classRef}
+          onChange={(selected) =>
+            updateFilters({ ...filters, classIds: selected })
+          }
+          value={filters.classIds}
+          options={data.classes}
+          dataCy="filter-class"
+          isRequired
+        />
+        <FilterDropdown
           label="Assessment"
+          allOptionText="All Assessments"
           mode="multiple"
           el={assignmentRef}
           onChange={(selected) =>
@@ -86,6 +102,7 @@ const GradebookFilters = ({
         />
         <FilterDropdown
           label="Status"
+          allOptionText="All Statuses"
           onChange={(selected) =>
             updateFilters({ ...filters, status: selected })
           }
@@ -94,18 +111,8 @@ const GradebookFilters = ({
           dataCy="filter-status"
         />
         <FilterDropdown
-          label="Class"
-          mode="multiple"
-          el={classRef}
-          onChange={(selected) =>
-            updateFilters({ ...filters, classIds: selected })
-          }
-          value={filters.classIds}
-          options={data.classes}
-          dataCy="filter-class"
-        />
-        <FilterDropdown
           label="Class Grade"
+          allOptionText="All Grades"
           mode="multiple"
           el={gradeRef}
           onChange={(selected) =>
@@ -117,6 +124,7 @@ const GradebookFilters = ({
         />
         <FilterDropdown
           label="Class Subject"
+          allOptionText="All Class Subjects"
           mode="multiple"
           el={subjectRef}
           onChange={(selected) =>
@@ -137,6 +145,7 @@ const GradebookFilters = ({
         />
         <FilterDropdown
           label="Test Type"
+          allOptionText="All Test Types"
           onChange={(selected) =>
             updateFilters({ ...filters, testType: selected })
           }

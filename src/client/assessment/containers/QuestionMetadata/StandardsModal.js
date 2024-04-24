@@ -6,6 +6,7 @@ import {
   Paper,
   CustomModalStyled,
   RadioBtn,
+  withInterestedCurriculums,
 } from '@edulastic/common'
 import { Col, Row, Spin } from 'antd'
 import {
@@ -19,6 +20,7 @@ import {
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { setDefaultInterests } from '../../../author/dataUtils'
 import {
   clearTloAndEloAction,
@@ -32,10 +34,7 @@ import {
   getStandardsEloSelector,
   getStandardsTloSelector,
 } from '../../../author/src/selectors/dictionaries'
-import {
-  getInterestedCurriculumsSelector,
-  getShowAllCurriculumsSelector,
-} from '../../../author/src/selectors/user'
+import { getShowAllCurriculumsSelector } from '../../../author/src/selectors/user'
 import PopupRowSelect from './PopupRowSelect'
 import { Container } from './styled/Container'
 import { ELOList } from './styled/ELOList'
@@ -65,6 +64,7 @@ const StandardsModal = ({
   elosByTloId,
   clearTloAndElo,
   showAllStandards = true,
+  showAllInterestedCurriculums = false,
   interestedCurriculums = [],
 }) => {
   const [state, setState] = useState({
@@ -356,6 +356,7 @@ const StandardsModal = ({
           subject={state.subject}
           grades={state.grades}
           t={t}
+          showAllInterestedCurriculums={!!showAllInterestedCurriculums}
         />
         <br />
         <Spin spinning={curriculumStandardsLoading} size="large">
@@ -458,19 +459,23 @@ StandardsModal.defaultProps = {
   enableSelectAll: false,
 }
 
-export default connect(
-  (state) => ({
-    curriculumStandardsTLO: getStandardsTloSelector(state),
-    curriculumStandardsELO: getStandardsEloSelector(state),
-    elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
-    showAllStandards: getShowAllCurriculumsSelector(state),
-    interestedCurriculums: getInterestedCurriculumsSelector(state),
-  }),
-  {
-    getStandardTlos: getStandardTlosAction,
-    getStandardElos: getStandardElosAction,
-    getElosSuccess: getElosSuccessAction,
-    setElosByTloId: setElosByTloIdAction,
-    clearTloAndElo: clearTloAndEloAction,
-  }
-)(StandardsModal)
+const enhance = compose(
+  withInterestedCurriculums,
+  connect(
+    (state) => ({
+      curriculumStandardsTLO: getStandardsTloSelector(state),
+      curriculumStandardsELO: getStandardsEloSelector(state),
+      elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
+      showAllStandards: getShowAllCurriculumsSelector(state),
+    }),
+    {
+      getStandardTlos: getStandardTlosAction,
+      getStandardElos: getStandardElosAction,
+      getElosSuccess: getElosSuccessAction,
+      setElosByTloId: setElosByTloIdAction,
+      clearTloAndElo: clearTloAndEloAction,
+    }
+  )
+)
+
+export default enhance(StandardsModal)

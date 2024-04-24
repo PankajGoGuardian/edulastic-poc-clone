@@ -337,6 +337,7 @@ const SimpleStackedBarChartComponent = ({
             chartNavLeftVisibility || (carousel && pageNo > 1)
               ? 'visible'
               : 'hidden',
+          padding: 0,
         }}
       />
       <StyledChartNavButton
@@ -352,6 +353,7 @@ const SimpleStackedBarChartComponent = ({
             (carousel && totalRows > tablePageSize * pageNo)
               ? 'visible'
               : 'hidden',
+          padding: 0,
         }}
       />
       <CustomXAxisTickTooltipContainer

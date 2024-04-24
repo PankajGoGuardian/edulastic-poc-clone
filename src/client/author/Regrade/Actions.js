@@ -17,8 +17,9 @@ const AddedItems = ({ onUpdateSettings, settings, showLabel }) => {
       <Row>
         {showLabel && <OptionTitle>Added Items</OptionTitle>}
         <Question>
-          You have added new items into the test, how do you want to handle
-          students who have already submitted?
+          You have added new items or changed the items to a different question
+          type into the test, how do you want to handle students who have
+          already submitted?
         </Question>
       </Row>
       <Group

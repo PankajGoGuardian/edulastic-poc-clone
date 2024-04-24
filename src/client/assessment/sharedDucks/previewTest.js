@@ -6,6 +6,8 @@ import { takeEvery, put, all, select, call } from 'redux-saga/effects'
 import { testItemsApi } from '@edulastic/api'
 import { questionType } from '@edulastic/constants'
 
+import { useLanguageFeatureQn } from '@edulastic/constants/const/questionType'
+import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
 import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
 import {
@@ -241,7 +243,7 @@ function* evaluateTestItemSaga({ payload }) {
     const testItem = testItems[currentItem]
     const allQuestionsById = yield select(getQuestionsByIdSelector)
     const answers = yield select(getAnswersListSelector)
-    const preferredLanguage = yield select(getCurrentLanguage)
+    let preferredLanguage = yield select(getCurrentLanguage)
 
     const testItemId = get(testItem, '_id', '')
     const questions = get(testItem, 'rows', [])
@@ -251,6 +253,15 @@ function* evaluateTestItemSaga({ payload }) {
       .map((qid) => allQuestionsById[`${testItem._id}_${qid}`])
     // const qById = keyBy(questions, 'id')
     const answersByQids = answersByQId(answers, testItem._id)
+
+    const _questionType = questions?.[0]?.type
+
+    if (
+      !useLanguageFeatureQn.includes(_questionType) &&
+      preferredLanguage != LANGUAGE_EN
+    ) {
+      preferredLanguage = LANGUAGE_EN
+    }
 
     const test = yield select((state) => get(state, 'tests.entity', {}))
     const userInteractions = yield select(

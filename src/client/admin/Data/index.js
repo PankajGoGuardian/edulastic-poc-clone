@@ -154,15 +154,8 @@ export const DISABLE_SUBMIT_TITLE = 'Disabled since Sync Enabled'
 export const radioButtonUserData = {
   FREE: 'Free',
   PREMIUM: 'Premium',
-  DATA_STUDIO: 'Data Studio',
-  PREMIUM_PLUS_DATA_STUDIO: 'Premium + Data Studio',
   get list() {
-    return [
-      this.FREE,
-      this.PREMIUM,
-      this.DATA_STUDIO,
-      this.PREMIUM_PLUS_DATA_STUDIO,
-    ]
+    return [this.FREE, this.PREMIUM]
   },
 }
 
@@ -250,14 +243,6 @@ export const SUBSCRIPTION_TYPE_CONFIG = {
       label: 'Upgrade',
       subTypeToBeSent: 'enterprise',
     },
-    dataStudio: {
-      label: 'Upgrade',
-      subTypeToBeSent: 'dataStudio',
-    },
-    enterprisePlusDataStudio: {
-      label: 'Upgrade',
-      subTypeToBeSent: 'enterprisePlusDataStudio',
-    },
   },
   premium: {
     free: {
@@ -267,14 +252,6 @@ export const SUBSCRIPTION_TYPE_CONFIG = {
     premium: {
       label: 'Apply Changes',
       subTypeToBeSent: 'premium',
-    },
-    dataStudio: {
-      label: 'Revoke',
-      subTypeToBeSent: 'dataStudio',
-    },
-    premiumPlusDataStudio: {
-      label: 'Upgrade',
-      subTypeToBeSent: 'premiumPlusDataStudio',
     },
   },
   partial_premium: {
@@ -299,14 +276,6 @@ export const SUBSCRIPTION_TYPE_CONFIG = {
     enterprise: {
       label: 'Apply Changes',
       subTypeToBeSent: 'enterprise',
-    },
-    dataStudio: {
-      label: 'Revoke',
-      subTypeToBeSent: 'dataStudio',
-    },
-    enterprisePlusDataStudio: {
-      label: 'Upgrade',
-      subTypeToBeSent: 'enterprisePlusDataStudio',
     },
   },
 }

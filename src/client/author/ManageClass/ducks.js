@@ -116,6 +116,11 @@ export const getIsCreateAssignmentModalVisible = createSelector(
   (state) => state.isCreateAssignmentModalVisible
 )
 
+export const getClassObservationsSelector = createSelector(
+  manageClassSelector,
+  (state) => state.observations || []
+)
+
 // action types
 
 export const FETCH_CLASS_LIST = '[manageClass] fetch google class'
@@ -733,7 +738,13 @@ function* fetchStudentsByClassId({ payload }) {
     const studentsPrevState = yield select(
       (state) => state.manageClass.studentsList
     )
-    const result = yield call(enrollmentApi.fetch, classId)
+    const getObservationCount = true
+    const result = yield call(
+      enrollmentApi.fetch,
+      classId,
+      false,
+      getObservationCount
+    )
     const { group, students } = result
     yield put(setClassAction(group))
     yield put(fetchStudentsByIdSuccessAction(students))

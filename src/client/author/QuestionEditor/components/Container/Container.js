@@ -57,6 +57,7 @@ import {
 } from '../../../ItemDetail/ducks'
 import {
   changeUpdatedFlagAction,
+  getCurrentQuestionSelector,
   isRegradeFlowSelector,
   updateQuestionAction,
 } from '../../../sharedDucks/questions'
@@ -73,7 +74,10 @@ import WarningModal from '../../../ItemDetail/components/WarningModal'
 import { clearAnswersAction } from '../../../src/actions/answers'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelectorTab/duck'
 import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
-import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
+import {
+  allowedToSelectMultiLanguageInTest,
+  isPremiumUserSelector,
+} from '../../../src/selectors/user'
 import { EDIT } from '../../../../assessment/constants/constantsForQuestions'
 import { getSearchParams } from '../../../src/utils/util'
 import ChangeQType from '../ChangeQType/ChangeQType'
@@ -256,7 +260,7 @@ class Container extends Component {
     this.handleQuestionTypeChangePopupVisibilityChange(false)
     const {
       t: i18Translate,
-      question: currentQuestionData,
+      questionDataWithoutLanguageChanges: currentQuestionData,
       updateQuestion,
       setQuestion,
       testItemId,
@@ -268,6 +272,7 @@ class Container extends Component {
       isRegradeFlow,
       setQuestionTypeChangedTestItemId,
       createTestItem,
+      isPremiumUser,
     } = this.props
 
     const { type: currentQuestionType } = currentQuestionData
@@ -287,6 +292,7 @@ class Container extends Component {
       : getNewQuestionTypeData({
           currentQuestionData,
           newQuestionType,
+          isPremiumUser,
         })
 
     const updatedItemData = getUpdatedItemData({
@@ -857,6 +863,8 @@ const enhance = compose(
       currentLanguage: getCurrentLanguage(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
       isRegradeFlow: isRegradeFlowSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
+      questionDataWithoutLanguageChanges: getCurrentQuestionSelector(state),
     }),
     {
       changeView: changeViewAction,

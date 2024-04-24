@@ -26,6 +26,7 @@ const removeResponseBoxesFromStimulus = (stimulus) => {
 export const getNewQuestionTypeData = ({
   currentQuestionData,
   newQuestionType,
+  isPremiumUser,
 }) => {
   const allQuestionData = getCards()
   let { data: newQuestionData = {} } =
@@ -49,10 +50,19 @@ export const getNewQuestionTypeData = ({
     testletResponseIds,
     testletAdditionalMetadata,
     rubrics,
+    languageFeatures: { es: { stimulus: spanishStimulus = '' } = {} } = {},
     validation: {
       validResponse: { score: currentQuestionScore = 1 } = {},
     } = {},
   } = currentQuestionData || {}
+
+  const languageFeaturesData = {
+    languageFeatures: {
+      es: {
+        stimulus: removeResponseBoxesFromStimulus(spanishStimulus),
+      },
+    },
+  }
 
   if (!isEmpty(newQuestionData)) {
     newQuestionData = {
@@ -71,6 +81,7 @@ export const getNewQuestionTypeData = ({
       ...(testletQuestionId ? { testletQuestionId } : {}),
       ...(testletResponseIds ? { testletResponseIds } : {}),
       ...(testletAdditionalMetadata ? { testletAdditionalMetadata } : {}),
+      ...(isPremiumUser && spanishStimulus ? languageFeaturesData : {}),
     }
 
     if (!isEmpty(rubrics)) {

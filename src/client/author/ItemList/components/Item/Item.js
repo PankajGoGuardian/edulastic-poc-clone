@@ -642,6 +642,7 @@ class Item extends Component {
                       marginRight: '3px',
                       padding: '0px',
                     }}
+                    data-cy="view"
                   >
                     <IconEye />
                   </EduButton>

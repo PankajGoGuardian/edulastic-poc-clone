@@ -39,6 +39,8 @@ export const getNewQuestionTypeData = ({
     stimulus = '',
     instructorStimulus,
     sampleAnswer,
+    hints = [],
+    metadata: { distractor_rationale_response_level: distractors = [] } = {},
     alignment,
     grades,
     subjects,
@@ -50,7 +52,14 @@ export const getNewQuestionTypeData = ({
     testletResponseIds,
     testletAdditionalMetadata,
     rubrics,
-    languageFeatures: { es: { stimulus: spanishStimulus = '' } = {} } = {},
+    languageFeatures: {
+      es: {
+        stimulus: spanishStimulus = '',
+        hints: spanishHints = [],
+        instructorStimulus: spanishInstructorStimulus = '',
+        sampleAnswer: spanishSampleAnswer = '',
+      } = {},
+    } = {},
     validation: {
       validResponse: { score: currentQuestionScore = 1 } = {},
     } = {},
@@ -60,9 +69,21 @@ export const getNewQuestionTypeData = ({
     languageFeatures: {
       es: {
         stimulus: removeResponseBoxesFromStimulus(spanishStimulus),
+        hints: spanishHints,
+        instructorStimulus: spanishInstructorStimulus,
+        sampleAnswer: spanishSampleAnswer,
       },
     },
   }
+
+  const metadata = { distractor_rationale_response_level: distractors }
+
+  const hasLanguageFeatures =
+    isPremiumUser &&
+    (spanishStimulus ||
+      spanishHints?.length ||
+      spanishInstructorStimulus ||
+      spanishSampleAnswer)
 
   if (!isEmpty(newQuestionData)) {
     newQuestionData = {
@@ -71,6 +92,8 @@ export const getNewQuestionTypeData = ({
       stimulus: removeResponseBoxesFromStimulus(stimulus),
       ...(instructorStimulus ? { instructorStimulus } : {}),
       ...(sampleAnswer ? { sampleAnswer } : {}),
+      ...(hints?.length ? { hints } : {}),
+      ...(distractors?.length ? { metadata } : {}),
       ...(alignment ? { alignment } : {}),
       ...(grades ? { grades } : {}),
       ...(subjects ? { subjects } : {}),
@@ -81,7 +104,7 @@ export const getNewQuestionTypeData = ({
       ...(testletQuestionId ? { testletQuestionId } : {}),
       ...(testletResponseIds ? { testletResponseIds } : {}),
       ...(testletAdditionalMetadata ? { testletAdditionalMetadata } : {}),
-      ...(isPremiumUser && spanishStimulus ? languageFeaturesData : {}),
+      ...(hasLanguageFeatures ? languageFeaturesData : {}),
     }
 
     if (!isEmpty(rubrics)) {

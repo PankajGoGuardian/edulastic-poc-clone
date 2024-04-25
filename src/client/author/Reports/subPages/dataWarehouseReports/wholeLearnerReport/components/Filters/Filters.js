@@ -302,6 +302,7 @@ const WholeLearnerReportFilters = ({
         studentId: selected.key,
         externalTestTypesRequired: true,
         externalTestsRequired: true,
+        useAttendanceAbsenceRequired: true,
       })
     } else {
       delete _filterTagsData.student

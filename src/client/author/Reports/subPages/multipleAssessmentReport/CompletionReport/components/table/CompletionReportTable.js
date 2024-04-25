@@ -50,6 +50,7 @@ const CompletionReportTable = ({
       dimensionVal: record.dimensionId,
       index,
       compareBy: settings.selectedCompareBy?.key,
+      isSharedReport,
     }
     // Removing as in BE if reportId is present, All filters will be applied instead instead of specific test
     if (isSharedReport) {

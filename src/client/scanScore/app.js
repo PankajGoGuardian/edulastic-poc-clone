@@ -6,9 +6,9 @@ import { themes } from '../theme'
 
 import UploadAnswerSheets from './uploadAnswerSheets'
 
-const ScanAnswerSheets = lazy(() =>
-  import(/* webpackChunkName: "scanAnswerSheets" */ './scanAnswerSheets/index')
-)
+// const ScanAnswerSheets = lazy(() =>
+//   import(/* webpackChunkName: "scanAnswerSheets" */ './scanAnswerSheets/index')
+// )
 const ScanProgress = lazy(() =>
   import(/* webpackChunkName: "scanProgress" */ './scanProgress/index')
 )
@@ -17,11 +17,12 @@ const App = () => (
   <ThemeProvider theme={themes.scanScore}>
     <Switch>
       <Route path="/uploadAnswerSheets/scanProgress" component={ScanProgress} />
-      <Route
+      {/* NOTE: Disabled camera upload due to customer issues ref. https://goguardian.atlassian.net/browse/EV-42994 */}
+      {/* <Route
         exact
         path="/uploadAnswerSheets/cameraScan"
         component={ScanAnswerSheets}
-      />
+      /> */}
       <Route exact path="/uploadAnswerSheets" component={UploadAnswerSheets} />
     </Switch>
   </ThemeProvider>

@@ -29,7 +29,6 @@ const DropzoneUploader = ({ handleDrop, disabled = false }) => (
               allowedFiles: 'BUBBLE SHEET FORMS (PDF, MAX 1MB)',
             }}
             containerHeight="500px"
-            containerMargin="40px 40px 40px 0px"
           >
             {/* {fileRejections.length ? (
               <Col className="dropzone-list-div" span={24}>

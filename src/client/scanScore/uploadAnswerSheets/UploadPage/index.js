@@ -1,9 +1,9 @@
 import React from 'react'
 
+import { FlexContainer } from '@edulastic/common'
 import UploadProgress from './UploadProgress'
 import DropzoneUploader from './DropzoneUploader'
-import CameraUploader from './CameraUploader'
-import { FlexContainer } from '@edulastic/common'
+// import CameraUploader from './CameraUploader'
 
 const UploadPage = ({
   uploading,
@@ -21,7 +21,8 @@ const UploadPage = ({
   ) : (
     <FlexContainer marginLeft="20px" mr="20px">
       <DropzoneUploader handleDrop={handleDrop} />
-      <CameraUploader />
+      {/* NOTE: Disabled camera upload due to customer issues ref. https://goguardian.atlassian.net/browse/EV-42994 */}
+      {/* <CameraUploader /> */}
     </FlexContainer>
   )
 }

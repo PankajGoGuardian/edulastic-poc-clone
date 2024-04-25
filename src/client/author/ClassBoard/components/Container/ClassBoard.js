@@ -20,6 +20,7 @@ import {
 } from '@edulastic/common'
 import {
   IconAddStudents,
+  IconAssignVideoQuizPremiumSmall,
   IconAssignVideoQuizSmall,
   IconDownload,
   IconInfo,
@@ -1606,12 +1607,15 @@ class ClassBoard extends Component {
       )
     }
 
-    const showVideoQuizBanner = [
-      !userFeatures?.isVideoQuizAndAIEnabled,
-      !isGcpsDistrict,
-      userFeatures?.premium,
-    ].every((o) => !!o)
-
+    const showVideoQuizBanner = [!isGcpsDistrict, userFeatures?.premium].every(
+      (o) => !!o
+    )
+    const vQbannerToRender = userFeatures?.isVideoQuizAndAIEnabled
+      ? IconAssignVideoQuizPremiumSmall
+      : IconAssignVideoQuizSmall
+    const styleForVQBanner = userFeatures?.isVideoQuizAndAIEnabled
+      ? { marginTop: '-13px' }
+      : {}
     return (
       <div>
         {showCanvasShare && (
@@ -1955,7 +1959,8 @@ class ClassBoard extends Component {
                       clickedFrom="LCB"
                       user={user}
                       history={history}
-                      component={IconAssignVideoQuizSmall}
+                      component={vQbannerToRender}
+                      style={styleForVQBanner}
                     />
                     <EduIf
                       condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}

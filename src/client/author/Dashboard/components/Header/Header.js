@@ -10,6 +10,7 @@ import { white, themeColor, darkOrange1 } from '@edulastic/colors'
 import { EduButton, EduIf, FlexContainer, MainHeader } from '@edulastic/common'
 import {
   IconAssignVideoQuiz,
+  IconAssignVideoQuizPremium,
   IconClockDashboard,
   IconHangouts,
   IconManage,
@@ -253,6 +254,10 @@ const HeaderSection = ({
     !isGcpsDistrict,
     isPremiumUser,
   ].every((o) => !!o)
+  const vQbannerToRender = isVideoQuizAndAIEnabled
+    ? IconAssignVideoQuizPremium
+    : IconAssignVideoQuiz
+  const styleForVQBanner = isVideoQuizAndAIEnabled ? { marginTop: '-6px' } : {}
 
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
@@ -262,7 +267,8 @@ const HeaderSection = ({
           history={history}
           clickedFrom="Dashboard"
           user={user.user}
-          component={IconAssignVideoQuiz}
+          component={vQbannerToRender}
+          style={styleForVQBanner}
         />
         {atleastOneClassPresent && (
           <>

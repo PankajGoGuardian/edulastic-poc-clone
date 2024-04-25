@@ -141,4 +141,5 @@ const StyledRatingDescription = styled(Stimulus)`
   min-height: 100%;
   min-width: 100%;
   padding: 0 14px 11px;
+  white-space: normal;
 `

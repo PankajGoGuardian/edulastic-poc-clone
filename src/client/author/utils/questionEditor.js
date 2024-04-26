@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash'
 import { questionType } from '@edulastic/constants'
 import { getCards } from '../PickUpQuestionType/components/QuestionType/constants'
 
-const { MULTIPART } = questionType
+const { MULTIPART, useLanguageFeatureQn } = questionType
 
 const removeResponseBoxesFromStimulus = (stimulus) => {
   if (!window.$ || !stimulus || !stimulus.trim().length) return stimulus
@@ -80,6 +80,7 @@ export const getNewQuestionTypeData = ({
 
   const hasLanguageFeatures =
     isPremiumUser &&
+    useLanguageFeatureQn.includes(newQuestionType) &&
     (spanishStimulus ||
       spanishHints?.length ||
       spanishInstructorStimulus ||

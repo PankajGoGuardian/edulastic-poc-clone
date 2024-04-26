@@ -33,7 +33,7 @@ const Summary = ({
       useAttendanceAbsence: isAttendanceAbsence,
     }
     return payload.reportId
-      ? pick(payload, ['reportId'])
+      ? pick(payload, ['reportId', 'useAttendanceAbsence'])
       : pick(payload, ['studentId', 'termId', 'useAttendanceAbsence'])
   }, [
     settings.requestFilters,

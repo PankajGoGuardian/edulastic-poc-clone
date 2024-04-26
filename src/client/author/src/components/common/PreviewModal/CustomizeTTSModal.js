@@ -57,7 +57,7 @@ const CustomizeTTSModal = ({
                   {(data?.questions || []).length}{' '}
                   <Tooltip
                     zIndex="1500"
-                    title="Only parts with Customize TTS support are available."
+                    title="On multipart item only the part(s) with Customize TTS support are available."
                   >
                     <IconInfoCircle
                       margin="0 0 0 5px"
@@ -68,7 +68,8 @@ const CustomizeTTSModal = ({
                 </EduIf>
               </Title>
               <p>
-                Please refresh the page to update the audio after a few minutes
+                TTS generation can take several minutes. Please refresh the page
+                to get the updated TTS audio.
               </p>
             </FlexContainer>
             <IconClose onClick={toggleTTSTextModal} />

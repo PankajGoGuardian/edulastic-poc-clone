@@ -7,6 +7,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { test } from '@edulastic/constants'
 import { segmentApi } from '@edulastic/api'
 import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
+import { withTutorial } from '../../../../tutorials/withTutorial'
 import {
   getOrgDataSelector,
   getCollectionsSelector,
@@ -546,6 +547,7 @@ class Item extends Component {
 }
 
 const enhance = compose(
+  withTutorial('addToFolder'),
   withNamespaces('author'),
   connect(
     (state) => ({

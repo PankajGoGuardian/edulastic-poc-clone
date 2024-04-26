@@ -239,7 +239,11 @@ const TestItemCard = ({
                 <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
                 <IconText>{usage}</IconText>
               </ShareIcon>
-              <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest}>
+              <LikeIconStyled
+                isLiked={isTestLiked}
+                onClick={handleLikeTest}
+                id={testItemId === 'b40556' ? 'test-like-button' : ''}
+              >
                 <IconHeart
                   color={isTestLiked ? '#ca481e' : darkGrey}
                   width={14}

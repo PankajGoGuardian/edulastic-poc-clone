@@ -384,6 +384,16 @@ class App extends Component {
     toggleRequestOrSubmitSuccessModal(false)
   }
 
+  handleTutorialComplete = (data) => {
+    const { action, status, lifecycle } = data
+    if (
+      action === 'close' ||
+      (lifecycle === 'complete' && status === 'finished')
+    ) {
+      // call api
+    }
+  }
+
   render() {
     const cliBannerVisible = sessionStorage.cliBannerVisible || false
     /**
@@ -766,6 +776,7 @@ class App extends Component {
           <OfflineNotifier />
           {tutorial && (
             <Joyride
+              callback={this.handleTutorialComplete}
               continuous
               showProgress={false}
               showSkipButton

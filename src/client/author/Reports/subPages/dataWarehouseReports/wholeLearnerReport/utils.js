@@ -661,10 +661,7 @@ export const getSubjectRiskText = (test, prefix = '') =>
     ({ subject, riskBandLabel: subjectRiskBandLabel, score }) => {
       const subjectScore = getScoreLabel(score, test)
       const subjectsArr = subject.split(',')
-      if (
-        subjectsArr.length > 1 ||
-        subjectRiskBandLabel === RISK_BAND_LABELS.LOW
-      ) {
+      if (subjectsArr.length > 1) {
         return null
       }
       return `${subjectRiskBandLabel} risk in ${subject} (${prefix}${subjectScore})`
@@ -675,7 +672,7 @@ export const getSubjectRiskTooltipData = (test) =>
   test.subjectData.map(({ subject, riskBandLabel, riskBandLevel, score }) => {
     const subjectScore = getScoreLabel(score, test)
     const subjectsArr = subject.split(',')
-    if (subjectsArr.length > 1 || riskBandLabel === RISK_BAND_LABELS.LOW) {
+    if (subjectsArr.length > 1) {
       return null
     }
     return { subject, scoreLabel: subjectScore, riskBandLabel, riskBandLevel }

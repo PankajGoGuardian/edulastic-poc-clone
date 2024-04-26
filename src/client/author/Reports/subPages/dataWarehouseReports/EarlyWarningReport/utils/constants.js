@@ -21,6 +21,7 @@ export const tableColumnKeys = {
   DIMENSION: 'dimension',
   HIGH_RISK: 'highRisk',
   MEDIUM_RISK: 'mediumRisk',
+  LOW_RISK: 'lowRisk',
   ACADEMIC_RISK: 'academicRisk',
   ATTENDANCE_RISK: 'attendanceRisk',
   OVERALL_RISK: 'overallRisk',
@@ -139,6 +140,21 @@ export const compareByStudentColumns = [
         render: (value) => {
           const color =
             value > 0 ? RISK_BAND[RISK_BAND_LABELS.MEDIUM].secondaryColor : ''
+          return (
+            <ColoredText $color={color} $fontSize="14px">
+              {value}
+            </ColoredText>
+          )
+        },
+      },
+      {
+        key: tableColumnKeys.LOW_RISK,
+        title: RISK_BAND[RISK_BAND_LABELS.LOW].label.toUpperCase(),
+        dataIndex: 'lowRiskMeasures',
+        align: 'center',
+        render: (value) => {
+          const color =
+            value > 0 ? RISK_BAND[RISK_BAND_LABELS.LOW].secondaryColor : ''
           return (
             <ColoredText $color={color} $fontSize="14px">
               {value}

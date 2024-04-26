@@ -402,14 +402,28 @@ export const transformTableData = (tableMetrics) => {
   const tableData = tableMetrics.map((m) => {
     const { attendanceRisk = {}, academicRisk = {} } = m
     const overallRisk = [attendanceRisk, ...Object.values(academicRisk)]
-    const highRiskMeasures =
-      overallRisk.filter((r) => r.risk === RISK_BAND_LABELS.HIGH).length || 0
-    const mediumRiskMeasures =
-      overallRisk.filter((r) => r.risk === RISK_BAND_LABELS.MEDIUM).length || 0
+    let highRiskMeasures = 0
+    let mediumRiskMeasures = 0
+    let lowRiskMeasures = 0
+    overallRisk.forEach(({ risk }) => {
+      switch (risk) {
+        case RISK_BAND_LABELS.HIGH:
+          highRiskMeasures++
+          break
+        case RISK_BAND_LABELS.MEDIUM:
+          mediumRiskMeasures++
+          break
+        case RISK_BAND_LABELS.LOW:
+          lowRiskMeasures++
+          break
+        default:
+      }
+    })
     return {
       ...m,
       highRiskMeasures,
       mediumRiskMeasures,
+      lowRiskMeasures,
       academicRisk,
     }
   })

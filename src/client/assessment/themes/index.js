@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -432,8 +432,9 @@ export function useTabNavigationCounterEffect({
   const idleTimeoutRef = useRef(null)
   const totalBlurTimeCounterIntervalRef = useRef(null)
   const totalTimeInBlur = useRef(blurTimeAlreadySaved || 0)
+  const saveCurrentAnswerRef = useRef(saveCurrentAnswer)
 
-  const saveAnswerRef = useRef(saveCurrentAnswer)
+  saveCurrentAnswerRef.current = saveCurrentAnswer
 
   useEffect(() => {
     if (window.sessionStorage.totalTimeInBlur) {
@@ -497,8 +498,8 @@ export function useTabNavigationCounterEffect({
                 msg:
                   'Your test has been locked for security reasons. Please contact your teacher to reopen your test',
               })
-            saveAnswerRef.current
-              ? saveAnswerRef.current({
+            saveCurrentAnswerRef?.current
+              ? saveCurrentAnswerRef?.current({
                   callback: handlePauseAssignment,
                 })
               : handlePauseAssignment()
@@ -508,8 +509,8 @@ export function useTabNavigationCounterEffect({
       idleTimeoutRef.current = setTimeout(() => {
         if (!inFocusRef.current && enabled) {
           console.info('too much time away from screen!!!!!!!', new Date())
-          saveAnswerRef.current
-            ? saveAnswerRef.current({
+          saveCurrentAnswerRef?.current
+            ? saveCurrentAnswerRef?.current({
                 callback: () =>
                   incrementNavigationCounter({ history, testActivityId }),
               })
@@ -903,13 +904,10 @@ const AssessmentContainer = ({
     }
   }, [currentLanguage])
 
-  const saveCurrentAnswer = useCallback(
-    (payload) => {
-      const timeSpent = Date.now() - lastTime.current
-      saveUserAnswer(currentItem, timeSpent, false, groupId, payload)
-    },
-    [currentItem, lastTime, groupId]
-  )
+  const saveCurrentAnswer = (payload) => {
+    const timeSpent = Date.now() - lastTime.current
+    saveUserAnswer(currentItem, timeSpent, false, groupId, payload)
+  }
 
   useTabNavigationCounterEffect({
     testActivityId: restProps.utaId,

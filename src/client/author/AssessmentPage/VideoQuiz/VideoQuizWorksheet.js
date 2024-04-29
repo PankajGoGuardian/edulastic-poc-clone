@@ -307,6 +307,7 @@ const VideoQuizWorksheetComponent = ({
       >
         <VideoViewerContainer data-cy="VideoPreview">
           <VideoPreview
+            key={isPreviewModalVisible ? 'studentPreview' : 'default'}
             startAt={questionTime}
             onHighlightQuestion={handleHighlightQuestion}
             currentAnnotationTool={currentAnnotationTool}

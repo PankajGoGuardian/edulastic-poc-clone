@@ -22,11 +22,18 @@ export function PerformanceColumn({ t, record, correctThreshold, assessment }) {
       total_score = 0,
       total_max_score = 0,
       children = null,
+      standards,
+      qLabel,
+      qType,
+      maxScore,
     } = rec
     const sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt
     const averagePerformance = total_max_score
       ? `${Math.round((total_score / total_max_score) * 100)}%`
       : NOT_AVAILABLE_LABEL
+    const standardsText = standards
+      .map(({ identifier }) => identifier)
+      .join(',')
     return (
       <div>
         <Row type="flex" justify="start">
@@ -37,19 +44,19 @@ export function PerformanceColumn({ t, record, correctThreshold, assessment }) {
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Question: </Col>
-          <Col className="custom-table-tooltip-value">{rec.qLabel}</Col>
+          <Col className="custom-table-tooltip-value">{qLabel}</Col>
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Question Type: </Col>
-          <Col className="custom-table-tooltip-value">{rec.qType}</Col>
+          <Col className="custom-table-tooltip-value">{qType}</Col>
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Standards: </Col>
-          <Col className="custom-table-tooltip-value">{rec.standards}</Col>
+          <Col className="custom-table-tooltip-value">{standardsText}</Col>
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Max Score: </Col>
-          <Col className="custom-table-tooltip-value">{rec.maxScore}</Col>
+          <Col className="custom-table-tooltip-value">{maxScore}</Col>
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Performance: </Col>

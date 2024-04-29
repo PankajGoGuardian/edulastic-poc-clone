@@ -68,7 +68,6 @@ import {
   DEFAULT_TEST_TITLE,
   createGroupSummary,
   getSettingsToSaveOnTestType,
-  applyRubricScoreToTest,
   showRubricToStudentsSetting,
 } from './utils'
 import {
@@ -2400,17 +2399,12 @@ export function* receiveTestByIdSaga({ payload }) {
   try {
     const prevTest = yield select(getTestSelector)
     let createdItems = yield select(getTestCreatedItemsSelector)
-    const { rubricScoreMap = {}, ...entity } = yield call(
-      testsApi.getById,
-      payload.id,
-      {
-        data: true,
-        requestLatest: payload.requestLatest,
-        editAndRegrade: payload.editAssigned,
-        ...(payload.playlistId ? { playlistId: payload.playlistId } : {}),
-      }
-    )
-    applyRubricScoreToTest(entity, rubricScoreMap)
+    const entity = yield call(testsApi.getById, payload.id, {
+      data: true,
+      requestLatest: payload.requestLatest,
+      editAndRegrade: payload.editAssigned,
+      ...(payload.playlistId ? { playlistId: payload.playlistId } : {}),
+    })
     const userId = yield select(getUserIdSelector)
     const questionTypeUpdatedTestItemId = yield select(
       getQuestionTypeChangedTestItemIdSelector

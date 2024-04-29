@@ -8,7 +8,6 @@ import {
   uniqBy,
   get,
   difference,
-  isEmpty,
 } from 'lodash'
 import { helpers } from '@edulastic/common'
 import {
@@ -19,10 +18,8 @@ import {
 import moment from 'moment'
 import {
   settingsNotApplicableToDocBased,
-  testCategoryTypes,
   testSettingsOptions,
 } from '@edulastic/constants/const/test'
-import { TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import { getQuestions } from './ducks'
 
 const { TOP_ORDER_SKINS } = testConstants
@@ -285,49 +282,6 @@ export const checkIsDateLessThanSep30 = () => {
     .millisecond(999)
 
   return currentDate.isBefore(targetDate) || currentDate.isSame(targetDate)
-}
-
-/*
-This method mutates maxScore of testItem and question score incase there is a mismatch in item score and rubric maxScore.
-To handle STR mentioned on EV-41730
- */
-export const applyRubricScoreToTest = (test, rubricScoreMap) => {
-  const { testCategory, testType, status, itemGroups } = test
-  // test category doc based or video quiz and survey test dont do any action
-  if (
-    isEmpty(rubricScoreMap) ||
-    testCategory === testCategoryTypes.DOC_BASED ||
-    testCategory === testCategoryTypes.VIDEO_BASED ||
-    TEST_TYPES.SURVEY.includes(testType) ||
-    status !== 'draft'
-  ) {
-    return
-  }
-  const testItems = itemGroups.flatMap((itemGroup) => itemGroup.items)
-  for (const testItem of testItems) {
-    const { data, maxScore } = testItem
-    const questions = data?.questions || []
-    const rubricLinkedQuestion = questions.find((item) => item.rubrics)
-    if (!rubricLinkedQuestion) continue
-    const questionWiseMaxScore = questions.reduce((acc, q) => {
-      const { validation, rubrics } = q
-      const score = rubrics?._id
-        ? rubricScoreMap[rubrics?._id] || 0
-        : validation.validResponse.score || 0
-      return acc + score
-    }, 0)
-    if (questionWiseMaxScore && maxScore !== questionWiseMaxScore) {
-      testItem.maxScore = questionWiseMaxScore || maxScore
-      questions.forEach((q) => {
-        const { validation, rubrics } = q
-        if (validation.validResponse.score && rubrics?._id) {
-          const rubricMaxScore = rubricScoreMap[rubrics?._id]
-          q.validation.validResponse.score =
-            rubricMaxScore || validation.validResponse.score
-        }
-      })
-    }
-  }
 }
 
 export default {

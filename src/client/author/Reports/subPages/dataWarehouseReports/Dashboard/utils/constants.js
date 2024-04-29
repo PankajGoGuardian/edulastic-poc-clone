@@ -183,5 +183,5 @@ export const sharedDetailsFields = ['reportId', ...detailsExtraFields]
 
 export const districtAvgDimension = {
   _id: 'districtAvg',
-  name: 'Overall Avg.',
+  name: 'Overall',
 }

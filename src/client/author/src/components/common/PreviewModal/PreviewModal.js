@@ -269,7 +269,6 @@ class PreviewModal extends React.Component {
 
   onRegenerateTestItem = () => {
     const { regenerateTestItem, item, groupIndex = 0 } = this.props
-    const { currentQuestionIndex = 0 } = this.state
     const {
       alignment,
       grades,
@@ -278,7 +277,7 @@ class PreviewModal extends React.Component {
       depthOfKnowledge,
       authorDifficulty,
       title: questionTitle,
-    } = this.ttsCustomizableData[currentQuestionIndex]
+    } = item?.data?.questions[0] || {}
 
     const { _id } = item
 

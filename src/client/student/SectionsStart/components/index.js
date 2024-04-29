@@ -92,7 +92,9 @@ const SummaryContainer = (props) => {
     passwordPolicy,
     questionsDelivery,
   } = assignmentSettings
+  console.log('activityData', activityData)
   const { testActivity } = activityData
+  const { nextSectionDelivered = null } = testActivity || {}
 
   useEffect(() => {
     fetchSectionsData({ utaId, groupId })
@@ -225,6 +227,7 @@ const SummaryContainer = (props) => {
                 isRedirectedWithQuestionDelivery={
                   isRedirectedWithQuestionDelivery
                 }
+                nextSectionDelivered={nextSectionDelivered}
               />
             </EduElse>
           </EduIf>

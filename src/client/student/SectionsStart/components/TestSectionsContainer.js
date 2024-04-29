@@ -19,13 +19,26 @@ const TestSectionsContainer = ({
   handleStartSection,
   isTestPreviewModal,
   isRedirectedWithQuestionDelivery,
+  nextSectionDelivered,
 }) => {
+  console.log('nextSectionDelivered', nextSectionDelivered)
   /**
    * ref: EV-41340
    * In case of redirected test with question delivery setting, some sections items can be empty.
    * Such sections cannot be the nextSection.
    */
   // Find first non submitted section
+  if (nextSectionDelivered === null) {
+    itemsToDeliverInGroup = itemsToDeliverInGroup.filter(
+      (group, index) => index !== 2
+    )
+  } else if (nextSectionDelivered) {
+    itemsToDeliverInGroup = itemsToDeliverInGroup.filter(
+      (group, index) => index === 0 || group.groupId === nextSectionDelivered
+    )
+  }
+
+  console.log('itemsToDeliverInGroup', itemsToDeliverInGroup)
   const nextSection =
     itemsToDeliverInGroup.find((item) =>
       isRedirectedWithQuestionDelivery

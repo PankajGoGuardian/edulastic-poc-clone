@@ -137,7 +137,6 @@ const StyledRatingDescription = styled(Stimulus)`
   border-radius: 2px;
   text-overflow: ellipsis;
   font-weight: ${(props) => props.theme.bold};
-  position: relative;
   min-height: 100%;
   min-width: 100%;
   padding: 0 14px 11px;

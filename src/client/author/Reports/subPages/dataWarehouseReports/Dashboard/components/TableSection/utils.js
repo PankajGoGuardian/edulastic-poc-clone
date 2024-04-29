@@ -88,7 +88,7 @@ export const getTableColumns = ({
   getTableDrillDownUrl,
   selectedPerformanceBand,
   availableTestTypes,
-  useAttendanceAbsence,
+  showAbsents,
 }) => {
   if (isEmpty(metricInfo)) return []
   const columnSortOrder = dbToTableSortOrderMap[tableFilters.sortOrder]
@@ -239,7 +239,7 @@ export const getTableColumns = ({
     },
   }
   tableColumns.push(externalLinkColumn)
-  if (useAttendanceAbsence) {
+  if (showAbsents) {
     tableColumns = tableColumns.filter(
       (col) => col.key !== tableColumnKeys.AVG_ATTENDANCE
     )

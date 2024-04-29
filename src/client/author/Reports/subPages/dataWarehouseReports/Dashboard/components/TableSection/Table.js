@@ -20,7 +20,7 @@ const DashboardTable = ({
   isCsvDownloading,
   rowSelection,
   availableTestTypes,
-  useAttendanceAbsence,
+  showAbsents,
 }) => {
   const {
     metricInfo: districtAveragesMetricInfo,
@@ -52,7 +52,7 @@ const DashboardTable = ({
         getTableDrillDownUrl,
         selectedPerformanceBand,
         availableTestTypes,
-        useAttendanceAbsence,
+        showAbsents,
       }),
     [
       metricInfo,
@@ -61,7 +61,7 @@ const DashboardTable = ({
       getTableDrillDownUrl,
       selectedPerformanceBand,
       availableTestTypes,
-      useAttendanceAbsence,
+      showAbsents,
     ]
   )
 

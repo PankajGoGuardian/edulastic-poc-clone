@@ -124,7 +124,7 @@ function ReportView({
         tableData={tableData}
         tableDataRequestError={tableDataRequestError}
         availableTestTypes={availableTestTypes}
-        useAttendanceAbsence={filtersData?.data?.result.useAttendanceAbsence}
+        showAbsents={showAbsents}
       />
     </>
   )

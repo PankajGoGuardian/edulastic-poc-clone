@@ -52,7 +52,7 @@ function TableSection({
   tableDataRequestError,
   isSharedReport = false,
   availableTestTypes,
-  useAttendanceAbsence,
+  showAbsents,
 }) {
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
@@ -293,7 +293,7 @@ function TableSection({
                   rowSelection={_rowSelection}
                   isCsvDownloading={isCsvDownloading}
                   availableTestTypes={availableTestTypes}
-                  useAttendanceAbsence={useAttendanceAbsence}
+                  showAbsents={showAbsents}
                 />
                 <BackendPagination
                   itemsCount={tableData.dimensionCount}
